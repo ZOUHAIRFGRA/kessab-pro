@@ -118,8 +118,12 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 📧 Contact
 For questions or collaboration:
-- **Email**: your-email@example.com
-- **GitHub**: [yourusername](https://github.com/yourusername)
+- **Email**: 
+    zouhairfgra@gmail.com
+    lahbouch.dev@gmail.com
+- **GitHub**: 
+    [zouhairfgra](https://github.com/zouhairfgra)
+    [lahbouch](https://github.com/lahbouch)
 
 ---
 
