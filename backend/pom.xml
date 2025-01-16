@@ -8,10 +8,10 @@
 		<version>3.4.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.kessab</groupId>
-	<artifactId>pro</artifactId>
+	<groupId>com.est</groupId>
+	<artifactId>kessab-pro</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>pro</name>
+	<name>kessab-pro</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
