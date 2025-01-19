@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button as NativeButton } from 'react-native';
-import { useTheme } from 'dripsy';
+import { useDripsyTheme } from 'dripsy';
 
 const Button = ({ title, onPress, style }) => {
-  const { theme } = useTheme();
+  const { theme } = useDripsyTheme();
   return (
     <NativeButton
       title={title}
