@@ -1,0 +1,37 @@
+package com.kessab.pro.models.entities;
+
+import com.kessab.pro.models.entities.Animal.Animal;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class AnimalMedicalLog {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    @ManyToOne
+    @JoinColumn(name = "animal_id")
+    private Animal animal;
+
+    private LocalDate logDate;
+    private String description;
+    private String vetName;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+}
+
