@@ -1,6 +1,7 @@
 package com.kessab.pro.models.entities.Animal;
 
 import com.kessab.pro.enums.AnimalType;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,10 +39,10 @@ public abstract class Animal {
     private BigDecimal price;
     private BigDecimal weight;
 
-    @ElementCollection
-    private List<String> imagePaths;
 
-    private Boolean isPickedUp;
+    private String imagePaths;
+
+    @Nullable
     private LocalDate pickUpDate;
 
     @CreatedDate
