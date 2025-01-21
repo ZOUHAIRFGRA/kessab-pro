@@ -7,6 +7,7 @@ import FoodScreen from '../screens/FoodScreen';
 import MarketplaceScreen from '../screens/MarketplaceScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import QRScannerScreen from '../screens/QRScannerScreen';
+import BuyersListScreen from '../screens/BuyersListScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import CustomHeader from '../components/CustomHeader';
 
@@ -27,6 +28,7 @@ export default function AppNavigator() {
       <Drawer.Screen name="Dashboard" component={DashboardScreen} />
       <Drawer.Screen name="QRScanner" component={QRScannerScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
+      <Drawer.Screen name="BuyersList" component={BuyersListScreen} />
     </Drawer.Navigator>
   );
 }
