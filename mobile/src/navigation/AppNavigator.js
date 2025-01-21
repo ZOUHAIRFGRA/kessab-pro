@@ -3,6 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from '../screens/HomeScreen';
 import ManagementScreen from '../screens/ManagementScreen';
 import SalesScreen from '../screens/SalesScreen';
+import MySellsScreen from '../screens/MySellsScreen';
 import FoodScreen from '../screens/FoodScreen';
 import MarketplaceScreen from '../screens/MarketplaceScreen';
 import DashboardScreen from '../screens/DashboardScreen';
@@ -23,6 +24,7 @@ export default function AppNavigator() {
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Management" component={ManagementScreen} />
       <Drawer.Screen name="Sales" component={SalesScreen} />
+      <Drawer.Screen name="SalesHistory" component={MySellsScreen} />
       <Drawer.Screen name="Food" component={FoodScreen} />
       <Drawer.Screen name="Marketplace" component={MarketplaceScreen} />
       <Drawer.Screen name="Dashboard" component={DashboardScreen} />
