@@ -32,12 +32,19 @@ const OptionGrid = styled(View)({
 
 const Option = styled(TouchableOpacity)({
   width: "48%",
-  height: 100,
+  height: 150, 
   backgroundColor: "#f0f0f0",
   justifyContent: "center",
   alignItems: "center",
+  borderWidth: 1,
   borderRadius: 8,
+  borderColor: "gray",
   marginBottom: 16,
+  padding: 10,
+  shadowColor: "#000", 
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 3.84,
 });
 
 const ModalContent = styled(View)({
@@ -51,6 +58,14 @@ const BottomButton = styled(TouchableOpacity)({
   marginTop: 16,
   padding: 16,
   backgroundColor: "#6200ee",
+  borderRadius: 8,
+  alignItems: "center",
+});
+
+const BottomTextButton = styled(TouchableOpacity)({
+  marginTop: 20, 
+  padding: 12,
+  backgroundColor: "#03dac6", 
   borderRadius: 8,
   alignItems: "center",
 });
@@ -146,7 +161,7 @@ export default function SalesScreen({ navigation }) {
             Chosen Animals:
           </Text>
           {chosenAnimals.map((animal) => (
-            <View key={animal.id} style={styles.animalCard}>
+            <View key={animal.id} >
               <Text>
                 {selectedAnimal} #{animal.id}
               </Text>
@@ -235,6 +250,11 @@ export default function SalesScreen({ navigation }) {
           </ModalContent>
         </View>
       </Modal>
+
+      {/* Bottom Button to View Sales */}
+      <BottomTextButton onPress={() => navigation.navigate("SalesHistory")}>
+        <Text style={{ color: "#fff", fontWeight: "bold" }}>View My Sales</Text>
+      </BottomTextButton>
     </Container>
   );
 }
@@ -250,30 +270,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    height: 40,
-    width: "100%",
+    width: 200,
+    padding: 8,
+    marginBottom: 12,
   },
   quantityControl: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 16,
   },
   quantityButton: {
-    fontSize: 24,
-    marginHorizontal: 20,
-    color: "#6200ee",
+    fontSize: 32,
+    fontWeight: "bold",
+    paddingHorizontal: 16,
   },
   quantityText: {
-    fontSize: 18,
-  },
-  animalCard: {
-    padding: 10,
-    marginVertical: 4,
-    backgroundColor: "#f9f9f9",
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: 'gray',
+    fontSize: 24,
   },
 });
