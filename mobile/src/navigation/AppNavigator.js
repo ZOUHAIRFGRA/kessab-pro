@@ -1,22 +1,32 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import RegisterScreen from '../screens/RegisterScreen';
-import LoginScreen from '../screens/LoginScreen';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from '../screens/HomeScreen';
+import ManagementScreen from '../screens/ManagementScreen';
+import SalesScreen from '../screens/SalesScreen';
+import FoodScreen from '../screens/FoodScreen';
+import MarketplaceScreen from '../screens/MarketplaceScreen';
+import DashboardScreen from '../screens/DashboardScreen';
+import QRScannerScreen from '../screens/QRScannerScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import CustomHeader from '../components/CustomHeader';
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
-const AppNavigator = () => {
+export default function AppNavigator() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Register" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Drawer.Navigator
+      screenOptions={{
+        header: (props) => <CustomHeader {...props} />,
+      }}
+    >
+      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Management" component={ManagementScreen} />
+      <Drawer.Screen name="Sales" component={SalesScreen} />
+      <Drawer.Screen name="Food" component={FoodScreen} />
+      <Drawer.Screen name="Marketplace" component={MarketplaceScreen} />
+      <Drawer.Screen name="Dashboard" component={DashboardScreen} />
+      <Drawer.Screen name="QRScanner" component={QRScannerScreen} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
+    </Drawer.Navigator>
   );
-};
-
-export default AppNavigator;
+}
