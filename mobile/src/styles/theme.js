@@ -1,6 +1,6 @@
 const theme = {
   colors: {
-    border: '#ccc', 
+    border: '#000', 
   },
   text: {
     default: {

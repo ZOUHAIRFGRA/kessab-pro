@@ -21,7 +21,9 @@ const GridItem = styled(TouchableOpacity)({
   backgroundColor: '#f0f0f0',
   justifyContent: 'center',
   alignItems: 'center',
+  borderWidth: 1,
   borderRadius: 8,
+  borderColor: 'gray',
   marginBottom: 16,
 });
 
@@ -30,7 +32,7 @@ const BottomNav = styled(View)({
   justifyContent: 'space-around',
   padding: 16,
   borderTopWidth: 1,
-  borderColor: '#ccc',
+  borderColor: 'red',
 });
 
 export default function HomeScreen({ navigation }) {

@@ -8,7 +8,7 @@ import AppNavigator from './AppNavigator';
 const Stack = createStackNavigator();
 
 export default function RootNavigator() {
-  const isAuthenticated = false;
+  const isAuthenticated = true;
 
   return (
     <NavigationContainer>
