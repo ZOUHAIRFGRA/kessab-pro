@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
 import AppNavigator from './AppNavigator';
+import BuyerScreen from '../screens/BuyerScreen';
 
 const Stack = createStackNavigator();
 
@@ -14,7 +15,10 @@ export default function RootNavigator() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isAuthenticated ? (
-          <Stack.Screen name="MainApp" component={AppNavigator} />
+          <>
+            <Stack.Screen name="MainApp" component={AppNavigator} />
+            <Stack.Screen name="Buyer" component={BuyerScreen} />
+          </>
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
