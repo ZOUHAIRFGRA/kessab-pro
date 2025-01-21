@@ -1,6 +1,12 @@
-export const theme = {
+const theme = {
   colors: {
-    primary: '#4CAF50',
-    border: '#ddd',
+    border: '#ccc', 
+  },
+  text: {
+    default: {
+      color: '#000',
+    },
   },
 };
+
+export default theme;
