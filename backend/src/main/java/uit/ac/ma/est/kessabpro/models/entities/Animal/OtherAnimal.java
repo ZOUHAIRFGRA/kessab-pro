@@ -1,0 +1,18 @@
+package uit.ac.ma.est.kessabpro.models.entities.Animal;
+
+import uit.ac.ma.est.kessabpro.models.entities.OtherAnimalType;
+import jakarta.persistence.*;
+
+import java.util.List;
+
+@Entity
+@DiscriminatorValue("OTHER")
+public class OtherAnimal extends Animal {
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private OtherAnimalType category;
+
+    @ElementCollection
+    private List<String> imagePaths;
+}
