@@ -1,6 +1,5 @@
 package uit.ac.ma.est.kessabpro.models.entities;
 
-import uit.ac.ma.est.kessabpro.models.entities.Animal.Animal;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
