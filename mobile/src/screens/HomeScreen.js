@@ -6,6 +6,7 @@ import WeatherWidget from '../components/WeatherWidget';
 const Container = styled(View)({
   flex: 1,
   padding: 16,
+  backgroundColor: 'white',
 });
 
 const Grid = styled(View)({
