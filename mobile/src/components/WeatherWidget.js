@@ -19,13 +19,7 @@ const WidgetContainer = styled(View)({
   borderColor: '#e0e0e0',
 });
 
-const Header = styled(Text)({
-  fontSize: 20,
-  fontWeight: 'bold',
-  color: '#00796b',
-  marginBottom: 16,
-  textAlign: 'center',
-});
+
 
 const WeatherInfo = styled(View)({
   flexDirection: 'row',
@@ -124,7 +118,7 @@ export default function WeatherWidget() {
 
   return (
     <WidgetContainer>
-      <Header>Current Weather</Header>
+     
       <WeatherInfo>
         <WeatherDetail>
           <Icon name={getWeatherIcon(weather.condition)} size={40} color="#00796b" />
