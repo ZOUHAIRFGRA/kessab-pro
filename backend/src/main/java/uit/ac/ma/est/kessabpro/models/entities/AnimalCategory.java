@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OtherAnimalType {
+public class AnimalCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

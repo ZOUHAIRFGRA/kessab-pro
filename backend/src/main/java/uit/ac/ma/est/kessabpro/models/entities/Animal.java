@@ -1,6 +1,5 @@
-package uit.ac.ma.est.kessabpro.models.entities.Animal;
+package uit.ac.ma.est.kessabpro.models.entities;
 
-import uit.ac.ma.est.kessabpro.enums.AnimalType;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,27 +15,24 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public abstract class Animal {
+public  class Animal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(insertable = false, updatable = false)
-    private AnimalType type;
-
     private String tag;
     private String sex;
     private LocalDate birthDate;
     private BigDecimal price;
     private BigDecimal weight;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private AnimalCategory category;
 
 
     private String imagePaths;
