@@ -172,7 +172,6 @@ export default function SalesScreen({ navigation }) {
       </OptionGrid>
 
       {/* Quantity Modal */}
-      {/* Quantity Modal */}
       <Modal visible={quantityModalVisible} transparent>
         <ModalWrapper>
           <ModalContent>
