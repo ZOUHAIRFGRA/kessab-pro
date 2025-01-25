@@ -5,9 +5,6 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  StyleSheet,
-  ScrollView,
-  Alert,
 } from "react-native";
 import { styled } from "dripsy";
 
@@ -23,6 +20,9 @@ const Header = styled(View)({
   marginBottom: 16,
 });
 
+const Title = styled(Text)();
+const SubTitle = styled(Text)();
+
 const OptionGrid = styled(View)({
   flexDirection: "row",
   flexWrap: "wrap",
@@ -32,16 +32,16 @@ const OptionGrid = styled(View)({
 
 const Option = styled(TouchableOpacity)({
   width: "48%",
-  height: 150, 
-  backgroundColor: "#f0f0f0",
+  height: 150,
+  backgroundColor: "background",
   justifyContent: "center",
   alignItems: "center",
   borderWidth: 1,
   borderRadius: 8,
-  borderColor: "gray",
+  borderColor: "border",
   marginBottom: 16,
   padding: 10,
-  shadowColor: "#000", 
+  shadowColor: "#000",
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.2,
   shadowRadius: 3.84,
@@ -63,11 +63,55 @@ const BottomButton = styled(TouchableOpacity)({
 });
 
 const BottomTextButton = styled(TouchableOpacity)({
-  marginTop: 20, 
+  marginTop: 20,
   padding: 12,
-  backgroundColor: "#03dac6", 
+  backgroundColor: "#03dac6",
   borderRadius: 8,
   alignItems: "center",
+});
+
+const QuantityControl = styled(View)({
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 16,
+});
+
+const QuantityButton = styled(Text)({
+  fontSize: 32,
+  fontWeight: "bold",
+  paddingHorizontal: 16,
+});
+
+const QuantityText = styled(Text)({
+  fontSize: 24,
+});
+
+const Input = styled(TextInput)({
+  borderWidth: 1,
+  borderColor: "#ddd",
+  borderRadius: 5,
+  width: 200,
+  padding: 8,
+  marginBottom: 12,
+});
+
+const ModalWrapper = styled(View)({
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0,0,0,0.5)",
+});
+const CloseButton = styled(TouchableOpacity)({
+  position: "absolute",
+  top: 10,
+  right: 10,
+  padding: 8,
+});
+const CloseText = styled(Text)({
+  fontSize: 24,
+  fontWeight: "bold",
+  color: "#333",
 });
 
 export default function SalesScreen({ navigation }) {
@@ -106,12 +150,12 @@ export default function SalesScreen({ navigation }) {
   return (
     <Container>
       <Header>
-        <Text style={{ fontSize: 18, fontWeight: "bold" }}>Sales</Text>
+        <Title sx={{ variant: "text.heading" }}>Sales</Title>
       </Header>
 
-      <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 16 }}>
+      <SubTitle sx={{ variant: "text.subheading" }}>
         Add New Sale
-      </Text>
+      </SubTitle>
       <OptionGrid>
         {["Sheep", "Cow", "Goat", "Other"].map((animal) => (
           <Option
@@ -128,43 +172,43 @@ export default function SalesScreen({ navigation }) {
       </OptionGrid>
 
       {/* Quantity Modal */}
+      {/* Quantity Modal */}
       <Modal visible={quantityModalVisible} transparent>
-        <View style={styles.modalWrapper}>
+        <ModalWrapper>
           <ModalContent>
+            <CloseButton onPress={() => setQuantityModalVisible(false)}>
+              <CloseText>X</CloseText>
+            </CloseButton>
             <Text style={{ fontSize: 16, marginBottom: 16 }}>
               Set Quantity for {selectedAnimal}
             </Text>
-            <View style={styles.quantityControl}>
+            <QuantityControl>
               <TouchableOpacity
                 onPress={() => setQuantity(Math.max(1, quantity - 1))}
               >
-                <Text style={styles.quantityButton}>-</Text>
+                <QuantityButton>-</QuantityButton>
               </TouchableOpacity>
-              <Text style={styles.quantityText}>{quantity}</Text>
+              <QuantityText>{quantity}</QuantityText>
               <TouchableOpacity onPress={() => setQuantity(quantity + 1)}>
-                <Text style={styles.quantityButton}>+</Text>
+                <QuantityButton>+</QuantityButton>
               </TouchableOpacity>
-            </View>
+            </QuantityControl>
             <BottomButton onPress={handleProceed}>
               <Text style={{ color: "#fff" }}>Proceed</Text>
             </BottomButton>
           </ModalContent>
-        </View>
+        </ModalWrapper>
       </Modal>
 
       {/* Display Chosen Animals */}
       {chosenAnimals.length > 0 && (
         <>
-          <Text
-            style={{ fontSize: 16, fontWeight: "bold", marginVertical: 16 }}
-          >
+          <Text style={{ fontSize: 16, fontWeight: "bold", marginVertical: 16 }}>
             Chosen Animals:
           </Text>
           {chosenAnimals.map((animal) => (
-            <View key={animal.id} >
-              <Text>
-                {selectedAnimal} #{animal.id}
-              </Text>
+            <View key={animal.id}>
+              <Text>{selectedAnimal} #{animal.id}</Text>
             </View>
           ))}
           <BottomButton onPress={() => setAddBuyerModalVisible(true)}>
@@ -175,38 +219,40 @@ export default function SalesScreen({ navigation }) {
         </>
       )}
 
-      {/* Add Buyer Modal */}
-      <Modal visible={addBuyerModalVisible} transparent>
-        <View style={styles.modalWrapper}>
+       {/* Add Buyer Modal */}
+       <Modal visible={addBuyerModalVisible} transparent>
+        <ModalWrapper>
           <ModalContent>
+            <CloseButton onPress={() => setAddBuyerModalVisible(false)}>
+              <CloseText>X</CloseText>
+            </CloseButton>
             <Text style={{ fontSize: 16, marginBottom: 16 }}>Add Buyer</Text>
-            <TextInput
+            <Input
               placeholder="Name"
+              placeholderTextColor="gray"
               value={buyerForm.name}
               onChangeText={(text) =>
                 setBuyerForm({ ...buyerForm, name: text })
               }
-              style={styles.input}
             />
-            <TextInput
+            <Input
               placeholder="Tel"
+               placeholderTextColor="gray"
               value={buyerForm.tel}
               onChangeText={(text) => setBuyerForm({ ...buyerForm, tel: text })}
-              style={styles.input}
             />
-            <TextInput
+            <Input
               placeholder="CIN"
+               placeholderTextColor="gray"
               value={buyerForm.cin}
               onChangeText={(text) => setBuyerForm({ ...buyerForm, cin: text })}
-              style={styles.input}
             />
             <BottomButton onPress={handleAddBuyer}>
               <Text style={{ color: "#fff" }}>Add</Text>
             </BottomButton>
           </ModalContent>
-        </View>
+        </ModalWrapper>
       </Modal>
-
       {/* Display Selected Buyer */}
       {selectedBuyer && (
         <>
@@ -220,10 +266,13 @@ export default function SalesScreen({ navigation }) {
         </>
       )}
 
-      {/* Success Modal */}
-      <Modal visible={successModalVisible} transparent>
-        <View style={styles.modalWrapper}>
+       {/* Success Modal */}
+       <Modal visible={successModalVisible} transparent>
+        <ModalWrapper>
           <ModalContent>
+            <CloseButton onPress={() => setSuccessModalVisible(false)}>
+              <CloseText>X</CloseText>
+            </CloseButton>
             <Text style={{ fontSize: 48, marginBottom: 16 }}>✅</Text>
             <Text style={{ fontSize: 16, marginBottom: 16 }}>
               Sale Added Successfully!
@@ -248,7 +297,7 @@ export default function SalesScreen({ navigation }) {
               <Text style={{ color: "#fff" }}>Close</Text>
             </BottomButton>
           </ModalContent>
-        </View>
+        </ModalWrapper>
       </Modal>
 
       {/* Bottom Button to View Sales */}
@@ -258,34 +307,3 @@ export default function SalesScreen({ navigation }) {
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  modalWrapper: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    width: 200,
-    padding: 8,
-    marginBottom: 12,
-  },
-  quantityControl: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  quantityButton: {
-    fontSize: 32,
-    fontWeight: "bold",
-    paddingHorizontal: 16,
-  },
-  quantityText: {
-    fontSize: 24,
-  },
-});

@@ -20,9 +20,9 @@ const theme = makeTheme({
       color: '$colors.text',
     },
     heading: {
-      fontSize: 24,
+      fontSize: 30,
       fontWeight: '700',
-      color: 'red',
+      color: '$colors.text',
       lineHeight: 32,
     },
     subheading: {
