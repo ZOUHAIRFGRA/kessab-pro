@@ -4,8 +4,7 @@ import { useRoute } from '@react-navigation/native';
 
 export default function BuyerScreen() {
   const route = useRoute();
-  const { cin } = route.params; // Retrieve the passed CIN
-
+  const { cin } = route.params; 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Buyer Details</Text>
