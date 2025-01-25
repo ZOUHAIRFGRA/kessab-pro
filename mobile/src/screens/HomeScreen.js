@@ -149,12 +149,14 @@ export default function HomeScreen({ navigation }) {
           { name: "Add Buyer", icon: "account-plus", route: "AddBuyer" },
           { name: "View Buyers", icon: "account-group", route: "BuyersList" },
           { name: "Add Sheep", icon: "sheep", route: "AddSheep" },
-          { name: "View Sales", icon: "chart-line", route: "ViewSales" },
+          { name: "View Sales", icon: "chart-line", route: "MySellsScreen" },
           { name: "Inventory", icon: "warehouse", route: "Inventory" },
         ].map((action, index) => (
           <HorizontalActionItem
           key={index}
           onPress={() => navigation.navigate( action.route)}
+          accessibilityRole="button"
+          accessibilityLabel={`Navigate to ${action.name}`}
         >
           <ActionIcon name={action.icon} />
           <ActionText>{action.name}</ActionText>
