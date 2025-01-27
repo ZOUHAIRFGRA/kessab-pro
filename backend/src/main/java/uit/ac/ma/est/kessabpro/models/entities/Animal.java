@@ -34,7 +34,6 @@ public  class Animal {
     @JoinColumn(name = "category_id")
     private AnimalCategory category;
 
-
     private String imagePaths;
 
     @Nullable
@@ -46,4 +45,3 @@ public  class Animal {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 }
-
