@@ -87,8 +87,32 @@ public class AnimalSeeder {
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
+            Animal animal3 = Animal.builder()
+                    .tag("SHEEP-001")
+                    .sex("Male")
+                    .birthDate(LocalDate.of(2021, 5, 20))
+                    .price(new BigDecimal("800.00"))
+                    .weight(new BigDecimal("60.0"))
+                    .category(sheepCategory)
+                    .imagePaths("/images/sheep1.png")
+                    .pickUpDate(LocalDate.of(2025, 2, 15))
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            Animal animal4 = Animal.builder()
+                    .tag("SHEEP-001")
+                    .sex("Male")
+                    .birthDate(LocalDate.of(2021, 5, 20))
+                    .price(new BigDecimal("800.00"))
+                    .weight(new BigDecimal("60.0"))
+                    .category(sheepCategory)
+                    .imagePaths("/images/sheep1.png")
+                    .pickUpDate(LocalDate.of(2025, 2, 15))
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
 
-            animalRepository.saveAll(Arrays.asList(animal1, animal2));
+            animalRepository.saveAll(Arrays.asList(animal1, animal2,animal3,animal4));
 
             // Create AnimalActivitiesLog
             AnimalActivitiesLog log1 = AnimalActivitiesLog.builder()
