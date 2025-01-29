@@ -1,13 +1,18 @@
 import { styled } from "dripsy";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   ScrollView,
   TouchableOpacity,
+  Modal,
+  Button,
+  Image,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { getAnimals } from "../features/animalSlice"; 
 
 const Container = styled(View)({
   flex: 1,
@@ -94,19 +99,40 @@ const ActionText = styled(Text)({
 });
 
 export default function ManagementScreen({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [actionType, setActionType] = useState(""); // 'status' or 'modify'
+  const [selectedAnimal, setSelectedAnimal] = useState(null);
+  const [modifiedAnimal, setModifiedAnimal] = useState({});
+
+  const dispatch = useDispatch();
+
+  const { animals, loading, error } = useSelector((state) => state.animals);
+
+  useEffect(() => {
+    dispatch(getAnimals());
+  }, [dispatch]);
+
   const handleSearch = (text) => {
     console.log(`Search text: ${text}`);
   };
 
-  const animals = [
-    { id: "001", type: "Sheep", status: "Available" },
-    { id: "002", type: "Goat", status: "Sold" },
-  ];
+  const handleActionPress = (animal) => {
+    setSelectedAnimal(animal);
+    setModalVisible(true);
+  };
 
-  const transactions = [
-    { id: "TXN001", animal: "Sheep 001", status: "Paid" },
-    { id: "TXN002", animal: "Goat 002", status: "Not Yet Paid" },
-  ];
+  const handleStatusChange = () => {
+    console.log("Change status for animal:", selectedAnimal);
+    setModalVisible(false);
+  };
+
+  const handleModifyAnimal = () => {
+    console.log("Modify animal:", selectedAnimal, modifiedAnimal);
+    setModalVisible(false);
+  };
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error}</Text>;
 
   return (
     <Container>
@@ -121,45 +147,59 @@ export default function ManagementScreen({ navigation }) {
         {animals.map((animal, index) => (
           <ListItem
             key={index}
-            onPress={() => navigation.navigate("AnimalDetails", { id: animal.id })}
+            onPress={() => handleActionPress(animal)} 
           >
-            <ListItemText>
-              {animal.type} (ID: {animal.id})
-            </ListItemText>
-            <Text>{animal.status}</Text>
+            <Image
+              source={{ uri: `http://localhost:8080${animal.imagePaths}` }}  
+              style={{ width: 50, height: 50, borderRadius: 8 }}
+            />
+            <View style={{ flex: 1, marginLeft: 10 }}>
+              <ListItemText>{animal.tag}</ListItemText>
+              <Text>{animal.category.typeName}</Text>
+            </View>
+            <TouchableOpacity onPress={() => handleActionPress(animal)}>
+              <Text>Action</Text>
+            </TouchableOpacity>
           </ListItem>
         ))}
       </ItemList>
 
       <SectionTitle>Transactions</SectionTitle>
       <ItemList>
-        {transactions.map((txn, index) => (
-          <ListItem
-            key={index}
-            onPress={() => navigation.navigate("TransactionDetails", { id: txn.id })}
-          >
-            <ListItemText>{txn.animal}</ListItemText>
-            <Text>{txn.status}</Text>
-          </ListItem>
-        ))}
       </ItemList>
 
       <SectionTitle>Quick Actions</SectionTitle>
       <QuickActionList horizontal showsHorizontalScrollIndicator={false}>
-        {[
-          { name: "Add Animal", icon: "plus", route: "AddAnimal" },
-          { name: "View Sales", icon: "cart", route: "Sales" },
-          { name: "Analytics", icon: "chart-bar", route: "Analytics" },
-        ].map((action, index) => (
-          <QuickActionItem
-            key={index}
-            onPress={() => navigation.navigate(action.route)}
-          >
+        {[{ name: "Add Animal", icon: "plus", route: "AddAnimal" }].map((action, index) => (
+          <QuickActionItem key={index} onPress={() => navigation.navigate(action.route)}>
             <ActionIcon name={action.icon} />
             <ActionText>{action.name}</ActionText>
           </QuickActionItem>
         ))}
       </QuickActionList>
+
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
+          <Text>Select Action for {selectedAnimal?.tag}</Text>
+          <Button title="Change Status" onPress={() => handleStatusChange()} />
+          <Button title="Modify Animal" onPress={() => setActionType("modify")} />
+
+          {actionType === "modify" ? (
+            <View>
+              <TextInput
+                placeholder="New Type"
+                value={modifiedAnimal.type}
+                onChangeText={(text) => setModifiedAnimal({ ...modifiedAnimal, type: text })}
+              />
+              <Button title="Save Changes" onPress={handleModifyAnimal} />
+            </View>
+          ):null}
+        </View>
+      </Modal>
     </Container>
   );
 }
