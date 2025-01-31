@@ -150,7 +150,7 @@ export default function ManagementScreen({ navigation }) {
             onPress={() => handleActionPress(animal)} 
           >
             <Image
-              source={{ uri: `http://localhost:8080${animal.imagePaths}` }}  
+              source={{ uri: `http://10.0.2.2:8080${animal.imagePaths}` }}  
               style={{ width: 50, height: 50, borderRadius: 8 }}
             />
             <View style={{ flex: 1, marginLeft: 10 }}>
@@ -189,14 +189,67 @@ export default function ManagementScreen({ navigation }) {
           <Button title="Modify Animal" onPress={() => setActionType("modify")} />
 
           {actionType === "modify" ? (
-            <View>
-              <TextInput
-                placeholder="New Type"
-                value={modifiedAnimal.type}
-                onChangeText={(text) => setModifiedAnimal({ ...modifiedAnimal, type: text })}
-              />
-              <Button title="Save Changes" onPress={handleModifyAnimal} />
-            </View>
+                 
+                  <View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
+                    <Text>Edit Animal: {selectedAnimal?.tag}</Text>
+                    <ScrollView>
+                      <TextInput
+                        placeholder="Tag"
+                        value={modifiedAnimal.tag || selectedAnimal?.tag}
+                        onChangeText={(text) =>
+                          setModifiedAnimal((prev) => ({ ...prev, tag: text }))
+                        }
+                      />
+                      <TextInput
+                        placeholder="Sex"
+                        value={modifiedAnimal.sex || selectedAnimal?.sex}
+                        onChangeText={(text) =>
+                          setModifiedAnimal((prev) => ({ ...prev, sex: text }))
+                        }
+                      />
+                      <TextInput
+                        placeholder="Birth Date (YYYY-MM-DD)"
+                        value={modifiedAnimal.birthDate || selectedAnimal?.birthDate}
+                        onChangeText={(text) =>
+                          setModifiedAnimal((prev) => ({ ...prev, birthDate: text }))
+                        }
+                      />
+                      <TextInput
+                        placeholder="Price"
+                        value={String(modifiedAnimal.price || selectedAnimal?.price)}
+                        keyboardType="numeric"
+                        onChangeText={(text) =>
+                          setModifiedAnimal((prev) => ({ ...prev, price: parseFloat(text) || 0 }))
+                        }
+                      />
+                      <TextInput
+                        placeholder="Weight"
+                        value={String(modifiedAnimal.weight || selectedAnimal?.weight)}
+                        keyboardType="numeric"
+                        onChangeText={(text) =>
+                          setModifiedAnimal((prev) => ({ ...prev, weight: parseFloat(text) || 0 }))
+                        }
+                      />
+                      <TextInput
+                        placeholder="Pick-up Date (YYYY-MM-DD)"
+                        value={modifiedAnimal.pickUpDate || selectedAnimal?.pickUpDate}
+                        onChangeText={(text) =>
+                          setModifiedAnimal((prev) => ({ ...prev, pickUpDate: text }))
+                        }
+                      />
+                      <TextInput
+                        placeholder="Image Path"
+                        value={modifiedAnimal.imagePaths || selectedAnimal?.imagePaths}
+                        onChangeText={(text) =>
+                          setModifiedAnimal((prev) => ({ ...prev, imagePaths: text }))
+                        }
+                      />
+                    </ScrollView>
+                    <Button title="Save Changes" onPress={handleModifyAnimal} />
+                    <Button title="Close" onPress={() => setModalVisible(false)} />
+                  </View>
+                
+          
           ):null}
         </View>
       </Modal>
