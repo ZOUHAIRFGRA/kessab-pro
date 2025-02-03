@@ -19,7 +19,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class User {
-//TODO: implement a authentication dependency
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

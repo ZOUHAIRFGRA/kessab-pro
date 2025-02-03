@@ -10,7 +10,8 @@ import uit.ac.ma.est.kessabpro.seeders.*;
 public class KessabProApplication implements CommandLineRunner {
 
 	@Autowired private AnimalSeeder animalSeeder;
-//	@Autowired private TransactionSeeder transactionSeeder;
+	@Autowired private BuyerSaleTransactionSeeder buyerSaleTransactionSeeder;
+	@Autowired private UserSeeder userSeeder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(KessabProApplication.class, args);
@@ -19,6 +20,7 @@ public class KessabProApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		animalSeeder.seedData();
-//		transactionSeeder.seedData();
+		userSeeder.seedData();
+		buyerSaleTransactionSeeder.seedData();
 	}
 }
