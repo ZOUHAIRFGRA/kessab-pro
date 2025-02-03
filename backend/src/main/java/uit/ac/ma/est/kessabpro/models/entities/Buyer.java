@@ -9,7 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -21,7 +20,7 @@ public class Buyer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)  // Add cascade to save the user along with Buyer
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
@@ -33,4 +32,3 @@ public class Buyer {
     @CreatedDate
     private LocalDateTime createdAt;
 }
-

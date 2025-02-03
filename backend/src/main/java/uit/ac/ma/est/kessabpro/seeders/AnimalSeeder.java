@@ -150,7 +150,7 @@ public class AnimalSeeder {
 
             animalMedicalLogRepository.saveAll(Arrays.asList(medicalLog1, medicalLog2));
 
-            System.out.println("Seeding completed!");
+            System.out.println("Seeding for animal completed!");
         } else {
             System.out.println("Database already seeded. No new data added.");
         }
