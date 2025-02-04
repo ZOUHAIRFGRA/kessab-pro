@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +27,8 @@ public class User {
     private String phone;
     private String address;
     private String email;
+
+    @JsonIgnore
     private String password;
 
 
