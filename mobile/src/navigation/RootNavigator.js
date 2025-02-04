@@ -5,6 +5,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
 import AppNavigator from './AppNavigator';
 import BuyerScreen from '../screens/BuyerScreen';
+import AddTransaction from '../components/AddTransaction';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ export default function RootNavigator() {
           <>
             <Stack.Screen name="MainApp" component={AppNavigator} />
             <Stack.Screen name="Buyer" component={BuyerScreen} />
+            <Stack.Screen name="AddTransaction" component={AddTransaction} />
           </>
         ) : (
           <>

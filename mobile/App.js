@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { View, StatusBar, Platform } from 'react-native';
 import { DripsyProvider } from 'dripsy';
 import { Provider } from 'react-redux';
 import theme from './src/styles/theme';
@@ -10,10 +10,13 @@ export default function App() {
   return (
     <Provider store={store}>
       <DripsyProvider theme={theme}>
-        <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ 
+          flex: 1, 
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 
+        }}>
           <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
           <RootNavigator />
-        </SafeAreaView>
+        </View>
       </DripsyProvider>
     </Provider>
   );
