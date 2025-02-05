@@ -36,8 +36,10 @@ const SectionTitle = styled(Text)({
   marginBottom: 12,
 });
 
-const QuickActionList = styled(ScrollView)({
-  paddingBottom: 8, 
+const QuickActionList = styled(View)({
+  flexDirection: "row",
+  gap: 16,
+  marginBottom: 16,
 });
 
 const QuickActionItem = styled(TouchableOpacity)(({ isLast }) => ({
@@ -90,7 +92,7 @@ export default function ManagementScreen({ navigation }) {
   return (
     <Container>
       <SectionTitle>Quick Actions</SectionTitle>
-      <QuickActionList horizontal showsHorizontalScrollIndicator={true}>
+      <QuickActionList>
         {[
           { name: "Add Animal", icon: "plus", route: "AddAnimal" },
           {
@@ -98,10 +100,9 @@ export default function ManagementScreen({ navigation }) {
             icon: "dollar",
             action: () => setTransactionModalVisible(true),
           },
-        ].map((action, index, array) => (
+        ].map((action, index) => (
           <QuickActionItem
             key={index}
-            isLast={index === array.length - 1} // Pass isLast prop
             onPress={
               action.route
                 ? () => navigation.navigate(action.route)
