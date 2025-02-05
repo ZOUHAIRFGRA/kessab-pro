@@ -36,9 +36,9 @@ export const createTransaction = async (TransactionData) => {
 
 export const updateTransaction = async (id, TransactionData) => {
   try {
-    console.log(`Updating Transaction ID: ${id}`, TransactionData); 
+    // console.log(`Updating Transaction ID: ${id}`, TransactionData); 
     const response = await axiosInstance.put(`/transactions/${id}`, TransactionData);
-    console.log("Update Response:", response.data); 
+    // console.log("Update Response:", response.data); 
     return response.data;
   } catch (error) {
     console.error(`Error updating Transaction with id ${id}:`, error.response?.data || error);
