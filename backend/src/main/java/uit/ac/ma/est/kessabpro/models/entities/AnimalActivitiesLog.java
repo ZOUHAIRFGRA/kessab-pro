@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,6 +20,7 @@ public class AnimalActivitiesLog {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "animal_id")
     private Animal animal;

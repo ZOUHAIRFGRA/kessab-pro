@@ -36,13 +36,13 @@ const Dropdown = styled(TouchableOpacity)({
   backgroundColor: "#f9f9f9",
 });
 
-const ButtonContainer = styled(View)({
-  flexDirection: "row",
-  justifyContent: "space-between",
-  marginTop: 12,
-});
+// const ButtonContainer = styled(View)({
+//   flexDirection: "row",
+//   justifyContent: "space-between",
+//   marginTop: 12,
+// });
 
-const PaymentMethods = ["CASH", "CREDIT_CARD", "BANK_TRANSFER"];
+// const PaymentMethods = ["CASH", "CARD", "BANK"];
 
 export default function AddTransaction({ onClose }) {
   const dispatch = useDispatch();
@@ -81,12 +81,10 @@ export default function AddTransaction({ onClose }) {
         <Container style={{ width: 350, borderRadius: 10 }}>
           <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>Add Transaction</Text>
 
-          {/* Select Sale */}
           <Dropdown onPress={() => setSalesModalVisible(true)}>
             <Text>{selectedSale ? `Sale: ${selectedSale.id} - ${selectedSale.agreedAmount} MAD` : "Select a Sale"}</Text>
           </Dropdown>
 
-          {/* Amount Input */}
           <Input
             keyboardType="numeric"
             placeholder="Enter Amount"
@@ -94,19 +92,16 @@ export default function AddTransaction({ onClose }) {
             onChangeText={setAmount}
           />
 
-          {/* Payment Method Dropdown */}
-          <Dropdown onPress={() => setMethod(method === "CASH" ? "CREDIT_CARD" : method === "CREDIT_CARD" ? "BANK_TRANSFER" : "CASH")}>
+          <Dropdown onPress={() => setMethod(method === "CASH" ? "CARD" : method === "CARD" ? "BANK" : "CASH")}>
             <Text>Payment Method: {method}</Text>
           </Dropdown>
 
-          {/* Transaction Date */}
           <Input
             placeholder="YYYY-MM-DD"
             value={transactionDate}
             onChangeText={setTransactionDate}
           />
 
-          {/* Buttons */}
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
             <Button title="Cancel" onPress={onClose} color="gray" />
             <Button title="Add" onPress={handleSubmit} color="green" />
@@ -114,7 +109,6 @@ export default function AddTransaction({ onClose }) {
         </Container>
       </View>
 
-      {/* Sales Modal */}
       <Modal visible={salesModalVisible} animationType="slide">
         <View style={{ flex: 1, padding: 16 }}>
           <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>Select a Sale</Text>
