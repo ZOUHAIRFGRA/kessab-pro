@@ -12,7 +12,7 @@ export default function App() {
       <DripsyProvider theme={theme}>
         <View style={{ 
           flex: 1, 
-          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 36 
         }}>
           <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
           <RootNavigator />

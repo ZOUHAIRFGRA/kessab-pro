@@ -54,3 +54,31 @@ export const deleteAnimal = async (id) => {
     throw error;
   }
 };
+
+
+export const fetchAnimalMedicalLogs = async (animalId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/animal-medical-logs/animal/${animalId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching medical logs for animal ${animalId}:`, error);
+    throw error;
+  }
+};
+
+export const fetchAnimalActivitiesLogs = async (animalId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/animal-activities-logs/animal/${animalId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching activities logs for animal ${animalId}:`,
+      error
+    );
+    throw error;
+  }
+};
