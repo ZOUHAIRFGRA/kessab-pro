@@ -20,10 +20,9 @@ public class AnimalIconService implements IAnimalIconService {
         return animalIconRepository.save(animalIcon);
     }
 
-    // Modify the findById method to use Long instead of UUID
     @Override
     public Optional<AnimalIcon> findById(Long id) {
-        return animalIconRepository.findById(id);  // Accept Long here
+        return animalIconRepository.findById(id);
     }
 
     @Override
@@ -31,19 +30,17 @@ public class AnimalIconService implements IAnimalIconService {
         return animalIconRepository.findAll();
     }
 
-    // Modify deleteById to use Long instead of UUID
     @Override
     public void deleteById(Long id) {
-        animalIconRepository.deleteById(id);  // Accept Long here
+        animalIconRepository.deleteById(id);
     }
 
-    // Modify update to use Long instead of UUID
     @Override
     public AnimalIcon update(Long id, AnimalIcon animalIcon) {
         if (animalIconRepository.existsById(id)) {
-            animalIcon.setId(id);  // Set Long ID here
+            animalIcon.setId(id);
             return animalIconRepository.save(animalIcon);
         }
-        return null; // Or throw an exception
+        return null;
     }
 }
