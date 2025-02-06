@@ -3,6 +3,7 @@ package uit.ac.ma.est.kessabpro.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.services.implementations.AnimalService;
@@ -23,19 +24,13 @@ public class AnimalController {
     private AnimalService animalService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void createAnimal(@ModelAttribute AnimalDTO animal) {
-
-        try {
-            System.out.println(animalService.uploadAnimalImages(animal.getImages()));
-            Animal animal =
-            //        return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
-//            return new ResponseEntity<>(animal, HttpStatus.CREATED);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-//            return new ResponseEntity<>(animal, HttpStatus.CREATED);
-        }
-
-
+    public ResponseEntity<Animal> createAnimal(@ModelAttribute AnimalDTO animalDTO) throws IOException {
+            Animal animal = AnimalMapper.toEntity(animalDTO);
+        System.out.println(animalDTO.isImagesExists());
+            if (animalDTO.isImagesExists()){
+                animal.setImagePaths(animalService.uploadAnimalImages(animalDTO.getImages()));
+            }
+            return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
