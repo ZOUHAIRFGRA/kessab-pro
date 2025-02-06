@@ -7,10 +7,11 @@ import animalActivitiesLogReducer from "../features/animalActivitiesLogSlice";
 import categoryReducer from "../features/categorySlice";
 import iconsReducer from "../features/iconsSlice";
 import authReducer from "../features/authSlice";
-
+import userReducer from "../features/userSlice";
 export const store = configureStore({
   reducer: {
     animals: animalReducer,
+    user: userReducer,
     transactions: transactionReducer,
     sales: saleReducer,
     categories: categoryReducer,
