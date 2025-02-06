@@ -6,6 +6,7 @@ import animalMedicalLogReducer from "../features/animalMedicalLogSlice";
 import animalActivitiesLogReducer from "../features/animalActivitiesLogSlice";
 import categoryReducer from "../features/categorySlice";
 import iconsReducer from "../features/iconsSlice";
+import authReducer from "../features/authSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     animalMedicalLogs: animalMedicalLogReducer,
     animalActivitiesLogs: animalActivitiesLogReducer,
     icons: iconsReducer,
+    auth: authReducer,
   },
 });

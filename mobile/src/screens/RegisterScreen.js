@@ -1,37 +1,39 @@
-import React, { useState } from 'react';
-import { View, Alert } from 'react-native';
-import ScreenWrapper from '../components/ScreenWrapper';
-import InputField from '../components/InputField';
-import Button from '../components/Button';
+import React, { useState } from "react";
+import { View, Text, TextInput, Button, Alert } from "react-native";
+import { useDispatch } from "react-redux";
+import axiosInstance from "../api/axiosInstance";
+import { registerSuccess } from "../features/authSlice";
 
-const RegisterScreen = ({ navigation }) => {
-  const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    cin: '',
-    password: '',
-  });
+export default function RegisterScreen({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const dispatch = useDispatch();
 
-  const handleChange = (field, value) => {
-    setForm({ ...form, [field]: value });
-  };
+  const handleRegister = async () => {
+    try {
+      const response = await axiosInstance.post("/auth/register", {
+        username,
+        email,
+        password,
+      });
 
-  const handleRegister = () => {
-    Alert.alert('Success', 'You are registered!');
-    navigation.navigate('Login');
+      dispatch(registerSuccess(response.data)); 
+    } catch (error) {
+      Alert.alert("Registration Failed", error.response?.data?.message || "Try again");
+    }
   };
 
   return (
-    <ScreenWrapper>
-      <InputField placeholder="First Name" value={form.firstName} onChangeText={(value) => handleChange('firstName', value)} />
-      <InputField placeholder="Last Name" value={form.lastName} onChangeText={(value) => handleChange('lastName', value)} />
-      <InputField placeholder="Phone" value={form.phone} onChangeText={(value) => handleChange('phone', value)} />
-      <InputField placeholder="CIN" value={form.cin} onChangeText={(value) => handleChange('cin', value)} />
-      <InputField placeholder="Password" value={form.password} onChangeText={(value) => handleChange('password', value)} secureTextEntry />
+    <View>
+      <Text>Username:</Text>
+      <TextInput value={username} onChangeText={setUsername} />
+      <Text>Email:</Text>
+      <TextInput value={email} onChangeText={setEmail} />
+      <Text>Password:</Text>
+      <TextInput value={password} onChangeText={setPassword} secureTextEntry />
       <Button title="Register" onPress={handleRegister} />
-    </ScreenWrapper>
+      <Button title="Go to Login" onPress={() => navigation.navigate("Login")} />
+    </View>
   );
-};
-
-export default RegisterScreen;
+}
