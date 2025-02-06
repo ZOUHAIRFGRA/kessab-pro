@@ -1,9 +1,11 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.services.implementations.AnimalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -18,8 +20,10 @@ public class AnimalController {
     private AnimalService animalService;
 
     @PostMapping
-    public ResponseEntity<Animal> createAnimal(@RequestBody Animal animal) {
-        return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
+    public ResponseEntity<AnimalDTO> createAnimal(@RequestBody AnimalDTO animal) {
+
+//        return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
+        return new ResponseEntity<>(animal, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

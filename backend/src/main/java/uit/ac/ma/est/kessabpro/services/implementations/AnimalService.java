@@ -1,11 +1,15 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import org.springframework.web.multipart.MultipartFile;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalService;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,6 +35,8 @@ public class AnimalService implements IAnimalService {
         return animalRepository.findAll();
     }
 
+
+
     @Override
     public Animal updateAnimal(UUID id, Animal animal) {
         if (animalRepository.existsById(id)) {
@@ -50,4 +56,17 @@ public class AnimalService implements IAnimalService {
             return false;
         }
     }
+
+    @Override
+    public List<String> uploadAnimalImages(List<MultipartFile> images) throws IOException {
+        List<String> animalImages = new ArrayList<>();
+        for (MultipartFile file : images){
+            File f = new File(".\\" + file.getOriginalFilename());
+            file.transferTo(f);
+            animalImages.add(f.getPath());
+        }
+        return animalImages;
+    }
+
+
 }
