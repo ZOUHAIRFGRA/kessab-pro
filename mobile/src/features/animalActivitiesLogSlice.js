@@ -1,10 +1,33 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchAnimalActivitiesLogs } from "../api/animalApi";
+import { 
+  fetchAnimalActivitiesLogs, 
+  addAnimalActivitiesLog, 
+  updateAnimalActivitiesLog 
+} from "../api/animalApi";
 
+// Fetch activity logs
 export const getAnimalActivitiesLogs = createAsyncThunk(
   "animalActivitiesLogs/fetch",
   async (animalId) => {
     const response = await fetchAnimalActivitiesLogs(animalId);
+    return response;
+  }
+);
+
+// Add new activity log
+export const createAnimalActivityLog = createAsyncThunk(
+  "animalActivitiesLogs/add",
+  async ({ animalId, logData }) => {
+    const response = await addAnimalActivitiesLog(animalId, logData);
+    return response;
+  }
+);
+
+// Update existing activity log
+export const modifyAnimalActivityLog = createAsyncThunk(
+  "animalActivitiesLogs/update",
+  async ({ logId, logData }) => {
+    const response = await updateAnimalActivitiesLog(logId, logData);
     return response;
   }
 );
@@ -29,6 +52,14 @@ const animalActivitiesLogSlice = createSlice({
       .addCase(getAnimalActivitiesLogs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(createAnimalActivityLog.fulfilled, (state, action) => {
+        state.activitiesLogs.push(action.payload);
+      })
+      .addCase(modifyAnimalActivityLog.fulfilled, (state, action) => {
+        state.activitiesLogs = state.activitiesLogs.map((log) =>
+          log.id === action.payload.id ? action.payload : log
+        );
       });
   },
 });

@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserProfile, updateProfile } from '../features/userSlice';
 import { styled } from 'dripsy';
+import { logout } from '../features/authSlice';
 
 const Container = styled(View)({
   flex: 1,
@@ -39,18 +40,15 @@ const ProfileScreen = () => {
   const dispatch = useDispatch();
   const { userProfile, loading, error } = useSelector((state) => state.user);
 
-  // Initialize state from the fetched profile data
   const [updatedUsername, setUpdatedUsername] = useState(userProfile?.username || '');
   const [updatedEmail, setUpdatedEmail] = useState(userProfile?.email || '');
   const [updatedPhone, setUpdatedPhone] = useState(userProfile?.phone || '');
   const [updatedAddress, setUpdatedAddress] = useState(userProfile?.address || '');
 
-  // Fetch user profile on mount
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
-  // Handle profile update
   const handleProfileUpdate = () => {
     const updatedUser = {
       ...userProfile,
@@ -60,6 +58,10 @@ const ProfileScreen = () => {
       address: updatedAddress,
     };
     dispatch(updateProfile(updatedUser));
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   if (loading) {
@@ -110,6 +112,9 @@ const ProfileScreen = () => {
         />
       </InputContainer>
       <Button title="Update Profile" onPress={handleProfileUpdate} />
+
+
+      <Button title="Logout" onPress={handleLogout} />
     </Container>
   );
 };
