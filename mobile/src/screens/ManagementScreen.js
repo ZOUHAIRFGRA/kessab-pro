@@ -73,6 +73,8 @@ const ActionText = styled(Text)({
 export default function ManagementScreen({ navigation }) {
   const [transactionModalVisible, setTransactionModalVisible] = useState(false);
   const [addAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [filteredAnimals, setFilteredAnimals] = useState([]);
 
   const dispatch = useDispatch();
   const { animals, loading, error } = useSelector((state) => state.animals);
@@ -81,9 +83,25 @@ export default function ManagementScreen({ navigation }) {
     dispatch(getAnimals());
   }, [dispatch]);
 
-  const handleSearch = (text) => {
-    console.log(`Search text: ${text}`);
-  };
+  useEffect(() => {
+    if (!searchText) {
+      setFilteredAnimals(animals);
+      return;
+    }
+
+    const lowercasedSearch = searchText.toLowerCase();
+
+    const filtered = animals.filter((animal) => {
+      return (
+        animal.tag.toLowerCase().includes(lowercasedSearch) ||
+        String(animal.price).includes(lowercasedSearch) ||
+        String(animal.weight).includes(lowercasedSearch) ||
+        animal.category?.typeName?.toLowerCase().includes(lowercasedSearch)
+      );
+    });
+
+    setFilteredAnimals(filtered);
+  }, [searchText, animals]);
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error}</Text>;
@@ -104,12 +122,14 @@ export default function ManagementScreen({ navigation }) {
       </QuickActionList>
 
       <SearchInput
-        placeholder="Search for animals"
-        onSubmitEditing={(e) => handleSearch(e.nativeEvent.text)}
+        placeholder="Search by tag, price, weight, or category"
+        value={searchText}
+        onChangeText={setSearchText}
         placeholderTextColor="black"
       />
+
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <AnimalsList animals={animals} />
+        <AnimalsList animals={filteredAnimals} />
 
         {transactionModalVisible && (
           <AddTransaction onClose={() => setTransactionModalVisible(false)} />
