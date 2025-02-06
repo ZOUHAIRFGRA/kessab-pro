@@ -2,6 +2,7 @@ package uit.ac.ma.est.kessabpro.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.services.implementations.AnimalService;
@@ -19,7 +20,7 @@ public class AnimalController {
     @Autowired
     private AnimalService animalService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnimalDTO> createAnimal(@RequestBody AnimalDTO animal) {
 
 //        return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);

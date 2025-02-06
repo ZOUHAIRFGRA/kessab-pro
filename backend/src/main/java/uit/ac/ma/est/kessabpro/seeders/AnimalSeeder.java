@@ -30,7 +30,7 @@ public class AnimalSeeder {
     @Autowired
     private AnimalMedicalLogRepository animalMedicalLogRepository;
 
-    @PostConstruct
+
     public void seedData() {
         if (animalRepository.count() == 0) {
             // Create AnimalIcon
@@ -65,7 +65,7 @@ public class AnimalSeeder {
                     .price(new BigDecimal("1500.00"))
                     .weight(new BigDecimal("500.0"))
                     .category(cowCategory)
-                    .imagePaths("/images/cow1.png")
+//                    .imagePaths("/images/cow1.png")
                     .pickUpDate(null)
 
                     .build();
@@ -77,7 +77,7 @@ public class AnimalSeeder {
                     .price(new BigDecimal("800.00"))
                     .weight(new BigDecimal("60.0"))
                     .category(sheepCategory)
-                    .imagePaths("/images/sheep1.png")
+//                    .imagePaths("/images/sheep1.png")
                     .pickUpDate(LocalDate.of(2025, 2, 15))
 
                     .build();
@@ -88,7 +88,7 @@ public class AnimalSeeder {
                     .price(new BigDecimal("800.00"))
                     .weight(new BigDecimal("60.0"))
                     .category(sheepCategory)
-                    .imagePaths("/images/sheep1.png")
+//                    .imagePaths("/images/sheep1.png")
                     .pickUpDate(LocalDate.of(2025, 2, 15))
 
                     .build();
@@ -99,7 +99,7 @@ public class AnimalSeeder {
                     .price(new BigDecimal("800.00"))
                     .weight(new BigDecimal("60.0"))
                     .category(sheepCategory)
-                    .imagePaths("/images/sheep1.png")
+//                    .imagePaths("/images/sheep1.png")
                     .pickUpDate(LocalDate.of(2025, 2, 15))
 
                     .build();
