@@ -19,15 +19,24 @@ import java.util.Optional;
 @Component
 public class BuyerSaleTransactionSeeder {
 
-    @Autowired private BuyerRepository buyerRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private AnimalRepository animalRepository;
-    @Autowired private SaleRepository saleRepository;
-    @Autowired private TransactionRepository transactionRepository;
+     private final BuyerRepository buyerRepository;
+     private final UserRepository userRepository;
+     private final AnimalRepository animalRepository;
+     private final SaleRepository saleRepository;
+     private final TransactionRepository transactionRepository;
 
     @PersistenceContext private EntityManager entityManager;
 
-    @PostConstruct
+    @Autowired
+    BuyerSaleTransactionSeeder(BuyerRepository buyerRepository, UserRepository userRepository, AnimalRepository animalRepository, SaleRepository saleRepository, TransactionRepository transactionRepository){
+        this.buyerRepository = buyerRepository;
+        this.userRepository = userRepository;
+        this.animalRepository = animalRepository;
+        this.saleRepository = saleRepository;
+        this.transactionRepository = transactionRepository;
+    }
+
+    @Transactional
     public void init() {
         seedData();
     }
