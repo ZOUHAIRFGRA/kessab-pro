@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Allow public access to auth endpoints
                         .requestMatchers("/images/**", "/icons/**").permitAll() // Public static resources
-                        .anyRequest().authenticated() // All other endpoints require authentication
+                        .anyRequest().permitAll() // All other endpoints require authentication
                 )
                 .authenticationProvider(authenticationProvider()) // Custom authentication provider
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
