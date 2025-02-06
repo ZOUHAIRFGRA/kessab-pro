@@ -1,6 +1,7 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
 import org.springframework.web.multipart.MultipartFile;
+import uit.ac.ma.est.kessabpro.helpers.UploadHelper;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,13 +61,13 @@ public class AnimalService implements IAnimalService {
     @Override
     public List<String> uploadAnimalImages(List<MultipartFile> images) throws IOException {
         List<String> animalImages = new ArrayList<>();
+        UploadHelper.createDirIfNotExist(UploadHelper.AnimalImagesUploadDir);
         for (MultipartFile file : images){
-            File f = new File(".\\" + file.getOriginalFilename());
-            file.transferTo(f);
-            animalImages.add(f.getPath());
+            String fileName = UploadHelper.getHashedFileName(file);
+            File image = new File(UploadHelper.userDir + UploadHelper.AnimalImagesUploadDir + fileName);
+            file.transferTo(image);
+            animalImages.add(UploadHelper.AnimalImagesUploadDir + fileName);
         }
         return animalImages;
     }
-
-
 }
