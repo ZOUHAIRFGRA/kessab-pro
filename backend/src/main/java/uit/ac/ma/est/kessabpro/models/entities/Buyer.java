@@ -14,21 +14,21 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Buyer {
+public class Buyer extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @ManyToOne(cascade = CascadeType.ALL)  // Add cascade to save the user along with Buyer
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
 
     private String fullName;
     private String CIN;
     private String phone;
     private String address;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+
 }

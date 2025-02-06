@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnimalCategory {
+public class AnimalCategory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,6 +27,5 @@ public class AnimalCategory {
     @JoinColumn(name = "icon_id")
     private AnimalIcon icon;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Sale {
+public class Sale extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,7 +38,6 @@ public class Sale {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+
 }
 
