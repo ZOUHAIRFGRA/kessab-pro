@@ -36,7 +36,7 @@ public class AnimalCategoryService implements IAnimalCategoryService {
             category.setId(id);
             return animalCategoryRepository.save(category);
         } else {
-            return null; // or throw exception
+            return null;
         }
     }
 

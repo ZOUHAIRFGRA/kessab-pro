@@ -1,9 +1,9 @@
 package uit.ac.ma.est.kessabpro.services.interfaces;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import uit.ac.ma.est.kessabpro.models.entities.User;
-
 import java.util.UUID;
 
 public interface IUserService {
+    User getAuthenticatedUser();
+    User updateUser(UUID id, User updatedUser); // Changed Long to UUID
 }

@@ -9,13 +9,17 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.1",
+    "@react-native-picker/picker": "^2.11.0",
     "@react-navigation/drawer": "^7.1.1",
+    "@react-navigation/material-top-tabs": "^7.1.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
     "@reduxjs/toolkit": "^2.5.1",
     "axios": "^1.7.9",
     "dripsy": "^4.3.8",
     "expo": "~52.0.25",
+    "expo-image-picker": "^16.0.5",
     "expo-location": "^18.0.5",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",

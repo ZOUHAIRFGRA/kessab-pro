@@ -12,6 +12,7 @@ import Icon from "react-native-vector-icons/Foundation";
 import { getAnimals } from "../features/animalSlice";
 import AnimalsList from "../components/AnimalsList";
 import AddTransaction from "../components/AddTransaction";
+import AddAnimalModal from "../components/AddAnimalModal";
 
 const Container = styled(View)({
   flex: 1,
@@ -50,7 +51,7 @@ const QuickActionItem = styled(TouchableOpacity)(({ isLast }) => ({
   height: 100,
   justifyContent: "space-around",
   alignItems: "center",
-  marginRight: isLast ? 0 : 16, // Remove margin for last item
+  marginRight: isLast ? 0 : 16,
   borderWidth: 1,
   borderColor: "#ddd",
   shadowColor: "#000",
@@ -60,10 +61,7 @@ const QuickActionItem = styled(TouchableOpacity)(({ isLast }) => ({
   elevation: 2,
 }));
 
-const ActionIcon = styled(Icon)({
-  color: "#4A90E2",
-  fontSize: 36,
-});
+const ActionIcon = styled(Icon)({ color: "#4A90E2", fontSize: 36 });
 
 const ActionText = styled(Text)({
   fontSize: 14,
@@ -74,6 +72,9 @@ const ActionText = styled(Text)({
 
 export default function ManagementScreen({ navigation }) {
   const [transactionModalVisible, setTransactionModalVisible] = useState(false);
+  const [addAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [filteredAnimals, setFilteredAnimals] = useState([]);
 
   const dispatch = useDispatch();
   const { animals, loading, error } = useSelector((state) => state.animals);
@@ -82,9 +83,25 @@ export default function ManagementScreen({ navigation }) {
     dispatch(getAnimals());
   }, [dispatch]);
 
-  const handleSearch = (text) => {
-    console.log(`Search text: ${text}`);
-  };
+  useEffect(() => {
+    if (!searchText) {
+      setFilteredAnimals(animals);
+      return;
+    }
+
+    const lowercasedSearch = searchText.toLowerCase();
+
+    const filtered = animals.filter((animal) => {
+      return (
+        animal.tag.toLowerCase().includes(lowercasedSearch) ||
+        String(animal.price).includes(lowercasedSearch) ||
+        String(animal.weight).includes(lowercasedSearch) ||
+        animal.category?.typeName?.toLowerCase().includes(lowercasedSearch)
+      );
+    });
+
+    setFilteredAnimals(filtered);
+  }, [searchText, animals]);
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error}</Text>;
@@ -94,21 +111,10 @@ export default function ManagementScreen({ navigation }) {
       <SectionTitle>Quick Actions</SectionTitle>
       <QuickActionList>
         {[
-          { name: "Add Animal", icon: "plus", route: "AddAnimal" },
-          {
-            name: "Add Transaction",
-            icon: "dollar",
-            action: () => setTransactionModalVisible(true),
-          },
+          { name: "Add Animal", icon: "plus", action: () => setAddAnimalModalVisible(true) },
+          { name: "Add Transaction", icon: "dollar", action: () => setTransactionModalVisible(true) },
         ].map((action, index) => (
-          <QuickActionItem
-            key={index}
-            onPress={
-              action.route
-                ? () => navigation.navigate(action.route)
-                : action.action
-            }
-          >
+          <QuickActionItem key={index} onPress={action.action}>
             <ActionIcon name={action.icon} />
             <ActionText>{action.name}</ActionText>
           </QuickActionItem>
@@ -116,15 +122,21 @@ export default function ManagementScreen({ navigation }) {
       </QuickActionList>
 
       <SearchInput
-        placeholder="Search for animals"
-        onSubmitEditing={(e) => handleSearch(e.nativeEvent.text)}
+        placeholder="Search by tag, price, weight, or category"
+        value={searchText}
+        onChangeText={setSearchText}
         placeholderTextColor="black"
       />
+
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <AnimalsList animals={animals} />
+        <AnimalsList animals={filteredAnimals} />
 
         {transactionModalVisible && (
           <AddTransaction onClose={() => setTransactionModalVisible(false)} />
+        )}
+
+        {addAnimalModalVisible && (
+          <AddAnimalModal visible={addAnimalModalVisible} onClose={() => setAddAnimalModalVisible(false)} />
         )}
       </ScrollView>
     </Container>
