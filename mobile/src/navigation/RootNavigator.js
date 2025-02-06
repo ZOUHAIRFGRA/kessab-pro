@@ -1,17 +1,18 @@
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import RegisterScreen from '../screens/RegisterScreen';
-import LoginScreen from '../screens/LoginScreen';
-import AppNavigator from './AppNavigator';
-import BuyerScreen from '../screens/BuyerScreen';
-import AddTransaction from '../components/AddTransaction';
-import AnimalDetailsScreen from '../screens/AnimalDetailsScreen';
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import RegisterScreen from "../screens/RegisterScreen";
+import LoginScreen from "../screens/LoginScreen";
+import AppNavigator from "./AppNavigator";
+import BuyerScreen from "../screens/BuyerScreen";
+import AddTransaction from "../components/AddTransaction";
+import AnimalDetailsScreen from "../screens/AnimalDetailsScreen";
 
 const Stack = createStackNavigator();
 
 export default function RootNavigator() {
-  const isAuthenticated = true;
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (
     <NavigationContainer>
@@ -21,7 +22,7 @@ export default function RootNavigator() {
             <Stack.Screen
               name="MainApp"
               component={AppNavigator}
-              options={{ headerShown: false }} // Hide header for drawer
+              options={{ headerShown: false }}
             />
             <Stack.Screen name="Buyer" component={BuyerScreen} />
             <Stack.Screen name="AddTransaction" component={AddTransaction} />

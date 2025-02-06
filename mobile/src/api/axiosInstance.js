@@ -1,15 +1,15 @@
 import axios from "axios";
 import { Platform } from "react-native";
 import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Function to determine base URL
 export const getBaseURL = () => {
   if (Platform.OS === "android") {
-    return Constants.executionEnvironment === "expo" ? "http://10.0.2.2:8080" : "http://192.168.1.19:8080";
+    return Constants.executionEnvironment === "expo" ? "http://10.0.2.2:8080" : "http://100.96.48.153:8080";
   } else if (Platform.OS === "ios") {
-    return Constants.executionEnvironment === "expo" ? "http://localhost:8080" : "http://192.168.1.19:8080";
+    return Constants.executionEnvironment === "expo" ? "http://localhost:8080" : "http://100.96.48.153:8080";
   }
-  return "http://localhost:8080"; // Default fallback
+  return "http://localhost:8080";
 };
 
 const axiosInstance = axios.create({
@@ -18,18 +18,13 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = ""; // Add token logic here if needed
+  async (config) => {
+    const token = await AsyncStorage.getItem("authToken");
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
-);
-
-axiosInstance.interceptors.response.use(
-  (response) => response,
   (error) => Promise.reject(error)
 );
 
