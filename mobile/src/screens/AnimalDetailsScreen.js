@@ -48,6 +48,8 @@ const MedicalLogsScreen = () => {
   );
   if (loading) return <Text>Loading medical logs...</Text>;
 
+  console.log('medical logs',medicalLogs)
+
   return (
     <ScrollView>
       {medicalLogs.length > 0 ? (
