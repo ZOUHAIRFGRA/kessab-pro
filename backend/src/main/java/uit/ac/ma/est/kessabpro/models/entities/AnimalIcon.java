@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnimalIcon {
+public class AnimalIcon extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +25,5 @@ public class AnimalIcon {
 
     private String iconPath;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+
 }

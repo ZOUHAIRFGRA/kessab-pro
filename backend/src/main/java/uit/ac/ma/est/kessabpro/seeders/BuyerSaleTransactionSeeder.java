@@ -49,8 +49,11 @@ public class BuyerSaleTransactionSeeder {
             return;
         }
 
-        User firstUser = firstUserOpt.get();
-        firstUser = entityManager.merge(firstUser);
+        User firstUser = entityManager.find(User.class, firstUserOpt.get().getId());
+        if (firstUser == null) {
+            System.out.println("❌ User not found in the persistence context!");
+            return;
+        }
 
         if (buyerRepository.count() == 0) {
             Buyer buyer = Buyer.builder()
@@ -59,40 +62,39 @@ public class BuyerSaleTransactionSeeder {
                     .CIN("AB123456")
                     .phone("0654321987")
                     .address("789 Buyer Street")
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             buyer = buyerRepository.save(buyer);
             System.out.println("✅ Buyer seeded successfully!");
 
-            // Get the first Animal
             Optional<Animal> firstAnimalOpt = animalRepository.findAll().stream().findFirst();
             if (firstAnimalOpt.isEmpty()) {
                 System.out.println("❌ No animals found. Please seed animals first!");
                 return;
             }
-            Animal firstAnimal = firstAnimalOpt.get();
 
-            // Create a Sale linked to Buyer & Animal
+            Animal firstAnimal = entityManager.find(Animal.class, firstAnimalOpt.get().getId());
+            if (firstAnimal == null) {
+                System.out.println("❌ Animal not found in the persistence context!");
+                return;
+            }
+
             Sale sale = Sale.builder()
                     .animal(firstAnimal)
                     .buyer(buyer)
                     .saleDate(LocalDate.now())
                     .agreedAmount(BigDecimal.valueOf(1500.00))
                     .paymentStatus(PaymentStatus.PARTIALLY_PAID)
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             sale = saleRepository.save(sale);
             System.out.println("✅ Sale seeded successfully!");
 
-            // Create a Transaction linked to the Sale
             Transaction transaction = Transaction.builder()
                     .sale(sale)
                     .transactionDate(LocalDate.now())
                     .amount(BigDecimal.valueOf(500.00))
                     .method(PaymentMethod.CASH)
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             transactionRepository.save(transaction);

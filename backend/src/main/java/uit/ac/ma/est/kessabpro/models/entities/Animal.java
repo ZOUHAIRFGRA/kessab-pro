@@ -23,7 +23,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public  class Animal {
+public  class Animal extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -62,9 +62,5 @@ public  class Animal {
     @Nullable
     private LocalDate pickUpDate;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 }

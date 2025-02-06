@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -30,8 +30,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+
 
     // Required by UserDetails
     @Override
