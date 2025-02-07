@@ -44,7 +44,7 @@ public class AnimalService implements IAnimalService {
             animal.setId(id);
             return animalRepository.save(animal);
         } else {
-            return null; // or throw exception
+            return null;
         }
     }
 
@@ -61,17 +61,13 @@ public class AnimalService implements IAnimalService {
     @Override
     public List<String> uploadAnimalImages(String animalTag, List<MultipartFile> images) throws IOException {
         List<String> animalImages = new ArrayList<>();
-
-        // ✅ Ensure the uploads directory exists
         UploadHelper.createDirIfNotExist(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR);
-
         for (MultipartFile file : images) {
             String fileName = UploadHelper.getCustomFileName(animalTag, file);
-            File image = new File(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR, fileName); // ✅ Safe file path creation
+            File image = new File(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR, fileName);
             file.transferTo(image);
-            animalImages.add("/uploads/animals/" + fileName); // ✅ Return relative path for frontend usage
+            animalImages.add("/uploads/animals/" + fileName);
         }
-
         return animalImages;
     }
 

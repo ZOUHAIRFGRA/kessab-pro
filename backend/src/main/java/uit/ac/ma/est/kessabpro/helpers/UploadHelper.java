@@ -13,20 +13,17 @@ public class UploadHelper {
     public static void createDirIfNotExist(String dir) {
         File directory = new File(dir);
         if (!directory.exists()) {
-            directory.mkdirs(); // ✅ Creates all necessary parent directories
+            directory.mkdirs();
         }
     }
-
-    public static String getCustomFileName(String animalName, MultipartFile file) {
+    public static String getCustomFileName(String animalTag, MultipartFile file) {
         String originalName = file.getOriginalFilename();
         String extension = "";
 
         if (originalName != null && originalName.contains(".")) {
             extension = originalName.substring(originalName.lastIndexOf("."));
         }
-
-        // Remove spaces and special characters from the animal name
-        String sanitizedAnimalName = animalName.trim().replaceAll("\\s+", "_").replaceAll("[^a-zA-Z0-9_]", "");
+        String sanitizedAnimalName = animalTag.trim().replaceAll("\\s+", "_").replaceAll("[^a-zA-Z0-9_]", "");
 
         return sanitizedAnimalName + "_" + UUID.randomUUID() + extension;
     }
