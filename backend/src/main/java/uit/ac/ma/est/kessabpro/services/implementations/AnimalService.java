@@ -61,7 +61,7 @@ public class AnimalService implements IAnimalService {
     @Override
     public List<String> uploadAnimalImages(List<MultipartFile> images) throws IOException {
         List<String> animalImages = new ArrayList<>();
-        UploadHelper.createDirIfNotExist(UploadHelper.AnimalImagesUploadDir);
+        UploadHelper.createDirIfNotExist(UploadHelper.userDir + UploadHelper.AnimalImagesUploadDir);
         for (MultipartFile file : images){
             String fileName = UploadHelper.getHashedFileName(file);
             File image = new File(UploadHelper.userDir + UploadHelper.AnimalImagesUploadDir + fileName);
