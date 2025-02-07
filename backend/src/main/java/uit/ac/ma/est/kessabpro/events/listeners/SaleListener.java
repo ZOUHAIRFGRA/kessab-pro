@@ -1,4 +1,4 @@
-package uit.ac.ma.est.kessabpro.models.listeners;
+package uit.ac.ma.est.kessabpro.events.listeners;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
