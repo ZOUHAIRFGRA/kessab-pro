@@ -7,6 +7,7 @@ import uit.ac.ma.est.kessabpro.models.entities.User;
 import uit.ac.ma.est.kessabpro.repositories.UserRepository;
 import uit.ac.ma.est.kessabpro.services.interfaces.IUserService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,6 +18,12 @@ public class UserService implements IUserService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override

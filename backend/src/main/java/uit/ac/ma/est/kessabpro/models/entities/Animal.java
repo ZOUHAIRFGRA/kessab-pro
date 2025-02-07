@@ -8,13 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public  class Animal extends BaseEntity {
+public class Animal extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,28 +36,36 @@ public  class Animal extends BaseEntity {
     private AnimalCategory category;
 
     @Column(columnDefinition = "json default '[]'")
-    private String imagePaths;
+    private String imagePaths;  // JSON representation of the image paths
 
-    public List<String> getImagePaths()   {
+    public List<String> getImagePaths() {
         try {
-            return (List<String>) new ObjectMapper().readValue(imagePaths, List.class);
-        }catch (JsonProcessingException e){
-            return List.of();
+            if (imagePaths == null || imagePaths.isEmpty()) {
+                return new ArrayList<>();  // Return empty list if no data
+            }
+            // Deserialize imagePaths JSON string into a List
+            return new ObjectMapper().readValue(imagePaths, List.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return new ArrayList<>();  // Return empty list on error
         }
     }
 
     public void setImagePaths(List<String> paths) throws JsonProcessingException {
-        this.imagePaths = new ObjectMapper().writeValueAsString(paths);
+        if (paths == null || paths.isEmpty()) {
+            this.imagePaths = "[]";  // Store empty array as JSON string
+        } else {
+            // Serialize the list into a JSON string and assign it to imagePaths
+            this.imagePaths = new ObjectMapper().writeValueAsString(paths);
+        }
     }
 
-     public void addImagePath(String path) throws JsonProcessingException {
-        List<String> paths = getImagePaths();
-        paths.add(path);
-        setImagePaths(paths);
+    public void addImagePath(String path) throws JsonProcessingException {
+        List<String> paths = getImagePaths();  // Get the current list of image paths
+        paths.add(path);  // Add the new image path
+        setImagePaths(paths);  // Update the imagePaths field with the new list
     }
 
     @Nullable
     private LocalDate pickUpDate;
-
-
 }

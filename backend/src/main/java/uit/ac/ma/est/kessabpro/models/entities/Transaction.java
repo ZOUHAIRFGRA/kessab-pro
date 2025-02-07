@@ -34,6 +34,8 @@ public class Transaction extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentMethod method;
 
+    @Version // Optimistic locking version
+    private Integer version; // This will be automatically handled by Hibernate
 
 }
 

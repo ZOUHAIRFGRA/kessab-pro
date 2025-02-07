@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.seeders;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,7 @@ public class AnimalSeeder {
 
             animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory));
 
-            // Create Animals
+            // Create Animals with multiple image paths
             Animal animal1 = Animal.builder()
                     .tag("COW-001")
                     .sex("Female")
@@ -65,10 +66,15 @@ public class AnimalSeeder {
                     .price(new BigDecimal("1500.00"))
                     .weight(new BigDecimal("500.0"))
                     .category(cowCategory)
-//                    .imagePaths("/images/cow1.png")
                     .pickUpDate(null)
-
                     .build();
+
+            try {
+                animal1.addImagePath("/images/cow1.png");
+                animal1.addImagePath("/images/cow2.png");
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
 
             Animal animal2 = Animal.builder()
                     .tag("SHEEP-001")
@@ -77,34 +83,17 @@ public class AnimalSeeder {
                     .price(new BigDecimal("800.00"))
                     .weight(new BigDecimal("60.0"))
                     .category(sheepCategory)
-//                    .imagePaths("/images/sheep1.png")
                     .pickUpDate(LocalDate.of(2025, 2, 15))
-
-                    .build();
-            Animal animal3 = Animal.builder()
-                    .tag("SHEEP-001")
-                    .sex("Male")
-                    .birthDate(LocalDate.of(2021, 5, 20))
-                    .price(new BigDecimal("800.00"))
-                    .weight(new BigDecimal("60.0"))
-                    .category(sheepCategory)
-//                    .imagePaths("/images/sheep1.png")
-                    .pickUpDate(LocalDate.of(2025, 2, 15))
-
-                    .build();
-            Animal animal4 = Animal.builder()
-                    .tag("SHEEP-001")
-                    .sex("Male")
-                    .birthDate(LocalDate.of(2021, 5, 20))
-                    .price(new BigDecimal("800.00"))
-                    .weight(new BigDecimal("60.0"))
-                    .category(sheepCategory)
-//                    .imagePaths("/images/sheep1.png")
-                    .pickUpDate(LocalDate.of(2025, 2, 15))
-
                     .build();
 
-            animalRepository.saveAll(Arrays.asList(animal1, animal2,animal3,animal4));
+            try {
+                animal2.addImagePath("/images/sheep1.png");
+                animal2.addImagePath("/images/sheep1.png");
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+            animalRepository.saveAll(Arrays.asList(animal1, animal2));
 
             // Create AnimalActivitiesLog
             AnimalActivitiesLog log1 = AnimalActivitiesLog.builder()
@@ -143,4 +132,5 @@ public class AnimalSeeder {
             System.out.println("Database already seeded. No new data added.");
         }
     }
+
 }

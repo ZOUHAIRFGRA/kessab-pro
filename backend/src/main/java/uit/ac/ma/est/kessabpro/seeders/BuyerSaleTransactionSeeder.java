@@ -56,6 +56,7 @@ public class BuyerSaleTransactionSeeder {
         }
 
         if (buyerRepository.count() == 0) {
+            // Seed Buyer
             Buyer buyer = Buyer.builder()
                     .user(firstUser)
                     .fullName("John Doe")
@@ -79,22 +80,24 @@ public class BuyerSaleTransactionSeeder {
                 return;
             }
 
+            // Seed Sale
             Sale sale = Sale.builder()
                     .animal(firstAnimal)
                     .buyer(buyer)
                     .saleDate(LocalDate.now())
                     .agreedAmount(BigDecimal.valueOf(1500.00))
-                    .paymentStatus(PaymentStatus.PARTIALLY_PAID)
+                    .paymentStatus(PaymentStatus.PARTIALLY_PAID) // Update based on new logic
                     .build();
 
             sale = saleRepository.save(sale);
             System.out.println("✅ Sale seeded successfully!");
 
+            // Seed Transaction
             Transaction transaction = Transaction.builder()
                     .sale(sale)
                     .transactionDate(LocalDate.now())
                     .amount(BigDecimal.valueOf(500.00))
-                    .method(PaymentMethod.CASH)
+                    .method(PaymentMethod.CASH) // Ensure the PaymentMethod is consistent
                     .build();
 
             transactionRepository.save(transaction);
@@ -103,4 +106,5 @@ public class BuyerSaleTransactionSeeder {
             System.out.println("🔹 Buyers already seeded.");
         }
     }
+
 }

@@ -18,6 +18,16 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            return ResponseEntity.ok(userService.getAllUsers());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred while fetching users.");
+        }
+    }
+
+
     @GetMapping("/me")
     public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal User user) {
         if (user == null) {

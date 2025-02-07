@@ -1,15 +1,20 @@
 package uit.ac.ma.est.kessabpro.services.interfaces;
 
-import uit.ac.ma.est.kessabpro.models.entities.Transaction;
+import uit.ac.ma.est.kessabpro.models.dto.TransactionDTO;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
-import java.util.List;
-
 public interface ITransactionService {
-    List<Transaction> getAllTransactions();
-    Transaction getTransactionById(UUID id);
-    Transaction createTransaction(Transaction transaction);
-    Transaction updateTransaction(UUID id, Transaction transaction);
+    List<TransactionDTO> getAllTransactions();
+    TransactionDTO getTransactionById(UUID id);
+    TransactionDTO createTransaction(TransactionDTO transactionDTO); // Updated to expect DTO
+    TransactionDTO updateTransaction(UUID id, TransactionDTO updatedTransactionDTO); // Updated to expect DTO
     void deleteTransaction(UUID id);
+
+    List<BigDecimal> testFindAmountsBySaleId(UUID saleId);
+
+    // ✅ Method to publish event when a transaction is created
+    void publishTransactionCreatedEvent(TransactionDTO transactionDTO);
 }
