@@ -14,5 +14,5 @@ public interface IAnimalService {
     List<Animal> getAllAnimals();
     Animal updateAnimal(UUID id, Animal animal);
     boolean deleteAnimal(UUID id);
-    List<String> uploadAnimalImages(List<MultipartFile> images) throws IOException;
+    List<String> uploadAnimalImages(String animalTag, List<MultipartFile> images) throws IOException;
 }

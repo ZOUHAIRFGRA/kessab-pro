@@ -30,17 +30,28 @@ public class AnimalController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Animal> createAnimal(@ModelAttribute AnimalDTO animalDTO) throws IOException {
-            Animal animal = AnimalMapper.toEntity(animalDTO);
-            if (animalDTO.isImagesExists()){
-                animal.setImagePaths(animalService.uploadAnimalImages(animalDTO.getImages()));
-            }
-            //firstImg
+        Animal animal = AnimalMapper.toEntity(animalDTO);
+
+        if (animalDTO.isImagesExists()) {
+            // Ensure the uploads directory exists
+            UploadHelper.createDirIfNotExist(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR);
+
+            // ✅ Pass animal name to the upload method
+            animal.setImagePaths(animalService.uploadAnimalImages(animal.getTag(), animalDTO.getImages()));
+        }
+
+
+        if (!animal.getImagePaths().isEmpty()) {
+            // ✅ Use the correct constant and join paths properly
             String url = animal.getImagePaths().get(0);
-            Path filePath = Paths.get(UploadHelper.userDir + url);
+            Path filePath = Paths.get(UploadHelper.USER_DIR, url);
             Resource resource = new UrlResource(filePath.toUri());
             System.out.println(resource);
-            return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
+        }
+
+        return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Animal> getAnimalById(@PathVariable UUID id) {

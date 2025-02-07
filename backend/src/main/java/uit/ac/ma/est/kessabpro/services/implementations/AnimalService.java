@@ -59,15 +59,21 @@ public class AnimalService implements IAnimalService {
     }
 
     @Override
-    public List<String> uploadAnimalImages(List<MultipartFile> images) throws IOException {
+    public List<String> uploadAnimalImages(String animalTag, List<MultipartFile> images) throws IOException {
         List<String> animalImages = new ArrayList<>();
-        UploadHelper.createDirIfNotExist(UploadHelper.AnimalImagesUploadDir);
-        for (MultipartFile file : images){
-            String fileName = UploadHelper.getHashedFileName(file);
-            File image = new File(UploadHelper.userDir + UploadHelper.AnimalImagesUploadDir + fileName);
+
+        // ✅ Ensure the uploads directory exists
+        UploadHelper.createDirIfNotExist(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR);
+
+        for (MultipartFile file : images) {
+            String fileName = UploadHelper.getCustomFileName(animalTag, file);
+            File image = new File(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR, fileName); // ✅ Safe file path creation
             file.transferTo(image);
-            animalImages.add(UploadHelper.AnimalImagesUploadDir + fileName);
+            animalImages.add("/uploads/animals/" + fileName); // ✅ Return relative path for frontend usage
         }
+
         return animalImages;
     }
+
+
 }
