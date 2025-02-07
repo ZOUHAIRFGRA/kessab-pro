@@ -36,12 +36,8 @@ public class Animal extends BaseEntity {
     private AnimalCategory category;
 
     @Column(columnDefinition = "json default '[]'")
-<<<<<<< HEAD
-    private String imagePaths;  // JSON representation of the image paths
-=======
     @Nullable
     private String imagePaths;
->>>>>>> 6587af8a1b079ad04a0fc6cdff0ae6d2d65ff6ce
 
     public List<String> getImagePaths() {
         try {
