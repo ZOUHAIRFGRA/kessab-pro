@@ -1,14 +1,22 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import uit.ac.ma.est.kessabpro.helpers.UploadHelper;
+import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.services.implementations.AnimalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,10 +29,17 @@ public class AnimalController {
     private AnimalService animalService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AnimalDTO> createAnimal(@RequestBody AnimalDTO animal) {
-
-//        return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
-        return new ResponseEntity<>(animal, HttpStatus.CREATED);
+    public ResponseEntity<Animal> createAnimal(@ModelAttribute AnimalDTO animalDTO) throws IOException {
+            Animal animal = AnimalMapper.toEntity(animalDTO);
+            if (animalDTO.isImagesExists()){
+                animal.setImagePaths(animalService.uploadAnimalImages(animalDTO.getImages()));
+            }
+            //firstImg
+            String url = animal.getImagePaths().get(0);
+            Path filePath = Paths.get(UploadHelper.userDir + url);
+            Resource resource = new UrlResource(filePath.toUri());
+            System.out.println(resource);
+            return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
