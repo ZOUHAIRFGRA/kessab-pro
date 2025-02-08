@@ -44,7 +44,6 @@ public class SaleListener {
         } else {
             sale.setPaymentStatus(PaymentStatus.FULLY_PAID);
         }
-        // Print to confirm the new payment status decision
         System.out.println("Calculated payment status for sale " + sale.getId() + ": " + sale.getPaymentStatus());
     }
 }

@@ -33,7 +33,12 @@ public class Animal extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @Nullable
     private AnimalCategory category;
+
+    @OneToOne
+    @JoinColumn(name = "sale_id")
+    private Sale sale;
 
     @Column(columnDefinition = "json default '[]'")
     @Nullable
