@@ -15,6 +15,5 @@ public interface ITransactionService {
 
     List<BigDecimal> testFindAmountsBySaleId(UUID saleId);
 
-    // ✅ Method to publish event when a transaction is created
     void publishTransactionCreatedEvent(TransactionDTO transactionDTO);
 }

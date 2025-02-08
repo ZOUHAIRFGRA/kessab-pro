@@ -1,4 +1,5 @@
 package uit.ac.ma.est.kessabpro.events.listeners;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
 import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
 import java.math.BigDecimal;
 import java.util.List;
+
 @Component
 public class SaleListener {
 
