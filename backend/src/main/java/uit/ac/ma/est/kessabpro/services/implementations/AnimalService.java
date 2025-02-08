@@ -1,15 +1,18 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uit.ac.ma.est.kessabpro.helpers.UploadHelper;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalService;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +21,34 @@ import java.util.UUID;
 @Service
 public class AnimalService implements IAnimalService {
 
-    @Autowired
-    private AnimalRepository animalRepository;
+    private final AnimalRepository animalRepository;
+
+    public AnimalService(AnimalRepository animalRepository) {
+        this.animalRepository = animalRepository;
+    }
 
     @Override
-    public Animal createAnimal(Animal animal) {
-        return animalRepository.save(animal);
+    public Page<Animal> getAllAnimals(int page, int size, String search, String filterType) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        if (search != null && search.length() > 3) {
+            switch (filterType) {
+                case "tag":
+                    return animalRepository.findByTagContainingIgnoreCase(search, pageable);
+                case "category":
+                    return animalRepository.findByCategory_TypeNameContainingIgnoreCase(search, pageable);
+                case "weight":
+                    try {
+                        return animalRepository.findByWeight(new BigDecimal(search), pageable);
+                    } catch (NumberFormatException e) {
+                        return Page.empty();
+                    }
+                case "sex":
+                    return animalRepository.findBySexIgnoreCase(search, pageable);
+            }
+        }
+
+        return animalRepository.findAll(pageable);
     }
 
     @Override
@@ -32,20 +57,17 @@ public class AnimalService implements IAnimalService {
     }
 
     @Override
-    public List<Animal> getAllAnimals() {
-        return animalRepository.findAll();
+    public Animal createAnimal(Animal animal) {
+        return animalRepository.save(animal);
     }
-
-
 
     @Override
     public Animal updateAnimal(UUID id, Animal animal) {
         if (animalRepository.existsById(id)) {
             animal.setId(id);
             return animalRepository.save(animal);
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override
@@ -53,9 +75,8 @@ public class AnimalService implements IAnimalService {
         if (animalRepository.existsById(id)) {
             animalRepository.deleteById(id);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -70,6 +91,4 @@ public class AnimalService implements IAnimalService {
         }
         return animalImages;
     }
-
-
 }

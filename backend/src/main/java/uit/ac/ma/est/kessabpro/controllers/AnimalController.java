@@ -1,9 +1,7 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import uit.ac.ma.est.kessabpro.helpers.UploadHelper;
 import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
@@ -15,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,7 +35,6 @@ public class AnimalController {
         return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<Animal> getAnimalById(@PathVariable UUID id) {
         Optional<Animal> animal = animalService.getAnimalById(id);
@@ -47,8 +42,14 @@ public class AnimalController {
     }
 
     @GetMapping
-    public List<Animal> getAllAnimals() {
-        return animalService.getAllAnimals();
+    public ResponseEntity<Page<Animal>> getAllAnimals(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "tag") String filterType) {
+
+        Page<Animal> animals = animalService.getAllAnimals(page, size, search, filterType);
+        return ResponseEntity.ok(animals);
     }
 
     @PutMapping("/{id}")
