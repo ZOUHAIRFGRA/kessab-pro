@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 @Service
 public class TransactionService implements ITransactionService {
 
@@ -53,59 +54,29 @@ public class TransactionService implements ITransactionService {
         Sale sale = saleRepository.findById(transactionDTO.getSaleId())
                 .orElseThrow(() -> new RuntimeException("Sale not found"));
 
-        // Create new transaction without manually setting the ID
         Transaction transaction = new Transaction();
         transaction.setSale(sale);
         transaction.setAmount(transactionDTO.getAmount());
         transaction.setMethod(PaymentMethod.valueOf(transactionDTO.getMethod()));
         transaction.setTransactionDate(LocalDate.parse(transactionDTO.getTransactionDate()));
 
-        // Save transaction - Hibernate will automatically generate the ID and handle versioning
         Transaction savedTransaction = transactionRepository.save(transaction);
-
-        // Update sale payment status after transaction is created
-        updateSalePaymentStatus(sale);
-
-        // Publish event
         publishTransactionCreatedEvent(mapToDTO(savedTransaction));
-
         return mapToDTO(savedTransaction);
     }
 
     @Override
     @Transactional
     public TransactionDTO updateTransaction(UUID id, TransactionDTO updatedTransactionDTO) {
-        // Fetch the existing transaction from the database (this ensures it is attached)
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
-        // Update fields
         transaction.setAmount(updatedTransactionDTO.getAmount());
         transaction.setMethod(PaymentMethod.valueOf(updatedTransactionDTO.getMethod()));
         transaction.setTransactionDate(LocalDate.parse(updatedTransactionDTO.getTransactionDate()));
 
-        // Save the updated transaction (this will also take care of versioning)
         Transaction updatedTransaction = transactionRepository.save(transaction);
-
-        // Update sale payment status after transaction is updated
-        updateSalePaymentStatus(transaction.getSale());
-
         return mapToDTO(updatedTransaction);
-    }
-
-    private void updateSalePaymentStatus(Sale sale) {
-        List<BigDecimal> transactionAmounts = transactionRepository.findAmountsBySaleId(sale.getId());
-        BigDecimal totalPaid = transactionAmounts.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (totalPaid.compareTo(BigDecimal.ZERO) == 0) {
-            sale.setPaymentStatus(PaymentStatus.NOT_PAID);
-        } else if (totalPaid.compareTo(sale.getAgreedAmount()) < 0) {
-            sale.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
-        } else {
-            sale.setPaymentStatus(PaymentStatus.FULLY_PAID);
-        }
-
-        saleRepository.save(sale);
     }
 
     @Override
