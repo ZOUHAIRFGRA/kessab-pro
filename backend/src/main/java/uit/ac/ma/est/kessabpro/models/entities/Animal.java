@@ -40,9 +40,9 @@ public class Animal extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sale_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({"animals"}) // Add this to avoid circular reference in JSON
+    @JsonIgnoreProperties({"animals"})  // Prevent circular references
+    @JsonBackReference  // Prevent full serialization of the Sale object
     private Sale sale;
-
 
     @Column(columnDefinition = "json default '[]'")
     @Nullable
@@ -53,7 +53,6 @@ public class Animal extends BaseEntity {
             if (imagePaths == null || imagePaths.isEmpty()) {
                 return new ArrayList<>();  // Return empty list if no data
             }
-            // Deserialize imagePaths JSON string into a List
             return new ObjectMapper().readValue(imagePaths, List.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -65,7 +64,6 @@ public class Animal extends BaseEntity {
         if (paths == null || paths.isEmpty()) {
             this.imagePaths = "[]";  // Store empty array as JSON string
         } else {
-            // Serialize the list into a JSON string and assign it to imagePaths
             this.imagePaths = new ObjectMapper().writeValueAsString(paths);
         }
     }
@@ -75,7 +73,6 @@ public class Animal extends BaseEntity {
         paths.add(path);  // Add the new image path
         setImagePaths(paths);  // Update the imagePaths field with the new list
     }
-
 
     public UUID getSaleId() {
         if (sale != null) {

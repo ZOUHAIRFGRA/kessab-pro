@@ -18,10 +18,12 @@ public class SaleController {
     private SaleService saleService;
 
     @PostMapping
-    public ResponseEntity<SaleDTO> createSale(@RequestBody Sale sale, @RequestParam List<UUID> animalIds) {
-        SaleDTO newSale = saleService.createSale(sale, animalIds);
+    public ResponseEntity<SaleDTO> createSale(@RequestBody SaleDTO saleDTO) {
+        SaleDTO newSale = saleService.createSale(saleDTO);  // Use SaleDTO to create sale
         return ResponseEntity.ok(newSale);
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<SaleDTO> getSaleById(@PathVariable UUID id) {

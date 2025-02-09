@@ -1,6 +1,7 @@
 package uit.ac.ma.est.kessabpro.mappers;
 
 import uit.ac.ma.est.kessabpro.models.dto.SaleDTO;
+import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,7 @@ public class SaleMapper {
     public SaleDTO toSaleDTO(Sale sale) {
         return new SaleDTO(
                 sale.getId(),
-                sale.getAnimals().stream().map(animal -> animal.getId()).collect(Collectors.toList()),  // Convert Animal list to List<UUID>
+                sale.getAnimals().stream().map(Animal::getId).collect(Collectors.toList()),  // Convert Animal list to List<UUID>
                 sale.getBuyer().getId(),
                 sale.getSaleDate(),
                 sale.getAgreedAmount(),

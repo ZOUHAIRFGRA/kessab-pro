@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,37 +26,55 @@ public class AnimalController {
     private AnimalService animalService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Animal> createAnimal(@ModelAttribute AnimalDTO animalDTO) throws IOException {
+    public ResponseEntity<AnimalDTO> createAnimal(@ModelAttribute AnimalDTO animalDTO) throws IOException {
         Animal animal = AnimalMapper.toEntity(animalDTO);
 
         if (animalDTO.isImagesExists()) {
             UploadHelper.createDirIfNotExist(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR);
-            animal.setImagePaths(animalService.uploadAnimalImages(animal.getTag(), animalDTO.getImages()));
+
+            // Convert MultipartFile list to List<String> (file paths)
+            List<String> uploadedImagePaths = animalService.uploadAnimalImages(animal.getTag(), animalDTO.getImages());
+
+            // Set image paths (as strings) to the animal entity
+            animal.setImagePaths(uploadedImagePaths);
         }
-        return new ResponseEntity<>(animalService.createAnimal(animal), HttpStatus.CREATED);
+
+        Animal createdAnimal = animalService.createAnimal(animal);
+
+        // Convert the created animal entity to AnimalDTO and return it
+        AnimalDTO createdAnimalDTO = AnimalMapper.toDTO(createdAnimal);
+        return new ResponseEntity<>(createdAnimalDTO, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Animal> getAnimalById(@PathVariable UUID id) {
+    public ResponseEntity<AnimalDTO> getAnimalById(@PathVariable UUID id) {
         Optional<Animal> animal = animalService.getAnimalById(id);
-        return animal.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return animal.map(a -> ResponseEntity.ok(AnimalMapper.toDTO(a)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<Page<Animal>> getAllAnimals(
+    public ResponseEntity<Page<AnimalDTO>> getAllAnimals(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "tag") String filterType) {
 
+        // Get the list of animals from the service
         Page<Animal> animals = animalService.getAllAnimals(page, size, search, filterType);
-        return ResponseEntity.ok(animals);
+
+        // Convert the page of animals to a page of AnimalDTOs
+        Page<AnimalDTO> animalDTOPage = animals.map(AnimalMapper::toDTO);
+
+        return ResponseEntity.ok(animalDTOPage);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Animal> updateAnimal(@PathVariable UUID id, @RequestBody Animal animal) {
+    public ResponseEntity<AnimalDTO> updateAnimal(@PathVariable UUID id, @RequestBody AnimalDTO animalDTO) throws JsonProcessingException {
+        Animal animal = AnimalMapper.toEntity(animalDTO);
+
         Animal updatedAnimal = animalService.updateAnimal(id, animal);
-        return updatedAnimal != null ? ResponseEntity.ok(updatedAnimal) : ResponseEntity.notFound().build();
+        return updatedAnimal != null ? ResponseEntity.ok(AnimalMapper.toDTO(updatedAnimal)) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

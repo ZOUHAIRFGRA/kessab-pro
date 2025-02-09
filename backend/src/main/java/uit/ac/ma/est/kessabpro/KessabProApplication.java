@@ -6,10 +6,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import uit.ac.ma.est.kessabpro.seeders.*;
+
+import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class KessabProApplication implements CommandLineRunner {
 
     @Autowired private AnimalSeeder animalSeeder;
