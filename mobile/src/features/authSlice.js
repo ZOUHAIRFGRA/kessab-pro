@@ -8,9 +8,9 @@ export const loginUser = createAsyncThunk(
     async (userData, { rejectWithValue }) => {
       try {
         const response = await login(userData);
-        console.log("Response from authSlice:", response);
+        // console.log("Response from authSlice:", response);
   
-        console.log("Token:", response.token);
+        // console.log("Token:", response.token);
         const token = response.token; 
         if (!token) throw new Error("No token received"); 
   

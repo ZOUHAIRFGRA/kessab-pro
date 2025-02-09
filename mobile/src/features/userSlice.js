@@ -4,7 +4,7 @@ import { getUserProfile, updateUserProfile } from '../api/userApi';
 
 export const fetchUserProfile = createAsyncThunk('user/fetchProfile', async () => {
   const response = await getUserProfile();
-  console.log("Response from userSlice:", response);
+  // console.log("Response from userSlice:", response);
   return response; 
 });
 

@@ -7,15 +7,19 @@ import theme from "./src/styles/theme";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { store } from "./src/store/store";
 import { setToken } from "./src/features/authSlice"; // Import setToken action
+import { SERVER_IP } from "@env"; 
 
 const AppWrapper = () => {
   const dispatch = useDispatch();
+  useEffect(() => {
+    console.log("Server IP:", SERVER_IP);
+  }   , [SERVER_IP]);  
 
   useEffect(() => {
     const loadToken = async () => {
       const token = await AsyncStorage.getItem("authToken")
-      console.log("Token from AsyncStorage:", token);
-      console.log(token);
+      // console.log("Token from AsyncStorage:", token);
+      // console.log(token);
       if (token) {
         dispatch(setToken(token)); 
       }

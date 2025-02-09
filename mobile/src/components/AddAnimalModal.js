@@ -102,7 +102,7 @@ const AddAnimalModal = ({ visible, onClose }) => {
         icon: { id: selectedIcon.id },  
       };
   
-      console.log("add category params ", categoryData);
+      // console.log("add category params ", categoryData);
   
       // Dispatch the action to add the new category
       dispatch(addCategory(categoryData));
@@ -162,11 +162,11 @@ const AddAnimalModal = ({ visible, onClose }) => {
     onClose();
   };
 
-  useEffect(() => {
-    if (selectedIcon) {
-      console.log(selectedIcon);
-    }
-  }, [selectedIcon]);
+  // useEffect(() => {
+  //   if (selectedIcon) {
+  //     console.log(selectedIcon);
+  //   }
+  // }, [selectedIcon]);
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
