@@ -32,6 +32,6 @@ public class KessabProApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         animalSeeder.seedData();
         userSeeder.seedData();
-//        buyerSaleTransactionSeeder.seedData();
+        buyerSaleTransactionSeeder.seedData();
     }
 }

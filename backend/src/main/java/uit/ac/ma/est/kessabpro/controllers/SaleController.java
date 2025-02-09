@@ -3,7 +3,7 @@ package uit.ac.ma.est.kessabpro.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uit.ac.ma.est.kessabpro.models.dto.SaleDTO; // import the DTO
+import uit.ac.ma.est.kessabpro.models.dto.SaleDTO;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
 
@@ -18,8 +18,8 @@ public class SaleController {
     private SaleService saleService;
 
     @PostMapping
-    public ResponseEntity<SaleDTO> createSale(@RequestBody Sale sale) {
-        SaleDTO newSale = saleService.createSale(sale);
+    public ResponseEntity<SaleDTO> createSale(@RequestBody Sale sale, @RequestParam List<UUID> animalIds) {
+        SaleDTO newSale = saleService.createSale(sale, animalIds);
         return ResponseEntity.ok(newSale);
     }
 
@@ -36,8 +36,8 @@ public class SaleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SaleDTO> updateSale(@PathVariable UUID id, @RequestBody Sale sale) {
-        SaleDTO updatedSale = saleService.updateSale(id, sale);
+    public ResponseEntity<SaleDTO> updateSale(@PathVariable UUID id, @RequestBody Sale sale, @RequestParam List<UUID> newAnimalIds) {
+        SaleDTO updatedSale = saleService.updateSale(id, sale, newAnimalIds);
         return ResponseEntity.ok(updatedSale);
     }
 

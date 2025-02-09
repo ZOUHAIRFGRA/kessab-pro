@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -14,8 +15,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SaleDTO {
     private UUID id;
-    private UUID animalId; // Reference to the Animal
-    private UUID buyerId;  // Reference to the Buyer
+    private List<UUID> animalIds;
+    private UUID buyerId;
     private LocalDate saleDate;
     private BigDecimal agreedAmount;
     private PaymentStatus paymentStatus;

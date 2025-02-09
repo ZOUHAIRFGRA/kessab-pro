@@ -1,5 +1,7 @@
 package uit.ac.ma.est.kessabpro.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
@@ -36,9 +38,11 @@ public class Animal extends BaseEntity {
     @Nullable
     private AnimalCategory category;
 
-    @OneToOne
-    @JoinColumn(name = "sale_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sale_id", referencedColumnName = "id")
+    @JsonIgnoreProperties({"animals"}) // Add this to avoid circular reference in JSON
     private Sale sale;
+
 
     @Column(columnDefinition = "json default '[]'")
     @Nullable
@@ -70,6 +74,14 @@ public class Animal extends BaseEntity {
         List<String> paths = getImagePaths();  // Get the current list of image paths
         paths.add(path);  // Add the new image path
         setImagePaths(paths);  // Update the imagePaths field with the new list
+    }
+
+
+    public UUID getSaleId() {
+        if (sale != null) {
+            return sale.getId();  // Only return sale ID if it's not null
+        }
+        return null;
     }
 
     @Nullable

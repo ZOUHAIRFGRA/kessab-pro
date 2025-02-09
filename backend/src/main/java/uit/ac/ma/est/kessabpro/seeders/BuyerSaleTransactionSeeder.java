@@ -13,22 +13,28 @@ import uit.ac.ma.est.kessabpro.repositories.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Component
 public class BuyerSaleTransactionSeeder {
 
-     private final BuyerRepository buyerRepository;
-     private final UserRepository userRepository;
-     private final AnimalRepository animalRepository;
-     private final SaleRepository saleRepository;
-     private final TransactionRepository transactionRepository;
+    private final BuyerRepository buyerRepository;
+    private final UserRepository userRepository;
+    private final AnimalRepository animalRepository;
+    private final SaleRepository saleRepository;
+    private final TransactionRepository transactionRepository;
 
     @PersistenceContext private EntityManager entityManager;
 
     @Autowired
-    BuyerSaleTransactionSeeder(BuyerRepository buyerRepository, UserRepository userRepository, AnimalRepository animalRepository, SaleRepository saleRepository, TransactionRepository transactionRepository){
+    BuyerSaleTransactionSeeder(
+            BuyerRepository buyerRepository,
+            UserRepository userRepository,
+            AnimalRepository animalRepository,
+            SaleRepository saleRepository,
+            TransactionRepository transactionRepository) {
+
         this.buyerRepository = buyerRepository;
         this.userRepository = userRepository;
         this.animalRepository = animalRepository;
@@ -68,21 +74,14 @@ public class BuyerSaleTransactionSeeder {
             buyer = buyerRepository.save(buyer);
             System.out.println("✅ Buyer seeded successfully!");
 
-            Optional<Animal> firstAnimalOpt = animalRepository.findAll().stream().findFirst();
-            if (firstAnimalOpt.isEmpty()) {
+            List<Animal> animalsForSale = animalRepository.findAll().stream().limit(3).toList();
+            if (animalsForSale.isEmpty()) {
                 System.out.println("❌ No animals found. Please seed animals first!");
-                return;
-            }
-
-            Animal firstAnimal = entityManager.find(Animal.class, firstAnimalOpt.get().getId());
-            if (firstAnimal == null) {
-                System.out.println("❌ Animal not found in the persistence context!");
                 return;
             }
 
             // Seed Sale
             Sale sale = Sale.builder()
-                    .animal(firstAnimal)
                     .buyer(buyer)
                     .saleDate(LocalDate.now())
                     .agreedAmount(BigDecimal.valueOf(1500.00))
@@ -90,7 +89,14 @@ public class BuyerSaleTransactionSeeder {
                     .build();
 
             sale = saleRepository.save(sale);
-            System.out.println("✅ Sale seeded successfully!");
+
+            // Assign animals to the sale
+            for (Animal animal : animalsForSale) {
+                animal.setSale(sale);
+                animalRepository.save(animal);
+            }
+
+            System.out.println("✅ Sale seeded successfully with " + animalsForSale.size() + " animals.");
 
             // Seed Transaction
             Transaction transaction = Transaction.builder()
@@ -106,5 +112,4 @@ public class BuyerSaleTransactionSeeder {
             System.out.println("🔹 Buyers already seeded.");
         }
     }
-
 }
