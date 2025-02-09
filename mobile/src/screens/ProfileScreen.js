@@ -5,36 +5,6 @@ import { fetchUserProfile, updateProfile } from '../features/userSlice';
 import { styled } from 'dripsy';
 import { logout } from '../features/authSlice';
 
-const Container = styled(View)({
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: 20,
-});
-
-const Title = styled(Text)({
-  fontSize: 24,
-  fontWeight: 'bold',
-  marginBottom: 20,
-});
-
-const InputContainer = styled(View)({
-  marginBottom: 15,
-  width: '100%',
-});
-
-const Label = styled(Text)({
-  fontSize: 16,
-  marginBottom: 5,
-});
-
-const Input = styled(TextInput)({
-  height: 40,
-  borderColor: '#ccc',
-  borderWidth: 1,
-  paddingLeft: 10,
-  borderRadius: 5,
-});
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -118,5 +88,35 @@ const ProfileScreen = () => {
     </Container>
   );
 };
+const Container = styled(View)({
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: 20,
+});
+
+const Title = styled(Text)({
+  fontSize: 24,
+  fontWeight: 'bold',
+  marginBottom: 20,
+});
+
+const InputContainer = styled(View)({
+  marginBottom: 15,
+  width: '100%',
+});
+
+const Label = styled(Text)({
+  fontSize: 16,
+  marginBottom: 5,
+});
+
+const Input = styled(TextInput)({
+  height: 40,
+  borderColor: '#ccc',
+  borderWidth: 1,
+  paddingLeft: 10,
+  borderRadius: 5,
+});
 
 export default ProfileScreen;

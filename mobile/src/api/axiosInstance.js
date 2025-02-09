@@ -3,13 +3,23 @@ import { Platform } from "react-native";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { SERVER_IP } from "@env"; 
+
 export const getBaseURL = () => {
+  const serverIp = SERVER_IP || "localhost"; 
+
+  
   if (Platform.OS === "android") {
-    return Constants.executionEnvironment === "expo" ? "http://10.0.2.2:8080" : "http://100.96.48.153:8080";
+    return Constants.executionEnvironment === "expo"
+      ? "http://10.0.2.2:8080"
+      : `http://${serverIp}:8080`;
   } else if (Platform.OS === "ios") {
-    return Constants.executionEnvironment === "expo" ? "http://localhost:8080" : "http://100.96.48.153:8080";
+    return Constants.executionEnvironment === "expo"
+      ? `http://${serverIp}:8080`
+      : `http://${serverIp}:8080`;
   }
-  return "http://localhost:8080";
+
+  return `http://${serverIp}:8080`;
 };
 
 const axiosInstance = axios.create({

@@ -1,5 +1,5 @@
 import { styled } from "dripsy";
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,87 @@ import {
 } from "react-native";
 import WeatherWidget from "../components/WeatherWidget";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDebounce } from "use-debounce"; // Debounce hook
+import { useDispatch } from "react-redux";
+import { resetAnimals } from "../features/animalSlice";
+
+export default function HomeScreen({ navigation }) {
+  const dispatch = useDispatch(); // Access dispatch function
+  const [searchText, setSearchText] = useState(""); // Store search text
+  const [debouncedSearchText] = useDebounce(searchText, 500); // Debounced search text
+
+  const handleSearch = () => {
+    if (debouncedSearchText) {
+      // Reset the animals' state before navigating
+      dispatch(resetAnimals());
+
+      // Reset search text to clear the input field
+      setSearchText("");
+
+      // Navigate to the AnimalsList and pass the searchText as a parameter
+      navigation.navigate("AnimalsList", { searchText: debouncedSearchText });
+    }
+  };
+
+  const handleSearchChange = (text) => {
+    setSearchText(text); // Update state with typed text
+  };
+
+  return (
+    <Container>
+      <WeatherWidget />
+      <SearchInput
+        placeholder="Search for sheep by ID"
+        value={searchText}
+        onChangeText={handleSearchChange} // Update text on change
+        onSubmitEditing={handleSearch} // Trigger search when user submits
+        placeholderTextColor="black"
+      />
+      <Grid>
+        {[{ name: "Management", icon: "briefcase" }, { name: "Sales", icon: "cart-outline" }, { name: "Food", icon: "corn" }, { name: "Marketplace", icon: "store" }].map((item) => (
+          <GridItem
+            key={item.name}
+            onPress={() => navigation.navigate(item.name)}
+          >
+            <Icon name={item.icon} size={36} color="#3E4E50" />
+            <GridItemText sx={{ variant: "text.subheading", marginTop: 8 }}>
+              {item.name}
+            </GridItemText>
+          </GridItem>
+        ))}
+      </Grid>
+
+      <HorizontalScroll horizontal showsHorizontalScrollIndicator={false}>
+        {[{ name: "Add Buyer", icon: "account-plus", route: "AddBuyer" }, { name: "View Buyers", icon: "account-group", route: "BuyersList" }, { name: "Add Sheep", icon: "sheep", route: "AddSheep" }, { name: "View Sales", icon: "chart-line", route: "MySellsScreen" }, { name: "Inventory", icon: "warehouse", route: "Inventory" }].map((action, index) => (
+          <HorizontalActionItem
+            key={index}
+            onPress={() => navigation.navigate(action.route)}
+            accessibilityRole="button"
+            accessibilityLabel={`Navigate to ${action.name}`}
+          >
+            <ActionIcon name={action.icon} />
+            <ActionText>{action.name}</ActionText>
+          </HorizontalActionItem>
+        ))}
+      </HorizontalScroll>
+
+      <BottomNav>
+        {["Dashboard", "QRScanner", "Profile"].map((item) => (
+          <BottomNavItem
+            key={item}
+            onPress={() => navigation.navigate(item)}
+            accessibilityRole="button"
+            accessibilityLabel={`Navigate to ${item}`}
+          >
+            <BottomNavText sx={{ variant: "text.secondary" }}>
+              {item}
+            </BottomNavText>
+          </BottomNavItem>
+        ))}
+      </BottomNav>
+    </Container>
+  );
+}
 
 const Container = styled(View)({
   flex: 1,
@@ -111,73 +192,3 @@ const BottomNavItem = styled(TouchableOpacity)({
 });
 
 const BottomNavText = styled(Text)();
-
-export default function HomeScreen({ navigation }) {
-  const handleSearch = (text) => {
-    console.log(`Search text: ${text}`);
-  };
-
-  return (
-    <Container>
-      <WeatherWidget />
-      <SearchInput
-        placeholder="Search for sheep by ID"
-        onSubmitEditing={(e) => handleSearch(e.nativeEvent.text)}
-        placeholderTextColor="black"
-      />
-      <Grid>
-        {[
-          { name: "Management", icon: "briefcase" },
-          { name: "Sales", icon: "cart-outline" },
-          { name: "Food", icon: "corn" },
-          { name: "Marketplace", icon: "store" },
-        ].map((item) => (
-          <GridItem
-            key={item.name}
-            onPress={() => navigation.navigate(item.name)}
-          >
-            <Icon name={item.icon} size={36} color="#3E4E50" />
-            <GridItemText sx={{ variant: "text.subheading", marginTop: 8 }}>
-              {item.name}
-            </GridItemText>
-          </GridItem>
-        ))}
-      </Grid>
-
-      <HorizontalScroll horizontal showsHorizontalScrollIndicator={false}>
-        {[
-          { name: "Add Buyer", icon: "account-plus", route: "AddBuyer" },
-          { name: "View Buyers", icon: "account-group", route: "BuyersList" },
-          { name: "Add Sheep", icon: "sheep", route: "AddSheep" },
-          { name: "View Sales", icon: "chart-line", route: "MySellsScreen" },
-          { name: "Inventory", icon: "warehouse", route: "Inventory" },
-        ].map((action, index) => (
-          <HorizontalActionItem
-          key={index}
-          onPress={() => navigation.navigate( action.route)}
-          accessibilityRole="button"
-          accessibilityLabel={`Navigate to ${action.name}`}
-        >
-          <ActionIcon name={action.icon} />
-          <ActionText>{action.name}</ActionText>
-        </HorizontalActionItem>
-        ))}
-      </HorizontalScroll>
-
-      <BottomNav>
-        {["Dashboard", "QRScanner", "Profile"].map((item) => (
-          <BottomNavItem
-            key={item}
-            onPress={() => navigation.navigate(item)}
-            accessibilityRole="button"
-            accessibilityLabel={`Navigate to ${item}`}
-          >
-            <BottomNavText sx={{ variant: "text.secondary" }}>
-              {item}
-            </BottomNavText>
-          </BottomNavItem>
-        ))}
-      </BottomNav>
-    </Container>
-  );
-}

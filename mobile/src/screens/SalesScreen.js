@@ -8,6 +8,193 @@ import {
 } from "react-native";
 import { styled } from "dripsy";
 
+
+export default function SalesScreen({ navigation }) {
+  const [quantityModalVisible, setQuantityModalVisible] = useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
+  const [addBuyerModalVisible, setAddBuyerModalVisible] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedAnimal, setSelectedAnimal] = useState("");
+  const [chosenAnimals, setChosenAnimals] = useState([]);
+  const [buyerForm, setBuyerForm] = useState({ name: "", tel: "", cin: "" });
+  const [selectedBuyer, setSelectedBuyer] = useState(null);
+
+  const handleProceed = () => {
+    const animals = Array.from({ length: quantity }, (_, i) => ({
+      id: i + 1,
+      type: selectedAnimal,
+    }));
+    setChosenAnimals(animals);
+    setQuantityModalVisible(false);
+  };
+
+  const handleAddBuyer = () => {
+    if (buyerForm.name && buyerForm.tel && buyerForm.cin) {
+      setSelectedBuyer(buyerForm);
+      setBuyerForm({ name: "", tel: "", cin: "" });
+      setAddBuyerModalVisible(false);
+    } else {
+      Alert.alert("Error", "Please fill in all fields.");
+    }
+  };
+
+  const handleFinish = () => {
+    setSuccessModalVisible(true);
+  };
+
+  return (
+    <Container>
+      <Header>
+        <Title sx={{ variant: "text.heading" }}>Sales</Title>
+      </Header>
+
+      <SubTitle sx={{ variant: "text.subheading" }}>
+        Add New Sale
+      </SubTitle>
+      <OptionGrid>
+        {["Sheep", "Cow", "Goat", "Other"].map((animal) => (
+          <Option
+            key={animal}
+            onPress={() => {
+              setSelectedAnimal(animal);
+              setQuantity(1);
+              setQuantityModalVisible(true);
+            }}
+          >
+            <Text>{animal}</Text>
+          </Option>
+        ))}
+      </OptionGrid>
+
+      <Modal visible={quantityModalVisible} transparent>
+        <ModalWrapper>
+          <ModalContent>
+            <CloseButton onPress={() => setQuantityModalVisible(false)}>
+              <CloseText>X</CloseText>
+            </CloseButton>
+            <Text style={{ fontSize: 16, marginBottom: 16 }}>
+              Set Quantity for {selectedAnimal}
+            </Text>
+            <QuantityControl>
+              <TouchableOpacity
+                onPress={() => setQuantity(Math.max(1, quantity - 1))}
+              >
+                <QuantityButton>-</QuantityButton>
+              </TouchableOpacity>
+              <QuantityText>{quantity}</QuantityText>
+              <TouchableOpacity onPress={() => setQuantity(quantity + 1)}>
+                <QuantityButton>+</QuantityButton>
+              </TouchableOpacity>
+            </QuantityControl>
+            <BottomButton onPress={handleProceed}>
+              <Text style={{ color: "#fff" }}>Proceed</Text>
+            </BottomButton>
+          </ModalContent>
+        </ModalWrapper>
+      </Modal>
+
+      {chosenAnimals.length > 0 && (
+        <>
+          <Text style={{ fontSize: 16, fontWeight: "bold", marginVertical: 16 }}>
+            Chosen Animals:
+          </Text>
+          {chosenAnimals.map((animal) => (
+            <View key={animal.id}>
+              <Text>{selectedAnimal} #{animal.id}</Text>
+            </View>
+          ))}
+          <BottomButton onPress={() => setAddBuyerModalVisible(true)}>
+            <Text style={{ color: "#fff" }}>
+              {selectedBuyer ? "Change Buyer" : "Add Buyer"}
+            </Text>
+          </BottomButton>
+        </>
+      )}
+
+       <Modal visible={addBuyerModalVisible} transparent>
+        <ModalWrapper>
+          <ModalContent>
+            <CloseButton onPress={() => setAddBuyerModalVisible(false)}>
+              <CloseText>X</CloseText>
+            </CloseButton>
+            <Text style={{ fontSize: 16, marginBottom: 16 }}>Add Buyer</Text>
+            <Input
+              placeholder="Name"
+              placeholderTextColor="gray"
+              value={buyerForm.name}
+              onChangeText={(text) =>
+                setBuyerForm({ ...buyerForm, name: text })
+              }
+            />
+            <Input
+              placeholder="Tel"
+               placeholderTextColor="gray"
+              value={buyerForm.tel}
+              onChangeText={(text) => setBuyerForm({ ...buyerForm, tel: text })}
+            />
+            <Input
+              placeholder="CIN"
+               placeholderTextColor="gray"
+              value={buyerForm.cin}
+              onChangeText={(text) => setBuyerForm({ ...buyerForm, cin: text })}
+            />
+            <BottomButton onPress={handleAddBuyer}>
+              <Text style={{ color: "#fff" }}>Add</Text>
+            </BottomButton>
+          </ModalContent>
+        </ModalWrapper>
+      </Modal>
+      {selectedBuyer && (
+        <>
+          <Text style={{ fontSize: 16, marginVertical: 16 }}>Buyer Info:</Text>
+          <Text>Name: {selectedBuyer.name}</Text>
+          <Text>Tel: {selectedBuyer.tel}</Text>
+          <Text>CIN: {selectedBuyer.cin}</Text>
+          <BottomButton onPress={handleFinish}>
+            <Text style={{ color: "#fff" }}>Proceed</Text>
+          </BottomButton>
+        </>
+      )}
+
+       <Modal visible={successModalVisible} transparent>
+        <ModalWrapper>
+          <ModalContent>
+            <CloseButton onPress={() => setSuccessModalVisible(false)}>
+              <CloseText>X</CloseText>
+            </CloseButton>
+            <Text style={{ fontSize: 48, marginBottom: 16 }}>✅</Text>
+            <Text style={{ fontSize: 16, marginBottom: 16 }}>
+              Sale Added Successfully!
+            </Text>
+
+            <BottomButton
+              onPress={() => {
+                setSuccessModalVisible(false);
+                navigation.navigate("Buyer", { cin: selectedBuyer.cin });
+              }}
+            >
+              <Text style={{ color: "#fff" }}>View Buyer Details</Text>
+            </BottomButton>
+
+            <BottomButton onPress={() => {}}>
+              <Text style={{ color: "#fff" }}>Download PDF</Text>
+            </BottomButton>
+
+            <BottomButton onPress={() => setSuccessModalVisible(false)}>
+              <Text style={{ color: "#fff" }}>Close</Text>
+            </BottomButton>
+          </ModalContent>
+        </ModalWrapper>
+      </Modal>
+
+      <BottomTextButton onPress={() => navigation.navigate("SalesHistory")}>
+        <Text style={{ color: "#fff", fontWeight: "bold" }}>View My Sales</Text>
+      </BottomTextButton>
+    </Container>
+  );
+}
+
+
 const Container = styled(View)({
   flex: 1,
   padding: 16,
@@ -113,196 +300,3 @@ const CloseText = styled(Text)({
   fontWeight: "bold",
   color: "#333",
 });
-
-export default function SalesScreen({ navigation }) {
-  const [quantityModalVisible, setQuantityModalVisible] = useState(false);
-  const [successModalVisible, setSuccessModalVisible] = useState(false);
-  const [addBuyerModalVisible, setAddBuyerModalVisible] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [selectedAnimal, setSelectedAnimal] = useState("");
-  const [chosenAnimals, setChosenAnimals] = useState([]);
-  const [buyerForm, setBuyerForm] = useState({ name: "", tel: "", cin: "" });
-  const [selectedBuyer, setSelectedBuyer] = useState(null);
-
-  const handleProceed = () => {
-    const animals = Array.from({ length: quantity }, (_, i) => ({
-      id: i + 1,
-      type: selectedAnimal,
-    }));
-    setChosenAnimals(animals);
-    setQuantityModalVisible(false);
-  };
-
-  const handleAddBuyer = () => {
-    if (buyerForm.name && buyerForm.tel && buyerForm.cin) {
-      setSelectedBuyer(buyerForm);
-      setBuyerForm({ name: "", tel: "", cin: "" });
-      setAddBuyerModalVisible(false);
-    } else {
-      Alert.alert("Error", "Please fill in all fields.");
-    }
-  };
-
-  const handleFinish = () => {
-    setSuccessModalVisible(true);
-  };
-
-  return (
-    <Container>
-      <Header>
-        <Title sx={{ variant: "text.heading" }}>Sales</Title>
-      </Header>
-
-      <SubTitle sx={{ variant: "text.subheading" }}>
-        Add New Sale
-      </SubTitle>
-      <OptionGrid>
-        {["Sheep", "Cow", "Goat", "Other"].map((animal) => (
-          <Option
-            key={animal}
-            onPress={() => {
-              setSelectedAnimal(animal);
-              setQuantity(1);
-              setQuantityModalVisible(true);
-            }}
-          >
-            <Text>{animal}</Text>
-          </Option>
-        ))}
-      </OptionGrid>
-
-      {/* Quantity Modal */}
-      <Modal visible={quantityModalVisible} transparent>
-        <ModalWrapper>
-          <ModalContent>
-            <CloseButton onPress={() => setQuantityModalVisible(false)}>
-              <CloseText>X</CloseText>
-            </CloseButton>
-            <Text style={{ fontSize: 16, marginBottom: 16 }}>
-              Set Quantity for {selectedAnimal}
-            </Text>
-            <QuantityControl>
-              <TouchableOpacity
-                onPress={() => setQuantity(Math.max(1, quantity - 1))}
-              >
-                <QuantityButton>-</QuantityButton>
-              </TouchableOpacity>
-              <QuantityText>{quantity}</QuantityText>
-              <TouchableOpacity onPress={() => setQuantity(quantity + 1)}>
-                <QuantityButton>+</QuantityButton>
-              </TouchableOpacity>
-            </QuantityControl>
-            <BottomButton onPress={handleProceed}>
-              <Text style={{ color: "#fff" }}>Proceed</Text>
-            </BottomButton>
-          </ModalContent>
-        </ModalWrapper>
-      </Modal>
-
-      {/* Display Chosen Animals */}
-      {chosenAnimals.length > 0 && (
-        <>
-          <Text style={{ fontSize: 16, fontWeight: "bold", marginVertical: 16 }}>
-            Chosen Animals:
-          </Text>
-          {chosenAnimals.map((animal) => (
-            <View key={animal.id}>
-              <Text>{selectedAnimal} #{animal.id}</Text>
-            </View>
-          ))}
-          <BottomButton onPress={() => setAddBuyerModalVisible(true)}>
-            <Text style={{ color: "#fff" }}>
-              {selectedBuyer ? "Change Buyer" : "Add Buyer"}
-            </Text>
-          </BottomButton>
-        </>
-      )}
-
-       {/* Add Buyer Modal */}
-       <Modal visible={addBuyerModalVisible} transparent>
-        <ModalWrapper>
-          <ModalContent>
-            <CloseButton onPress={() => setAddBuyerModalVisible(false)}>
-              <CloseText>X</CloseText>
-            </CloseButton>
-            <Text style={{ fontSize: 16, marginBottom: 16 }}>Add Buyer</Text>
-            <Input
-              placeholder="Name"
-              placeholderTextColor="gray"
-              value={buyerForm.name}
-              onChangeText={(text) =>
-                setBuyerForm({ ...buyerForm, name: text })
-              }
-            />
-            <Input
-              placeholder="Tel"
-               placeholderTextColor="gray"
-              value={buyerForm.tel}
-              onChangeText={(text) => setBuyerForm({ ...buyerForm, tel: text })}
-            />
-            <Input
-              placeholder="CIN"
-               placeholderTextColor="gray"
-              value={buyerForm.cin}
-              onChangeText={(text) => setBuyerForm({ ...buyerForm, cin: text })}
-            />
-            <BottomButton onPress={handleAddBuyer}>
-              <Text style={{ color: "#fff" }}>Add</Text>
-            </BottomButton>
-          </ModalContent>
-        </ModalWrapper>
-      </Modal>
-      {/* Display Selected Buyer */}
-      {selectedBuyer && (
-        <>
-          <Text style={{ fontSize: 16, marginVertical: 16 }}>Buyer Info:</Text>
-          <Text>Name: {selectedBuyer.name}</Text>
-          <Text>Tel: {selectedBuyer.tel}</Text>
-          <Text>CIN: {selectedBuyer.cin}</Text>
-          <BottomButton onPress={handleFinish}>
-            <Text style={{ color: "#fff" }}>Proceed</Text>
-          </BottomButton>
-        </>
-      )}
-
-       {/* Success Modal */}
-       <Modal visible={successModalVisible} transparent>
-        <ModalWrapper>
-          <ModalContent>
-            <CloseButton onPress={() => setSuccessModalVisible(false)}>
-              <CloseText>X</CloseText>
-            </CloseButton>
-            <Text style={{ fontSize: 48, marginBottom: 16 }}>✅</Text>
-            <Text style={{ fontSize: 16, marginBottom: 16 }}>
-              Sale Added Successfully!
-            </Text>
-
-            {/* View Buyer Details Button */}
-            <BottomButton
-              onPress={() => {
-                setSuccessModalVisible(false);
-                navigation.navigate("Buyer", { cin: selectedBuyer.cin });
-              }}
-            >
-              <Text style={{ color: "#fff" }}>View Buyer Details</Text>
-            </BottomButton>
-
-            {/* Download PDF Button */}
-            <BottomButton onPress={() => {}}>
-              <Text style={{ color: "#fff" }}>Download PDF</Text>
-            </BottomButton>
-
-            <BottomButton onPress={() => setSuccessModalVisible(false)}>
-              <Text style={{ color: "#fff" }}>Close</Text>
-            </BottomButton>
-          </ModalContent>
-        </ModalWrapper>
-      </Modal>
-
-      {/* Bottom Button to View Sales */}
-      <BottomTextButton onPress={() => navigation.navigate("SalesHistory")}>
-        <Text style={{ color: "#fff", fontWeight: "bold" }}>View My Sales</Text>
-      </BottomTextButton>
-    </Container>
-  );
-}

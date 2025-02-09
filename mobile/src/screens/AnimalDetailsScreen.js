@@ -22,47 +22,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { getBaseURL } from "../api/axiosInstance";
 import { editAnimal } from "../features/animalSlice";
 
-const Tab = createMaterialTopTabNavigator();
-
-const Container = styled(View)({ flex: 1, backgroundColor: "background" });
-const AnimalImage = styled(Image)({
-  width: "100%",
-  height: 200,
-  borderRadius: 10,
-  marginBottom: 16,
-});
-const InfoText = styled(Text)({
-  fontSize: 16,
-  color: "text",
-  paddingVertical: 4,
-  fontWeight: "500",
-});
-const EmptyState = styled(View)({ alignItems: "center", marginTop: 20 });
-const LogCard = styled(View)({
-  backgroundColor: "cardBackground",
-  padding: 14,
-  marginBottom: 10,
-  borderRadius: 8,
-});
-const LogText = styled(Text)({
-  fontSize: 15,
-  fontWeight: "500",
-  color: "text",
-});
-const InputField = styled(TextInput)({
-  fontSize: 15,
-  color: "text",
-  borderBottomWidth: 1,
-  marginBottom: 6,
-});
 const AnimalDetailsScreen = ({ route, navigation }) => {
-  const { animal: initialAnimal } = route.params; // Initial animal passed via route params
+  const { animal: initialAnimal } = route.params; 
   const dispatch = useDispatch();
-  const animals = useSelector((state) => state.animals.animals); // Get animals from the Redux store
+  const animals = useSelector((state) => state.animals.animals); 
   const [editing, setEditing] = useState(false);
   const [editedAnimal, setEditedAnimal] = useState({ ...initialAnimal });
 
-  // Watch for updates in the animals state and update local state if necessary
+  
   useEffect(() => {
     dispatch(getAnimalMedicalLogs(editedAnimal.id));
     dispatch(getAnimalActivitiesLogs(editedAnimal.id));
@@ -71,9 +38,9 @@ const AnimalDetailsScreen = ({ route, navigation }) => {
   useEffect(() => {
     const updatedAnimal = animals.find((a) => a.id === initialAnimal.id);
     if (updatedAnimal) {
-      setEditedAnimal(updatedAnimal); // Update local animal state with the Redux store data
+      setEditedAnimal(updatedAnimal); 
     }
-  }, [animals, initialAnimal.id]); // Watch for changes in the animals list from Redux
+  }, [animals, initialAnimal.id]); 
 
   const handleSave = () => {
     dispatch(editAnimal({ id: editedAnimal.id, updatedAnimal: editedAnimal }));
@@ -100,7 +67,7 @@ const AnimalDetailsScreen = ({ route, navigation }) => {
                     }
                   />
                   <InputField
-                    value={editedAnimal.price.toString()} // Ensure price is a string
+                    value={editedAnimal.price.toString()} 
                     onChangeText={(text) =>
                       setEditedAnimal((prevState) => ({
                         ...prevState,
@@ -110,7 +77,7 @@ const AnimalDetailsScreen = ({ route, navigation }) => {
                     keyboardType="numeric"
                   />
                   <InputField
-                    value={editedAnimal.weight.toString()} // Ensure weight is a string
+                    value={editedAnimal.weight.toString()} 
                     onChangeText={(text) =>
                       setEditedAnimal((prevState) => ({
                         ...prevState,
@@ -294,4 +261,39 @@ const ActivityLogsScreen = () => {
   );
 };
 
+
+
+const Tab = createMaterialTopTabNavigator();
+
+const Container = styled(View)({ flex: 1, backgroundColor: "background" });
+const AnimalImage = styled(Image)({
+  width: "100%",
+  height: 200,
+  borderRadius: 10,
+  marginBottom: 16,
+});
+const InfoText = styled(Text)({
+  fontSize: 16,
+  color: "text",
+  paddingVertical: 4,
+  fontWeight: "500",
+});
+const EmptyState = styled(View)({ alignItems: "center", marginTop: 20 });
+const LogCard = styled(View)({
+  backgroundColor: "cardBackground",
+  padding: 14,
+  marginBottom: 10,
+  borderRadius: 8,
+});
+const LogText = styled(Text)({
+  fontSize: 15,
+  fontWeight: "500",
+  color: "text",
+});
+const InputField = styled(TextInput)({
+  fontSize: 15,
+  color: "text",
+  borderBottomWidth: 1,
+  marginBottom: 6,
+});
 export default AnimalDetailsScreen;

@@ -1,18 +1,89 @@
-import { styled } from "dripsy";
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import Icon from "react-native-vector-icons/Foundation";
-import { getAnimals } from "../features/animalSlice";
+import { View, Text, TextInput, ScrollView, TouchableOpacity } from "react-native";
+import { styled } from "dripsy";
+import Icon from "react-native-vector-icons/FontAwesome";
 import AnimalsList from "../components/AnimalsList";
 import AddTransaction from "../components/AddTransaction";
 import AddAnimalModal from "../components/AddAnimalModal";
+import { useDebounce } from "use-debounce";
+import { getAnimals, resetAnimals } from "../features/animalSlice";
+import { useDispatch } from "react-redux";
+import { useFocusEffect } from '@react-navigation/native'; 
+
+export default function ManagementScreen({ navigation }) {
+  const [transactionModalVisible, setTransactionModalVisible] = useState(false);
+  const [addAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText] = useDebounce(searchText, 500); 
+  const dispatch = useDispatch();
+
+  
+  const handleSearchChange = (text) => {
+    setSearchText(text);
+  };
+
+  
+  const resetSearchText = () => {
+    setSearchText(""); 
+  };
+
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("ManagementScreen focused");
+      dispatch(resetAnimals()); 
+      console.log("'''''''''''''''''''''''Animals reset");
+      dispatch(getAnimals({ page: 0, search: "", filterType: "tag" })); 
+    }, [dispatch]) 
+  );
+
+  useEffect(() => {
+    if (searchText) {
+      
+      setCurrentPage(0);
+    }
+  }, [searchText]);
+  
+
+  return (
+    <Container>
+      <SectionTitle>Quick Actions</SectionTitle>
+      <QuickActionList>
+        {[{ name: "Add Animal", icon: "plus", action: () => setAddAnimalModalVisible(true) },
+          { name: "+ Transaction", icon: "dollar", action: () => setTransactionModalVisible(true) }].map((action, index) => (
+            <QuickActionItem key={index} onPress={action.action}>
+              <Icon name={action.icon} color="#4A90E2" size={36} />
+              <Text>{action.name}</Text>
+            </QuickActionItem>
+        ))}
+      </QuickActionList>
+
+      <SearchInput
+        placeholder="Search by tag"
+        value={searchText}
+        onChangeText={handleSearchChange} 
+        placeholderTextColor="black"
+        onSubmitEditing={() => {
+          dispatch(resetAnimals()); 
+          resetSearchText(); 
+        }} 
+      />
+
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        {/* Pass debounced search text to AnimalsList component */}
+        <AnimalsList searchText={debouncedSearchText} />
+
+        {transactionModalVisible ? (
+          <AddTransaction onClose={() => { setTransactionModalVisible(false); resetSearchText(); }} />
+        ) : null}
+
+        {addAnimalModalVisible ? (
+          <AddAnimalModal visible={addAnimalModalVisible} onClose={() => { setAddAnimalModalVisible(false); resetSearchText(); }} />
+        ) : null}
+      </ScrollView>
+    </Container>
+  );
+}
 
 const Container = styled(View)({
   flex: 1,
@@ -60,85 +131,3 @@ const QuickActionItem = styled(TouchableOpacity)(({ isLast }) => ({
   shadowRadius: 4,
   elevation: 2,
 }));
-
-const ActionIcon = styled(Icon)({ color: "#4A90E2", fontSize: 36 });
-
-const ActionText = styled(Text)({
-  fontSize: 14,
-  fontWeight: "600",
-  color: "#333",
-  textAlign: "center",
-});
-
-export default function ManagementScreen({ navigation }) {
-  const [transactionModalVisible, setTransactionModalVisible] = useState(false);
-  const [addAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [filteredAnimals, setFilteredAnimals] = useState([]);
-
-  const dispatch = useDispatch();
-  const { animals, loading, error } = useSelector((state) => state.animals);
-
-  useEffect(() => {
-    dispatch(getAnimals());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!searchText) {
-      setFilteredAnimals(animals);
-      return;
-    }
-
-    const lowercasedSearch = searchText.toLowerCase();
-
-    const filtered = animals.filter((animal) => {
-      return (
-        animal.tag.toLowerCase().includes(lowercasedSearch) ||
-        String(animal.price).includes(lowercasedSearch) ||
-        String(animal.weight).includes(lowercasedSearch) ||
-        animal.category?.typeName?.toLowerCase().includes(lowercasedSearch)
-      );
-    });
-
-    setFilteredAnimals(filtered);
-  }, [searchText, animals]);
-
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error}</Text>;
-
-  return (
-    <Container>
-      <SectionTitle>Quick Actions</SectionTitle>
-      <QuickActionList>
-        {[
-          { name: "Add Animal", icon: "plus", action: () => setAddAnimalModalVisible(true) },
-          { name: "Add Transaction", icon: "dollar", action: () => setTransactionModalVisible(true) },
-        ].map((action, index) => (
-          <QuickActionItem key={index} onPress={action.action}>
-            <ActionIcon name={action.icon} />
-            <ActionText>{action.name}</ActionText>
-          </QuickActionItem>
-        ))}
-      </QuickActionList>
-
-      <SearchInput
-        placeholder="Search by tag, price, weight, or category"
-        value={searchText}
-        onChangeText={setSearchText}
-        placeholderTextColor="black"
-      />
-
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <AnimalsList animals={filteredAnimals} />
-
-        {transactionModalVisible && (
-          <AddTransaction onClose={() => setTransactionModalVisible(false)} />
-        )}
-
-        {addAnimalModalVisible && (
-          <AddAnimalModal visible={addAnimalModalVisible} onClose={() => setAddAnimalModalVisible(false)} />
-        )}
-      </ScrollView>
-    </Container>
-  );
-}

@@ -5,42 +5,6 @@ import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { getTransactions, removeTransaction, editTransaction } from "../features/transactionSlice";
 
-const Container = styled(View)({
-  marginVertical: 16,
-});
-
-const TransactionItem = styled(View)({
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: 16,
-  borderWidth: 1,
-  borderColor: "border",
-  borderRadius: 8,
-  backgroundColor: "white",
-  marginBottom: 8,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
-  elevation: 2,
-});
-
-const TransactionDetails = styled(View)({
-  flex: 1,
-  marginRight: 10,
-});
-
-const TransactionText = styled(Text)({
-  fontSize: 16,
-  fontWeight: "500",
-  color: "text",
-});
-
-const ActionButton = styled(TouchableOpacity)({
-  padding: 8,
-  marginLeft: 5,
-});
 
 export default function TransactionList() {
   const dispatch = useDispatch();
@@ -159,3 +123,40 @@ export default function TransactionList() {
     </Container>
   );
 }
+
+const Container = styled(View)({
+  marginVertical: 16,
+});
+
+const TransactionItem = styled(View)({
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: 16,
+  borderWidth: 1,
+  borderColor: "border",
+  borderRadius: 8,
+  backgroundColor: "white",
+  marginBottom: 8,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 2,
+});
+
+const TransactionDetails = styled(View)({
+  flex: 1,
+  marginRight: 10,
+});
+
+const TransactionText = styled(Text)({
+  fontSize: 16,
+  fontWeight: "500",
+  color: "text",
+});
+
+const ActionButton = styled(TouchableOpacity)({
+  padding: 8,
+  marginLeft: 5,
+});

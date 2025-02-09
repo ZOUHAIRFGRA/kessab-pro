@@ -1,14 +1,17 @@
 import axiosInstance from "./axiosInstance";
 
-export const fetchAnimals = async () => {
+export const fetchAnimals = async (page = 0, size = 2, search = "", filterType = "tag") => {
   try {
-    const response = await axiosInstance.get("/animals");
+    const response = await axiosInstance.get("/animals", {
+      params: { page, size, search, filterType },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching animals:", error);
     throw error;
   }
 };
+
 
 export const fetchAnimalById = async (id) => {
   try {
