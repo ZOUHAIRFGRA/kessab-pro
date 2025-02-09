@@ -21,17 +21,17 @@ public class AnimalDTO {
     private BigDecimal weight;
 
     @JsonIgnore
-    private List<MultipartFile> images; // Mapping to store uploaded image files
-    private List<String> imagePaths; // Mapping to store image paths
+    private List<MultipartFile> images;
+    private List<String> imagePaths;
 
-    private UUID saleId; // This will store the saleId
-    private AnimalCategoryDTO category; // Category object
+    private UUID saleId;
+    private AnimalCategoryDTO category;
 
 
     // For image existence check, only used for internal processing
     @JsonIgnore
     public boolean isImagesExists() {
-        return images != null && !images.isEmpty(); // Check if the images list is not empty
+        return images != null && !images.isEmpty();
     }
 
 }

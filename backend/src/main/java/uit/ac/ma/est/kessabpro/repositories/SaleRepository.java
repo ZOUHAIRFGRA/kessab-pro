@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface SaleRepository extends JpaRepository<Sale, UUID> {
 
     @Query("SELECT s FROM Sale s LEFT JOIN FETCH s.animals")
-    List<Sale> findAllWithAnimals();  // Returns full Sale entities
+    List<Sale> findAllWithAnimals();
 }

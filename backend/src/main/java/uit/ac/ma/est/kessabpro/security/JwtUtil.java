@@ -15,7 +15,6 @@ public class JwtUtil {
     private final Key key;
     private static final long EXPIRATION_TIME = 1000L * 60 * 60 * 24 * 365; // 1 year
 
-    // Load secret key from environment variables (or application.properties)
     public JwtUtil(@Value("${jwt.secret}") String secretKey) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }

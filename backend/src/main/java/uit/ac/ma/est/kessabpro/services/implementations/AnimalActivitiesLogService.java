@@ -48,14 +48,12 @@ public class AnimalActivitiesLogService implements IAnimalActivitiesLogService {
         if (existingLogOptional.isPresent()) {
             AnimalActivitiesLog existingLog = existingLogOptional.get();
 
-            // Update fields of the existing log
-            existingLog.setLogDate(animalActivitiesLog.getLogDate());  // Ensure Lombok generates this getter/setter
-            existingLog.setActivity(animalActivitiesLog.getActivity());  // Ensure Lombok generates this getter/setter
+            existingLog.setLogDate(animalActivitiesLog.getLogDate());
+            existingLog.setActivity(animalActivitiesLog.getActivity());
 
-            // Save the updated entity
             return animalActivitiesLogRepository.save(existingLog);
         }
-        return null; // Or throw an exception
+        return null;
     }
 
 

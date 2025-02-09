@@ -9,8 +9,8 @@ import java.util.UUID;
 public interface ITransactionService {
     List<TransactionDTO> getAllTransactions();
     TransactionDTO getTransactionById(UUID id);
-    TransactionDTO createTransaction(TransactionDTO transactionDTO); // Updated to expect DTO
-    TransactionDTO updateTransaction(UUID id, TransactionDTO updatedTransactionDTO); // Updated to expect DTO
+    TransactionDTO createTransaction(TransactionDTO transactionDTO);
+    TransactionDTO updateTransaction(UUID id, TransactionDTO updatedTransactionDTO);
     void deleteTransaction(UUID id);
 
     List<BigDecimal> testFindAmountsBySaleId(UUID saleId);

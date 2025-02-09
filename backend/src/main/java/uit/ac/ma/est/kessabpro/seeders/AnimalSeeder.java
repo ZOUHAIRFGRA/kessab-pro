@@ -34,7 +34,6 @@ public class AnimalSeeder {
 
     public void seedData() {
         if (animalRepository.count() == 0) {
-            // Create AnimalIcon
             AnimalIcon cowIcon = AnimalIcon.builder()
                     .iconPath("/icons/cow.png")
                     .build();
@@ -45,7 +44,6 @@ public class AnimalSeeder {
 
             animalIconRepository.saveAll(Arrays.asList(cowIcon, sheepIcon));
 
-            // Create AnimalCategory
             AnimalCategory cowCategory = AnimalCategory.builder()
                     .typeName("Cow")
                     .icon(cowIcon)
@@ -58,7 +56,6 @@ public class AnimalSeeder {
 
             animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory));
 
-            // Create Animals with multiple image paths
             Animal animal1 = Animal.builder()
                     .tag("COW-001")
                     .sex("Female")
@@ -95,7 +92,6 @@ public class AnimalSeeder {
 
             animalRepository.saveAll(Arrays.asList(animal1, animal2));
 
-            // Create AnimalActivitiesLog
             AnimalActivitiesLog log1 = AnimalActivitiesLog.builder()
                     .animal(animal1)
                     .logDate(LocalDate.now().minusDays(10))
@@ -110,7 +106,6 @@ public class AnimalSeeder {
 
             animalActivitiesLogRepository.saveAll(Arrays.asList(log1, log2));
 
-            // Create AnimalMedicalLog
             AnimalMedicalLog medicalLog1 = AnimalMedicalLog.builder()
                     .animal(animal1)
                     .logDate(LocalDate.now().minusMonths(1))

@@ -32,7 +32,6 @@ public class User extends BaseEntity implements UserDetails {
 
 
 
-    // Required by UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList(); // No roles for now
@@ -45,7 +44,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username; // Spring Security uses this for authentication
+        return username;
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Sale extends BaseEntity {
     private UUID id;
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore  // Avoid circular reference by not serializing full animal objects
+    @JsonIgnore
     private List<Animal> animals = new ArrayList<>();
 
     @ManyToOne
@@ -40,17 +40,16 @@ public class Sale extends BaseEntity {
     private BigDecimal agreedAmount;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID; // Default status
+    private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Transaction> transactions = new ArrayList<>();
 
-    // Custom getter to return only the Animal UUIDs in a list
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)  // Only include the list if it's not empty
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public List<UUID> getAnimalIds() {
         List<UUID> animalIds = new ArrayList<>();
         for (Animal animal : animals) {
-            animalIds.add(animal.getId());  // Collect all animal IDs
+            animalIds.add(animal.getId());
         }
         return animalIds;
     }

@@ -7,5 +7,5 @@ import java.util.UUID;
 public interface IUserService {
     User getAuthenticatedUser();
     User updateUser(UUID id, User updatedUser);
-    List<User> getAllUsers(); // Method to get all users
+    List<User> getAllUsers();
 }

@@ -21,10 +21,8 @@ public class KessabProApplication implements CommandLineRunner {
     @Autowired private UserSeeder userSeeder;
 
     public static void main(String[] args) {
-        // Load environment variables from .env
         Dotenv dotenv = Dotenv.load();
 
-//         Set system properties from .env variable
         System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
         System.setProperty("ADMIN_USERNAME", dotenv.get("ADMIN_USERNAME"));
         System.setProperty("ADMIN_PASSWORD", dotenv.get("ADMIN_PASSWORD"));

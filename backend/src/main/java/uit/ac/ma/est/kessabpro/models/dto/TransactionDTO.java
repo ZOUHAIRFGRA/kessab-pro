@@ -11,7 +11,6 @@ public class TransactionDTO {
     private String method;
     private String transactionDate;
 
-    // Constructor
     public TransactionDTO(UUID id, UUID saleId, BigDecimal amount, String method, String transactionDate) {
         this.id = id;
         this.saleId = saleId;
@@ -20,7 +19,6 @@ public class TransactionDTO {
         this.transactionDate = transactionDate;
     }
 
-    // Getters and setters
     public UUID getId() {
         return id;
     }

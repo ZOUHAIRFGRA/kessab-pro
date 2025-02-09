@@ -22,13 +22,10 @@ public class AnimalMapper {
         dto.setPrice(animal.getPrice());
         dto.setWeight(animal.getWeight());
 
-        // Map image paths
         dto.setImagePaths(animal.getImagePaths());
 
-        // Map saleId
         dto.setSaleId(animal.getSale() != null ? animal.getSale().getId() : null);
 
-        // Map category
         if (animal.getCategory() != null) {
             AnimalCategoryDTO categoryDTO = new AnimalCategoryDTO();
             categoryDTO.setId(animal.getCategory().getId());
@@ -56,17 +53,14 @@ public class AnimalMapper {
         animal.setPrice(dto.getPrice());
         animal.setWeight(dto.getWeight());
 
-        // Map image paths
         animal.setImagePaths(dto.getImagePaths());
 
-        // Map sale (only if saleId exists)
         if (dto.getSaleId() != null) {
             Sale sale = new Sale();
             sale.setId(dto.getSaleId());
             animal.setSale(sale);
         }
 
-        // Map category
         if (dto.getCategory() != null) {
             AnimalCategory category = new AnimalCategory();
             category.setId(dto.getCategory().getId());

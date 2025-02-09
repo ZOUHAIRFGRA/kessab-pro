@@ -40,8 +40,8 @@ public class Animal extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sale_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({"animals"})  // Prevent circular references
-    @JsonBackReference  // Prevent full serialization of the Sale object
+    @JsonIgnoreProperties({"animals"})
+    @JsonBackReference
     private Sale sale;
 
     @Column(columnDefinition = "json default '[]'")
@@ -51,32 +51,32 @@ public class Animal extends BaseEntity {
     public List<String> getImagePaths() {
         try {
             if (imagePaths == null || imagePaths.isEmpty()) {
-                return new ArrayList<>();  // Return empty list if no data
+                return new ArrayList<>();
             }
             return new ObjectMapper().readValue(imagePaths, List.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return new ArrayList<>();  // Return empty list on error
+            return new ArrayList<>();
         }
     }
 
     public void setImagePaths(List<String> paths) throws JsonProcessingException {
         if (paths == null || paths.isEmpty()) {
-            this.imagePaths = "[]";  // Store empty array as JSON string
+            this.imagePaths = "[]";
         } else {
             this.imagePaths = new ObjectMapper().writeValueAsString(paths);
         }
     }
 
     public void addImagePath(String path) throws JsonProcessingException {
-        List<String> paths = getImagePaths();  // Get the current list of image paths
-        paths.add(path);  // Add the new image path
-        setImagePaths(paths);  // Update the imagePaths field with the new list
+        List<String> paths = getImagePaths();
+        paths.add(path);
+        setImagePaths(paths);
     }
 
     public UUID getSaleId() {
         if (sale != null) {
-            return sale.getId();  // Only return sale ID if it's not null
+            return sale.getId();
         }
         return null;
     }

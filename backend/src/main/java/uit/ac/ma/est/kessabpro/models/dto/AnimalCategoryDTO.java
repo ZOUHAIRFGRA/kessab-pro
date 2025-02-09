@@ -8,5 +8,5 @@ import java.util.UUID;
 public class AnimalCategoryDTO {
     private UUID id;
     private String typeName;
-    private AnimalIconDTO icon; // Assuming you have an icon object inside AnimalCategory
+    private AnimalIconDTO icon;
 }

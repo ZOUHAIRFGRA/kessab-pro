@@ -47,6 +47,6 @@ public class AnimalMedicalLogService implements IAnimalMedicalLogService {
             animalMedicalLog.setId(id);
             return animalMedicalLogRepository.save(animalMedicalLog);
         }
-        return null; // Or throw an exception
+        return null;
     }
 }

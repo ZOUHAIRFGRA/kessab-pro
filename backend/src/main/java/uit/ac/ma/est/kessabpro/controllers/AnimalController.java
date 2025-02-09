@@ -32,16 +32,13 @@ public class AnimalController {
         if (animalDTO.isImagesExists()) {
             UploadHelper.createDirIfNotExist(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR);
 
-            // Convert MultipartFile list to List<String> (file paths)
             List<String> uploadedImagePaths = animalService.uploadAnimalImages(animal.getTag(), animalDTO.getImages());
 
-            // Set image paths (as strings) to the animal entity
             animal.setImagePaths(uploadedImagePaths);
         }
 
         Animal createdAnimal = animalService.createAnimal(animal);
 
-        // Convert the created animal entity to AnimalDTO and return it
         AnimalDTO createdAnimalDTO = AnimalMapper.toDTO(createdAnimal);
         return new ResponseEntity<>(createdAnimalDTO, HttpStatus.CREATED);
     }
@@ -60,10 +57,8 @@ public class AnimalController {
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "tag") String filterType) {
 
-        // Get the list of animals from the service
         Page<Animal> animals = animalService.getAllAnimals(page, size, search, filterType);
 
-        // Convert the page of animals to a page of AnimalDTOs
         Page<AnimalDTO> animalDTOPage = animals.map(AnimalMapper::toDTO);
 
         return ResponseEntity.ok(animalDTOPage);

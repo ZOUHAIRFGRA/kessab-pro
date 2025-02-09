@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Data  // @Data already includes @Getter, @Setter, @ToString, etc.
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

@@ -30,43 +30,36 @@ public class SaleService implements ISaleService {
     private BuyerRepository buyerRepository;
 
     @Autowired
-    private SaleMapper saleMapper; // Inject SaleMapper
+    private SaleMapper saleMapper;
 
     @Override
     public SaleDTO createSale(SaleDTO saleDTO) {
-        // Fetch the animals by their IDs
         List<Animal> animals = animalRepository.findAllById(saleDTO.getAnimalIds());
 
         if (animals.isEmpty()) {
             throw new RuntimeException("No animals found for the provided IDs.");
         }
 
-        // Fetch the Buyer entity using the buyerId from SaleDTO
         Buyer buyer = buyerRepository.findById(saleDTO.getBuyerId())
                 .orElseThrow(() -> new RuntimeException("Buyer not found"));
 
-        // Create a new Sale entity
         Sale sale = Sale.builder()
                 .saleDate(saleDTO.getSaleDate())
                 .agreedAmount(saleDTO.getAgreedAmount())
                 .paymentStatus(saleDTO.getPaymentStatus() != null ? saleDTO.getPaymentStatus() : PaymentStatus.NOT_PAID)
                 .buyer(buyer)
-                .animals(new ArrayList<>())  // Initialize the animals list
+                .animals(new ArrayList<>())
                 .build();
 
-        // Link the animals to the sale
         for (Animal animal : animals) {
-            animal.setSale(sale);  // Set the sale reference on each animal
-            sale.getAnimals().add(animal);  // Add the animal to the sale's animals list
+            animal.setSale(sale);
+            sale.getAnimals().add(animal);
         }
 
-        // Save the Sale entity
         Sale savedSale = saleRepository.save(sale);
 
-        // Save the animals with the updated sale reference
         animalRepository.saveAll(animals);
 
-        // Return the DTO representation of the saved sale
         return saleMapper.toSaleDTO(savedSale);
     }
 
@@ -77,13 +70,13 @@ public class SaleService implements ISaleService {
     public SaleDTO getSaleById(UUID id) {
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sale not found"));
-        return saleMapper.toSaleDTO(sale); // Use mapper
+        return saleMapper.toSaleDTO(sale);
     }
 
     @Override
     public List<SaleDTO> getAllSales() {
         List<Sale> sales = saleRepository.findAll();
-        return saleMapper.toSaleDTOList(sales); // Use mapper
+        return saleMapper.toSaleDTOList(sales);
     }
 
     @Override
@@ -100,7 +93,7 @@ public class SaleService implements ISaleService {
         existingSale.setAnimals(newAnimals);
 
         Sale savedSale = saleRepository.save(existingSale);
-        return saleMapper.toSaleDTO(savedSale); // Use mapper
+        return saleMapper.toSaleDTO(savedSale);
     }
 
     @Override

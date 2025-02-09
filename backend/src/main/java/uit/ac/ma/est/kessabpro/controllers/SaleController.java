@@ -19,7 +19,7 @@ public class SaleController {
 
     @PostMapping
     public ResponseEntity<SaleDTO> createSale(@RequestBody SaleDTO saleDTO) {
-        SaleDTO newSale = saleService.createSale(saleDTO);  // Use SaleDTO to create sale
+        SaleDTO newSale = saleService.createSale(saleDTO);
         return ResponseEntity.ok(newSale);
     }
 

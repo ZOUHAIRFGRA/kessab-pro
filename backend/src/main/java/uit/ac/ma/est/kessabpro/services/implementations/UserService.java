@@ -39,7 +39,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUser(UUID id, User updatedUser) { // Changed Long to UUID
+    public User updateUser(UUID id, User updatedUser) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

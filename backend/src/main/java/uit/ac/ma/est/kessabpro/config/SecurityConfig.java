@@ -30,12 +30,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Allow public access to auth endpoints
-                        .requestMatchers("/images/**", "/icons/**").permitAll() // Public static resources
-                        .anyRequest().permitAll() // All other endpoints require authentication
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/images/**", "/icons/**").permitAll()
+                        .anyRequest().permitAll()
                 )
-                .authenticationProvider(authenticationProvider()) // Custom authentication provider
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
