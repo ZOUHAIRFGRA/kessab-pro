@@ -7,50 +7,37 @@ import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFocusEffect } from "@react-navigation/native";
 
-
-const AnimalsList = ({ route }) => {
+const AnimalsList = ({ searchText: propSearchText, route }) => { 
   const dispatch = useDispatch();
   const { animals, loading, error, totalPages } = useSelector((state) => state.animals);
   const [currentPage, setCurrentPage] = useState(0);
-  const [searchText, setSearchText] = useState(route?.params?.searchText || ""); 
+
+  // Get searchText from route params if available, otherwise use the prop
+  const searchText = route?.params?.searchText ?? propSearchText ?? ""; 
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log(" AnimalsList focused, resetting state...");
+      console.log("AnimalsList focused, resetting state with search:", searchText);
 
-      setCurrentPage(0); 
-      dispatch(resetAnimals()); 
+      setCurrentPage(0);
+      dispatch(resetAnimals());
 
-      
-      setTimeout(() => {
-        let newSearchText = route?.params?.searchText || "";
-        if (!route?.params?.searchText) {
-          console.log(" Accessed via Sidebar, resetting searchText...");
-          newSearchText = "";
-        }
-        setSearchText(newSearchText); 
-        dispatch(getAnimals({ page: 0, search: newSearchText, filterType: "tag" })); 
-      }, 0); 
+      dispatch(getAnimals({ page: 0, search: searchText, filterType: "tag" })); 
 
-    }, [dispatch, route?.params?.searchText])
+    }, [dispatch, searchText])
   );
-
-  
-  useEffect(() => {
-    console.log(" searchText updated:", searchText);
-  }, [searchText]);
 
   const handlePagination = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
       setCurrentPage(newPage);
-      dispatch(getAnimals({ page: newPage, search: searchText, filterType: "tag" }));
+      dispatch(getAnimals({ page: newPage, search: searchText, filterType: "tag" })); 
     }
   };
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error}</Text>;
 
-  console.log(" Rendering with animals.length:", animals.length);
+  console.log("Rendering with animals:", animals.map((animal) => animal.tag));
 
   return (
     <View>

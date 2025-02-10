@@ -14,7 +14,7 @@ const AppWrapper = () => {
   useEffect(() => {
     console.log("Server IP from env:", SERVER_IP);
   }   , [SERVER_IP]);  
-
+ 
   useEffect(() => {
     const loadToken = async () => {
       const token = await AsyncStorage.getItem("authToken")
