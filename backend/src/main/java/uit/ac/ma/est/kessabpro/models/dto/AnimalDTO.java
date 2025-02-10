@@ -20,12 +20,14 @@ public class AnimalDTO {
     private BigDecimal price;
     private BigDecimal weight;
 
+    // For image existence check, only used for internal processing
     @JsonIgnore
     private List<MultipartFile> images;
+//    this is the used one
     private List<String> imagePaths;
 
     private UUID saleId;
-    private AnimalCategoryDTO category;
+    private String category;
 
 
     // For image existence check, only used for internal processing

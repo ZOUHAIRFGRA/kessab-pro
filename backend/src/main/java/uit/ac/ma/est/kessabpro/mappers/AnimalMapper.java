@@ -1,15 +1,12 @@
 package uit.ac.ma.est.kessabpro.mappers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import uit.ac.ma.est.kessabpro.models.dto.AnimalCategoryDTO;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
-import uit.ac.ma.est.kessabpro.models.dto.AnimalIconDTO;
-import uit.ac.ma.est.kessabpro.models.dto.SaleDTO;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.AnimalCategory;
-import uit.ac.ma.est.kessabpro.models.entities.AnimalIcon;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 
+import java.util.UUID;
 
 public class AnimalMapper {
 
@@ -23,23 +20,9 @@ public class AnimalMapper {
         dto.setWeight(animal.getWeight());
 
         dto.setImagePaths(animal.getImagePaths());
-
         dto.setSaleId(animal.getSale() != null ? animal.getSale().getId() : null);
 
-        if (animal.getCategory() != null) {
-            AnimalCategoryDTO categoryDTO = new AnimalCategoryDTO();
-            categoryDTO.setId(animal.getCategory().getId());
-            categoryDTO.setTypeName(animal.getCategory().getTypeName());
-
-            if (animal.getCategory().getIcon() != null) {
-                AnimalIconDTO iconDTO = new AnimalIconDTO();
-                iconDTO.setId(animal.getCategory().getIcon().getId());
-                iconDTO.setIconPath(animal.getCategory().getIcon().getIconPath());
-                categoryDTO.setIcon(iconDTO);
-            }
-
-            dto.setCategory(categoryDTO);
-        }
+        dto.setCategory(animal.getCategory() != null ? animal.getCategory().getId().toString() : null);
 
         return dto;
     }
@@ -62,18 +45,14 @@ public class AnimalMapper {
         }
 
         if (dto.getCategory() != null) {
-            AnimalCategory category = new AnimalCategory();
-            category.setId(dto.getCategory().getId());
-            category.setTypeName(dto.getCategory().getTypeName());
-
-            if (dto.getCategory().getIcon() != null) {
-                AnimalIcon icon = new AnimalIcon();
-                icon.setId(dto.getCategory().getIcon().getId());
-                icon.setIconPath(dto.getCategory().getIcon().getIconPath());
-                category.setIcon(icon);
+            try {
+                UUID categoryId = UUID.fromString(dto.getCategory());
+                AnimalCategory category = new AnimalCategory();
+                category.setId(categoryId);
+                animal.setCategory(category);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("❌ Invalid category ID format!");
             }
-
-            animal.setCategory(category);
         }
 
         return animal;

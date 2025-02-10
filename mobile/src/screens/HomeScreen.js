@@ -9,30 +9,30 @@ import {
 } from "react-native";
 import WeatherWidget from "../components/WeatherWidget";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useDebounce } from "use-debounce"; // Debounce hook
+import { useDebounce } from "use-debounce"; 
 import { useDispatch } from "react-redux";
 import { resetAnimals } from "../features/animalSlice";
 
 export default function HomeScreen({ navigation }) {
-  const dispatch = useDispatch(); // Access dispatch function
-  const [searchText, setSearchText] = useState(""); // Store search text
-  const [debouncedSearchText] = useDebounce(searchText, 500); // Debounced search text
+  const dispatch = useDispatch(); 
+  const [searchText, setSearchText] = useState(""); 
+  const [debouncedSearchText] = useDebounce(searchText, 500); 
 
   const handleSearch = () => {
     if (debouncedSearchText) {
-      // Reset the animals' state before navigating
+      
       dispatch(resetAnimals());
 
-      // Reset search text to clear the input field
+      
       setSearchText("");
 
-      // Navigate to the AnimalsList and pass the searchText as a parameter
+      
       navigation.navigate("AnimalsList", { searchText: debouncedSearchText });
     }
   };
 
   const handleSearchChange = (text) => {
-    setSearchText(text); // Update state with typed text
+    setSearchText(text); 
   };
 
   return (
@@ -41,8 +41,8 @@ export default function HomeScreen({ navigation }) {
       <SearchInput
         placeholder="Search for sheep by ID"
         value={searchText}
-        onChangeText={handleSearchChange} // Update text on change
-        onSubmitEditing={handleSearch} // Trigger search when user submits
+        onChangeText={handleSearchChange} 
+        onSubmitEditing={handleSearch} 
         placeholderTextColor="black"
       />
       <Grid>

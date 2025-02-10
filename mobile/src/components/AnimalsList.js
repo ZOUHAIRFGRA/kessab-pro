@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { getAnimals, resetAnimals } from "../features/animalSlice"; // import reset action
+import { getAnimals, resetAnimals } from "../features/animalSlice"; 
 import { getBaseURL } from "../api/axiosInstance";
 import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -12,32 +12,32 @@ const AnimalsList = ({ route }) => {
   const dispatch = useDispatch();
   const { animals, loading, error, totalPages } = useSelector((state) => state.animals);
   const [currentPage, setCurrentPage] = useState(0);
-  const [searchText, setSearchText] = useState(route?.params?.searchText || ""); // Track searchText in state
+  const [searchText, setSearchText] = useState(route?.params?.searchText || ""); 
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("🐾 AnimalsList focused, resetting state...");
+      console.log(" AnimalsList focused, resetting state...");
 
-      setCurrentPage(0); // Reset pagination
-      dispatch(resetAnimals()); // 🛑 Reset animal list in Redux
+      setCurrentPage(0); 
+      dispatch(resetAnimals()); 
 
-      // ⏳ Small delay to ensure state resets before fetching
+      
       setTimeout(() => {
         let newSearchText = route?.params?.searchText || "";
         if (!route?.params?.searchText) {
-          console.log("📢 Accessed via Sidebar, resetting searchText...");
+          console.log(" Accessed via Sidebar, resetting searchText...");
           newSearchText = "";
         }
-        setSearchText(newSearchText); // Update state with new search text
-        dispatch(getAnimals({ page: 0, search: newSearchText, filterType: "tag" })); // Fetch fresh data
-      }, 0); // Ensures resetAnimals() completes first
+        setSearchText(newSearchText); 
+        dispatch(getAnimals({ page: 0, search: newSearchText, filterType: "tag" })); 
+      }, 0); 
 
     }, [dispatch, route?.params?.searchText])
   );
 
-  // Log when searchText changes
+  
   useEffect(() => {
-    console.log("🔍 searchText updated:", searchText);
+    console.log(" searchText updated:", searchText);
   }, [searchText]);
 
   const handlePagination = (newPage) => {
@@ -50,13 +50,12 @@ const AnimalsList = ({ route }) => {
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error}</Text>;
 
-  console.log("📦 Rendering with animals.length:", animals.length);
+  console.log(" Rendering with animals.length:", animals.length);
 
   return (
     <View>
       <SectionTitle>Animals</SectionTitle>
 
-      {/* No animals found message */}
       {animals.length === 0 ? (
         <NoAnimalsWrapper>
           <Icon name="emoticon-sad" size={40} color="#D3D3D3" />

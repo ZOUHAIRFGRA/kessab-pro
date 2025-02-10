@@ -25,7 +25,13 @@ export const fetchAnimalById = async (id) => {
 
 export const createAnimal = async (animalData) => {
   try {
-    const response = await axiosInstance.post("/animals", animalData);
+    console.log("animalData", animalData);
+    const response = await axiosInstance.post("/animals", animalData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      transformRequest: (data) => data, // Prevent Axios from converting FormData
+
+    });
+    console.log("response", response);
     return response.data;
   } catch (error) {
     console.error("Error creating animal:", error);
