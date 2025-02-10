@@ -6,8 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SERVER_IP } from "@env"; 
 
 export const getBaseURL = () => {
-  const serverIp = SERVER_IP || "localhost"; 
-console.log("serverIp from axiso:", serverIp);
+  const serverIp = SERVER_IP || "192.168.1.19"; 
+// console.log("serverIp from axiso:", serverIp);
   
   if (Platform.OS === "android") {
     return Constants.executionEnvironment === "expo"
