@@ -12,7 +12,7 @@ import { SERVER_IP } from "@env";
 const AppWrapper = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("Server IP:", SERVER_IP);
+    console.log("Server IP from env:", SERVER_IP);
   }   , [SERVER_IP]);  
 
   useEffect(() => {
