@@ -12,7 +12,6 @@ const AnimalsList = ({ searchText: propSearchText, route }) => {
   const { animals, loading, error, totalPages } = useSelector((state) => state.animals);
   const [currentPage, setCurrentPage] = useState(0);
 
-  // Get searchText from route params if available, otherwise use the prop
   const searchText = route?.params?.searchText ?? propSearchText ?? ""; 
 
   useFocusEffect(

@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addCategory } from "../features/categorySlice";
 import { getBaseURL } from "../api/axiosInstance";
 import { Picker } from "@react-native-picker/picker";
+import { useToast } from "./useToast";
 
 export const useCategorySelector = (
   categories,
@@ -19,7 +20,7 @@ export const useCategorySelector = (
   handleSubmit
 ) => {
   const dispatch = useDispatch();
-
+  const { showSuccessToast, showErrorToast } = useToast();
   const categoryPicker = (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
       {selectedCategory && (
@@ -39,11 +40,13 @@ export const useCategorySelector = (
   const handleAddCategory = () => {
     if (newCategory.trim() && selectedIcon) {
       dispatch(addCategory({ typeName: newCategory, icon: { id: selectedIcon.id } }));
+      showSuccessToast("Category added successfully!");
       setNewCategory("");
       setSelectedIcon(null);
       setShowAddCategory(false);
     } else {
-      alert("Please enter a category name and select an icon!");
+      showErrorToast("Please enter a category name and select an icon!");
+
     }
   };
 

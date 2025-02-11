@@ -11,7 +11,7 @@ const Container = styled(View)({
 export default function MarketplaceScreen() {
   return (
     <Container>
-      <Text>MarketplaceScreen</Text>
+      <Text>This Feature is Coming Soon!!!</Text>
     </Container>
-  );
+  ); 
 }
