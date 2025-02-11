@@ -11,7 +11,6 @@ import Input from "../components/Input";
 import AddCategory from "../components/AddCategory";
 import ImagePickerButton from "../components/ImagePickerButton";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { getCategories } from "../api/categoryApi";
 
 const AddAnimalModal = ({ visible, onClose }) => {
   const dispatch = useDispatch();

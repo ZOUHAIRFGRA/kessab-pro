@@ -12,8 +12,8 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDebounce } from "use-debounce"; 
 import { useDispatch } from "react-redux";
 import { resetAnimals } from "../features/animalSlice";
+import Colors from "../utils/Colors";
 import { useNavigation } from "@react-navigation/native";
-
 export default function HomeScreen() {
 
   const navigation = useNavigation();
@@ -40,7 +40,7 @@ export default function HomeScreen() {
 
   return (
     <Container>
-      <WeatherWidget />
+      {/* <WeatherWidget /> */}
       <SearchInput
         placeholder="Search for sheep by ID"
         value={searchText}
@@ -49,13 +49,13 @@ export default function HomeScreen() {
         placeholderTextColor="black"
       />
       <Grid>
-        {[{ name: "Management", icon: "briefcase" }, { name: "Sales", icon: "cart-outline" }, { name: "Food", icon: "corn" }, { name: "Marketplace", icon: "store" }].map((item) => (
+        {[{ name: "Management", icon: "playlist-edit" }, { name: "Sales", icon: "cart-outline" }, { name: "Food", icon: "corn" }, { name: "Marketplace", icon: "store" }].map((item) => (
           <GridItem
             key={item.name}
             onPress={() => navigation.navigate(item.name)}
             
           >
-            <Icon name={item.icon} size={36} color="#3E4E50" />
+            <Icon name={item.icon} size={36} color="dark" />
             <GridItemText sx={{ variant: "text.subheading", marginTop: 8 }}>
               {item.name}
             </GridItemText>
@@ -77,7 +77,7 @@ export default function HomeScreen() {
         ))}
       </HorizontalScroll>
 
-      <BottomNav>
+      <BottomNav sx={{ marginVertical: 16 }}>
         {["Dashboard", "QRScanner", "Profile"].map((item) => (
           <BottomNavItem
             key={item}
