@@ -1,37 +1,184 @@
-import React, { useEffect } from 'react';
-import { View, Text,ScrollView } from 'react-native';
-import SaleCardView from '../components/sale/SaleCardView';
-import Container from '../components/global/Container';
-import { fetchSales } from '../api/saleApi';
+import { View, Text, ScrollView, TextInput } from "react-native";
+import { styled } from "dripsy";
+import SaleCardView from "../components/sale/SaleCardView";
+import Container from "../components/global/Container";
+import Button from "../components/global/Button";
+import Colors from "../utils/Colors";
+import DropdownComponent from "../components/global/BaseDropdown";
+import React, { useState,useEffect } from "react";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { SearchBar } from "@rneui/themed";
+import { fetchSales } from "../api/saleApi";
+import log from "../utils/Logger";
 
 export default function MySellsScreen() {
 
+  const sales = useState([]);
+
   useEffect(() => {
-      const sales = fetchSales();
-      console.log(sales.then(data => console.log(data)));
-    }); 
-
-
+    fetchSales().then((response) => {
+      log.log("Sales fetched successfully", response);
+    });
+    
+  });
+  const SearchInput = styled(TextInput)({
+    borderWidth: 1,
+    borderColor: "border",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+    height: 48,
+    backgroundColor: "inputBackground",
+  });
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const handleDateChange = (event, selectedDate) => {
+    console.log("selectedDate", selectedDate);
+    setShowDatePicker(null);
+  };
   return (
-    <ScrollView>
-    <Container sx={{
-      display : "flex",
-      flexDirection : "column",
-      gap : 8
-    }}>
-      
-      <SaleCardView/>
-      <SaleCardView/>
-      <SaleCardView/>
-      <SaleCardView/>
-      <SaleCardView/>
-      <SaleCardView/>
-      <SaleCardView/>
-      <SaleCardView/>
-      <SaleCardView/>
-      <SaleCardView/>
+    <>
+      <Container sx={{ paddingX: 12, paddingY: 8 }}>
+        <Container sx={{ display: "flex", flexDirection: "row" }}>
+          <Container sx={{ flex: 6 }}>
+            <SearchBar
+              containerStyle={{
+                backgroundColor: "hidden",
+                padding: 0,
+                marginBottom: 12,
+              }}
+              inputContainerStyle={{ padding: 0 }}
+              round
+              lightTheme
+              placeholder="search by buyer name"
+            />
+          </Container>
+          <Text
+            style={{ flex: 1, textAlign: "center", verticalAlign: "center" }}
+          >
+            <AntDesign
+              style={{ margin: 4 }}
+              color="black"
+              name="calendar"
+              size={42}
+              onPress={() => setShowDatePicker(true)}
+            />
+          </Text>
+        </Container>
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
 
-    </Container>
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 6,
+          }}
+        >
+          <Container sx={{ flex: 1 }}>
+            <DropdownComponent
+              values={[{ label: "Item 1", value: "1" }]}
+              label={"Category"}
+              focusLabel={"..."}
+              notFocusLabel={"Category"}
+              searchLabel={"category name..."}
+              iconName="appstore-o"
+            />
+          </Container>
+          <Container sx={{ flex: 1 }}>
+            <DropdownComponent
+              values={[
+                { label: "FULLY_PAID", value: "FULLY_PAID" },
+                { label: "PARTIALLY_PAID", value: "PARTIALLY_PAID" },
+                { label: "NOT_PAID", value: "NOT_PAID" },
+              ]}
+              label={"Payment"}
+              focusLabel={"..."}
+              notFocusLabel={"Payment"}
+              searchLabel={"Payment type..."}
+              iconName="wallet"
+            />
+          </Container>
+        </Container>
+      </Container>
+
+      <ScrollView>
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            paddingX: 12,
+          }}
+        >
+          <SaleCardView />
+          <SaleCardView />
+          <SaleCardView />
+          <SaleCardView />
+          <SaleCardView />
+          <SaleCardView />
+          <SaleCardView />
+          <SaleCardView />
+          <SaleCardView />
+          <SaleCardView />
+        </Container>
       </ScrollView>
+      <Button
+        type="primary"
+        style={{
+          padding: 12,
+          marginRight: 12,
+          marginLeft: 12,
+          marginBottom: 8,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        textStyle={{
+          color: "white",
+          fontWeight: "bold",
+          textAlign: "center",
+          fontSize: 16,
+        }}
+        icon={{
+          name: "plus",
+          color: Colors.white,
+        }}
+      >
+        Add Sale
+      </Button>
+
+      <Button
+        type="secondary"
+        style={{
+          padding: 12,
+          marginRight: 12,
+          marginLeft: 12,
+          marginBottom: 8,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        textStyle={{
+          color: "white",
+          fontWeight: "bold",
+          textAlign: "center",
+          fontSize: 16,
+        }}
+        icon={{
+          name: "list",
+          color: Colors.white,
+        }}
+      >
+        Show my sells
+      </Button>
+    </>
   );
 }
