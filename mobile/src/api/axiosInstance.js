@@ -7,7 +7,7 @@ import { SERVER_IP } from "@env";
 
 export const getBaseURL = () => {
   const serverIp = SERVER_IP || "192.168.1.8"; 
-console.log("serverIp from axiso:", serverIp);
+  console.log("SERVER_IP from @env:", SERVER_IP); 
 
 if (Platform.OS === "android") {
     return Constants.executionEnvironment === "expo"

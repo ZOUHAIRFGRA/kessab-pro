@@ -16,7 +16,12 @@ const AppWrapper = () => {
   
   useEffect(() => {
     console.log("Server IP from env:", SERVER_IP);
-  }, [SERVER_IP]);
+    Toast.show({
+      type: "info",
+      text1: "Server IP",
+      text2: `Loaded from env: ${SERVER_IP}`,
+    });
+  }, []);
   
   useEffect(() => {
     const loadToken = async () => {
