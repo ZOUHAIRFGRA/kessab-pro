@@ -10,7 +10,7 @@ import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AnimalsList from "../components/AnimalsList";
 import AddTransaction from "../components/AddTransaction";
-import AddAnimalModal from "../components/AddAnimalModal";
+import AddAnimalModal from "./AddAnimalModal";
 import { useDebounce } from "use-debounce";
 import { getAnimals, resetAnimals } from "../features/animalSlice";
 import { useDispatch } from "react-redux";
