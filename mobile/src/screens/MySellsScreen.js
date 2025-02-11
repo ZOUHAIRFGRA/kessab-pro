@@ -1,23 +1,27 @@
-import React from 'react';
-import { View, Text, Button } from 'react-native';
-import { styled } from 'dripsy';
-import { useToast } from "../hooks/useToast";
-
-const Container = styled(View)({
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-});
+import React, { useEffect } from 'react';
+import { View, Text } from 'react-native';
+import SaleCardView from '../components/sale/SaleCardView';
+import Container from '../components/global/Container';
+import { fetchSales } from '../api/saleApi';
 
 export default function MySellsScreen() {
-  const { showSuccessToast, showErrorToast, showInfoToast } = useToast();
+
+  useEffect(() => {
+      const sales = fetchSales();
+      console.log({sales});
+    }); 
+
 
   return (
-    <Container>
-      <Text>My Sells Screen</Text>
-      <Button title="Show Success Toast" onPress={()=>showSuccessToast('succ')} />
-      <Button title="Show Error Toast" onPress={()=>showErrorToast()} />
-      <Button title="Show Info Toast" onPress={()=>showInfoToast()} />
+    <Container sx={{
+      display : "flex",
+      flexDirection : "column",
+      gap : 8
+    }}>
+      <SaleCardView/>
+      <SaleCardView/>
+      <SaleCardView/>
+      <SaleCardView/>
     </Container>
   );
 }
