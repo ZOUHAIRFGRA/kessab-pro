@@ -50,7 +50,7 @@ const AnimalsList = ({ searchText: propSearchText, route }) => {
       ) : (
         <ItemList>
           {animals.map((animal) => (
-            <ListItem key={animal.id}>
+            <ListItem key={animal.id} pressable onPress={() => navigation.navigate("AnimalDetails", { animal })}>
               <Image
                 source={{ uri: `${getBaseURL()}${animal.imagePaths[0]}` }}
                 style={{ width: 50, height: 50, borderRadius: 8 }}
