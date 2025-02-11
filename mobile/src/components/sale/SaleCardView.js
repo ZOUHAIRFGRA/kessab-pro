@@ -1,8 +1,6 @@
 import React from 'react';
-import { styled, useDripsyTheme } from 'dripsy';
 import { View, Text , Image} from 'react-native';
 import Card from '../global/Card';
-import { FontAwesome } from '@expo/vector-icons';
 import IconTag from '../global/IconTag';
 
 
@@ -24,10 +22,10 @@ const SaleCardView = ({sale}) => {
    <View style={{display : "flex",flexDirection : "column",justifyContent:'space-evenly'}}>
    <Text sx={{flex:2}}>Category</Text>
    <View style={{display: 'flex',flexDirection: "row",gap : 6}}>
-      <IconTag tagName="user" color="grey" content="salam" />
+      <IconTag tagName="user" color="grey" content="Abdelhamid" />
+      <IconTag tagName="calendar" color="grey" content="10-10-2024" />
+      <IconTag tagName="dollar" color="grey" content="5" />
   </View>
-  <View style={{display: 'flex',flexDirection: "row",gap : 6}}>
-      <IconTag tagName="user" color="grey" content="salam" />
    </View>
   </Card>
 };
