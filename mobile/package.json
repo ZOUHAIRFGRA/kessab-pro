@@ -4,12 +4,13 @@
   "main": "index.js",
   "scripts": {
     "update-ip": "node update-ip.js",
-    "start": "npm run update-ip && expo start",
+    "start": "npm run update-ip && expo start -c",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^14.0.4",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/datetimepicker": "8.2.0",
     "@react-native-picker/picker": "2.9.0",

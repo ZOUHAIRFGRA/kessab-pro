@@ -1,51 +1,61 @@
-import { styled } from "dripsy";
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity, Dimensions, FlatList } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getAnimalMedicalLogs,
-  modifyAnimalMedicalLog,
-} from "../features/animalMedicalLogSlice";
-import {
-  getAnimalActivitiesLogs,
-  modifyAnimalActivityLog,
-} from "../features/animalActivitiesLogSlice";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getBaseURL } from "../api/axiosInstance";
-import { editAnimal } from "../features/animalSlice";
+import { editAnimal, getAnimalById } from "../features/animalSlice";
+import { AnimalImage, Container, InfoText, InputField } from "../components/AnimalDetailsComponents/sharedStyles";
+import { MedicalLogsScreen } from "../components/AnimalDetailsComponents/MedicalLogsScreen";
+import {ActivityLogsScreen} from "../components/AnimalDetailsComponents/ActivityLogsScreen";
+
+const Tab = createMaterialTopTabNavigator();
 
 const AnimalDetailsScreen = ({ route, navigation }) => {
-  const { animal: initialAnimal } = route.params; 
+  const { animalId } = route.params;
   const dispatch = useDispatch();
-  const animals = useSelector((state) => state.animals.animals); 
+  const animal = useSelector((state) => state.animals.animals.find((a) => a.id === animalId));
+  const loading = useSelector((state) => state.animals.loading);
+  const error = useSelector((state) => state.animals.error);
+
   const [editing, setEditing] = useState(false);
-  const [editedAnimal, setEditedAnimal] = useState({ ...initialAnimal });
-
-  
-  useEffect(() => {
-    dispatch(getAnimalMedicalLogs(editedAnimal.id));
-    dispatch(getAnimalActivitiesLogs(editedAnimal.id));
-  }, [dispatch, editedAnimal.id]);
+  const [editedAnimal, setEditedAnimal] = useState({});
+  const flatListRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const updatedAnimal = animals.find((a) => a.id === initialAnimal.id);
-    if (updatedAnimal) {
-      setEditedAnimal(updatedAnimal); 
+    if (animalId) {
+      dispatch(getAnimalById(animalId));
     }
-  }, [animals, initialAnimal.id]); 
+  }, [dispatch, animalId]);
+
+  useEffect(() => {
+    if (animal) {
+      setEditedAnimal(animal);
+    }
+  }, [animal]);
 
   const handleSave = () => {
     dispatch(editAnimal({ id: editedAnimal.id, updatedAnimal: editedAnimal }));
     setEditing(false);
   };
+
+  const handleNext = () => {
+    if (currentIndex < editedAnimal.imagePaths.length - 1) {
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+      flatListRef.current.scrollToIndex({ index: currentIndex + 1, animated: true });
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+      flatListRef.current.scrollToIndex({ index: currentIndex - 1, animated: true });
+    }
+  };
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error}</Text>;
 
   return (
     <Container>
@@ -53,74 +63,48 @@ const AnimalDetailsScreen = ({ route, navigation }) => {
         <Tab.Screen name="Details">
           {() => (
             <ScrollView style={{ padding: 16 }}>
-              <AnimalImage source={{ uri: `${getBaseURL()}${editedAnimal.imagePaths}` }} />
+              {editedAnimal.imagePaths && editedAnimal.imagePaths.length > 0 && (
+                <View style={{ alignItems: "center" }}>
+                  <FlatList
+                    ref={flatListRef}
+                    data={editedAnimal.imagePaths}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                      <AnimalImage source={{ uri: `${getBaseURL()}${item}` }} />
+                    )}
+                    scrollEnabled={false} 
+                  />
+                  <View style={{ flexDirection: "row", marginTop: 10 }}>
+                    <TouchableOpacity onPress={handlePrev} disabled={currentIndex === 0} style={{ marginRight: 10 }}>
+                      <MaterialIcons name="chevron-left" size={30} color={currentIndex === 0 ? "gray" : "black"} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleNext}
+                      disabled={currentIndex === editedAnimal.imagePaths.length - 1}
+                    >
+                      <MaterialIcons
+                        name="chevron-right"
+                        size={30}
+                        color={currentIndex === editedAnimal.imagePaths.length - 1 ? "gray" : "black"}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
 
               {editing ? (
                 <>
-                  <InputField
-                    value={editedAnimal.tag}
-                    onChangeText={(text) =>
-                      setEditedAnimal((prevState) => ({
-                        ...prevState,
-                        tag: text,
-                      }))
-                    }
-                  />
-                  <InputField
-                    value={editedAnimal.price.toString()} 
-                    onChangeText={(text) =>
-                      setEditedAnimal((prevState) => ({
-                        ...prevState,
-                        price: parseFloat(text),
-                      }))
-                    }
-                    keyboardType="numeric"
-                  />
-                  <InputField
-                    value={editedAnimal.weight.toString()} 
-                    onChangeText={(text) =>
-                      setEditedAnimal((prevState) => ({
-                        ...prevState,
-                        weight: parseFloat(text),
-                      }))
-                    }
-                    keyboardType="numeric"
-                  />
-                  <InputField
-                    value={editedAnimal.sex}
-                    onChangeText={(text) =>
-                      setEditedAnimal((prevState) => ({
-                        ...prevState,
-                        sex: text,
-                      }))
-                    }
-                  />
-                  <InputField
-                    value={editedAnimal.birthDate}
-                    onChangeText={(text) =>
-                      setEditedAnimal((prevState) => ({
-                        ...prevState,
-                        birthDate: text,
-                      }))
-                    }
-                    placeholder="YYYY-MM-DD"
-                  />
-                  <InputField
-                    value={editedAnimal.pickUpDate}
-                    onChangeText={(text) =>
-                      setEditedAnimal((prevState) => ({
-                        ...prevState,
-                        pickUpDate: text,
-                      }))
-                    }
-                    placeholder="YYYY-MM-DD"
-                  />
-                  <TouchableOpacity onPress={handleSave}>
-                    <Text>💾 Save</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setEditing(false)}>
-                    <Text>❌ Cancel</Text>
-                  </TouchableOpacity>
+                  <InputField value={editedAnimal.tag} onChangeText={(text) => setEditedAnimal({ ...editedAnimal, tag: text })} />
+                  <InputField value={editedAnimal.price.toString()} onChangeText={(text) => setEditedAnimal({ ...editedAnimal, price: parseFloat(text) })} keyboardType="numeric" />
+                  <InputField value={editedAnimal.weight.toString()} onChangeText={(text) => setEditedAnimal({ ...editedAnimal, weight: parseFloat(text) })} keyboardType="numeric" />
+                  <InputField value={editedAnimal.sex} onChangeText={(text) => setEditedAnimal({ ...editedAnimal, sex: text })} />
+                  <InputField value={editedAnimal.birthDate} onChangeText={(text) => setEditedAnimal({ ...editedAnimal, birthDate: text })} placeholder="YYYY-MM-DD" />
+                  <InputField value={editedAnimal.pickUpDate} onChangeText={(text) => setEditedAnimal({ ...editedAnimal, pickUpDate: text })} placeholder="YYYY-MM-DD" />
+                  <TouchableOpacity onPress={handleSave}><Text>💾 Save</Text></TouchableOpacity>
+                  <TouchableOpacity onPress={() => setEditing(false)}><Text>❌ Cancel</Text></TouchableOpacity>
                 </>
               ) : (
                 <>
@@ -138,162 +122,17 @@ const AnimalDetailsScreen = ({ route, navigation }) => {
             </ScrollView>
           )}
         </Tab.Screen>
-        <Tab.Screen name="Medical Logs" component={MedicalLogsScreen} />
-        <Tab.Screen name="Activity Logs" component={ActivityLogsScreen} />
+        <Tab.Screen name="Medical Logs" component={MedicalLogsScreen}  initialParams={{ animalId }} 
+ />
+        <Tab.Screen name="Activity Logs" component={ActivityLogsScreen} initialParams={{animalId}} />
       </Tab.Navigator>
     </Container>
   );
 };
 
-
-const MedicalLogsScreen = () => {
-  const { medicalLogs } = useSelector((state) => state.animalMedicalLogs);
-  const dispatch = useDispatch();
-  const [editing, setEditing] = useState(null);
-  const [editedLog, setEditedLog] = useState({});
-
-  const handleEdit = (log) => {
-    setEditing(log.id);
-    setEditedLog({ ...log });
-  };
-
-  const handleSave = () => {
-    dispatch(
-      modifyAnimalMedicalLog({ logId: editedLog.id, logData: editedLog })
-    );
-    setEditing(null);
-  };
-
-  return (
-    <ScrollView contentContainerStyle={{ padding: 16 }}>
-      {medicalLogs.length > 0 ? (
-        medicalLogs.map((log) => (
-          <LogCard key={log.id}>
-            {editing === log.id ? (
-              <>
-                <InputField
-                  value={editedLog.description}
-                  onChangeText={(text) =>
-                    setEditedLog({ ...editedLog, description: text })
-                  }
-                />
-                <TouchableOpacity onPress={handleSave}>
-                  <Text>💾 Save</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setEditing(null)}>
-                  <Text>❌ Cancel</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                <LogText>📅 {log.logDate}</LogText>
-                <LogText>📝 {log.description}</LogText>
-                <TouchableOpacity onPress={() => handleEdit(log)}>
-                  <MaterialIcons name="edit" size={20} color="blue" />
-                </TouchableOpacity>
-              </>
-            )}
-          </LogCard>
-        ))
-      ) : (
-        <EmptyState>
-          <MaterialIcons name="error-outline" size={50} color="gray" />
-          <Text>No medical logs found.</Text>
-        </EmptyState>
-      )}
-    </ScrollView>
-  );
-};
-
-const ActivityLogsScreen = () => {
-  const { activitiesLogs } = useSelector((state) => state.animalActivitiesLogs);
-  const dispatch = useDispatch();
-  const [editing, setEditing] = useState(null);
-  const [editedLog, setEditedLog] = useState({});
-
-  const handleEdit = (log) => {
-    setEditing(log.id);
-    setEditedLog({ ...log });
-  };
-
-  const handleSave = () => {
-    dispatch(
-      modifyAnimalActivityLog({ logId: editedLog.id, logData: editedLog })
-    );
-    setEditing(null);
-  };
-
-  return (
-    <ScrollView contentContainerStyle={{ padding: 16 }}>
-      {activitiesLogs.length > 0 ? (
-        activitiesLogs.map((log) => (
-          <LogCard key={log.id}>
-            {editing === log.id ? (
-              <>
-                <InputField
-                  value={editedLog.activity}
-                  onChangeText={(text) =>
-                    setEditedLog({ ...editedLog, activity: text })
-                  }
-                />
-                <TouchableOpacity onPress={handleSave}>
-                  <Text>💾 Save</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                <LogText>📅 {log.logDate}</LogText>
-                <LogText>🏃 Activity: {log.activity}</LogText>
-                <TouchableOpacity onPress={() => handleEdit(log)}>
-                  <MaterialIcons name="edit" size={20} color="blue" />
-                </TouchableOpacity>
-              </>
-            )}
-          </LogCard>
-        ))
-      ) : (
-        <EmptyState>
-          <MaterialIcons name="error-outline" size={50} color="gray" />
-          <Text>No activity logs found.</Text>
-        </EmptyState>
-      )}
-    </ScrollView>
-  );
-};
-
-
-
-const Tab = createMaterialTopTabNavigator();
-
-const Container = styled(View)({ flex: 1, backgroundColor: "background" });
-const AnimalImage = styled(Image)({
-  width: "100%",
-  height: 200,
-  borderRadius: 10,
-  marginBottom: 16,
-});
-const InfoText = styled(Text)({
-  fontSize: 16,
-  color: "text",
-  paddingVertical: 4,
-  fontWeight: "500",
-});
-const EmptyState = styled(View)({ alignItems: "center", marginTop: 20 });
-const LogCard = styled(View)({
-  backgroundColor: "cardBackground",
-  padding: 14,
-  marginBottom: 10,
-  borderRadius: 8,
-});
-const LogText = styled(Text)({
-  fontSize: 15,
-  fontWeight: "500",
-  color: "text",
-});
-const InputField = styled(TextInput)({
-  fontSize: 15,
-  color: "text",
-  borderBottomWidth: 1,
-  marginBottom: 6,
-});
 export default AnimalDetailsScreen;
+
+
+
+
+
