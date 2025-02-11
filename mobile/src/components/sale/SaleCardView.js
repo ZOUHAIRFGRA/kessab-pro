@@ -25,9 +25,9 @@ const SaleCardView = ({sale}) => {
    <Text sx={{flex:2}}>Category</Text>
    <View style={{display: 'flex',flexDirection: "row",gap : 6}}>
       <IconTag tagName="user" color="grey" content="salam" />
-      <IconTag tagName="calendar" color="grey" content="10-10-2024" />
-      <IconTag tagName="dollar" color="grey" content="5 000" />
   </View>
+  <View style={{display: 'flex',flexDirection: "row",gap : 6}}>
+      <IconTag tagName="user" color="grey" content="salam" />
    </View>
   </Card>
 };
