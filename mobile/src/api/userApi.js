@@ -10,7 +10,6 @@ export const getUserProfile = async () => {
   }
 };
 
-// API call to update the user's profile
 export const updateUserProfile = async (updatedUser) => {
   try {
     const response = await axiosInstance.put('/api/users/update', updatedUser);

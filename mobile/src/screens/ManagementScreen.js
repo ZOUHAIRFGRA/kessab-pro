@@ -1,85 +1,115 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AnimalsList from "../components/AnimalsList";
 import AddTransaction from "../components/AddTransaction";
-import AddAnimalModal from "../components/AddAnimalModal";
+import AddAnimalModal from "./AddAnimalModal";
 import { useDebounce } from "use-debounce";
 import { getAnimals, resetAnimals } from "../features/animalSlice";
 import { useDispatch } from "react-redux";
-import { useFocusEffect } from '@react-navigation/native'; 
+import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
-export default function ManagementScreen({ navigation }) {
+export default function ManagementScreen() {
   const [transactionModalVisible, setTransactionModalVisible] = useState(false);
   const [addAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [debouncedSearchText] = useDebounce(searchText, 500); 
+  const [debouncedSearchText] = useDebounce(searchText, 1000);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
-  
   const handleSearchChange = (text) => {
     setSearchText(text);
   };
 
-  
   const resetSearchText = () => {
-    setSearchText(""); 
+    setSearchText("");
   };
 
-  
   useFocusEffect(
     React.useCallback(() => {
-      console.log("ManagementScreen focused");
-      dispatch(resetAnimals()); 
-      console.log("'''''''''''''''''''''''Animals reset");
-      dispatch(getAnimals({ page: 0, search: "", filterType: "tag" })); 
-    }, [dispatch]) 
+      console.log("ManagementScreen focused - resetting state");
+      dispatch(resetAnimals());
+      dispatch(getAnimals({ page: 0, search: "", filterType: "tag" }));
+    }, [dispatch])
   );
 
   useEffect(() => {
-    if (searchText) {
-      
-      setCurrentPage(0);
-    }
-  }, [searchText]);
-  
+    const unsubscribe = navigation.addListener("focus", () => {
+      console.log("ManagementScreen re-entered - resetting state");
+      dispatch(resetAnimals());
+      setSearchText("");
+      dispatch(getAnimals({ page: 0, search: "", filterType: "tag" }));
+    });
+
+    return unsubscribe;
+  }, [navigation, dispatch]);
 
   return (
     <Container>
       <SectionTitle>Quick Actions</SectionTitle>
       <QuickActionList>
-        {[{ name: "Add Animal", icon: "plus", action: () => setAddAnimalModalVisible(true) },
-          { name: "+ Transaction", icon: "dollar", action: () => setTransactionModalVisible(true) }].map((action, index) => (
-            <QuickActionItem key={index} onPress={action.action}>
-              <Icon name={action.icon} color="#4A90E2" size={36} />
-              <Text>{action.name}</Text>
-            </QuickActionItem>
+        {[
+          {
+            name: "Add Animal",
+            icon: "plus",
+            action: () => setAddAnimalModalVisible(true),
+          },
+          {
+            name: "+ Transaction",
+            icon: "dollar",
+            action: () => setTransactionModalVisible(true),
+          },
+        ].map((action, index) => (
+          <QuickActionItem key={index} onPress={action.action}>
+            <Icon name={action.icon} color="#4A90E2" size={36} />
+            <Text>{action.name}</Text>
+          </QuickActionItem>
         ))}
       </QuickActionList>
 
       <SearchInput
         placeholder="Search by tag"
         value={searchText}
-        onChangeText={handleSearchChange} 
+        onChangeText={handleSearchChange}
         placeholderTextColor="black"
         onSubmitEditing={() => {
-          dispatch(resetAnimals()); 
-          resetSearchText(); 
-        }} 
+          dispatch(resetAnimals());
+          dispatch(
+            getAnimals({ page: 0, search: searchText, filterType: "tag" })
+          );
+         
+        }}
       />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {/* Pass debounced search text to AnimalsList component */}
         <AnimalsList searchText={debouncedSearchText} />
 
-        {transactionModalVisible ? (
-          <AddTransaction onClose={() => { setTransactionModalVisible(false); resetSearchText(); }} />
-        ) : null}
+        {transactionModalVisible && (
+          <AddTransaction
+            onClose={() => {
+              setTransactionModalVisible(false);
+              resetSearchText();
+            }}
+          />
+        )}
 
-        {addAnimalModalVisible ? (
-          <AddAnimalModal visible={addAnimalModalVisible} onClose={() => { setAddAnimalModalVisible(false); resetSearchText(); }} />
-        ) : null}
+        {addAnimalModalVisible && (
+          <AddAnimalModal
+            visible={addAnimalModalVisible}
+            onClose={() => {
+              setAddAnimalModalVisible(false);
+              resetSearchText();
+            }}
+          />
+        )}
       </ScrollView>
     </Container>
   );

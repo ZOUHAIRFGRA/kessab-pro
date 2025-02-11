@@ -7,19 +7,20 @@ import theme from "./src/styles/theme";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { store } from "./src/store/store";
 import { setToken } from "./src/features/authSlice"; // Import setToken action
-import { SERVER_IP } from "@env"; 
+import { SERVER_IP } from "@env";
+import 'react-native-toast-message';
+import Toast from 'react-native-toast-message'; // Import the Toast component
 
 const AppWrapper = () => {
   const dispatch = useDispatch();
+  
   useEffect(() => {
     console.log("Server IP from env:", SERVER_IP);
-  }   , [SERVER_IP]);  
-
+  }, [SERVER_IP]);
+  
   useEffect(() => {
     const loadToken = async () => {
-      const token = await AsyncStorage.getItem("authToken")
-      // console.log("Token from AsyncStorage:", token);
-      // console.log(token);
+      const token = await AsyncStorage.getItem("authToken");
       if (token) {
         dispatch(setToken(token)); 
       }
@@ -42,6 +43,7 @@ export default function App() {
         >
           <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
           <AppWrapper />
+          <Toast innerRef={(ref) => Toast.setRef(ref)} /> 
         </View>
       </DripsyProvider>
     </Provider>
