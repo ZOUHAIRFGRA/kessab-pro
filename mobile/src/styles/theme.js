@@ -1,9 +1,10 @@
 import { makeTheme } from "dripsy";
+import Colors from "../utils/Colors";
 
 const theme = makeTheme({
   colors: {
-    primary: '#4CAF50', 
-    secondary: '#FF9800', 
+    primary: Colors.primary, 
+    secondary: Colors.secondary, 
     background: '#F0F4C3', 
     text: '#3E4E50', 
     muted: '#6B8E23', 
