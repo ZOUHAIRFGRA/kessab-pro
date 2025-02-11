@@ -12,8 +12,8 @@ const Tag = styled(View)(
     }
 )
 
-const IconTag = ({tagName,color,content}) => {
-    return <Tag sx={{display:"flex",flexDirection:"row",alignItems:"center",gap:3,paddingY : 1,paddingX : 6}}>
+const IconTag = ({tagName,color,content,style}) => {
+    return <Tag sx={{display:"flex",flexDirection:"row",alignItems:"center",gap:3,paddingY : 1,paddingX : 6,...style}}>
         <FontAwesome name={tagName} size={16} color={color} sx={{ marginRight: 4 }} />
         <Text>{content}</Text>
     </Tag>
