@@ -1,4 +1,3 @@
-import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 
 export const useImagePicker = (images, setImages) => {
@@ -26,5 +25,9 @@ export const useImagePicker = (images, setImages) => {
     }
   };
 
-  return { pickImages, takeImage };
+  const removeImage = (index) => {
+    setImages(images.filter((_, i) => i !== index)); 
+  };
+
+  return { pickImages, takeImage, removeImage };
 };

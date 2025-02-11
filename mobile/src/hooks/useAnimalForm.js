@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
 import { addAnimal } from "../features/animalSlice";
 import * as ImagePicker from "expo-image-picker";
+import { useToast } from "./useToast";
+import { getCategories } from "../api/categoryApi";
+import { fetchCategories } from "../features/categorySlice";
 
 export const useAnimalForm = (onClose, dispatch) => {
   const [tag, setTag] = useState("");
@@ -14,6 +16,7 @@ export const useAnimalForm = (onClose, dispatch) => {
   const [newCategory, setNewCategory] = useState("");
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [showAddCategory, setShowAddCategory] = useState(false);
+  const { showSuccessToast, showErrorToast } = useToast(); 
 
   
   useEffect(() => {
@@ -27,6 +30,7 @@ export const useAnimalForm = (onClose, dispatch) => {
         alert("Gallery permission is required.");
       }
     };
+    dispatch(fetchCategories())
 
     getPermissions();
   }, []);
@@ -55,10 +59,11 @@ export const useAnimalForm = (onClose, dispatch) => {
 
     try {
       await dispatch(addAnimal(formData));
+      showSuccessToast('Animal added successfully!');
       onClose();
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Failed to add animal.");
+        showErrorToast('Error adding animal!');
     }
   };
 

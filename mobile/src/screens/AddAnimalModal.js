@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, View, Text, Button, TouchableOpacity, ScrollView, Image, KeyboardAvoidingView, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { styled } from "dripsy";
@@ -11,6 +11,7 @@ import Input from "../components/Input";
 import AddCategory from "../components/AddCategory";
 import ImagePickerButton from "../components/ImagePickerButton";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { getCategories } from "../api/categoryApi";
 
 const AddAnimalModal = ({ visible, onClose }) => {
   const dispatch = useDispatch();
@@ -41,9 +42,11 @@ const AddAnimalModal = ({ visible, onClose }) => {
     handleSubmit,
   } = useAnimalForm(onClose, dispatch);
 
-  const { pickImages, takeImage } = useImagePicker(images, setImages);
+
+  const { pickImages, takeImage,removeImage } = useImagePicker(images, setImages);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date()); 
+  const [selectedImage, setSelectedImage] = useState(null); 
 
   const { categoryPicker, handleAddCategory } = useCategorySelector(
     categories,
@@ -66,6 +69,15 @@ const AddAnimalModal = ({ visible, onClose }) => {
       setBirthDate(format(selectedDate, 'yyyy-MM-dd')); 
     }
   };
+
+    
+    const handleImageClick = (imageUri) => {
+      setSelectedImage(imageUri); 
+    };
+
+    const closeModal = () => {
+      setSelectedImage(null);
+    };
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
@@ -126,9 +138,26 @@ const AddAnimalModal = ({ visible, onClose }) => {
               <ImagePickerButton onPress={pickImages}>Select Images from Gallery</ImagePickerButton>
               <ImagePickerButton onPress={takeImage}>Take Image with Camera</ImagePickerButton>
   
-              <ScrollView horizontal style={{ marginVertical: 10 }}>
+             <ScrollView horizontal style={{ marginVertical: 10 }}>
                 {images.map((img, index) => (
-                  <Image key={index} source={{ uri: img }} style={{ width: 80, height: 80, margin: 5 }} />
+                  <View key={index} style={{ position: "relative" }}>
+                    <TouchableOpacity onPress={() => handleImageClick(img)}>
+                      <Image source={{ uri: img }} style={{ width: 80, height: 80, margin: 5 }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => removeImage(index)}
+                      style={{
+                        position: "absolute",
+                        top: -5,
+                        right: -5,
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        borderRadius: 15,
+                        padding: 5,
+                      }}
+                    >
+                      <Text style={{ color: "white", fontSize: 16 }}>❌</Text>
+                    </TouchableOpacity>
+                  </View>
                 ))}
               </ScrollView>
   
@@ -138,6 +167,22 @@ const AddAnimalModal = ({ visible, onClose }) => {
           </Container>
         </KeyboardAvoidingView>
       </View>
+        {selectedImage && (
+        <Modal visible={true} transparent={true} animationType="fade">
+          <TouchableOpacity style={{ flex: 1 }} onPress={closeModal}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'rgba(0,0,0,0.8)',
+              }}
+            >
+              <Image source={{ uri: selectedImage }} style={{ width: '90%', height: '80%', resizeMode: 'contain' }} />
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      )}
     </Modal>
   );
   

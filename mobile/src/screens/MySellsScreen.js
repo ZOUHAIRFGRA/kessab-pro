@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import { styled } from 'dripsy';
+import { useToast } from "../hooks/useToast";
 
 const Container = styled(View)({
   flex: 1,
@@ -9,9 +10,14 @@ const Container = styled(View)({
 });
 
 export default function MySellsScreen() {
+  const { showSuccessToast, showErrorToast, showInfoToast } = useToast();
+
   return (
     <Container>
-      <Text>MySellsScreen</Text>
+      <Text>My Sells Screen</Text>
+      <Button title="Show Success Toast" onPress={()=>showSuccessToast('succ')} />
+      <Button title="Show Error Toast" onPress={()=>showErrorToast()} />
+      <Button title="Show Info Toast" onPress={()=>showInfoToast()} />
     </Container>
   );
 }
