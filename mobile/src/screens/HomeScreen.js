@@ -12,8 +12,11 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDebounce } from "use-debounce"; 
 import { useDispatch } from "react-redux";
 import { resetAnimals } from "../features/animalSlice";
+import { useNavigation } from "@react-navigation/native";
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
+
+  const navigation = useNavigation();
   const dispatch = useDispatch(); 
   const [searchText, setSearchText] = useState(""); 
   const [debouncedSearchText] = useDebounce(searchText, 500); 
@@ -50,6 +53,7 @@ export default function HomeScreen({ navigation }) {
           <GridItem
             key={item.name}
             onPress={() => navigation.navigate(item.name)}
+            
           >
             <Icon name={item.icon} size={36} color="#3E4E50" />
             <GridItemText sx={{ variant: "text.subheading", marginTop: 8 }}>

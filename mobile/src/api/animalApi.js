@@ -86,15 +86,15 @@ export const fetchAnimalActivitiesLogs = async (animalId) => {
   }
 };
 
-export const addAnimalActivitiesLog = async (animalId, logData) => {
+export const addAnimalActivitiesLog = async (logData) => {
   try {
     const response = await axiosInstance.post(
-      `/animal-activities-logs/animal/${animalId}`,
+      `/animal-activities-logs`,
       logData
     );
     return response.data;
   } catch (error) {
-    console.error(`Error adding activity log for animal ${animalId}:`, error);
+    console.error(`Error adding activity log for animal ${logData.animalId}:`, error);
     throw error;
   }
 };
@@ -112,15 +112,15 @@ export const updateAnimalActivitiesLog = async (logId, logData) => {
   }
 };
 
-export const addAnimalMedicalLog = async (animalId, logData) => {
+export const addAnimalMedicalLog = async (logData) => {
   try {
     const response = await axiosInstance.post(
-      `/animal-medical-logs/animal/${animalId}`,
+      `/animal-medical-logs`,
       logData
     );
     return response.data;
   } catch (error) {
-    console.error(`Error adding medical log for animal ${animalId}:`, error);
+    console.error(`Error adding medical log for animal ${logData.animalId}:`, error);
     throw error;
   }
 };

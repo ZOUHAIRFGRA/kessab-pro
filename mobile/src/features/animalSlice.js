@@ -4,6 +4,7 @@ import {
   createAnimal,
   updateAnimal,
   deleteAnimal,
+  fetchAnimalById
 } from "../api/animalApi";
 
 
@@ -34,28 +35,36 @@ export const removeAnimal = createAsyncThunk("animals/delete", async (id) => {
 });
 
 
+export const getAnimalById = createAsyncThunk(
+  "animals/fetchById",
+  async (id) => {
+    const response = await fetchAnimalById(id); 
+    return response;
+  }
+);
+
 const animalSlice = createSlice({
   name: "animals",
   initialState: {
     animals: [],
+    animal: null,  
     loading: false,
     error: null,
     page: 0,
     totalPages: 0,
   },
   reducers: {
-    
     resetAnimals: (state) => {
-      state.animals = []; 
+      state.animals = [];
+      state.animal = null;  
       state.loading = false;
       state.error = null;
-      state.page = 0; 
-      state.totalPages = 0; 
+      state.page = 0;
+      state.totalPages = 0;
     },
   },
   extraReducers: (builder) => {
     builder
-      
       .addCase(getAnimals.pending, (state) => {
         state.loading = true;
       })
@@ -71,18 +80,27 @@ const animalSlice = createSlice({
       })
 
       
-      .addCase(addAnimal.fulfilled, (state, action) => {
-        state.animals.push(action.payload);
+      .addCase(getAnimalById.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAnimalById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.animal = action.payload;  
+      })
+      .addCase(getAnimalById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch animal details.";
       })
 
       
+      .addCase(addAnimal.fulfilled, (state, action) => {
+        state.animals.push(action.payload);
+      })
       .addCase(editAnimal.fulfilled, (state, action) => {
         state.animals = state.animals.map((a) =>
           a.id === action.payload.id ? action.payload : a
         );
       })
-
-      
       .addCase(removeAnimal.fulfilled, (state, action) => {
         state.animals = state.animals.filter((a) => a.id !== action.payload);
       });
@@ -91,3 +109,4 @@ const animalSlice = createSlice({
 
 export const { resetAnimals } = animalSlice.actions;
 export default animalSlice.reducer;
+

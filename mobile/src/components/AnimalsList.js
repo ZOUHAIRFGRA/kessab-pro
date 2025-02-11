@@ -5,10 +5,11 @@ import { getAnimals, resetAnimals } from "../features/animalSlice";
 import { getBaseURL } from "../api/axiosInstance";
 import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 const AnimalsList = ({ searchText: propSearchText, route }) => { 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const { animals, loading, error, totalPages } = useSelector((state) => state.animals);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -32,6 +33,9 @@ const AnimalsList = ({ searchText: propSearchText, route }) => {
       dispatch(getAnimals({ page: newPage, search: searchText, filterType: "tag" })); 
     }
   };
+  const handleAnimalClick = (id) => {
+    navigation.navigate('AnimalDetails', { animalId: id }); 
+  };
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error}</Text>;
@@ -50,7 +54,7 @@ const AnimalsList = ({ searchText: propSearchText, route }) => {
       ) : (
         <ItemList>
           {animals.map((animal) => (
-            <ListItem key={animal.id} pressable onPress={() => navigation.navigate("AnimalDetails", { animal })}>
+            <ListItem key={animal.id} onPress={() => handleAnimalClick(animal.id)} >
               <Image
                 source={{ uri: `${getBaseURL()}${animal.imagePaths[0]}` }}
                 style={{ width: 50, height: 50, borderRadius: 8 }}

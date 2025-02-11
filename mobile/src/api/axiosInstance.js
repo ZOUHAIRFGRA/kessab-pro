@@ -19,7 +19,7 @@ if (Platform.OS === "android") {
       : `http://${serverIp}:8080`;
   }
 
-  return `http://${serverIp}:8080`;
+  return `http://localhost:8080`;
 };
 
 const axiosInstance = axios.create({
