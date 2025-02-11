@@ -1,17 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
-import { styled } from 'dripsy';
-
-const Container = styled(View)({
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-});
+import SaleCardView from '../components/sale/SaleCardView';
+import Container from '../components/global/Container';
+import { fetchSales } from '../api/saleApi';
 
 export default function MySellsScreen() {
+
+  useEffect(() => {
+      const sales = fetchSales();
+      console.log({sales});
+    }); 
+
+
   return (
-    <Container>
-      <Text>MySellsScreen</Text>
+    <Container sx={{
+      display : "flex",
+      flexDirection : "column",
+      gap : 8
+    }}>
+      <SaleCardView/>
+      <SaleCardView/>
+      <SaleCardView/>
+      <SaleCardView/>
     </Container>
   );
 }
