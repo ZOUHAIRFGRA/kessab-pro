@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { 
   fetchAnimalMedicalLogs, 
   addAnimalMedicalLog, 
-  updateAnimalMedicalLog 
+  updateAnimalMedicalLog,
+  removeAnimalMedicalLog
 } from "../api/animalApi";
 
 // Fetch medical logs
@@ -17,8 +18,8 @@ export const getAnimalMedicalLogs = createAsyncThunk(
 // Add new medical log
 export const createAnimalMedicalLog = createAsyncThunk(
   "animalMedicalLogs/add",
-  async ({ animalId, logData }) => {
-    const response = await addAnimalMedicalLog(animalId, logData);
+  async ( logData ) => {
+    const response = await addAnimalMedicalLog(logData);
     return response;
   }
 );
@@ -29,6 +30,14 @@ export const modifyAnimalMedicalLog = createAsyncThunk(
   async ({ logId, logData }) => {
     const response = await updateAnimalMedicalLog(logId, logData);
     return response;
+  }
+);
+
+export const deleteAnimalMedicalLog = createAsyncThunk(
+  "animalMedicalLogs/delete",
+  async (logId) => {
+    await removeAnimalMedicalLog(logId);
+    return logId;
   }
 );
 
@@ -55,6 +64,11 @@ const animalMedicalLogSlice = createSlice({
       })
       .addCase(createAnimalMedicalLog.fulfilled, (state, action) => {
         state.medicalLogs.push(action.payload);
+      })
+      .addCase(deleteAnimalMedicalLog.fulfilled, (state, action) => {
+        state.medicalLogs = state.medicalLogs.filter(
+          (log) => log.id !== action.payload
+        );
       })
       .addCase(modifyAnimalMedicalLog.fulfilled, (state, action) => {
         state.medicalLogs = state.medicalLogs.map((log) =>
