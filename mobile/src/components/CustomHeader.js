@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Colors from '../utils/Colors';
+import Container from './global/Container';
 
 const CustomHeader = ({ navigation, options }) => {
   return (
@@ -8,7 +10,9 @@ const CustomHeader = ({ navigation, options }) => {
       <TouchableOpacity onPress={() => navigation.openDrawer()}>
         <Ionicons name="menu" size={24} color="#fff" />
       </TouchableOpacity>
+      <Container sx={{ display: 'flex', flexDirection: 'row',justifyContent: 'center',alignItems: 'center'}}>
       <Text style={styles.headerTitle}>{options.title || 'KessabPro App'}</Text>
+      </Container>
     </View>
   );
 };
@@ -16,10 +20,10 @@ const CustomHeader = ({ navigation, options }) => {
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
+    gap: 16,
     alignItems: 'center',
-    justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: '#6200ee',
+    backgroundColor: Colors.primary,
   },
   headerTitle: {
     color: '#fff',
