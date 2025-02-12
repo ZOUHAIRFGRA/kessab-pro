@@ -35,7 +35,6 @@ const saleSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      
       .addCase(getSales.pending, (state) => {
         state.loading = true;
       })
@@ -47,20 +46,14 @@ const saleSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-
-      
       .addCase(addSale.fulfilled, (state, action) => {
         state.sales.push(action.payload);
       })
-
-      
       .addCase(editSale.fulfilled, (state, action) => {
         state.sales = state.sales.map((s) =>
           s.id === action.payload.id ? action.payload : s
         );
       })
-
-      
       .addCase(removeSale.fulfilled, (state, action) => {
         state.sales = state.sales.filter((s) => s.id !== action.payload);
       });
