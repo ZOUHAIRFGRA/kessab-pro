@@ -17,7 +17,8 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator >
+
         {isAuthenticated ? (
           <>
             <Stack.Screen

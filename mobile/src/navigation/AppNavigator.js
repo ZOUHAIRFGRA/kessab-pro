@@ -18,6 +18,7 @@ const Drawer = createDrawerNavigator();
 export default function AppNavigator() {
   return (
     <Drawer.Navigator
+
       screenOptions={{
         header: (props) => <CustomHeader {...props} />,
       }}

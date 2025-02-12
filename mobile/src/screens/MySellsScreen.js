@@ -1,5 +1,4 @@
 import { View, Text, ScrollView, TextInput } from "react-native";
-import { styled } from "dripsy";
 import SaleCardView from "../components/sale/SaleCardView";
 import Container from "../components/global/Container";
 import Button from "../components/global/Button";
@@ -7,29 +6,20 @@ import Colors from "../utils/Colors";
 import DropdownComponent from "../components/global/BaseDropdown";
 import React, { useState,useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { SearchBar } from "@rneui/themed";
 import { fetchSales } from "../api/saleApi";
 import log from "../utils/Logger";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function MySellsScreen() {
 
   const sales = useState([]);
 
   useEffect(() => {
-    fetchSales().then((response) => {
-      log.log("Sales fetched successfully", response);
-    });
+    // fetchSales().then((response) => {
+    //   log.log("Sales fetched successfully", response);
+    // });
     
-  });
-  const SearchInput = styled(TextInput)({
-    borderWidth: 1,
-    borderColor: "border",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
-    height: 48,
-    backgroundColor: "inputBackground",
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -55,10 +45,9 @@ export default function MySellsScreen() {
             />
           </Container>
           <Text
-            style={{ flex: 1, textAlign: "center", verticalAlign: "center" }}
+            style={{ flex: 1, textAlign: "center", verticalAlign: "center",padding : 2}}
           >
-            <AntDesign
-              style={{ margin: 4 }}
+            <FontAwesome
               color="black"
               name="calendar"
               size={42}
