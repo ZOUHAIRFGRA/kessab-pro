@@ -3,11 +3,11 @@ import { Text, ScrollView, TouchableOpacity, View, Platform } from "react-native
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAnimalMedicalLogs,
-  modifyAnimalMedicalLog,
-  createAnimalMedicalLog,
-  deleteAnimalMedicalLog,
-} from "../../features/animalMedicalLogSlice";
+  getAnimalActivitiesLogs,
+  modifyAnimalActivityLog,
+  createAnimalActivityLog,
+  deleteAnimalActivityLog,
+} from "../../features/animalActivitiesLogSlice";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   EmptyState,
@@ -22,21 +22,20 @@ import {
 } from "./sharedStyles";
 import { useToast } from "../../hooks/useToast";
 
-export const MedicalLogsScreen = ({ route }) => {
+export const ActivityLogsScreen = ({ route }) => {
   const { animalId } = route.params;
-  const { medicalLogs } = useSelector((state) => state.animalMedicalLogs);
+  const { activitiesLogs } = useSelector((state) => state.animalActivitiesLogs);
   const dispatch = useDispatch();
   const [editing, setEditing] = useState(null);
   const [editedLog, setEditedLog] = useState({});
-  const [newLogDescription, setNewLogDescription] = useState("");
-  const [newVetName, setNewVetName] = useState("");
+  const [newLog, setNewLog] = useState("");
   const [logDate, setLogDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [adding, setAdding] = useState(false);
-  const { showSuccessToast, showErrorToast } = useToast();
+  const { showSuccessToast,showErrorToast } = useToast();
 
   useEffect(() => {
-    dispatch(getAnimalMedicalLogs(animalId));
+    dispatch(getAnimalActivitiesLogs(animalId));
   }, [dispatch, animalId]);
 
   const handleEdit = (log) => {
@@ -45,44 +44,34 @@ export const MedicalLogsScreen = ({ route }) => {
   };
 
   const handleSave = () => {
-    dispatch(
-      modifyAnimalMedicalLog({
-        logId: editedLog.id,
-        logData: editedLog,
-      })
-    );
+    dispatch(modifyAnimalActivityLog({ logId: editedLog.id, logData: editedLog }));
     setEditing(null);
   };
 
+
   const handleAddLog = () => {
-    try {
-      if (newLogDescription.trim() && newVetName.trim()) {
-        dispatch(
-          createAnimalMedicalLog({
-            animalId: animalId,
-            description: newLogDescription,
-            vetName: newVetName,
-            logDate: logDate,
-          })
-        );
-        setNewLogDescription("");
-        setAdding(false);
-        showSuccessToast("Medical Log added successfully!");
-      }
-    } catch (error) {
-      console.error(`Error adding medical log for animal ${animalId}:`, error);
-      showErrorToast("Error adding medical log!");
+    if (newLog.trim()) {
+     try {
+       dispatch(createAnimalActivityLog({ animalId: animalId, activity: newLog, logDate: logDate }));
+       console.log({ animalId: animalId, activity: newLog, logDate: logDate });
+       setNewLog("");
+       setAdding(false);
+       showSuccessToast('Activity Log added successfully!');
+     } catch (error) {
+        console.error(`Error adding activity log for animal ${animalId}:`, error);
+        showErrorToast("Error adding activity log!");
+     }
     }
   };
-
   const handleDelete = (logId) => {
     try {
-      dispatch(deleteAnimalMedicalLog(logId));
-      showSuccessToast("Medical Log deleted successfully!");
-    } catch (error) {
-      console.error(`Error deleting medical log with id ${logId}:`, error);
-      showErrorToast("Error deleting medical log!");
+      dispatch(deleteAnimalActivityLog(logId));
+      showSuccessToast("Activity Log deleted successfully!");
+    } catch (error) { 
+      console.error(`Error deleting activity log with id ${logId}:`, error);
+      showErrorToast("Error deleting activity log!");
     }
+
   };
 
   return (
@@ -90,23 +79,11 @@ export const MedicalLogsScreen = ({ route }) => {
       {adding ? (
         <View style={{ marginBottom: 16, alignItems: "center" }}>
           <InputField
-            value={newLogDescription}
-            onChangeText={setNewLogDescription}
-            placeholder="Enter new medical activity"
+            value={newLog}
+            onChangeText={setNewLog}
+            placeholder="Enter new activity"
           />
-          <InputField
-            value={newVetName}
-            onChangeText={setNewVetName}
-            placeholder="Enter vet's name"
-          />
-          <TouchableOpacity
-            onPress={() => setShowDatePicker(true)}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginVertical: 8,
-            }}
-          >
+          <TouchableOpacity onPress={() => setShowDatePicker(true)} style={{ flexDirection: "row", alignItems: "center", marginVertical: 8 }}>
             <MaterialIcons name="event" size={24} color="gray" />
             <Text style={{ marginLeft: 8 }}>{logDate.toDateString()}</Text>
           </TouchableOpacity>
@@ -135,26 +112,18 @@ export const MedicalLogsScreen = ({ route }) => {
       ) : (
         <AddButton onPress={() => setAdding(true)}>
           <MaterialIcons name="add-circle-outline" size={24} color="white" />
-          <AddButtonText>Add Medical Log</AddButtonText>
+          <AddButtonText>Add Activity Log</AddButtonText>
         </AddButton>
       )}
 
-      {medicalLogs.length > 0 ? (
-        medicalLogs.map((log) => (
+      {activitiesLogs.length > 0 ? (
+        activitiesLogs.map((log) => (
           <LogCard key={log.id}>
             {editing === log.id ? (
               <>
                 <InputField
-                  value={editedLog.description}
-                  onChangeText={(text) =>
-                    setEditedLog({ ...editedLog, description: text })
-                  }
-                />
-                <InputField
-                  value={editedLog.vetName}
-                  onChangeText={(text) =>
-                    setEditedLog({ ...editedLog, vetName: text })
-                  }
+                  value={editedLog.activity}
+                  onChangeText={(text) => setEditedLog({ ...editedLog, activity: text })}
                 />
                 <ActionButtons>
                   <SaveButton onPress={handleSave}>
@@ -171,15 +140,12 @@ export const MedicalLogsScreen = ({ route }) => {
                   <MaterialIcons name="event" size={16} color="gray" /> {log.logDate}
                 </LogText>
                 <LogText>
-                  <MaterialIcons name="fitness-center" size={16} color="gray" /> {log.description}
-                </LogText>
-                <LogText>
-                  <MaterialIcons name="local-hospital" size={16} color="gray" /> {log.vetName}
+                  <MaterialIcons name="fitness-center" size={16} color="gray" /> {log.activity}
                 </LogText>
                 <TouchableOpacity onPress={() => handleEdit(log)}>
                   <MaterialIcons name="edit" size={20} color="blue" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDelete(log.id)}>
+                <TouchableOpacity onPress={() => {handleDelete(log.id);}}>
                   <MaterialIcons name="delete" size={20} color="red" />
                 </TouchableOpacity>
               </>
@@ -189,7 +155,7 @@ export const MedicalLogsScreen = ({ route }) => {
       ) : (
         <EmptyState>
           <MaterialIcons name="error-outline" size={50} color="gray" />
-          <Text>No medical logs found.</Text>
+          <Text>No activity logs found.</Text>
         </EmptyState>
       )}
     </ScrollView>

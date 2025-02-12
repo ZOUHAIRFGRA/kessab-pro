@@ -1,7 +1,11 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import uit.ac.ma.est.kessabpro.mappers.AnimalActivitiesLogMapper;
+import uit.ac.ma.est.kessabpro.models.dto.AnimalActivitiesLogDTO;
+import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.AnimalActivitiesLog;
 import uit.ac.ma.est.kessabpro.repositories.AnimalActivitiesLogRepository;
+import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalActivitiesLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AnimalActivitiesLogService implements IAnimalActivitiesLogService {
@@ -16,24 +21,40 @@ public class AnimalActivitiesLogService implements IAnimalActivitiesLogService {
     @Autowired
     private AnimalActivitiesLogRepository animalActivitiesLogRepository;
 
+    @Autowired
+    private AnimalRepository animalRepository;
+
+    @Autowired
+    private AnimalActivitiesLogMapper logMapper;
+
     @Override
-    public AnimalActivitiesLog save(AnimalActivitiesLog animalActivitiesLog) {
-        return animalActivitiesLogRepository.save(animalActivitiesLog);
+    public AnimalActivitiesLogDTO save(AnimalActivitiesLogDTO dto) {
+        AnimalActivitiesLog log = logMapper.toEntity(dto);
+        Optional<Animal> animal = animalRepository.findById(dto.getAnimalId());
+
+        if (animal.isPresent()) {
+            log.setAnimal(animal.get());
+            return logMapper.toDTO(animalActivitiesLogRepository.save(log));
+        }
+        throw new RuntimeException("Animal not found");
     }
 
     @Override
-    public Optional<AnimalActivitiesLog> findById(UUID id) {
-        return animalActivitiesLogRepository.findById(id);
+    public Optional<AnimalActivitiesLogDTO> findById(UUID id) {
+        return animalActivitiesLogRepository.findById(id).map(logMapper::toDTO);
     }
 
     @Override
-    public List<AnimalActivitiesLog> findAll() {
-        return animalActivitiesLogRepository.findAll();
+    public List<AnimalActivitiesLogDTO> findAll() {
+        return animalActivitiesLogRepository.findAll().stream().map(logMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    public List<AnimalActivitiesLog> findByAnimalId(UUID animalId) {
-        return animalActivitiesLogRepository.findByAnimalId(animalId);
+    public List<AnimalActivitiesLogDTO> findByAnimalId(UUID animalId) {
+        return animalActivitiesLogRepository.findByAnimalId(animalId)
+                .stream()
+                .map(logMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -42,19 +63,18 @@ public class AnimalActivitiesLogService implements IAnimalActivitiesLogService {
     }
 
     @Override
-    public AnimalActivitiesLog update(UUID id, AnimalActivitiesLog animalActivitiesLog) {
-        Optional<AnimalActivitiesLog> existingLogOptional = animalActivitiesLogRepository.findById(id);
+    public AnimalActivitiesLogDTO update(UUID id, AnimalActivitiesLogDTO dto) {
+        Optional<AnimalActivitiesLog> existingLogOpt = animalActivitiesLogRepository.findById(id);
+        Optional<Animal> animalOpt = animalRepository.findById(dto.getAnimalId());
 
-        if (existingLogOptional.isPresent()) {
-            AnimalActivitiesLog existingLog = existingLogOptional.get();
+        if (existingLogOpt.isPresent() && animalOpt.isPresent()) {
+            AnimalActivitiesLog existingLog = existingLogOpt.get();
+            existingLog.setAnimal(animalOpt.get());
+            existingLog.setLogDate(dto.getLogDate());
+            existingLog.setActivity(dto.getActivity());
 
-            existingLog.setLogDate(animalActivitiesLog.getLogDate());
-            existingLog.setActivity(animalActivitiesLog.getActivity());
-
-            return animalActivitiesLogRepository.save(existingLog);
+            return logMapper.toDTO(animalActivitiesLogRepository.save(existingLog));
         }
-        return null;
+        throw new RuntimeException("Animal or Log not found");
     }
-
-
 }

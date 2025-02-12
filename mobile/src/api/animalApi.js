@@ -86,18 +86,7 @@ export const fetchAnimalActivitiesLogs = async (animalId) => {
   }
 };
 
-export const addAnimalActivitiesLog = async (logData) => {
-  try {
-    const response = await axiosInstance.post(
-      `/animal-activities-logs`,
-      logData
-    );
-    return response.data;
-  } catch (error) {
-    console.error(`Error adding activity log for animal ${logData.animalId}:`, error);
-    throw error;
-  }
-};
+
 
 export const updateAnimalActivitiesLog = async (logId, logData) => {
   try {
@@ -112,6 +101,26 @@ export const updateAnimalActivitiesLog = async (logId, logData) => {
   }
 };
 
+export const removeAnimalActivityLog = async (logId) => {
+  try {
+    const response = await axiosInstance.delete(`/animal-activities-logs/${logId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting activity log ${logId}:`, error);
+    throw error;
+  }
+}
+
+export const removeAnimalMedicalLog = async (logId) => {
+  try {
+    const response = await axiosInstance.delete(`/animal-medical-logs/${logId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting medical log ${logId}:`, error);
+    throw error;
+  }
+}
+
 export const addAnimalMedicalLog = async (logData) => {
   try {
     const response = await axiosInstance.post(
@@ -125,6 +134,18 @@ export const addAnimalMedicalLog = async (logData) => {
   }
 };
 
+export const addAnimalActivitiesLog = async (logData) => {
+  try {
+    const response = await axiosInstance.post(
+      `/animal-activities-logs`,
+      logData
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error adding activity log for animal ${logData.animalId}:`, error);
+    throw error;
+  }
+};
 export const updateAnimalMedicalLog = async (logId, logData) => {
   try {
     const response = await axiosInstance.put(

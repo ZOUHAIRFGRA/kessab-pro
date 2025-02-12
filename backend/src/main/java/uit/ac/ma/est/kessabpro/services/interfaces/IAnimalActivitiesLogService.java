@@ -1,6 +1,6 @@
 package uit.ac.ma.est.kessabpro.services.interfaces;
 
-import uit.ac.ma.est.kessabpro.models.entities.AnimalActivitiesLog;
+import uit.ac.ma.est.kessabpro.models.dto.AnimalActivitiesLogDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,15 +8,15 @@ import java.util.UUID;
 
 public interface IAnimalActivitiesLogService {
 
-    AnimalActivitiesLog save(AnimalActivitiesLog animalActivitiesLog);
+    AnimalActivitiesLogDTO save(AnimalActivitiesLogDTO dto);
 
-    Optional<AnimalActivitiesLog> findById(UUID id);
+    Optional<AnimalActivitiesLogDTO> findById(UUID id);
 
-    List<AnimalActivitiesLog> findAll();
+    List<AnimalActivitiesLogDTO> findAll();
 
-    List<AnimalActivitiesLog> findByAnimalId(UUID animalId);
+    List<AnimalActivitiesLogDTO> findByAnimalId(UUID animalId);
 
     void deleteById(UUID id);
 
-    AnimalActivitiesLog update(UUID id, AnimalActivitiesLog animalActivitiesLog);
+    AnimalActivitiesLogDTO update(UUID id, AnimalActivitiesLogDTO dto);
 }
