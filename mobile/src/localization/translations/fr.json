@@ -1,0 +1,14 @@
+{
+    "language": "French",
+    "screens": {
+       "sells":{
+        "category": "Catégorie",
+        "payment" : "Paiement"
+       }
+    },
+    "payment_type" : {
+        "fully_paid"  : "Entièrement payé",
+        "partially_paid" : "Partiellement payé",
+        "not_paid" : "Non payé"
+    }
+}
