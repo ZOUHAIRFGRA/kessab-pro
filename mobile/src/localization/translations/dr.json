@@ -25,7 +25,14 @@
       "inventory": "المخزون",
       "dashboard": "لوحة التحكم",
       "QRscanner": "ماسح QR",
-      "profile": "الملف الشخصي"
+      "profile": "الملف الشخصي",
+      "add_animal": "إضافة حيوان",
+      "search_by_tag": "البحث بالرقم",
+      "quick_actions": "إجراءات سريعة",
+      "animals": "الحيوانات",
+      "details": "التفاصيل",
+      "activity_logs": "سجل النشاط",
+      "medical_logs": "السجلات الطبية"
     }
   }
   

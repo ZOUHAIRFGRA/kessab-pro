@@ -4,10 +4,12 @@ import { MedicalLogsTab } from "../components/AnimalDetailsComponents/MedicalLog
 import { ActivityLogsTab } from "../components/AnimalDetailsComponents/ActivityLogsTab";
 import { Ionicons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler"; 
+import { useTranslation } from "react-i18next";
 
 const Tab = createBottomTabNavigator();
 
 const AnimalDetailsScreen = ({ route }) => {
+  const {t} = useTranslation();
   const { animalId } = route.params;
 
   return (
@@ -23,7 +25,7 @@ const AnimalDetailsScreen = ({ route }) => {
             } else if (route.name === "Medical Logs") {
               iconName = focused ? "medkit" : "medkit-outline";
             } else if (route.name === "Activity Logs") {
-              iconName = focused ? "barbell" : "barbell-outline";
+              iconName = focused ? "stats-chart" : "stats-chart-outline";
             }
 
             return <Ionicons name={iconName} size={size} color={color} />;
@@ -41,13 +43,15 @@ const AnimalDetailsScreen = ({ route }) => {
           animation: "shift",
         })}
       >
-        <Tab.Screen name="Details">
+        <Tab.Screen name="Details"
+        options={{title: t("common.details")}}
+        >
           {() => <AnimalDetailsTab animalId={animalId} />}
         </Tab.Screen>
-        <Tab.Screen name="Medical Logs">
+        <Tab.Screen name="Medical Logs"  options={{title:t("common.medical_logs")}}>
           {() => <MedicalLogsTab animalId={animalId} />}
         </Tab.Screen>
-        <Tab.Screen name="Activity Logs">
+        <Tab.Screen name="Activity Logs"  options={{title:t("common.activity_logs")}}>
           {() => <ActivityLogsTab animalId={animalId} />}
         </Tab.Screen>
       </Tab.Navigator>
