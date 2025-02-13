@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserProfile, updateProfile } from '../features/userSlice';
 import { styled } from 'dripsy';
 import { logout } from '../features/authSlice';
+import LangSwitcher from '../components/global/LangSwitcher';
 
 
 const ProfileScreen = () => {
@@ -85,6 +86,9 @@ const ProfileScreen = () => {
 
 
       <Button title="Logout" onPress={handleLogout} />
+
+        <LangSwitcher/>
+
     </Container>
   );
 };

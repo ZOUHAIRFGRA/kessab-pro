@@ -10,6 +10,7 @@ import { setToken } from "./src/features/authSlice"; // Import setToken action
 import { SERVER_IP } from "@env";
 import 'react-native-toast-message';
 import Toast from 'react-native-toast-message'; // Import the Toast component
+import './src/localization/i18n';
 
 const AppWrapper = () => {
   const dispatch = useDispatch();
