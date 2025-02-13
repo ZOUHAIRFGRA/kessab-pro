@@ -1,4 +1,3 @@
-import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useSelector } from "react-redux";
@@ -9,6 +8,7 @@ import BuyerScreen from "../screens/BuyerScreen";
 import AddTransaction from "../components/AddTransaction";
 import AnimalDetailsScreen from "../screens/AnimalDetailsScreen";
 import AnimalsList from "../components/AnimalsList";
+import Colors from '../utils/Colors'; 
 
 const Stack = createStackNavigator();
 
@@ -17,8 +17,17 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator >
-
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: Colors.primary, 
+          },
+          headerTintColor: "#fff", 
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      >
         {isAuthenticated ? (
           <>
             <Stack.Screen
@@ -29,7 +38,7 @@ export default function RootNavigator() {
             <Stack.Screen name="Buyer" component={BuyerScreen} />
             <Stack.Screen name="AddTransaction" component={AddTransaction} />
             <Stack.Screen name="AnimalDetails" component={AnimalDetailsScreen} />
-            <Stack.Screen  name="AnimalsList" component={AnimalsList} />
+            <Stack.Screen name="AnimalsList" component={AnimalsList} />
           </>
         ) : (
           <>

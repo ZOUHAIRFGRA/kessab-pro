@@ -18,7 +18,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function ManagementScreen() {
-  const [transactionModalVisible, setTransactionModalVisible] = useState(false);
+  // const [transactionModalVisible, setTransactionModalVisible] = useState(false);
   const [addAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText] = useDebounce(searchText, 1000);
@@ -62,11 +62,11 @@ export default function ManagementScreen() {
             icon: "plus",
             action: () => setAddAnimalModalVisible(true),
           },
-          {
-            name: "+ Transaction",
-            icon: "dollar",
-            action: () => setTransactionModalVisible(true),
-          },
+          // {
+          //   name: "+ Transaction",
+          //   icon: "dollar",
+          //   action: () => setTransactionModalVisible(true),
+          // },
         ].map((action, index) => (
           <QuickActionItem key={index} onPress={action.action}>
             <Icon name={action.icon} color="#4A90E2" size={36} />
@@ -92,14 +92,14 @@ export default function ManagementScreen() {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <AnimalsList searchText={debouncedSearchText} />
 
-        {transactionModalVisible && (
+        {/* {transactionModalVisible && (
           <AddTransaction
             onClose={() => {
               setTransactionModalVisible(false);
               resetSearchText();
             }}
           />
-        )}
+        )} */}
 
         {addAnimalModalVisible && (
           <AddAnimalModal
