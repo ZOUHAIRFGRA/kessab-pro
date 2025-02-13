@@ -32,7 +32,9 @@ import Colors from "../../utils/Colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import IconButton from "../IconButton";
 import { useToast } from "../../hooks/useToast";
+import { useTranslation } from "react-i18next";
 export const AnimalDetailsTab = ({ animalId }) => {
+  const {t} = useTranslation();
     const { showSuccessToast, showErrorToast } = useToast();
   const screenWidth = Dimensions.get("window").width;
   const dispatch = useDispatch();
@@ -146,7 +148,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
               >
                 <MaterialIcons
                   name="chevron-left"
-                  size={30}
+                  size={50}
                   color={currentIndex === 0 ? "gray" : "black"}
                 />
               </TouchableOpacity>
@@ -156,7 +158,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
               >
                 <MaterialIcons
                   name="chevron-right"
-                  size={30}
+                  size={50}
                   color={
                     currentIndex === editedAnimal.imagePaths.length - 1
                       ? "gray"
@@ -171,7 +173,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
         {editing ? (
           <EditContainer>
             <FieldContainer>
-              <LabelText>Tag</LabelText>
+              <LabelText>{t("common.tag")}</LabelText>
               <InputField
                 value={editedAnimal.tag}
                 onChangeText={(text) =>
@@ -182,7 +184,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
             </FieldContainer>
 
             <FieldContainer>
-              <LabelText>Price</LabelText>
+              <LabelText>{t("common.price")}</LabelText>
               <InputField
                 value={editedAnimal.price?.toString()}
                 onChangeText={(text) =>
@@ -194,7 +196,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
             </FieldContainer>
 
             <FieldContainer>
-              <LabelText>Weight</LabelText>
+              <LabelText>{t("common.weight")}</LabelText>
               <InputField
                 value={editedAnimal.weight?.toString()}
                 onChangeText={(text) =>
@@ -206,17 +208,17 @@ export const AnimalDetailsTab = ({ animalId }) => {
             </FieldContainer>
 
             <FieldContainer>
-              <LabelText>Sex</LabelText>
+              <LabelText>{t("common.sex")}</LabelText>
               <View style={{ flexDirection: "row", marginTop: 5 }}>
                 <IconButton
-                  label="Male"
+                  label={t("common.male")}
                   selected={editedAnimal.sex}
                   onPress={() =>
                     setEditedAnimal({ ...editedAnimal, sex: "Male" })
                   }
                 />
                 <IconButton
-                  label="Female"
+                  label={t("common.female")}
                   selected={editedAnimal.sex}
                   onPress={() =>
                     setEditedAnimal({ ...editedAnimal, sex: "Female" })
@@ -226,7 +228,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
             </FieldContainer>
 
             <FieldContainer>
-              <LabelText>Birth Date</LabelText>
+              <LabelText>{t("common.birthDate")}</LabelText>
               <TouchableOpacity onPress={() => setShowBirthDatePicker(true)}>
                 <InputField
                   value={editedAnimal.birthDate}
@@ -257,7 +259,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
             </FieldContainer>
 
             <FieldContainer>
-              <LabelText>Pickup Date</LabelText>
+              <LabelText>{t("common.pickup_date")}</LabelText>
               <TouchableOpacity onPress={() => setShowPickUpDatePicker(true)}>
                 <InputField
                   value={editedAnimal.pickUpDate}
@@ -289,10 +291,10 @@ export const AnimalDetailsTab = ({ animalId }) => {
 
             <ActionButtons>
               <SaveButton onPress={handleSave}>
-                <Text style={{ color: "white" }}>💾 Save</Text>
+                <Text style={{ color: "white" }}>💾 {t("common.save")}</Text>
               </SaveButton>
               <CancelButton onPress={() => setEditing(false)}>
-                <Text style={{ color: "white" }}>❌ Cancel</Text>
+                <Text style={{ color: "white" }}>❌ {t("common.cancel")}</Text>
               </CancelButton>
             </ActionButtons>
           </EditContainer>

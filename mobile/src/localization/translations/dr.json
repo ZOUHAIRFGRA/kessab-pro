@@ -32,7 +32,36 @@
       "animals": "الحيوانات",
       "details": "التفاصيل",
       "activity_logs": "سجل النشاط",
-      "medical_logs": "السجلات الطبية"
+      "medical_logs": "السجلات الطبية",
+      "addAnimal": "إضافة حيوان",
+      "add": "إضافة",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "yes": "نعم",
+      "no": "لا",
+      "confirm": "تأكيد",
+      "tag": "الرقم",
+      "weight": "الوزن",
+      "price": "السعر",
+      "birthDate": "تاريخ الولادة",
+      "cant_find_category_add_one?": "لا تجد النوع؟ إضافة واحد؟",
+      "category": "النوع",
+      "select_imgs_from_gallery": "اختر صور من المعرض",
+      "take_photo": "التقط صورة",
+      "male": "ذكر",
+      "female": "أنثى",
+      "close": "إغلاق",
+      "sex": "الجنس",
+      "pickup_date": "تاريخ الاستلام",
+      "not_available": "غير متوفر",
+      "enter_vet_name": "أدخل اسم الطبيب البيطري",
+      "enter_new_activity": "أدخل النشاط",
+      "add_activity": "إضافة نشاط",
+      "select_date": "اختر تاريخ"
+
+
     }
   }
   
