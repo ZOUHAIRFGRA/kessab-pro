@@ -1,0 +1,14 @@
+{
+    "language": "darija",
+    "screens": {
+       "sells":{
+        "category": "نوع",
+        "payment" : "لخلاص"
+       }
+    },
+    "payment_type" : {
+        "fully_paid" : "مدفوع بالكامل",
+        "partially_paid" : "مدفوع جزئيا",
+        "not_paid" : "غير مدفوع"
+    }
+}
