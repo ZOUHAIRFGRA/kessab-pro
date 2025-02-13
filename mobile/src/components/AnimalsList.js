@@ -6,8 +6,10 @@ import { getBaseURL } from "../api/axiosInstance";
 import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const AnimalsList = ({ searchText: propSearchText, route }) => { 
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { animals, loading, error, totalPages } = useSelector((state) => state.animals);
@@ -44,7 +46,7 @@ const AnimalsList = ({ searchText: propSearchText, route }) => {
 
   return (
     <View>
-      <SectionTitle>Animals</SectionTitle>
+      <SectionTitle>{t("common.animals")}</SectionTitle>
 
       {animals.length === 0 ? (
         <NoAnimalsWrapper>

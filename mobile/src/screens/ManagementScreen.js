@@ -16,9 +16,11 @@ import { getAnimals, resetAnimals } from "../features/animalSlice";
 import { useDispatch } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 export default function ManagementScreen() {
   // const [transactionModalVisible, setTransactionModalVisible] = useState(false);
+  const { t } = useTranslation();
   const [addAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText] = useDebounce(searchText, 1000);
@@ -54,11 +56,12 @@ export default function ManagementScreen() {
 
   return (
     <Container>
-      <SectionTitle>Quick Actions</SectionTitle>
+      <SectionTitle>{t("common.quick_actions")}</SectionTitle>
       <QuickActionList>
         {[
           {
-            name: "Add Animal",
+            name: t("common.add_animal"),
+            key: "AddAnimal",
             icon: "plus",
             action: () => setAddAnimalModalVisible(true),
           },
@@ -76,7 +79,7 @@ export default function ManagementScreen() {
       </QuickActionList>
 
       <SearchInput
-        placeholder="Search by tag"
+        placeholder={t("common.search_by_tag")}
         value={searchText}
         onChangeText={handleSearchChange}
         placeholderTextColor="black"
