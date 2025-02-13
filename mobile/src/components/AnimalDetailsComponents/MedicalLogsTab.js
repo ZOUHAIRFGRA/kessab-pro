@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Platform,
+  Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,9 +30,11 @@ import {
   EditContainer,
 } from "./sharedStyles";
 import { useToast } from "../../hooks/useToast";
+import { useTranslation } from "react-i18next";
 
 export const MedicalLogsTab = ({ animalId }) => {
   // const { animalId } = route.params;
+  const { t } = useTranslation();
   const { medicalLogs } = useSelector((state) => state.animalMedicalLogs);
   const dispatch = useDispatch();
   const [editing, setEditing] = useState(null);
@@ -84,13 +87,29 @@ export const MedicalLogsTab = ({ animalId }) => {
   };
 
   const handleDelete = (logId) => {
-    try {
-      dispatch(deleteAnimalMedicalLog(logId));
-      showSuccessToast("Medical Log deleted successfully!");
-    } catch (error) {
-      console.error(`Error deleting medical log with id ${logId}:`, error);
-      showErrorToast("Error deleting medical log!");
-    }
+    Alert.alert(
+      "Confirm Deletion",
+      "Are you sure you want to delete this medical log?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            try {
+              dispatch(deleteAnimalMedicalLog(logId));
+              showSuccessToast("Medical Log deleted successfully!");
+            } catch (error) {
+              console.error(`Error deleting medical log with id ${logId}:`, error);
+              showErrorToast("Error deleting medical log!");
+            }
+          },
+          style: "destructive", 
+        },
+      ]
+    );
   };
 
   return (
@@ -101,12 +120,12 @@ export const MedicalLogsTab = ({ animalId }) => {
             <InputField
               value={newLogDescription}
               onChangeText={setNewLogDescription}
-              placeholder="Enter new medical activity"
+              placeholder={t("common.enter_new_activity")}
             />
             <InputField
               value={newVetName}
               onChangeText={setNewVetName}
-              placeholder="Enter vet's name"
+              placeholder={t("common.enter_vet_name")}
             />
             <TouchableOpacity
               onPress={() => setShowDatePicker(true)}
@@ -147,7 +166,7 @@ export const MedicalLogsTab = ({ animalId }) => {
         ) : (
           <AddButton onPress={() => setAdding(true)}>
             <MaterialIcons name="add-circle-outline" size={24} color="white" />
-            <AddButtonText>Add Medical Log</AddButtonText>
+            <AddButtonText>{t("common.add")}</AddButtonText>
           </AddButton>
         )}
 
@@ -201,15 +220,15 @@ export const MedicalLogsTab = ({ animalId }) => {
                   </LogText>
 
                   <ActionButtons>
-                    <TouchableOpacity
-                      style={{ marginRight: 15 }}
+                    <SaveButton
+                      style={{ marginRight: 0 }}
                       onPress={() => handleEdit(log)}
                     >
-                      <MaterialIcons name="edit" size={20} color="blue" />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleDelete(log.id)}>
-                      <MaterialIcons name="delete" size={20} color="red" />
-                    </TouchableOpacity>
+                      <MaterialIcons name="edit" size={20} color="white" />
+                    </SaveButton>
+                    <CancelButton onPress={() => handleDelete(log.id)}>
+                      <MaterialIcons name="delete" size={20} color="white" />
+                    </CancelButton>
                   </ActionButtons>
                 </>
               )}

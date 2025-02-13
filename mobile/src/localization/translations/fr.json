@@ -1,30 +1,64 @@
 {
-    "language": "French",
-    "screens": {
-      "sells": {
-        "category": "Catégorie",
-        "payment": "Paiement"
-      }
-    },
-    "payment_type": {
-      "fully_paid": "Entièrement payé",
-      "partially_paid": "Partiellement payé",
-      "not_paid": "Non payé"
-    },
-    "common": {
-      "search_placeholder": "Rechercher un mouton par ID",
-      "management": "Gestion",
-      "sales": "Ventes",
-      "food": "Nourriture",
-      "marketplace": "Marché",
-      "add_buyer": "Ajouter un acheteur",
-      "view_buyers": "Voir les acheteurs",
-      "add_sheep": "Ajouter un mouton",
-      "view_sales": "Voir les ventes",
-      "inventory": "Inventaire",
-      "dashboard": "Tableau de bord",
-      "qr_scanner": "Scanner QR",
-      "profile": "Profil"
+  "language": "fr",
+  "screens": {
+    "sells": {
+      "category": "Type",
+      "payment": "Paiement"
     }
+  },
+  "payment_type": {
+    "fully_paid": "Entièrement payé",
+    "partially_paid": "Partiellement payé",
+    "not_paid": "Non payé"
+  },
+  "common": {
+    "kessabPro": "Kessab Pro",
+    "search_placeholder": "Rechercher un mouton par numéro",
+    "management": "Gestion",
+    "sales": "Ventes",
+    "food": "Nourriture",
+    "marketplace": "Marché",
+    "add_buyer": "Ajouter un acheteur",
+    "view_buyers": "Voir les acheteurs",
+    "add_sheep": "Ajouter un mouton",
+    "view_sales": "Voir les ventes",
+    "inventory": "Inventaire",
+    "dashboard": "Tableau de bord",
+    "QRscanner": "Scanner QR",
+    "profile": "Profil",
+    "add_animal": "Ajouter un animal",
+    "search_by_tag": "Rechercher par numéro",
+    "quick_actions": "Actions rapides",
+    "animals": "Animaux",
+    "details": "Détails",
+    "activity_logs": "Journal d'activité",
+    "medical_logs": "Dossiers médicaux",
+    "addAnimal": "Ajouter un animal",
+    "add": "Ajouter",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "yes": "Oui",
+    "no": "Non",
+    "confirm": "Confirmer",
+    "tag": "Numéro",
+    "weight": "Poids",
+    "price": "Prix",
+    "birthDate": "Date de naissance",
+    "cant_find_category_add_one?": "Vous ne trouvez pas le type ? Ajouter un ?",
+    "category": "Type",
+    "select_imgs_from_gallery": "Sélectionner des images depuis la galerie",
+    "take_photo": "Prendre une photo",
+    "male": "Mâle",
+    "female": "Femelle",
+    "close": "Fermer",
+    "sex": "Sexe",
+    "pickup_date": "Date de ramassage",
+    "not_available": "Non disponible",
+    "enter_vet_name": "Entrer le nom du vétérinaire",
+    "enter_new_activity": "Entrer une nouvelle activité",
+    "add_activity": "Ajouter une activité",
+    "select_date": "Sélectionner une date"
   }
-  
+}

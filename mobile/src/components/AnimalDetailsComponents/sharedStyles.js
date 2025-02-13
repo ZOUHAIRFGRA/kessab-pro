@@ -89,6 +89,22 @@ export const AddButton = styled(TouchableOpacity)({
   shadowRadius: 4,
   elevation: 3,
 });
+export const CnclButton = styled(TouchableOpacity)({
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "red",
+  paddingVertical: 12,
+  borderRadius: 10,
+  marginBottom: 16,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
+  elevation: 3,
+});
+
+
 
 export const AddButtonText = styled(Text)({
   color: "white",
@@ -99,23 +115,44 @@ export const AddButtonText = styled(Text)({
 
 export const ActionButtons = styled(View)({
   flexDirection: "row",
+  justifyContent: "space-between",
   marginTop: 8,
   justifyContent: "center",
   alignItems: "center",
   alignSelf: "center",
+  gap: 20,
 });
 
 export const SaveButton = styled(TouchableOpacity)({
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
   backgroundColor: "green",
-  padding: 8,
-  borderRadius: 8,
-  marginRight: 10,
+  paddingVertical: 12,
+  borderRadius: 10,
+  marginBottom: 16,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
+  elevation: 3,
+  width: "100",
 });
 
 export const CancelButton = styled(TouchableOpacity)({
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
   backgroundColor: "red",
-  padding: 8,
-  borderRadius: 8,
+  paddingVertical: 12,
+  borderRadius: 10,
+  marginBottom: 16,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
+  elevation: 3,
+  width: "100",
 });
 
 export const InfoContainer = styled(View)({

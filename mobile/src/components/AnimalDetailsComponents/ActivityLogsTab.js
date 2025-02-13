@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Platform,
+  Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,10 +29,12 @@ import {
   Container,
 } from "./sharedStyles";
 import { useToast } from "../../hooks/useToast";
+import { useTranslation } from "react-i18next";
 
 export const ActivityLogsTab = ({ animalId }) => {
   const { activitiesLogs } = useSelector((state) => state.animalActivitiesLogs);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [editing, setEditing] = useState(null);
   const [editedLog, setEditedLog] = useState({});
   const [newLog, setNewLog] = useState("");
@@ -80,15 +83,33 @@ export const ActivityLogsTab = ({ animalId }) => {
   };
 
   const handleDelete = (logId) => {
-    try {
-      dispatch(deleteAnimalActivityLog(logId));
-      showSuccessToast("Activity Log deleted successfully!");
-    } catch (error) {
-      console.error(`Error deleting activity log with id ${logId}:`, error);
-      showErrorToast("Error deleting activity log!");
-    }
+    Alert.alert(
+      "Confirm Deletion",
+      "Are you sure you want to delete this medical log?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            try {
+              dispatch(deleteAnimalActivityLog(logId));
+              showSuccessToast("Activity Log deleted successfully!");
+            } catch (error) {
+              console.error(
+                `Error deleting activity log with id ${logId}:`,
+                error
+              );
+              showErrorToast("Error deleting activity log!");
+            }
+          },
+          style: "destructive",
+        },
+      ]
+    );
   };
-
   return (
     <Container>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
@@ -97,7 +118,7 @@ export const ActivityLogsTab = ({ animalId }) => {
             <InputField
               value={newLog}
               onChangeText={setNewLog}
-              placeholder="Enter new activity"
+              placeholder={t("common.enter_new_activity")}
             />
 
             <TouchableOpacity
@@ -139,7 +160,7 @@ export const ActivityLogsTab = ({ animalId }) => {
         ) : (
           <AddButton onPress={() => setAdding(true)}>
             <MaterialIcons name="add-circle-outline" size={24} color="white" />
-            <AddButtonText>Add Activity Log</AddButtonText>
+            <AddButtonText>{t("common.add_activity")}</AddButtonText>
           </AddButton>
         )}
 
@@ -168,7 +189,7 @@ export const ActivityLogsTab = ({ animalId }) => {
                   >
                     <MaterialIcons name="event" size={24} color="gray" />
                     <Text style={{ marginLeft: 8 }}>
-                      {editedLog.logDate || "Select Date"}
+                      {editedLog.logDate || t("common.select_date")}
                     </Text>
                   </TouchableOpacity>
 
@@ -180,7 +201,10 @@ export const ActivityLogsTab = ({ animalId }) => {
                       onChange={(event, selectedDate) => {
                         setShowDatePicker(false);
                         if (selectedDate)
-                          setEditedLog({ ...editedLog, logDate: selectedDate.toISOString().split("T")[0] });
+                          setEditedLog({
+                            ...editedLog,
+                            logDate: selectedDate.toISOString().split("T")[0],
+                          });
                       }}
                     />
                   )}
@@ -217,15 +241,15 @@ export const ActivityLogsTab = ({ animalId }) => {
                     }}
                   >
                     <ActionButtons>
-                      <TouchableOpacity
-                        style={{ marginRight: 15 }}
+                      <SaveButton
+                        style={{ marginRight: 0 }}
                         onPress={() => handleEdit(log)}
                       >
-                        <MaterialIcons name="edit" size={20} color="blue" />
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => handleDelete(log.id)}>
-                        <MaterialIcons name="delete" size={20} color="red" />
-                      </TouchableOpacity>
+                        <MaterialIcons name="edit" size={20} color="white" />
+                      </SaveButton>
+                      <CancelButton onPress={() => handleDelete(log.id)}>
+                        <MaterialIcons name="delete" size={20} color="white" />
+                      </CancelButton>
                     </ActionButtons>
                   </View>
                 </>

@@ -1,27 +1,30 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { styled, Text } from "dripsy";
+
+const StyledButton = styled(TouchableOpacity)({
+  marginTop: 10,
+  backgroundColor: "blue",
+  justifyContent: "center",
+  alignItems: "center",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 5,
+  marginBottom: 5,
+});
+
+const StyledText = styled(Text)({
+  color: "white",
+  fontSize: 16,
+  fontWeight: "bold",
+});
 
 const ImagePickerButton = ({ onPress, children }) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.buttonText}>{children}</Text>
-    </TouchableOpacity>
+    <StyledButton onPress={onPress}>
+      <StyledText>{children}</StyledText>
+    </StyledButton>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "blue",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
 
 export default ImagePickerButton;
