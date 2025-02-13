@@ -9,51 +9,58 @@ import {
 } from "react-native";
 import WeatherWidget from "../components/WeatherWidget";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useDebounce } from "use-debounce"; 
+import { useDebounce } from "use-debounce";
 import { useDispatch } from "react-redux";
 import { resetAnimals } from "../features/animalSlice";
 import Colors from "../utils/Colors";
 import { useNavigation } from "@react-navigation/native";
-export default function HomeScreen() {
+import { useTranslation } from "react-i18next";
 
+export default function HomeScreen() {
   const navigation = useNavigation();
-  const dispatch = useDispatch(); 
-  const [searchText, setSearchText] = useState(""); 
-  const [debouncedSearchText] = useDebounce(searchText, 500); 
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText] = useDebounce(searchText, 500);
 
   const handleSearch = () => {
     if (debouncedSearchText) {
-      
       dispatch(resetAnimals());
 
-      
       setSearchText("");
 
-      
       navigation.navigate("AnimalsList", { searchText: debouncedSearchText });
     }
   };
 
   const handleSearchChange = (text) => {
-    setSearchText(text); 
+    setSearchText(text);
   };
 
   return (
     <Container>
       {/* <WeatherWidget /> */}
       <SearchInput
-        placeholder="Search for sheep by ID"
+        placeholder={t("common.search_placeholder")}
         value={searchText}
-        onChangeText={handleSearchChange} 
-        onSubmitEditing={handleSearch} 
+        onChangeText={handleSearchChange}
+        onSubmitEditing={handleSearch}
         placeholderTextColor="black"
       />
       <Grid>
-        {[{ name: "Management", icon: "playlist-edit" }, { name: "Sales", icon: "cart-outline" }, { name: "Food", icon: "corn" }, { name: "Marketplace", icon: "store" }].map((item) => (
+        {[
+          {
+            key: "Management",
+            name: t("common.management"),
+            icon: "playlist-edit",
+          },
+          { key: "Sales", name: t("common.sales"), icon: "cart-outline" },
+          { key: "Food", name: t("common.food"), icon: "corn" },
+          { key: "Marketplace", name: t("common.marketplace"), icon: "store" },
+        ].map((item) => (
           <GridItem
-            key={item.name}
-            onPress={() => navigation.navigate(item.name)}
-            
+            key={item.key}
+            onPress={() => navigation.navigate(item.key)}
           >
             <Icon name={item.icon} size={36} color="dark" />
             <GridItemText sx={{ variant: "text.subheading", marginTop: 8 }}>
@@ -64,10 +71,36 @@ export default function HomeScreen() {
       </Grid>
 
       <HorizontalScroll horizontal showsHorizontalScrollIndicator={false}>
-        {[{ name: "Add Buyer", icon: "account-plus", route: "AddBuyer" }, { name: "View Buyers", icon: "account-group", route: "BuyersList" }, { name: "Add Sheep", icon: "sheep", route: "AddSheep" }, { name: "View Sales", icon: "chart-line", route: "MySellsScreen" }, { name: "Inventory", icon: "warehouse", route: "Inventory" }].map((action, index) => (
+        {[
+          {
+            key: "AddBuyer",
+            name: t("common.add_buyer"),
+            icon: "account-plus",
+          },
+          {
+            key: "BuyersList",
+            name: t("common.view_buyers"),
+            icon: "account-group",
+          },
+          {
+            key: "AddSheep",
+            name: t("common.add_sheep"),
+            icon: "sheep",
+          },
+          {
+            key: "MySellsScreen",
+            name: t("common.view_sales"),
+            icon: "chart-line",
+          },
+          {
+            key: "Inventory",
+            name: t("common.inventory"),
+            icon: "warehouse",
+          },
+        ].map((action, index) => (
           <HorizontalActionItem
             key={index}
-            onPress={() => navigation.navigate(action.route)}
+            onPress={() => navigation.navigate(action.key)}
             accessibilityRole="button"
             accessibilityLabel={`Navigate to ${action.name}`}
           >
@@ -78,15 +111,19 @@ export default function HomeScreen() {
       </HorizontalScroll>
 
       <BottomNav sx={{ marginVertical: 16 }}>
-        {["Dashboard", "QRScanner", "Profile"].map((item) => (
+        {[
+          { label: t("common.dashboard"), route: "Dashboard" },
+          { label: t("common.QRscanner"), route: "QRScanner" },
+          { label: t("common.profile"), route: "Profile" },
+        ].map((item) => (
           <BottomNavItem
-            key={item}
-            onPress={() => navigation.navigate(item)}
+            key={item.route}
+            onPress={() => navigation.navigate(item.route)}
             accessibilityRole="button"
-            accessibilityLabel={`Navigate to ${item}`}
+            accessibilityLabel={`Navigate to ${item.label}`}
           >
             <BottomNavText sx={{ variant: "text.secondary" }}>
-              {item}
+              {item.label}
             </BottomNavText>
           </BottomNavItem>
         ))}
