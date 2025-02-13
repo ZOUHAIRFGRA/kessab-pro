@@ -7,12 +7,14 @@ import DropdownComponent from "../components/global/BaseDropdown";
 import React, { useState,useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SearchBar } from "@rneui/themed";
-import { fetchSales } from "../api/saleApi";
-import log from "../utils/Logger";
 import { FontAwesome } from "@expo/vector-icons";
+import { useTranslation } from 'react-i18next';
+import LangSwitcher from '../components/global/LangSwitcher';
+
+
 
 export default function MySellsScreen() {
-
+  const { t } = useTranslation();
   const sales = useState([]);
 
   useEffect(() => {
@@ -27,9 +29,11 @@ export default function MySellsScreen() {
     console.log("selectedDate", selectedDate);
     setShowDatePicker(null);
   };
+
   return (
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>
+      <LangSwitcher/>
         <Container sx={{ display: "flex", flexDirection: "row" }}>
           <Container sx={{ flex: 6 }}>
             <SearchBar
@@ -45,7 +49,7 @@ export default function MySellsScreen() {
             />
           </Container>
           <Text
-            style={{ flex: 1, textAlign: "center", verticalAlign: "center",padding : 2}}
+            style={{ flex: 1, textAlign: "center", verticalAlign: "center",padding : 2,opacity:0.75 }}
           >
             <FontAwesome
               color="black"
@@ -74,9 +78,9 @@ export default function MySellsScreen() {
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
               values={[{ label: "Item 1", value: "1" }]}
-              label={"Category"}
+              label={t("screens.sells.category")}
               focusLabel={"..."}
-              notFocusLabel={"Category"}
+              notFocusLabel={t("screens.sells.category")}
               searchLabel={"category name..."}
               iconName="appstore-o"
             />
