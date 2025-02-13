@@ -1,14 +1,30 @@
 {
     "language": "French",
     "screens": {
-       "sells":{
+      "sells": {
         "category": "Catégorie",
-        "payment" : "Paiement"
-       }
+        "payment": "Paiement"
+      }
     },
-    "payment_type" : {
-        "fully_paid"  : "Entièrement payé",
-        "partially_paid" : "Partiellement payé",
-        "not_paid" : "Non payé"
+    "payment_type": {
+      "fully_paid": "Entièrement payé",
+      "partially_paid": "Partiellement payé",
+      "not_paid": "Non payé"
+    },
+    "common": {
+      "search_placeholder": "Rechercher un mouton par ID",
+      "management": "Gestion",
+      "sales": "Ventes",
+      "food": "Nourriture",
+      "marketplace": "Marché",
+      "add_buyer": "Ajouter un acheteur",
+      "view_buyers": "Voir les acheteurs",
+      "add_sheep": "Ajouter un mouton",
+      "view_sales": "Voir les ventes",
+      "inventory": "Inventaire",
+      "dashboard": "Tableau de bord",
+      "qr_scanner": "Scanner QR",
+      "profile": "Profil"
     }
-}
+  }
+  

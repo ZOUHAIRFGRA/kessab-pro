@@ -6,10 +6,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import theme from "./src/styles/theme";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { store } from "./src/store/store";
-import { setToken } from "./src/features/authSlice"; // Import setToken action
+import { setToken } from "./src/features/authSlice"; 
 import { SERVER_IP } from "@env";
 import 'react-native-toast-message';
-import Toast from 'react-native-toast-message'; // Import the Toast component
+import Toast from 'react-native-toast-message'; 
 import './src/localization/i18n';
 
 const AppWrapper = () => {

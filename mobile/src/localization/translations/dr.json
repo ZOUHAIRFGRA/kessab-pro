@@ -1,14 +1,31 @@
 {
     "language": "darija",
     "screens": {
-       "sells":{
+      "sells": {
         "category": "نوع",
-        "payment" : "لخلاص"
-       }
+        "payment": "لخلاص"
+      }
     },
-    "payment_type" : {
-        "fully_paid" : "مدفوع بالكامل",
-        "partially_paid" : "مدفوع جزئيا",
-        "not_paid" : "غير مدفوع"
+    "payment_type": {
+      "fully_paid": "مدفوع بالكامل",
+      "partially_paid": "مدفوع جزئيا",
+      "not_paid": "غير مدفوع"
+    },
+    "common": {
+      "kessabPro" : "كساب برو",
+      "search_placeholder": "بحث عن خروف بالرقم",
+      "management": "الإدارة",
+      "sales": "المبيعات",
+      "food": "الأكل",
+      "marketplace": "السوق",
+      "add_buyer": "إضافة مشترٍ",
+      "view_buyers": "عرض المشترين",
+      "add_sheep": "إضافة خروف",
+      "view_sales": "عرض المبيعات",
+      "inventory": "المخزون",
+      "dashboard": "لوحة التحكم",
+      "QRscanner": "ماسح QR",
+      "profile": "الملف الشخصي"
     }
-}
+  }
+  
