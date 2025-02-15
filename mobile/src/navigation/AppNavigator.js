@@ -3,7 +3,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomeScreen from "../screens/HomeScreen";
 import ManagementScreen from "../screens/ManagementScreen";
 import SalesScreen from "../screens/SalesScreen";
-import MySellsScreen from "../screens/sell/SellsScreen";
+import MySellsScreen from "../screens/sell/SalesScreen";
 import FoodScreen from "../screens/FoodScreen";
 import MarketplaceScreen from "../screens/MarketplaceScreen";
 import DashboardScreen from "../screens/DashboardScreen";
@@ -12,8 +12,8 @@ import BuyersListScreen from "../screens/BuyersListScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import CustomHeader from "../components/CustomHeader";
 import AnimalsList from "../components/AnimalsList";
-import SellsScreen from "../screens/sell/SellsScreen";
-import SellDetailScreen from "../screens/sell/SellDetailScreen";
+import SellsScreen from "../screens/sell/SalesScreen";
+import SellDetailScreen from "../screens/sell/SaleDetailScreen";
 
 const Drawer = createDrawerNavigator();
 

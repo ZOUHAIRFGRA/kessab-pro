@@ -8,10 +8,10 @@ const Container = styled(View)({
   alignItems: 'center',
 });
 
-export default function SellDetailScreen({ navigation }) {
+export default function TransactionInfoView() {
   return (
     <Container>
-      <Text>This Feature is Coming Soon!!!</Text>
+      <Text>Transaction Info View</Text>
     </Container>
   ); 
 }
