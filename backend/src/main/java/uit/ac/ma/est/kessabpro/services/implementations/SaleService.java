@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import uit.ac.ma.est.kessabpro.mappers.SaleMapper;
 import uit.ac.ma.est.kessabpro.models.dto.SaleDTO;
+import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
@@ -33,7 +34,7 @@ public class SaleService implements ISaleService {
     private SaleMapper saleMapper;
 
     @Override
-    public SaleDTO createSale(SaleDTO saleDTO) {
+    public Sale createSale(SaleDTO saleDTO) {
         List<Animal> animals = animalRepository.findAllById(saleDTO.getAnimalIds());
 
         if (animals.isEmpty()) {
@@ -60,27 +61,26 @@ public class SaleService implements ISaleService {
 
         animalRepository.saveAll(animals);
 
-        return saleMapper.toSaleDTO(savedSale);
+        return savedSale;
     }
 
 
 
 
     @Override
-    public SaleDTO getSaleById(UUID id) {
-        Sale sale = saleRepository.findById(id)
+    public Sale getSaleById(UUID id) {
+        return saleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sale not found"));
-        return saleMapper.toSaleDTO(sale);
     }
 
     @Override
-    public List<SaleDTO> getAllSales() {
+    public List<Sale> getAllSales() {
         List<Sale> sales = saleRepository.findAll();
-        return saleMapper.toSaleDTOList(sales);
+        return sales;
     }
 
     @Override
-    public SaleDTO updateSale(UUID id, Sale updatedSale, List<UUID> newAnimalIds) {
+    public Sale updateSale(UUID id, Sale updatedSale, List<UUID> newAnimalIds) {
         Sale existingSale = saleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sale not found"));
 
@@ -92,8 +92,8 @@ public class SaleService implements ISaleService {
         List<Animal> newAnimals = animalRepository.findAllById(newAnimalIds);
         existingSale.setAnimals(newAnimals);
 
-        Sale savedSale = saleRepository.save(existingSale);
-        return saleMapper.toSaleDTO(savedSale);
+        return saleRepository.save(existingSale);
+
     }
 
     @Override

@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ISaleService {
-    SaleDTO createSale(SaleDTO saleDTO);
-    SaleDTO getSaleById(UUID id);
-    List<SaleDTO> getAllSales();
-    SaleDTO updateSale(UUID id, Sale updatedSale, List<UUID> newAnimalIds);
+    Sale createSale(SaleDTO saleDTO);
+    Sale getSaleById(UUID id);
+    List<Sale> getAllSales();
+    Sale updateSale(UUID id, Sale updatedSale, List<UUID> newAnimalIds);
     void deleteSale(UUID id);
 }

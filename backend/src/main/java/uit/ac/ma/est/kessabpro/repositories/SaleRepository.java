@@ -11,4 +11,5 @@ public interface SaleRepository extends JpaRepository<Sale, UUID> {
 
     @Query("SELECT s FROM Sale s LEFT JOIN FETCH s.animals")
     List<Sale> findAllWithAnimals();
+
 }
