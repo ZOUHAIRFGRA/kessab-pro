@@ -29,8 +29,11 @@ const saleSlice = createSlice({
   name: "sales",
   initialState: {
     sales: [],
+    sale: null,  
     loading: false,
     error: null,
+    page: 0,
+    totalPages: 0,
   },
   reducers: {},
   extraReducers: (builder) => {
