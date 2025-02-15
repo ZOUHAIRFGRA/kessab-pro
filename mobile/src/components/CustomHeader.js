@@ -40,8 +40,8 @@ const CustomHeader = ({ navigation, options }) => {
 
       {/* Language Switcher */}
       <TouchableOpacity onPress={toggleLanguage} style={styles.languageButton}>
-        {i18n.language === "fr" && <CountryFlag isoCode="FR" size={24} />}
-        {i18n.language === "dr" && <CountryFlag isoCode="MA" size={24} />}
+        {i18n.language === "fr" && <CountryFlag isoCode="MA" size={24}  />}
+        {i18n.language === "dr" && <CountryFlag isoCode="FR" size={24} />}
       </TouchableOpacity>
     </View>
   );

@@ -33,7 +33,6 @@ export default function MySellsScreen() {
   return (
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>
-      <LangSwitcher/>
         <Container sx={{ display: "flex", flexDirection: "row" }}>
           <Container sx={{ flex: 6 }}>
             <SearchBar
@@ -78,9 +77,9 @@ export default function MySellsScreen() {
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
               values={[{ label: "Item 1", value: "1" }]}
-              label={t("screens.sells.category")}
+              label={"category"}
               focusLabel={"..."}
-              notFocusLabel={t("screens.sells.category")}
+              notFocusLabel={"category"}
               searchLabel={"category name..."}
               iconName="appstore-o"
             />
