@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 
 
 
-export default function SellsScreen() {
+export default function SalesScreen() {
   const { t } = useTranslation();
   const sales = useState([]);
   const dispatch = useDispatch();
