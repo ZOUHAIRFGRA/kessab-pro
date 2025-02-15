@@ -1,5 +1,7 @@
 package uit.ac.ma.est.kessabpro.models.dto.responses;
 
+import uit.ac.ma.est.kessabpro.models.dto.AnimalCategoryDTO;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,7 +14,8 @@ public record AnimalDTOResponse(
          LocalDate birthDate,
          BigDecimal price,
          BigDecimal weight,
-         List<String> gallery
+         List<String> gallery,
+         AnimalCategoryDTOResponse category
 //         SaleDTOResponse sale
 ) {
 }

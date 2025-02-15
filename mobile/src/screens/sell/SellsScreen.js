@@ -1,27 +1,28 @@
 import { View, Text, ScrollView, TextInput } from "react-native";
-import SaleCardView from "../components/sale/SaleCardView";
-import Container from "../components/global/Container";
-import Button from "../components/global/Button";
-import Colors from "../utils/Colors";
-import DropdownComponent from "../components/global/BaseDropdown";
+import SaleCardView from "../../components/sale/SaleCardView";
+import Container from "../../components/global/Container";
+import Button from "../../components/global/Button";
+import Colors from "../../utils/Colors";
+import DropdownComponent from "../../components/global/BaseDropdown";
 import React, { useState,useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SearchBar } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import { useTranslation } from 'react-i18next';
-import LangSwitcher from '../components/global/LangSwitcher';
+import LangSwitcher from '../../components/global/LangSwitcher';
+import { getSales } from "../../features/saleSlice";
+import SalesListCardView from "../../components/sale/SalesListCardView";
+import { useDispatch } from "react-redux";
 
 
 
-export default function MySellsScreen() {
+export default function SellsScreen() {
   const { t } = useTranslation();
   const sales = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // fetchSales().then((response) => {
-    //   log.log("Sales fetched successfully", response);
-    // });
-    
+    dispatch(getSales());
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -110,6 +111,9 @@ export default function MySellsScreen() {
             paddingX: 12,
           }}
         >
+
+          <SalesListCardView/>
+          {/* <SaleCardView />
           <SaleCardView />
           <SaleCardView />
           <SaleCardView />
@@ -118,8 +122,7 @@ export default function MySellsScreen() {
           <SaleCardView />
           <SaleCardView />
           <SaleCardView />
-          <SaleCardView />
-          <SaleCardView />
+          <SaleCardView /> */}
         </Container>
       </ScrollView>
       <Button
@@ -147,7 +150,7 @@ export default function MySellsScreen() {
         Add Sale
       </Button>
 
-      <Button
+      {/* <Button
         type="secondary"
         style={{
           padding: 12,
@@ -170,7 +173,7 @@ export default function MySellsScreen() {
         }}
       >
         Show my sells
-      </Button>
+      </Button> */}
     </>
   );
 }

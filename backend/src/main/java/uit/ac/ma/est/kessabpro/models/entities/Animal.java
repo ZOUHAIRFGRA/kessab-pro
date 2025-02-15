@@ -35,7 +35,6 @@ public class Animal extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @Nullable
     private AnimalCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)

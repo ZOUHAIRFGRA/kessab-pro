@@ -1,24 +1,25 @@
-import React from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import HomeScreen from '../screens/HomeScreen';
-import ManagementScreen from '../screens/ManagementScreen';
-import SalesScreen from '../screens/SalesScreen';
-import MySellsScreen from '../screens/MySellsScreen';
-import FoodScreen from '../screens/FoodScreen';
-import MarketplaceScreen from '../screens/MarketplaceScreen';
-import DashboardScreen from '../screens/DashboardScreen';
-import QRScannerScreen from '../screens/QRScannerScreen';
-import BuyersListScreen from '../screens/BuyersListScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import CustomHeader from '../components/CustomHeader';
-import AnimalsList from '../components/AnimalsList';
+import React from "react";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import HomeScreen from "../screens/HomeScreen";
+import ManagementScreen from "../screens/ManagementScreen";
+import SalesScreen from "../screens/SalesScreen";
+import MySellsScreen from "../screens/sell/SellsScreen";
+import FoodScreen from "../screens/FoodScreen";
+import MarketplaceScreen from "../screens/MarketplaceScreen";
+import DashboardScreen from "../screens/DashboardScreen";
+import QRScannerScreen from "../screens/QRScannerScreen";
+import BuyersListScreen from "../screens/BuyersListScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import CustomHeader from "../components/CustomHeader";
+import AnimalsList from "../components/AnimalsList";
+import SellsScreen from "../screens/sell/SellsScreen";
+import SellDetailScreen from "../screens/sell/SellDetailScreen";
 
 const Drawer = createDrawerNavigator();
 
 export default function AppNavigator() {
   return (
     <Drawer.Navigator
-
       screenOptions={{
         header: (props) => <CustomHeader {...props} />,
       }}
@@ -26,7 +27,8 @@ export default function AppNavigator() {
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Management" component={ManagementScreen} />
       <Drawer.Screen name="Sales" component={MySellsScreen} />
-      <Drawer.Screen name="MySellsScreen" component={MySellsScreen} />
+      <Drawer.Screen name="MySellsScreen" component={SellsScreen} />
+      <Drawer.Screen name="SellDetail" component={SellDetailScreen} />
       {/* <Drawer.Screen name="AnimalsList" component={AnimalsList} /> */}
 
       <Drawer.Screen name="Food" component={FoodScreen} />

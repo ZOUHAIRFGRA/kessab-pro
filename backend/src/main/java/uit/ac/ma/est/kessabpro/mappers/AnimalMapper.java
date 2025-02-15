@@ -2,6 +2,7 @@ package uit.ac.ma.est.kessabpro.mappers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
+import uit.ac.ma.est.kessabpro.models.dto.responses.AnimalCategoryDTOResponse;
 import uit.ac.ma.est.kessabpro.models.dto.responses.AnimalDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.AnimalCategory;
@@ -72,8 +73,8 @@ public class AnimalMapper {
                 animal.getBirthDate(),
                 animal.getPrice(),
                 animal.getWeight(),
-//                animal.getGallery()
-                null
+               animal.getImagePaths(),
+               AnimalCategoryMapper.toAnimalCategoryDTO(animal.getCategory())
         );
     }
 
