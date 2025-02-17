@@ -6,7 +6,7 @@ import Container from "./Container";
 import Header from "./Header";
 import Colors from "../../utils/Colors";
 
-const CardIcon = ({ style,text, icon, subText = null,iconType = "ionicon" ,hideIcon=false}) => {
+const CardIcon = ({ style,text, icon, subText = null,iconType = "ionicon" ,hideIcon=false,color = Colors.primary}) => {
   return (
     <Card
       sx={{
@@ -24,7 +24,7 @@ const CardIcon = ({ style,text, icon, subText = null,iconType = "ionicon" ,hideI
 
       {
         !hideIcon && <Container style={styles.iconContainer}>
-        <Icon containerStyle={{opacity : 0.9}} reverse name={icon} type={iconType} color={Colors.primary} />
+        <Icon  reverse name={icon} type={iconType} color={color} />
       </Container>
      }
     </Card>

@@ -9,6 +9,7 @@ import { getSale } from "../../features/saleSlice";
 import { useFocusEffect } from "@react-navigation/native"; // Importing the hook
 import CardIcon from "../global/CardIcon";
 import { getBuyer } from "../../features/buyerSlice";
+import Colors from "../../utils/Colors";
 
 const Container = styled(View)({
   flex: 1,
@@ -16,16 +17,8 @@ const Container = styled(View)({
   alignItems: 'center',
 });
 
-export default function BuyerInfoView({buyerId}) {
-  const dispatch = useDispatch();
+export default function BuyerInfoView({buyer}) {
 
-  useEffect(() => {
-    dispatch(getBuyer(buyerId));
-  }, [dispatch, buyerId]);
-
-  const loading = useSelector(({ buyers }) => buyers.loading);
-  const error = useSelector(({ buyers }) => buyers.error);
-  const buyer = useSelector(({ buyers }) => buyers.buyer);
 
   console.log("BuyerInfoView: ", buyer);
   
@@ -42,51 +35,32 @@ export default function BuyerInfoView({buyerId}) {
           padding: 18,
         }}
       >
-        {loading && <Loading />}
-        {error && <FallBack />}
+      
        
-       {
-        !loading && !error && <>
-         <CardIcon icon="person-outline" text="Buyer name" subText={"salam"} />
-        <CardIcon icon="calendar-outline" text="Sale Date" subText={"salam"} />
-        <Container
-          sx={{
-            flexDirection: "row",
-            flex: 1,
-            gap: 12,
-          }}
-        >
-          <CardIcon
-            icon="handshake-o"
-            iconType="font-awesome"
-            text="Agreed amount"
-            subText={"salam"}
-          hideIcon
-          style={{ flex: 1 }}
-          />
+      
+         <CardIcon icon="person-outline" text="Buyer name" subText={buyer.fullName}
+         />
+        <CardIcon icon="card-outline" text="Sale Date" subText={buyer.CIN}  />
+       
           <CardIcon
             icon="wallet-outline"
-            text="Paid amount"
-            subText={"salam"}
-          hideIcon
+            text="map-outline"
+            subText={buyer.address}
           style={{ flex: 1 }}
 
+         
           />
-        </Container>
+       
+          <CardIcon
+            icon="wallet-outline"
+            text="call-outline"
+            subText={buyer.phone}
+          style={{ flex: 1 }}
+          
 
-        <CardIcon
-          icon="wallet-outline"
-          text="Payment statut"
-          subText={"salam"}
-        />
-        <CardIcon icon="cart-outline" text="Animal count" subText={"salam"} />
-        <CardIcon
-          icon="log-out-outline"
-          text="is picked up"
-          subText={"salam"}
-        />
-        </>
-       }
+          />
+
+       
 
         {/* <FallBack type={FALLBACK_TYPE.NOT_FOUND} message={"Not Found"} /> */}
       </Container>

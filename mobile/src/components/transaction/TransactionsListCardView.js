@@ -9,6 +9,7 @@ const Container = styled(View)({
 });
 
 export default function TransactionsListCardView() {
+  console.log("TransactionsListCardView: ");
   return (
     <Container>
       <Text>Transaction Info View</Text>

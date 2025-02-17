@@ -12,18 +12,12 @@ import { useTranslation } from 'react-i18next';
 import LangSwitcher from '../../components/global/LangSwitcher';
 import { getSales } from "../../features/saleSlice";
 import SalesListCardView from "../../components/sale/SalesListCardView";
-import { useDispatch } from "react-redux";
 
 
 
 export default function SalesScreen() {
   const { t } = useTranslation();
-  const sales = useState([]);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getSales());
-  });
+ 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const handleDateChange = (event, selectedDate) => {
@@ -101,30 +95,7 @@ export default function SalesScreen() {
           </Container>
         </Container>
       </Container>
-
-      <ScrollView>
-        <Container
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-            paddingX: 12,
-          }}
-        >
-
           <SalesListCardView/>
-          {/* <SaleCardView />
-          <SaleCardView />
-          <SaleCardView />
-          <SaleCardView />
-          <SaleCardView />
-          <SaleCardView />
-          <SaleCardView />
-          <SaleCardView />
-          <SaleCardView />
-          <SaleCardView /> */}
-        </Container>
-      </ScrollView>
       <Button
         type="primary"
         style={{
@@ -150,30 +121,7 @@ export default function SalesScreen() {
         Add Sale
       </Button>
 
-      {/* <Button
-        type="secondary"
-        style={{
-          padding: 12,
-          marginRight: 12,
-          marginLeft: 12,
-          marginBottom: 8,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        textStyle={{
-          color: "white",
-          fontWeight: "bold",
-          textAlign: "center",
-          fontSize: 16,
-        }}
-        icon={{
-          name: "list",
-          color: Colors.white,
-        }}
-      >
-        Show my sells
-      </Button> */}
+     
     </>
   );
 }
