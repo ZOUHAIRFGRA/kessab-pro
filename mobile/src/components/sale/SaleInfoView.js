@@ -16,6 +16,7 @@ const Container = styled(View)({
 });
 
 export default function SaleInfoView({ sale = null }) {
+console.log("SaleInfoView: ", sale);
 
   return (
     <ScrollView>

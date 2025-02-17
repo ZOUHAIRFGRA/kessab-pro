@@ -9,6 +9,8 @@ const Container = styled(View)({
 });
 
 export default function AnimalsListCardView() {
+  console.log("AnimalsListCardView: ");
+  
   return (
     <Container>
       <Text>Animal cards  View</Text>

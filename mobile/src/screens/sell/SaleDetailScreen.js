@@ -21,6 +21,7 @@ return (
       dense
       containerStyle={{ backgroundColor : Colors.secondary }}
       variant="primary"
+      
     >
       <Tab.Item
         title="Info"
@@ -44,8 +45,8 @@ return (
       />
     </Tab>
 
-    <TabView value={index} onChange={setIndex} animationType="spring">
-      <TabView.Item   style={{ backgroundColor: 'white', width: '100%' }}>
+    <TabView  value={index} onChange={setIndex} animationType="spring">
+      <TabView.Item l  style={{ backgroundColor: 'white', width: '100%' }}>
         <SaleInfoView sale={sale}/>
       </TabView.Item>
       <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
