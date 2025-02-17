@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Tab, Text, TabView } from '@rneui/themed';
 import Colors from '../../utils/Colors';
 import SaleInfoView from '../../components/sale/SaleInfoView';
 import BuyerInfoView from '../../components/buyer/BuyerInfoView';
-import AnimalCardView from '../../components/Animal/AnimalCardView';
-import TransactionInfoView from '../../components/transaction/TransactionInfoView';
+import TransactionsListCardView from '../../components/transaction/TransactionsListCardView';
+import AnimalsListCardView from '../../components/Animal/AnimalsListCardView';
 
-const SaleDetailScreen =  () => {
+const SaleDetailScreen =  ({route}) => {
 const [index, setIndex] = React.useState(0);
-
+const { sale } = route.params;
 return (
   <>
     <Tab
@@ -45,17 +45,17 @@ return (
     </Tab>
 
     <TabView value={index} onChange={setIndex} animationType="spring">
-      <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-        <SaleInfoView/>
+      <TabView.Item   style={{ backgroundColor: 'white', width: '100%' }}>
+        <SaleInfoView sale={sale}/>
       </TabView.Item>
       <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-        <BuyerInfoView/>
+        <BuyerInfoView buyer={sale.buyer}/>
       </TabView.Item>
       <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-        <AnimalCardView/>
+        <AnimalsListCardView animals={sale.animals}/>
       </TabView.Item>
       <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-        <TransactionInfoView/>
+        <TransactionsListCardView transactions={sale.transactions} />
       </TabView.Item>
     </TabView>
   </>

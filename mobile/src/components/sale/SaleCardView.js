@@ -12,12 +12,12 @@ import { useNavigation } from "@react-navigation/native";
 const SaleCardView = ({ sale }) => {
   const navigator = useNavigation();
   const handleSaleClick = (id) => {
-    navigator.navigate("SellDetail", { saleId: id });
+    
+    navigator.navigate("SellDetail", { sale: id });
   };
-  console.log({saleee : sale});
   
   return (
-    <TouchableOpacity onPress={() => handleSaleClick(sale.id)}>
+    <TouchableOpacity onPress={() => handleSaleClick(sale)}>
     <Card
       sx={{
         display: "flex",
@@ -25,7 +25,7 @@ const SaleCardView = ({ sale }) => {
       }}
     >
       <View
-        style={{ position: "relative", width: 80, height: 80, marginRight: 8 }}
+        style={{ position: "relative", width: 80, height: 80, marginRight: 12 }}
       >
         <Image
           source={{

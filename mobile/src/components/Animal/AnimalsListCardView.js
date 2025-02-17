@@ -8,10 +8,10 @@ const Container = styled(View)({
   alignItems: 'center',
 });
 
-export default function TransactionInfoView() {
+export default function AnimalsListCardView() {
   return (
     <Container>
-      <Text>Transaction Info View</Text>
+      <Text>Animal cards  View</Text>
     </Container>
   ); 
 }

@@ -8,6 +8,7 @@ import categoryReducer from "../features/categorySlice";
 import iconsReducer from "../features/iconsSlice";
 import authReducer from "../features/authSlice";
 import userReducer from "../features/userSlice";
+import buyerReducer from "../features/buyerSlice";
 export const store = configureStore({
   reducer: {
     animals: animalReducer,
@@ -15,6 +16,7 @@ export const store = configureStore({
     transactions: transactionReducer,
     sales: saleReducer,
     categories: categoryReducer,
+    buyers : buyerReducer,
     animalMedicalLogs: animalMedicalLogReducer,
     animalActivitiesLogs: animalActivitiesLogReducer,
     icons: iconsReducer,
