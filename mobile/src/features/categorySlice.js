@@ -4,7 +4,6 @@ import {createCategory,getCategories} from "../api/categoryApi";
 
 export const fetchCategories = createAsyncThunk("categories/fetch", async () => {
   const response = await getCategories();
-  // console.log(response);
   return response;
 });
 

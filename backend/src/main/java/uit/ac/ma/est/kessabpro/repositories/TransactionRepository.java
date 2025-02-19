@@ -14,4 +14,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     @Query("SELECT t.amount FROM Transaction t WHERE t.sale.id = :saleId")
     List<BigDecimal> findAmountsBySaleId(UUID saleId);
+
+    List<Transaction> getTransactionBySaleId(UUID saleId);
 }

@@ -37,7 +37,6 @@ export default function ManagementScreen() {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("ManagementScreen focused - resetting state");
       dispatch(resetAnimals());
       dispatch(getAnimals({ page: 0, search: "", filterType: "tag" }));
     }, [dispatch])
@@ -45,7 +44,6 @@ export default function ManagementScreen() {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      console.log("ManagementScreen re-entered - resetting state");
       dispatch(resetAnimals());
       setSearchText("");
       dispatch(getAnimals({ page: 0, search: "", filterType: "tag" }));

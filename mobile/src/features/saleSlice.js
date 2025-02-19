@@ -62,7 +62,6 @@ const saleSlice = createSlice({
       .addCase(getSale.fulfilled, (state, action) => {
         state.loading = false;
         state.sale = action.payload;
-        console.log({sale : action.payload});
         
       })
       .addCase(addSale.fulfilled, (state, action) => {

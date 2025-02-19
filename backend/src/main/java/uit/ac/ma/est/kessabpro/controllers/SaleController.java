@@ -3,9 +3,12 @@ package uit.ac.ma.est.kessabpro.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
 import uit.ac.ma.est.kessabpro.mappers.SaleMapper;
+import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
 import uit.ac.ma.est.kessabpro.models.dto.SaleDTO;
 import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
+import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
 
@@ -52,4 +55,9 @@ public class SaleController {
         saleService.deleteSale(id);
         return ResponseEntity.noContent().build();
     }
+
+
+
+
+
 }

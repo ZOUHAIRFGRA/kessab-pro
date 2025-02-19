@@ -66,10 +66,8 @@ const animalActivitiesLogSlice = createSlice({
         state.activitiesLogs.push(action.payload);
       })
       .addCase(deleteAnimalActivityLog.fulfilled, (state, action) => {
-        console.log('Delete action payload.id:', action.payload.id); // Log to see what's inside
-        // Assuming action.payload is just the logId
         state.activitiesLogs = state.activitiesLogs.filter(
-          (log) => log.id !== action.payload // if the payload contains the log object, use action.payload.id
+          (log) => log.id !== action.payload 
         );
       })
       

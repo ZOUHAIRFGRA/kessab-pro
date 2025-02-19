@@ -1,6 +1,8 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
-import uit.ac.ma.est.kessabpro.models.dto.TransactionDTO;
+import uit.ac.ma.est.kessabpro.mappers.TransactionMapper;
+import uit.ac.ma.est.kessabpro.models.dto.responses.TransactionDTOResponse;
+import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.services.interfaces.ITransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,29 +25,35 @@ public class TransactionController {
     public List<BigDecimal> getTransactionAmounts(@PathVariable UUID saleId) {
         return transactionService.testFindAmountsBySaleId(saleId);
     }
-    @GetMapping
-    public ResponseEntity<List<TransactionDTO>> getAllTransactions() {
-        List<TransactionDTO> transactions = transactionService.getAllTransactions();
-        return ResponseEntity.ok(transactions);
+
+    @GetMapping("/sale/{saleId}")
+    public ResponseEntity<List<TransactionDTOResponse>> getTransactionsBySaleId(@PathVariable UUID saleId) {
+        List<Transaction> transactions = transactionService.getTransactionBySaleId(saleId);
+        return ResponseEntity.ok(TransactionMapper.toTransactionDTOList(transactions));
     }
 
+    @GetMapping
+    public ResponseEntity<List<TransactionDTOResponse>> getAllTransactions() {
+        List<Transaction> transactions = transactionService.getAllTransactions();
+        return ResponseEntity.ok(TransactionMapper.toTransactionDTOList(transactions));
+    }
 
     @PostMapping
-    public ResponseEntity<TransactionDTO> createTransaction(@RequestBody TransactionDTO transactionDTO) {
-        TransactionDTO createdTransaction = transactionService.createTransaction(transactionDTO);
-        return ResponseEntity.ok(createdTransaction);
+    public ResponseEntity<TransactionDTOResponse> createTransaction(@RequestBody Transaction transaction) {
+        Transaction createdTransaction = transactionService.createTransaction(transaction);
+        return ResponseEntity.ok(TransactionMapper.toTransactionDTO(createdTransaction));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable UUID id, @RequestBody TransactionDTO updatedTransactionDTO) {
-        TransactionDTO updatedTransaction = transactionService.updateTransaction(id, updatedTransactionDTO);
-        return ResponseEntity.ok(updatedTransaction);
+    public ResponseEntity<TransactionDTOResponse> updateTransaction(@PathVariable UUID id, @RequestBody Transaction updatedTransaction) {
+        Transaction updated = transactionService.updateTransaction(id, updatedTransaction);
+        return ResponseEntity.ok(TransactionMapper.toTransactionDTO(updated));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable UUID id) {
-        TransactionDTO transaction = transactionService.getTransactionById(id);
-        return ResponseEntity.ok(transaction);
+    public ResponseEntity<TransactionDTOResponse> getTransactionById(@PathVariable UUID id) {
+        Transaction transaction = transactionService.getTransactionById(id);
+        return ResponseEntity.ok(TransactionMapper.toTransactionDTO(transaction));
     }
 
     @DeleteMapping("/{id}")

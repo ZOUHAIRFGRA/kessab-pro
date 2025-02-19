@@ -1,48 +1,47 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { getAnimals, resetAnimals } from "../features/animalSlice"; 
+import { getAnimals, resetAnimals } from "../features/animalSlice";
 import { getBaseURL } from "../api/axiosInstance";
 import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 
-const AnimalsList = ({ searchText: propSearchText, route }) => { 
+const AnimalsList = ({ searchText: propSearchText, route }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { animals, loading, error, totalPages } = useSelector((state) => state.animals);
+  const { animals, loading, error, totalPages } = useSelector(
+    (state) => state.animals
+  );
   const [currentPage, setCurrentPage] = useState(0);
 
-  const searchText = route?.params?.searchText ?? propSearchText ?? ""; 
+  const searchText = route?.params?.searchText ?? propSearchText ?? "";
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("AnimalsList focused, resetting state with search:", searchText);
-
       setCurrentPage(0);
       dispatch(resetAnimals());
 
-      dispatch(getAnimals({ page: 0, search: searchText, filterType: "tag" })); 
-
+      dispatch(getAnimals({ page: 0, search: searchText, filterType: "tag" }));
     }, [dispatch, searchText])
   );
 
   const handlePagination = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
       setCurrentPage(newPage);
-      dispatch(getAnimals({ page: newPage, search: searchText, filterType: "tag" })); 
+      dispatch(
+        getAnimals({ page: newPage, search: searchText, filterType: "tag" })
+      );
     }
   };
   const handleAnimalClick = (id) => {
-    navigation.navigate('AnimalDetails', { animalId: id }); 
+    navigation.navigate("AnimalDetails", { animalId: id });
   };
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error}</Text>;
-
-  console.log("Rendering with animals:", animals.map((animal) => animal.tag));
 
   return (
     <View>
@@ -56,15 +55,20 @@ const AnimalsList = ({ searchText: propSearchText, route }) => {
       ) : (
         <ItemList>
           {animals.map((animal) => (
-            <ListItem key={animal.id} onPress={() => handleAnimalClick(animal.id)} >
+            <ListItem
+              key={animal.id}
+              onPress={() => handleAnimalClick(animal.id)}
+            >
               <Image
                 source={{ uri: `${getBaseURL()}${animal.imagePaths[0]}` }}
                 style={{ width: 50, height: 50, borderRadius: 8 }}
               />
               <View style={{ flex: 1, marginLeft: 10 }}>
                 <ListItemText>{animal.tag}</ListItemText>
-                <Text>{animal.category ? animal.category.typeName : 'Uncategorized'}</Text>
-                <Text>{animal.sex ? animal.sex : 'Unknown Sex'}</Text>
+                <Text>
+                  {animal.category ? animal.category.typeName : "Uncategorized"}
+                </Text>
+                <Text>{animal.sex ? animal.sex : "Unknown Sex"}</Text>
               </View>
             </ListItem>
           ))}
@@ -72,13 +76,21 @@ const AnimalsList = ({ searchText: propSearchText, route }) => {
       )}
 
       <PaginationWrapper>
-        <PaginationButton onPress={() => handlePagination(currentPage - 1)} disabled={currentPage <= 0}>
+        <PaginationButton
+          onPress={() => handlePagination(currentPage - 1)}
+          disabled={currentPage <= 0}
+        >
           <Icon name="skip-previous" size={20} color="white" />
         </PaginationButton>
 
-        <CurrentPageText>{`Page ${currentPage + 1} of ${totalPages}`}</CurrentPageText>
+        <CurrentPageText>{`Page ${
+          currentPage + 1
+        } of ${totalPages}`}</CurrentPageText>
 
-        <PaginationButton onPress={() => handlePagination(currentPage + 1)} disabled={currentPage >= totalPages - 1}>
+        <PaginationButton
+          onPress={() => handlePagination(currentPage + 1)}
+          disabled={currentPage >= totalPages - 1}
+        >
           <Icon name="skip-next" size={20} color="white" />
         </PaginationButton>
       </PaginationWrapper>

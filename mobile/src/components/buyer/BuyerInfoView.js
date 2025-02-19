@@ -26,7 +26,6 @@ export default function BuyerInfoView({ id }) {
   const buyer = useSelector(({ buyers }) => buyers.buyer);
   const loading = useSelector(({ buyers }) => buyers.loading);
   const error = useSelector(({ buyers }) => buyers.error);
-  console.log({ buyer });
 
   if (loading || !buyer) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;

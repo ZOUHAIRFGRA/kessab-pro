@@ -24,7 +24,6 @@ export default function SaleInfoView({id}) {
   const sale = useSelector(({sales}) => sales.sale)
   const loading = useSelector(({sales}) => sales.loading)
   const error = useSelector(({sales}) => sales.error)
-  console.log({sale});
   
   if (loading || !sale) return <Loading/>
   if(error ) return  <FallBack type={FALLBACK_TYPE.NOT_FOUND}/>

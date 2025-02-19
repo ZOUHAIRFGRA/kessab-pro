@@ -4,7 +4,6 @@ import axiosInstance from './axiosInstance';
 export const getCategoriesIcons = async () => {
   try {
     const response = await axiosInstance.get('/animal-icons');
-    // console.log(response.data);
     return response.data; 
   } catch (error) {
     console.error('Error fetching Categoris:', error);

@@ -5,9 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
-import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import uit.ac.ma.est.kessabpro.events.TransactionCreatedEvent;
-import uit.ac.ma.est.kessabpro.models.dto.TransactionDTO;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
@@ -35,48 +33,45 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public List<TransactionDTO> getAllTransactions() {
-        return transactionRepository.findAll().stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
     }
 
     @Override
-    public TransactionDTO getTransactionById(UUID id) {
-        Transaction transaction = transactionRepository.findById(id)
+    public Transaction getTransactionById(UUID id) {
+        return transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
-        return mapToDTO(transaction);
+    }
+
+    @Override
+    public List<Transaction> getTransactionBySaleId(UUID saleId) {
+        return transactionRepository.getTransactionBySaleId(saleId);
     }
 
     @Override
     @Transactional
-    public TransactionDTO createTransaction(TransactionDTO transactionDTO) {
-        Sale sale = saleRepository.findById(transactionDTO.getSaleId())
+    public Transaction createTransaction(Transaction transaction) {
+        Sale sale = saleRepository.findById(transaction.getSale().getId())
                 .orElseThrow(() -> new RuntimeException("Sale not found"));
 
-        Transaction transaction = new Transaction();
         transaction.setSale(sale);
-        transaction.setAmount(transactionDTO.getAmount());
-        transaction.setMethod(PaymentMethod.valueOf(transactionDTO.getMethod()));
-        transaction.setTransactionDate(LocalDate.parse(transactionDTO.getTransactionDate()));
-
+        transaction.setTransactionDate(LocalDate.now());
         Transaction savedTransaction = transactionRepository.save(transaction);
-        publishTransactionCreatedEvent(mapToDTO(savedTransaction));
-        return mapToDTO(savedTransaction);
+        publishTransactionCreatedEvent(savedTransaction);
+        return savedTransaction;
     }
 
     @Override
     @Transactional
-    public TransactionDTO updateTransaction(UUID id, TransactionDTO updatedTransactionDTO) {
+    public Transaction updateTransaction(UUID id, Transaction updatedTransaction) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
-        transaction.setAmount(updatedTransactionDTO.getAmount());
-        transaction.setMethod(PaymentMethod.valueOf(updatedTransactionDTO.getMethod()));
-        transaction.setTransactionDate(LocalDate.parse(updatedTransactionDTO.getTransactionDate()));
+        transaction.setAmount(updatedTransaction.getAmount());
+        transaction.setMethod(updatedTransaction.getMethod());
+        transaction.setTransactionDate(updatedTransaction.getTransactionDate());
 
-        Transaction updatedTransaction = transactionRepository.save(transaction);
-        return mapToDTO(updatedTransaction);
+        return transactionRepository.save(transaction);
     }
 
     @Override
@@ -90,19 +85,7 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public void publishTransactionCreatedEvent(TransactionDTO transactionDTO) {
-        Transaction transaction = transactionRepository.findById(transactionDTO.getId())
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+    public void publishTransactionCreatedEvent(Transaction transaction) {
         eventPublisher.publishEvent(new TransactionCreatedEvent(this, transaction));
-    }
-
-    private TransactionDTO mapToDTO(Transaction transaction) {
-        return new TransactionDTO(
-                transaction.getId(),
-                transaction.getSale().getId(),
-                transaction.getAmount(),
-                transaction.getMethod().name(),
-                transaction.getTransactionDate().toString()
-        );
     }
 }

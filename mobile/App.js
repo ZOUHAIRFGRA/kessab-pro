@@ -1,20 +1,20 @@
 import React, { useEffect } from "react";
-import { View, StatusBar, Platform,Text } from "react-native";
+import { View, StatusBar, Platform, Text } from "react-native";
 import { DripsyProvider } from "dripsy";
 import { Provider, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import theme from "./src/styles/theme";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { store } from "./src/store/store";
-import { setToken } from "./src/features/authSlice"; 
+import { setToken } from "./src/features/authSlice";
 import { SERVER_IP } from "@env";
-import 'react-native-toast-message';
-import Toast from 'react-native-toast-message'; 
-import './src/localization/i18n';
+import "react-native-toast-message";
+import Toast from "react-native-toast-message";
+import "./src/localization/i18n";
 
 const AppWrapper = () => {
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     console.log("Server IP from env:", SERVER_IP);
     Toast.show({
@@ -23,12 +23,12 @@ const AppWrapper = () => {
       text2: `Loaded from env: ${SERVER_IP}`,
     });
   }, []);
-  
+
   useEffect(() => {
     const loadToken = async () => {
       const token = await AsyncStorage.getItem("authToken");
       if (token) {
-        dispatch(setToken(token)); 
+        dispatch(setToken(token));
       }
     };
     loadToken();
@@ -44,12 +44,17 @@ export default function App() {
         <View
           style={{
             flex: 1,
-            paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 36,
+            paddingTop:
+              Platform.OS === "android" ? StatusBar.currentHeight : 36,
           }}
         >
-          <StatusBar barStyle="dark-content" translucent backgroundColor="transparent"  />
+          <StatusBar
+            barStyle="dark-content"
+            translucent
+            backgroundColor="transparent"
+          />
           <AppWrapper />
-          <Toast innerRef={(ref) => Toast.setRef(ref)} /> 
+          <Toast innerRef={(ref) => Toast.setRef(ref)} />
         </View>
       </DripsyProvider>
     </Provider>
