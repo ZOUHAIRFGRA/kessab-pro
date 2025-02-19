@@ -112,4 +112,19 @@ public class AnimalController {
     public ResponseEntity<Void> deleteAnimal(@PathVariable UUID id) {
         return animalService.deleteAnimal(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/by-sale/{saleId}")
+    public ResponseEntity<List<AnimalDTO>> getAnimalsBySaleId(@PathVariable UUID saleId) {
+        List<Animal> animals = animalService.getAnimalsBySaleId(saleId);
+        List<AnimalDTO> animalDTOs = animals.stream().map(AnimalMapper::toDTO).toList();
+        return ResponseEntity.ok(animalDTOs);
+    }
+
+    @GetMapping("/by-buyer/{buyerId}")
+    public ResponseEntity<List<AnimalDTO>> getAnimalsByBuyerId(@PathVariable UUID buyerId) {
+        List<Animal> animals = animalService.getAnimalsByBuyerId(buyerId);
+        List<AnimalDTO> animalDTOs = animals.stream().map(AnimalMapper::toDTO).toList();
+        return ResponseEntity.ok(animalDTOs);
+    }
+
 }

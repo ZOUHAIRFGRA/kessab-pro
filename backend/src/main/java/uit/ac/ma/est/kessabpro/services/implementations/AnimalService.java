@@ -91,4 +91,16 @@ public class AnimalService implements IAnimalService {
         }
         return animalImages;
     }
+
+
+    @Override
+    public List<Animal> getAnimalsBySaleId(UUID saleId) {
+        return animalRepository.findBySale_Id(saleId);
+    }
+
+    @Override
+    public List<Animal> getAnimalsByBuyerId(UUID buyerId) {
+        return animalRepository.findBySale_Buyer_Id(buyerId);
+    }
+
 }
