@@ -15,6 +15,8 @@ import SalesListCardView from "../../components/sale/SalesListCardView";
 
 
 
+
+
 export default function SalesScreen() {
   const { t } = useTranslation();
  
@@ -120,6 +122,8 @@ export default function SalesScreen() {
       >
         Add Sale
       </Button>
+
+        
 
      
     </>

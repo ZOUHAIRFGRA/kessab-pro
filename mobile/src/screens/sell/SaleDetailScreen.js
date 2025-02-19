@@ -1,66 +1,84 @@
-import React, { useEffect } from 'react';
-import { Tab, Text, TabView } from '@rneui/themed';
-import Colors from '../../utils/Colors';
-import SaleInfoView from '../../components/sale/SaleInfoView';
-import BuyerInfoView from '../../components/buyer/BuyerInfoView';
-import TransactionsListCardView from '../../components/transaction/TransactionsListCardView';
-import AnimalsListCardView from '../../components/Animal/AnimalsListCardView';
+import React, { useState } from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Colors from "../../utils/Colors";
+import SaleInfoView from "../../components/sale/SaleInfoView";
+import BuyerInfoView from "../../components/buyer/BuyerInfoView";
+import TransactionsListCardView from "../../components/transaction/TransactionsListCardView";
+import AnimalsListCardView from "../../components/Animal/AnimalsListCardView";
+import Container from "../../components/global/Container";
+import { Ionicons } from "@expo/vector-icons";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-const SaleDetailScreen =  ({route}) => {
-const [index, setIndex] = React.useState(0);
-const { sale } = route.params;
-return (
-  <>
-    <Tab
-      value={index}
-      onChange={(e) => setIndex(e)}
-      indicatorStyle={{
-        backgroundColor: 'white',
-        height: 3,
-      }}
-      dense
-      containerStyle={{ backgroundColor : Colors.secondary }}
-      variant="primary"
-      
-    >
-      <Tab.Item
-        title="Info"
-        titleStyle={{ fontSize: 12 }}
-        icon={{ name: 'information-outline', type: 'ionicon', color: 'white' }}
-      />
-      <Tab.Item
-        title="Buyer"
-        titleStyle={{ fontSize: 12 }}
-        icon={{ name: 'person-outline', type: 'ionicon', color: 'white' }}
-      />
-      <Tab.Item
-        title="Animals"
-        titleStyle={{ fontSize: 12 }}
-        icon={{ name: 'cart-outline', type: 'ionicon', color: 'white' }}
-      />
-      <Tab.Item
-        title="Transactions"
-        titleStyle={{ fontSize: 12 }}
-        icon={{ name: 'pricetags-outline', type: 'ionicon', color: 'white' }}
-      />
-    </Tab>
+const SaleDetailScreen = ({ route }) => {
+  const Tab = createBottomTabNavigator();
+  const { sale } = route.params;
+  const buyerId = sale.buyer?.id;
 
-    <TabView  value={index} onChange={setIndex} animationType="spring">
-      <TabView.Item l  style={{ backgroundColor: 'white', width: '100%' }}>
-        <SaleInfoView sale={sale}/>
-      </TabView.Item>
-      <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-        <BuyerInfoView buyer={sale.buyer}/>
-      </TabView.Item>
-      <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-        <AnimalsListCardView animals={sale.animals}/>
-      </TabView.Item>
-      <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-        <TransactionsListCardView transactions={sale.transactions} />
-      </TabView.Item>
-    </TabView>
-  </>
-);
+  return (
+    <Container sx={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            height: 60,
+            backgroundColor: Colors.secondary,
+          },
+          tabBarActiveTintColor: Colors.primary,
+          tabBarInactiveTintColor: Colors.white,
+          tabBarLabelStyle: { fontSize: 12, fontWeight: "bold" },
+          tabBarPosition: "top",
+        }}
+      >
+        <Tab.Screen
+          name="saleInfo"
+          options={{
+            tabBarLabel: "Info ",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="information-outline" size={20} color={color} />
+            ),
+          }}
+        >
+          {() => <SaleInfoView id={sale.id} />}
+        </Tab.Screen>
+
+        <Tab.Screen
+          name="buyerInfo"
+          options={{
+            tabBarLabel: "Buyer ",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="person-outline" size={20} color={color} />
+            ),
+          }}
+        >
+          {() => <BuyerInfoView id={buyerId} />}
+        </Tab.Screen>
+
+        <Tab.Screen
+          name="animalList"
+          options={{
+            tabBarLabel: "Animals",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="cart-outline" size={20} color={color} />
+            ),
+          }}
+        >
+          {() => <AnimalsListCardView id={sale.id} type={"sale"} />}
+        </Tab.Screen>
+
+        <Tab.Screen
+          name="transactions"
+          options={{
+            tabBarLabel: "Transactions",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="pricetags-outline" size={20} color={color} />
+            ),
+          }}
+        >
+          {() => <TransactionsListCardView saleId={sale.id} />}
+        </Tab.Screen>
+      </Tab.Navigator>
+    </Container>
+  );
 };
 
 export default SaleDetailScreen;

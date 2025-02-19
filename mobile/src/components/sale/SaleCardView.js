@@ -11,13 +11,12 @@ import { useNavigation } from "@react-navigation/native";
 
 const SaleCardView = ({ sale }) => {
   const navigator = useNavigation();
-  const handleSaleClick = (id) => {
-    
-    navigator.navigate("SellDetail", { sale: id });
+  const handleSaleClick = () => {
+    navigator.navigate("SellDetail", { sale });
   };
   
   return (
-    <TouchableOpacity onPress={() => handleSaleClick(sale)}>
+    <TouchableOpacity onPress={() => handleSaleClick()}>
     <Card
       sx={{
         display: "flex",
