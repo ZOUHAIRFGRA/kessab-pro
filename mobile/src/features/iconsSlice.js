@@ -4,7 +4,6 @@ import {getCategoriesIcons} from "../api/categoryIconsApi";
 
 export const fetchCategoriesIcons = createAsyncThunk("icons/fetch", async () => {
   const response = await getCategoriesIcons();
-//   console.log(response);
   return response;
 });
 

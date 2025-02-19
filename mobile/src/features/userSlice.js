@@ -1,21 +1,24 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUserProfile, updateUserProfile } from '../api/userApi';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getUserProfile, updateUserProfile } from "../api/userApi";
 
+export const fetchUserProfile = createAsyncThunk(
+  "user/fetchProfile",
+  async () => {
+    const response = await getUserProfile();
+    return response;
+  }
+);
 
-export const fetchUserProfile = createAsyncThunk('user/fetchProfile', async () => {
-  const response = await getUserProfile();
-  // console.log("Response from userSlice:", response);
-  return response; 
-});
-
-
-export const updateProfile = createAsyncThunk('user/updateProfile', async (updatedUser) => {
-  const response = await updateUserProfile(updatedUser);
-  return response; 
-});
+export const updateProfile = createAsyncThunk(
+  "user/updateProfile",
+  async (updatedUser) => {
+    const response = await updateUserProfile(updatedUser);
+    return response;
+  }
+);
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: {
     userProfile: null,
     loading: false,

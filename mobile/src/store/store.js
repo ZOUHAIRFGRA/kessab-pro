@@ -16,7 +16,7 @@ export const store = configureStore({
     transactions: transactionReducer,
     sales: saleReducer,
     categories: categoryReducer,
-    buyers : buyerReducer,
+    buyers: buyerReducer,
     animalMedicalLogs: animalMedicalLogReducer,
     animalActivitiesLogs: animalActivitiesLogReducer,
     icons: iconsReducer,

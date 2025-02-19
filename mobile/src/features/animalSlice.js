@@ -4,9 +4,25 @@ import {
   createAnimal,
   updateAnimal,
   deleteAnimal,
-  fetchAnimalById
+  fetchAnimalById,
+  fetchAnimalsBySale,
+  fetchAnimalsByBuyer,
 } from "../api/animalApi";
 
+export const getAnimalsBySale = createAsyncThunk(
+  "animals/fetchAll/bySale",
+  async (saleId) => {
+    const response = await fetchAnimalsBySale(saleId);
+    return response.data;
+  }
+);
+export const getAnimalsByBuyer = createAsyncThunk(
+  "animals/fetchAll/byBuyer",
+  async (buyerId) => {
+    const response = await fetchAnimalsByBuyer(buyerId);
+    return response.data;
+  }
+);
 
 export const getAnimals = createAsyncThunk(
   "animals/fetchAll",
@@ -34,11 +50,10 @@ export const removeAnimal = createAsyncThunk("animals/delete", async (id) => {
   return id;
 });
 
-
 export const getAnimalById = createAsyncThunk(
   "animals/fetchById",
   async (id) => {
-    const response = await fetchAnimalById(id); 
+    const response = await fetchAnimalById(id);
     return response;
   }
 );
@@ -47,7 +62,7 @@ const animalSlice = createSlice({
   name: "animals",
   initialState: {
     animals: [],
-    animal: null,  
+    animal: null,
     loading: false,
     error: null,
     page: 0,
@@ -56,7 +71,7 @@ const animalSlice = createSlice({
   reducers: {
     resetAnimals: (state) => {
       state.animals = [];
-      state.animal = null;  
+      state.animal = null;
       state.loading = false;
       state.error = null;
       state.page = 0;
@@ -79,20 +94,18 @@ const animalSlice = createSlice({
         state.error = action.error.message || "Failed to fetch animals.";
       })
 
-      
       .addCase(getAnimalById.pending, (state) => {
         state.loading = true;
       })
       .addCase(getAnimalById.fulfilled, (state, action) => {
         state.loading = false;
-        state.animal = action.payload;  
+        state.animal = action.payload;
       })
       .addCase(getAnimalById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch animal details.";
       })
 
-      
       .addCase(addAnimal.fulfilled, (state, action) => {
         state.animals.push(action.payload);
       })
@@ -103,10 +116,35 @@ const animalSlice = createSlice({
       })
       .addCase(removeAnimal.fulfilled, (state, action) => {
         state.animals = state.animals.filter((a) => a.id !== action.payload);
+      })
+
+      .addCase(getAnimalsBySale.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAnimalsBySale.fulfilled, (state, action) => {
+        state.loading = false;
+        state.animals = action.payload;
+      })
+      .addCase(getAnimalsBySale.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Failed to fetch animals by sale.";
+      })
+
+      .addCase(getAnimalsByBuyer.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAnimalsByBuyer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.animals = action.payload;
+      })
+      .addCase(getAnimalsByBuyer.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Failed to fetch animals by buyer.";
       });
   },
 });
 
 export const { resetAnimals } = animalSlice.actions;
 export default animalSlice.reducer;
-

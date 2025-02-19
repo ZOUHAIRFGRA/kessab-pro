@@ -1,6 +1,12 @@
+import axios from "axios";
 import axiosInstance from "./axiosInstance";
 
-export const fetchAnimals = async (page = 0, size = 2, search = "", filterType = "tag") => {
+export const fetchAnimals = async (
+  page = 0,
+  size = 2,
+  search = "",
+  filterType = "tag"
+) => {
   try {
     const response = await axiosInstance.get("/animals", {
       params: { page, size, search, filterType },
@@ -12,6 +18,13 @@ export const fetchAnimals = async (page = 0, size = 2, search = "", filterType =
   }
 };
 
+export const fetchAnimalsBySale = (saleId) => {
+  return axiosInstance.get(`/animals/by-sale/${saleId}`);
+};
+
+export const fetchAnimalsByBuyer = (buyerId) => {
+  return axiosInstance.get(`/animals/by-buyer/${saleId}`);
+};
 
 export const fetchAnimalById = async (id) => {
   try {
@@ -25,13 +38,10 @@ export const fetchAnimalById = async (id) => {
 
 export const createAnimal = async (animalData) => {
   try {
-    console.log("animalData", animalData);
     const response = await axiosInstance.post("/animals", animalData, {
       headers: { "Content-Type": "multipart/form-data" },
       transformRequest: (data) => data, // Prevent Axios from converting FormData
-
     });
-    console.log("response", response);
     return response.data;
   } catch (error) {
     console.error("Error creating animal:", error);
@@ -86,8 +96,6 @@ export const fetchAnimalActivitiesLogs = async (animalId) => {
   }
 };
 
-
-
 export const updateAnimalActivitiesLog = async (logId, logData) => {
   try {
     const response = await axiosInstance.put(
@@ -103,33 +111,37 @@ export const updateAnimalActivitiesLog = async (logId, logData) => {
 
 export const removeAnimalActivityLog = async (logId) => {
   try {
-    const response = await axiosInstance.delete(`/animal-activities-logs/${logId}`);
+    const response = await axiosInstance.delete(
+      `/animal-activities-logs/${logId}`
+    );
     return response.data;
   } catch (error) {
     console.error(`Error deleting activity log ${logId}:`, error);
     throw error;
   }
-}
+};
 
 export const removeAnimalMedicalLog = async (logId) => {
   try {
-    const response = await axiosInstance.delete(`/animal-medical-logs/${logId}`);
+    const response = await axiosInstance.delete(
+      `/animal-medical-logs/${logId}`
+    );
     return response.data;
   } catch (error) {
     console.error(`Error deleting medical log ${logId}:`, error);
     throw error;
   }
-}
+};
 
 export const addAnimalMedicalLog = async (logData) => {
   try {
-    const response = await axiosInstance.post(
-      `/animal-medical-logs`,
-      logData
-    );
+    const response = await axiosInstance.post(`/animal-medical-logs`, logData);
     return response.data;
   } catch (error) {
-    console.error(`Error adding medical log for animal ${logData.animalId}:`, error);
+    console.error(
+      `Error adding medical log for animal ${logData.animalId}:`,
+      error
+    );
     throw error;
   }
 };
@@ -142,7 +154,10 @@ export const addAnimalActivitiesLog = async (logData) => {
     );
     return response.data;
   } catch (error) {
-    console.error(`Error adding activity log for animal ${logData.animalId}:`, error);
+    console.error(
+      `Error adding activity log for animal ${logData.animalId}:`,
+      error
+    );
     throw error;
   }
 };

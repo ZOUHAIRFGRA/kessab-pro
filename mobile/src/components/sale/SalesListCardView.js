@@ -7,9 +7,9 @@ import { getSales } from "../../features/saleSlice";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
 
-const SalesListCardView = ({ searchText: propSearchText, route }) => { 
+const SalesListCardView = ({ searchText: propSearchText, route }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getSales());
@@ -20,16 +20,20 @@ const SalesListCardView = ({ searchText: propSearchText, route }) => {
 
   if (loading) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
-  
+
   return (
     <View style={{ flex: 1 }}>
       {sales.length === 0 ? (
-        <FallBack type={FALLBACK_TYPE.NO_RESULT} message="No sales found for this search." />
+        <FallBack
+          type={FALLBACK_TYPE.NO_RESULT}
+          message="No sales found for this search."
+        />
       ) : (
-        <FlatList 
-          data={sales} 
+        <FlatList
+          data={sales}
           keyExtractor={(sale) => sale.id.toString()}
           renderItem={({ item }) => <SaleCardView sale={item} />}
+          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         />
       )}
     </View>

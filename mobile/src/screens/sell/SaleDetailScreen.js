@@ -25,8 +25,9 @@ const SaleDetailScreen = ({ route }) => {
           },
           tabBarActiveTintColor: Colors.primary,
           tabBarInactiveTintColor: Colors.white,
-          tabBarLabelStyle: { fontSize: 12, fontWeight: "bold" },
+          tabBarLabelStyle: { fontSize: 13, fontWeight: "bold" },
           tabBarPosition: "top",
+          animation: "shift",
         }}
       >
         <Tab.Screen
@@ -34,7 +35,7 @@ const SaleDetailScreen = ({ route }) => {
           options={{
             tabBarLabel: "Info ",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="information-outline" size={20} color={color} />
+              <Ionicons name="information-outline" size={22} color={color} />
             ),
           }}
         >
@@ -46,7 +47,7 @@ const SaleDetailScreen = ({ route }) => {
           options={{
             tabBarLabel: "Buyer ",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="person-outline" size={20} color={color} />
+              <Ionicons name="person-outline" size={22} color={color} />
             ),
           }}
         >
@@ -58,11 +59,15 @@ const SaleDetailScreen = ({ route }) => {
           options={{
             tabBarLabel: "Animals",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="cart-outline" size={20} color={color} />
+              <Ionicons name="cart-outline" size={22} color={color} />
             ),
           }}
         >
-          {() => <AnimalsListCardView id={sale.id} type={"sale"} />}
+          {() => (
+            <Container sx={{ flex: 1, gap: 16 }}>
+              <AnimalsListCardView id={sale.id} type={"sale"} />
+            </Container>
+          )}
         </Tab.Screen>
 
         <Tab.Screen
@@ -70,11 +75,15 @@ const SaleDetailScreen = ({ route }) => {
           options={{
             tabBarLabel: "Transactions",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="pricetags-outline" size={20} color={color} />
+              <Ionicons name="pricetags-outline" size={22} color={color} />
             ),
           }}
         >
-          {() => <TransactionsListCardView saleId={sale.id} />}
+          {() => (
+            <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
+              <TransactionsListCardView id={sale.id} type={"sale"} />
+            </Container>
+          )}
         </Tab.Screen>
       </Tab.Navigator>
     </Container>

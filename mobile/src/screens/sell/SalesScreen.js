@@ -23,7 +23,6 @@ export default function SalesScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const handleDateChange = (event, selectedDate) => {
-    console.log("selectedDate", selectedDate);
     setShowDatePicker(null);
   };
 

@@ -3,13 +3,13 @@ import { Platform } from "react-native";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { SERVER_IP } from "@env"; 
+import { SERVER_IP } from "@env";
 
 export const getBaseURL = () => {
-  const serverIp = SERVER_IP || "192.168.1.8"; 
-  console.log("SERVER_IP from @env:", SERVER_IP); 
+  const serverIp = SERVER_IP || "192.168.1.8";
+  console.log("SERVER_IP from @env:", SERVER_IP);
 
-if (Platform.OS === "android") {
+  if (Platform.OS === "android") {
     return Constants.executionEnvironment === "expo"
       ? "http://10.0.2.2:8080"
       : `http://${serverIp}:8080`;
