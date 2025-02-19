@@ -37,6 +37,10 @@ public class Animal extends BaseEntity {
     @JoinColumn(name = "category_id")
     private AnimalCategory category;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sale_id", referencedColumnName = "id")
     @JsonIgnoreProperties({"animals"})

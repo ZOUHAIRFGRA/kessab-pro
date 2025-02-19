@@ -13,20 +13,27 @@ import Colors from "../../utils/Colors";
 
 const Container = styled(View)({
   flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
+  justifyContent: "center",
+  alignItems: "center",
 });
 
-export default function BuyerInfoView({buyer}) {
+export default function BuyerInfoView({ id }) {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getBuyer(id));
+  }, [dispatch, id]);
 
+  const buyer = useSelector(({ buyers }) => buyers.buyer);
+  const loading = useSelector(({ buyers }) => buyers.loading);
+  const error = useSelector(({ buyers }) => buyers.error);
+  console.log({ buyer });
 
-  console.log("BuyerInfoView: ", buyer);
-  
-
+  if (loading || !buyer) return <Loading />;
+  if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
 
   return (
     <ScrollView>
-     <Container
+      <Container
         sx={{
           gap: 12,
           justifyContent: "start",
@@ -35,32 +42,26 @@ export default function BuyerInfoView({buyer}) {
           padding: 18,
         }}
       >
-      
-       
-      
-         <CardIcon icon="person-outline" text="Buyer name" subText={buyer.fullName}
-         />
-        <CardIcon icon="card-outline" text="Sale Date" subText={buyer.CIN}  />
-       
-          <CardIcon
-            icon="wallet-outline"
-            text="map-outline"
-            subText={buyer.address}
+        <CardIcon
+          icon="person-outline"
+          text="Buyer name"
+          subText={buyer.fullName}
+        />
+        <CardIcon icon="card-outline" text="Sale Date" subText={buyer.cin} />
+
+        <CardIcon
+          icon="wallet-outline"
+          text="map-outline"
+          subText={buyer.address}
           style={{ flex: 1 }}
+        />
 
-         
-          />
-       
-          <CardIcon
-            icon="wallet-outline"
-            text="call-outline"
-            subText={buyer.phone}
+        <CardIcon
+          icon="wallet-outline"
+          text="call-outline"
+          subText={buyer.phone}
           style={{ flex: 1 }}
-          
-
-          />
-
-       
+        />
 
         {/* <FallBack type={FALLBACK_TYPE.NOT_FOUND} message={"Not Found"} /> */}
       </Container>

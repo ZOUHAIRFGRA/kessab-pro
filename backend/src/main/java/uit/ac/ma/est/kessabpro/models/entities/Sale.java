@@ -36,6 +36,10 @@ public class Sale extends BaseEntity {
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     private LocalDate saleDate;
     private BigDecimal agreedAmount;
 

@@ -15,13 +15,23 @@ const Container = styled(View)({
   alignItems: "center",
 });
 
-export default function SaleInfoView({ sale = null }) {
-console.log("SaleInfoView: ", sale);
+export default function SaleInfoView({id}) {
+  const dispatch = useDispatch()
+  useEffect(()=>{
+    dispatch(getSale(id))
+  },[dispatch,id])
 
+  const sale = useSelector(({sales}) => sales.sale)
+  const loading = useSelector(({sales}) => sales.loading)
+  const error = useSelector(({sales}) => sales.error)
+  console.log({sale});
+  
+  if (loading || !sale) return <Loading/>
+  if(error ) return  <FallBack type={FALLBACK_TYPE.NOT_FOUND}/>
+  
+  
   return (
     <ScrollView>
-    {
-      sale ? (
         <Container
         sx={{
           gap: 12,
@@ -70,11 +80,7 @@ console.log("SaleInfoView: ", sale);
           subText={"salam"}
         />
 
-        {/* <FallBack type={FALLBACK_TYPE.NOT_FOUND} message={"Not Found"} /> */}
       </Container>
-      ) : (
-        <FallBack type={FALLBACK_TYPE.NOT_FOUND} />
-      )}
     </ScrollView>
   );
 }
