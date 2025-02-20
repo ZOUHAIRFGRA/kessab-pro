@@ -15,7 +15,8 @@ import {
   createAnimalMedicalLog,
   deleteAnimalMedicalLog,
 } from "../../features/animalMedicalLogSlice";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Feather, Fontisto } from "@expo/vector-icons";
+
 import {
   EmptyState,
   InputField,
@@ -27,7 +28,6 @@ import {
   CancelButton,
   SaveButton,
   Container,
-  EditContainer,
 } from "./sharedStyles";
 import { useToast } from "../../hooks/useToast";
 import { useTranslation } from "react-i18next";
@@ -203,16 +203,16 @@ export const MedicalLogsTab = ({ animalId }) => {
                     {log.logDate}
                   </LogText>
                   <LogText>
-                    <MaterialIcons
-                      name="fitness-center"
+                    <Feather
+                      name="activity"
                       size={16}
                       color="gray"
                     />{" "}
                     {log.description}
                   </LogText>
                   <LogText>
-                    <MaterialIcons
-                      name="local-hospital"
+                    <Fontisto
+                      name="doctor"
                       size={16}
                       color="gray"
                     />{" "}
