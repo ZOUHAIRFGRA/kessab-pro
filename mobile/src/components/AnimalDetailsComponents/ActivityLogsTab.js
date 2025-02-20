@@ -15,7 +15,7 @@ import {
   createAnimalActivityLog,
   deleteAnimalActivityLog,
 } from "../../features/animalActivitiesLogSlice";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
 import {
   EmptyState,
   InputField,
@@ -225,8 +225,8 @@ export const ActivityLogsTab = ({ animalId }) => {
                     {log.logDate}
                   </LogText>
                   <LogText>
-                    <MaterialIcons
-                      name="fitness-center"
+                    <Feather
+                      name="activity"
                       size={16}
                       color="gray"
                     />{" "}
