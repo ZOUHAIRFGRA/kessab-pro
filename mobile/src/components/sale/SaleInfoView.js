@@ -6,9 +6,9 @@ import NotFound from "../EmptyState/NotFound";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
 import { getSale } from "../../features/saleSlice";
-import { useFocusEffect } from "@react-navigation/native"; // Importing the hook
 import CardIcon from "../global/CardIcon";
 import { getPickedUpRatio } from "../../helpers/AnimalHelpers";
+import { t } from "i18next";
 
 const Container = styled(View)({
   flex: 1,
@@ -48,13 +48,21 @@ export default function SaleInfoView({ id }) {
       >
         <CardIcon
           icon="person-outline"
-          text="Buyer name"
+          text={t("common.buyer_name")}
           subText={sale.buyer.fullName}
         />
         <CardIcon
           icon="calendar-outline"
-          text="Sale Date"
+          text={t("common.sale_date")}
           subText={sale.saleDate}
+        />
+        <CardIcon
+          icon="handshake-o"
+          iconType="font-awesome"
+          text={t("common.agreed_amount")}
+          subText={sale.agreedAmount}
+          hideIcon
+          style={{ flex: 1 }}
         />
         <Container
           sx={{
@@ -64,17 +72,16 @@ export default function SaleInfoView({ id }) {
           }}
         >
           <CardIcon
-            icon="handshake-o"
-            iconType="font-awesome"
-            text="Agreed amount"
-            subText={sale.agreedAmount}
+            icon="wallet-outline"
+            text={t("common.remaining_amount")}
+            subText={sale.paymentDetail.remainingAmount}
             hideIcon
             style={{ flex: 1 }}
           />
           <CardIcon
             icon="wallet-outline"
-            text="Paid amount"
-            subText={sale.agreedAmount}
+            text={t("common.paid_amount")}
+            subText={sale.paymentDetail.paidAmount}
             hideIcon
             style={{ flex: 1 }}
           />
@@ -82,13 +89,13 @@ export default function SaleInfoView({ id }) {
 
         <CardIcon
           icon="wallet-outline"
-          text="Payment statut"
-          subText={sale.paymentStatus}
+          text={t("common.payment_status")}
+          subText={t(`payment_type.${sale.paymentStatus}`)}
         />
 
         <CardIcon
           icon="cart-outline"
-          text="picked up ratio"
+          text={t("common.picked_up_ratio")}
           subText={getPickedUpRatio(sale.animals)}
         />
       </Container>

@@ -1,6 +1,7 @@
 import { styled } from "dripsy";
 import { View, Text } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { t } from "i18next";
 
 const Tag = styled(View)({
   borderWidth: 1,
@@ -13,7 +14,7 @@ const IconTag = ({ tagName, color, content, style, textStyle = null }) => {
     <Tag
       sx={{
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "row-reverse",
         alignItems: "center",
         gap: 3,
         paddingY: 1,

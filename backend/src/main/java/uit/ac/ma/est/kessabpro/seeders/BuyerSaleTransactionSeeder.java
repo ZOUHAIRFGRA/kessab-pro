@@ -82,7 +82,7 @@ public class BuyerSaleTransactionSeeder {
             Sale sale = Sale.builder()
                     .buyer(buyer)
                     .saleDate(LocalDate.now())
-                    .agreedAmount(BigDecimal.valueOf(1500.00))
+                    .agreedAmount(1500.00)
                     .paymentStatus(PaymentStatus.PARTIALLY_PAID)
                     .build();
 
@@ -98,7 +98,7 @@ public class BuyerSaleTransactionSeeder {
             Transaction transaction = Transaction.builder()
                     .sale(sale)
                     .transactionDate(LocalDate.now())
-                    .amount(BigDecimal.valueOf(500.00))
+                    .amount(500.00)
                     .method(PaymentMethod.CASH)
                     .build();
 

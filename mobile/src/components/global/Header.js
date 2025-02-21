@@ -1,17 +1,18 @@
-import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
-
+import React from "react";
+import { View } from "react-native";
+import Text from "../../components/global/Text";
+import Container from "./Container";
 const Header = ({ level, children }) => {
   let fontSize;
-  
+
   switch (level) {
-    case 'h1':
+    case "h1":
       fontSize = 32;
       break;
-    case 'h2':
+    case "h2":
       fontSize = 28;
       break;
-    case 'h3':
+    case "h3":
       fontSize = 24;
       break;
     default:
@@ -19,17 +20,17 @@ const Header = ({ level, children }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={[styles.text, { fontSize }]}>{children}</Text>
-    </View>
+    <Container>
+      <Text
+        style={{
+          fontWeight: "bold",
+          fontSize,
+        }}
+      >
+        {children}
+      </Text>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
- 
-  text: {
-    fontWeight: 'bold',
-  },
-});
 
 export default Header;

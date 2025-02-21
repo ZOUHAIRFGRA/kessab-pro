@@ -9,12 +9,14 @@ import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
+import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import uit.ac.ma.est.kessabpro.repositories.BuyerRepository;
 import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
 import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,6 +74,38 @@ public class SaleService implements ISaleService {
         return saleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sale not found"));
     }
+
+    public Double getPaidAmount(Sale sale) {
+        double paidAmount = 0;
+        if (sale.getPaymentStatus() == PaymentStatus.PARTIALLY_PAID){
+            for (Transaction transaction : sale.getTransactions()) {
+                paidAmount += transaction.getAmount();
+            }
+            return paidAmount;
+        }
+
+        if (sale.getPaymentStatus() == PaymentStatus.FULLY_PAID) {
+           return sale.getAgreedAmount();
+        }
+
+        return paidAmount;
+    }
+    public Double getRemainingAmount(Sale sale) {
+        double remainingAmount = 0;
+
+        if (sale.getPaymentStatus() == PaymentStatus.PARTIALLY_PAID){
+            return sale.getAgreedAmount() - getPaidAmount(sale);
+        }
+
+        if (sale.getPaymentStatus() == PaymentStatus.NOT_PAID){
+          return sale.getAgreedAmount();
+        }
+
+        return remainingAmount;
+    }
+
+
+
 
     @Override
     public List<Sale> getAllSales() {

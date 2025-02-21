@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, Image, Touchable, TouchableOpacity } from "react-native";
+import { View, Image, Touchable, TouchableOpacity } from "react-native";
 import Card from "../global/Card";
 import IconTag from "../global/IconTag";
 import { getBaseURL } from "../../api/axiosInstance";
@@ -10,20 +10,20 @@ import Loading from "../global/Loading";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Colors from "../../utils/Colors";
 import { getPickedUpDate } from "../../helpers/AnimalHelpers";
-
+import Text from "../../components/global/Text";
+import { t } from "i18next";
 const AnimalCardView = ({ animal }) => {
   const navigator = useNavigation();
   const handleAnimalClick = () => {
     navigator.navigate("AnimalDetails", { animalId: animal.id });
   };
-  console.log({animalfromCard : animal});
-  
+  console.log({ animalfromCard: animal });
+
   return (
     <TouchableOpacity onPress={() => handleAnimalClick()}>
       <Card
         sx={{
           display: "flex",
-          flexDirection: "row",
           padding: 15,
         }}
       >
@@ -70,7 +70,7 @@ const AnimalCardView = ({ animal }) => {
             <IconTag
               tagName="venus-mars"
               color="grey"
-              content={animal.sex}
+              content={t(`common.Gender.${animal.sex}`)}
               style={{ flex: 1 }}
             />
             <IconTag

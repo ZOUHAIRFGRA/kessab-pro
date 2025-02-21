@@ -33,7 +33,7 @@ public class Transaction extends BaseEntity {
     private User user;
 
     private LocalDate transactionDate;
-    private BigDecimal amount;
+    private double amount;
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod method;

@@ -41,7 +41,7 @@ public class Sale extends BaseEntity {
     private User user;
 
     private LocalDate saleDate;
-    private BigDecimal agreedAmount;
+    private double agreedAmount;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;

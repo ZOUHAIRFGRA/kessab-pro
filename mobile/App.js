@@ -11,6 +11,7 @@ import { SERVER_IP } from "@env";
 import "react-native-toast-message";
 import Toast from "react-native-toast-message";
 import "./src/localization/i18n";
+import { I18nManager } from "react-native";
 
 const AppWrapper = () => {
   const dispatch = useDispatch();

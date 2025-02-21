@@ -80,7 +80,7 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public List<BigDecimal> testFindAmountsBySaleId(UUID saleId) {
+    public List<Double> testFindAmountsBySaleId(UUID saleId) {
         return transactionRepository.findAmountsBySaleId(saleId);
     }
 

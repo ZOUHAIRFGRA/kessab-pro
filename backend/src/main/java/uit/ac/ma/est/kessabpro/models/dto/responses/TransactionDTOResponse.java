@@ -7,7 +7,7 @@ import java.util.UUID;
 public record TransactionDTOResponse(
         UUID id,
         LocalDate transactionDate,
-        BigDecimal amount,
+        String amount,
         String method
 ) {
 

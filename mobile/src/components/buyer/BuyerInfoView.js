@@ -1,13 +1,8 @@
 import React, { useEffect } from "react";
-import { View, Text, ScrollView } from "react-native";
-import { styled } from "dripsy";
+import { ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import NotFound from "../EmptyState/NotFound";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-import { getSale } from "../../features/saleSlice";
-import { useFocusEffect } from "@react-navigation/native"; // Importing the hook
-import CardIcon from "../global/CardIcon";
 import { getBuyer } from "../../features/buyerSlice";
 import Colors from "../../utils/Colors";
 import Header from "../global/Header";
@@ -15,16 +10,15 @@ import Container from "../global/Container";
 import Card from "../global/Card";
 import Button from "../global/Button";
 import { Icon } from "@rneui/base";
-
+import Text from "../../components/global/Text";
+import { t } from "i18next";
 export default function BuyerInfoView({ id }) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getBuyer(id));
   }, [dispatch, id]);
 
-  const buyer = useSelector(({ buyers }) => buyers.buyer);
-  const loading = useSelector(({ buyers }) => buyers.loading);
-  const error = useSelector(({ buyers }) => buyers.error);
+  const { error, loading, buyer } = useSelector(({ buyers }) => buyers);
 
   if (loading || !buyer) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
@@ -51,19 +45,19 @@ export default function BuyerInfoView({ id }) {
             />
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
-            <Text>{"Full name"}</Text>
+            <Text>{t("common.FullName")}</Text>
             <Header level={"h3"}>{buyer.fullName}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
-            <Text>{"CIN"}</Text>
+            <Text>{t("common.CIN")}</Text>
             <Header level={"h3"}>{buyer.cin}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
-            <Text>{"ADDRESS"}</Text>
+            <Text>{t("common.Address")}</Text>
             <Header level={"h3"}>{buyer.address}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
-            <Text>{"Phone"}</Text>
+            <Text>{t("common.Phone")}</Text>
             <Header level={"h3"}>{buyer.phone}</Header>
           </Container>
         </Card>
@@ -89,7 +83,7 @@ export default function BuyerInfoView({ id }) {
             color: Colors.white,
           }}
         >
-          See full buyer details
+          {t("common.SeeAllBuyerDetails")}
         </Button>
       </Container>
     </ScrollView>

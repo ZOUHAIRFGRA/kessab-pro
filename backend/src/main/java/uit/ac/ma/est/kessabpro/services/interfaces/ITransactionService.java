@@ -15,7 +15,7 @@ public interface ITransactionService {
     Transaction updateTransaction(UUID id, Transaction updatedTransaction);
     void deleteTransaction(UUID id);
 
-    List<BigDecimal> testFindAmountsBySaleId(UUID saleId);
+    List<Double> testFindAmountsBySaleId(UUID saleId);
 
     void publishTransactionCreatedEvent(Transaction transactionDTO);
 }

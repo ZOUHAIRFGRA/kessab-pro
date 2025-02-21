@@ -37,15 +37,17 @@ public class SaleListener {
     }
 
     private void updatePaymentStatus(Sale sale) {
-        List<BigDecimal> amounts = transactionRepository.findAmountsBySaleId(sale.getId());
-        BigDecimal totalPaid = amounts.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-        if (totalPaid.compareTo(BigDecimal.ZERO) == 0) {
+        List<Double> amounts = transactionRepository.findAmountsBySaleId(sale.getId());
+        double totalPaid = amounts.stream().mapToDouble(Double::doubleValue).sum();
+
+        if (totalPaid == 0) {
             sale.setPaymentStatus(PaymentStatus.NOT_PAID);
-        } else if (totalPaid.compareTo(sale.getAgreedAmount()) < 0) {
+        } else if (totalPaid < sale.getAgreedAmount()) {
             sale.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
         } else {
             sale.setPaymentStatus(PaymentStatus.FULLY_PAID);
         }
         System.out.println("Calculated payment status for sale " + sale.getId() + ": " + sale.getPaymentStatus());
     }
+
 }

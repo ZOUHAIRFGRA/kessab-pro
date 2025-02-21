@@ -18,6 +18,6 @@ public class SaleDTO {
     private List<UUID> animalIds;
     private UUID buyerId;
     private LocalDate saleDate;
-    private BigDecimal agreedAmount;
+    private double agreedAmount;
     private PaymentStatus paymentStatus;
 }

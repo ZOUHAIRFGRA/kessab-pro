@@ -11,7 +11,7 @@ public class TransactionMapper {
         return new TransactionDTOResponse(
                 transaction.getId(),
                 transaction.getTransactionDate(),
-                transaction.getAmount(),
+                transaction.getAmount() + "DH",
                 transaction.getMethod() != null ? transaction.getMethod().name() : null
         );
     }

@@ -1,11 +1,12 @@
 import React from "react";
-import { View, Text, Image, Touchable, TouchableOpacity } from "react-native";
+import { View, Image, Touchable, TouchableOpacity } from "react-native";
 import Card from "../global/Card";
 import IconTag from "../global/IconTag";
 import { getAnimalCategoryCounts } from "../../helpers/SaleHelpers";
 import { getBaseURL } from "../../api/axiosInstance";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../../utils/Colors";
+import Text from "../../components/global/Text";
 
 const SaleCardView = ({ sale }) => {
   const navigator = useNavigation();
@@ -18,7 +19,6 @@ const SaleCardView = ({ sale }) => {
       <Card
         sx={{
           display: "flex",
-          flexDirection: "row",
           padding: 15,
         }}
       >

@@ -7,6 +7,7 @@ import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,9 +16,10 @@ public record SaleDTOResponse(
          BuyerDTOResponse buyer,
         @JsonFormat(pattern = "dd-MM-yyyy")
         LocalDate saleDate,
-         BigDecimal agreedAmount,
+         String agreedAmount,
          PaymentStatus paymentStatus,
-         List<AnimalDTOResponse> animals
+         List<AnimalDTOResponse> animals,
+        HashMap<String,String> paymentDetail
 ){
 
 }

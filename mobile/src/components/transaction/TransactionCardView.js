@@ -1,12 +1,12 @@
 import React from "react";
-import { View, Text, Image, Touchable, TouchableOpacity } from "react-native";
+import { View, Image, Touchable, TouchableOpacity } from "react-native";
 import Card from "../global/Card";
 import IconTag from "../global/IconTag";
 import { useNavigation } from "@react-navigation/native";
 import { Icon } from "@rneui/base";
-import Header from "../global/Header";
 import Container from "../global/Container";
-
+import Text from "../../components/global/Text";
+import { t } from "i18next";
 const TransactionCardView = ({ transaction }) => {
   const navigator = useNavigation();
   const handleTransactionClick = () => {
@@ -17,8 +17,6 @@ const TransactionCardView = ({ transaction }) => {
     <TouchableOpacity onPress={() => handleTransactionClick()}>
       <Card
         sx={{
-          display: "flex",
-          flexDirection: "row",
           justifyContent: "space-between",
           padding: 15,
         }}
@@ -26,7 +24,7 @@ const TransactionCardView = ({ transaction }) => {
         <View
           style={{
             justifyContent: "center",
-            flexDirection: "row",
+            flexDirection: t("dir") === "rtl" ? "row-reverse" : "row",
             gap: 6,
             alignItems: "center",
           }}
@@ -40,7 +38,9 @@ const TransactionCardView = ({ transaction }) => {
           />
           <Container>
             <Text style={{ fontSize: 16 }}>{transaction.transactionDate}</Text>
-            <Text style={{ fontSize: 16 }}>{transaction.method}</Text>
+            <Text style={{ fontSize: 16 }}>
+              {t(`common.${transaction.method}`)}
+            </Text>
           </Container>
         </View>
 
@@ -48,7 +48,7 @@ const TransactionCardView = ({ transaction }) => {
           <IconTag
             tagName="plus"
             color="grey"
-            content={transaction.amount + " DH"}
+            content={transaction.amount}
             style={{ flex: 1, borderWidth: 0 }}
             textStyle={{
               fontSize: 24,

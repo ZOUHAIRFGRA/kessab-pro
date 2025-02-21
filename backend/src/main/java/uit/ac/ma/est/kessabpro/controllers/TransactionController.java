@@ -22,7 +22,7 @@ public class TransactionController {
     }
 
     @GetMapping("/amounts/{saleId}")
-    public List<BigDecimal> getTransactionAmounts(@PathVariable UUID saleId) {
+    public List<Double> getTransactionAmounts(@PathVariable UUID saleId) {
         return transactionService.testFindAmountsBySaleId(saleId);
     }
 
