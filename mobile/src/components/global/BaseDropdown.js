@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Colors from '../../utils/Colors';
+import React, { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Colors from "../../utils/Colors";
 
-const BaseDropdown = ({label,focusLabel,notFocusLabel,searchLabel,iconName,values : data}) => {
+const BaseDropdown = ({
+  label,
+  focusLabel,
+  notFocusLabel,
+  searchLabel,
+  iconName,
+  values: data,
+}) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
@@ -19,13 +26,11 @@ const BaseDropdown = ({label,focusLabel,notFocusLabel,searchLabel,iconName,value
     return null;
   };
 
- 
-
   return (
     <View style={styles.container}>
       {value ? null : renderLabel()}
       <Dropdown
-        style={[styles.dropdown, isFocus && { borderColor: 'border' }]}
+        style={[styles.dropdown, isFocus && { borderColor: "border" }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -40,17 +45,16 @@ const BaseDropdown = ({label,focusLabel,notFocusLabel,searchLabel,iconName,value
         value={value}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        onChange={item => {
+        onChange={(item) => {
           setValue(item.value);
           setIsFocus(false);
         }}
         renderLeftIcon={() => (
           <AntDesign
             style={styles.icon}
-            color={isFocus ? 'primary' : 'black'}
+            color={isFocus ? "primary" : "black"}
             name={iconName}
             size={20}
-            
           />
         )}
       />
@@ -62,12 +66,12 @@ export default BaseDropdown;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 0,
   },
   dropdown: {
     height: 50,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
@@ -76,8 +80,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   label: {
-    position: 'absolute',
-    backgroundColor: 'white',
+    position: "absolute",
+    backgroundColor: "white",
     left: 22,
     top: 8,
     zIndex: 999,

@@ -1,25 +1,15 @@
 import { View, Text, ScrollView, TextInput } from "react-native";
-import SaleCardView from "../../components/sale/SaleCardView";
 import Container from "../../components/global/Container";
 import Button from "../../components/global/Button";
 import Colors from "../../utils/Colors";
 import DropdownComponent from "../../components/global/BaseDropdown";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SearchBar } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
-import { useTranslation } from 'react-i18next';
-import LangSwitcher from '../../components/global/LangSwitcher';
-import { getSales } from "../../features/saleSlice";
 import SalesListCardView from "../../components/sale/SalesListCardView";
-
-
-
-
-
+import { t } from "i18next";
 export default function SalesScreen() {
-  const { t } = useTranslation();
- 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const handleDateChange = (event, selectedDate) => {
@@ -44,7 +34,13 @@ export default function SalesScreen() {
             />
           </Container>
           <Text
-            style={{ flex: 1, textAlign: "center", verticalAlign: "center",padding : 2,opacity:0.75 }}
+            style={{
+              flex: 1,
+              textAlign: "center",
+              verticalAlign: "center",
+              padding: 2,
+              opacity: 0.75,
+            }}
           >
             <FontAwesome
               color="black"
@@ -96,7 +92,9 @@ export default function SalesScreen() {
           </Container>
         </Container>
       </Container>
-          <SalesListCardView/>
+      <Container sx={{ padding: 12, flex: 1 }}>
+        <SalesListCardView />
+      </Container>
       <Button
         type="primary"
         style={{
@@ -104,7 +102,6 @@ export default function SalesScreen() {
           marginRight: 12,
           marginLeft: 12,
           marginBottom: 8,
-          display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -119,12 +116,8 @@ export default function SalesScreen() {
           color: Colors.white,
         }}
       >
-        Add Sale
+        {t("common.AddNewSale")}
       </Button>
-
-        
-
-     
     </>
   );
 }

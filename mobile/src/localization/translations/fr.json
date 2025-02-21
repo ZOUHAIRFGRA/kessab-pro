@@ -1,15 +1,10 @@
 {
   "language": "fr",
-  "screens": {
-    "sells": {
-      "category": "Type",
-      "payment": "Paiement"
-    }
-  },
+  "dir": "ltr",
   "payment_type": {
-    "fully_paid": "Entièrement payé",
-    "partially_paid": "Partiellement payé",
-    "not_paid": "Non payé"
+    "FULLY_PAID": "Entièrement payé",
+    "PARTIALLY_PAID": "Partiellement payé",
+    "NOT_PAID": "Non payé"
   },
   "common": {
     "kessabPro": "Kessab Pro",
@@ -25,7 +20,15 @@
     "inventory": "Inventaire",
     "dashboard": "Tableau de bord",
     "QRscanner": "Scanner QR",
+    "Info": "Info",
+    "Buyer": "Acheteur",
+    "Animals": "Animaux",
+    "Transactions": "Transactions",
+    "AddNewSale": "Ajouter une nouvelle vente",
     "profile": "Profil",
+    "CASH": "Espèces",
+    "CARD": "Carte",
+    "BANK": "Banque",
     "add_animal": "Ajouter un animal",
     "search_by_tag": "Rechercher par numéro",
     "quick_actions": "Actions rapides",
@@ -35,6 +38,12 @@
     "medical_logs": "Dossiers médicaux",
     "addAnimal": "Ajouter un animal",
     "add": "Ajouter",
+    "Gender": {
+      "Gender": "Genre",
+      "Male": "Mâle",
+      "Female": "Femelle"
+    },
+    "SeeAllBuyerDetails": "Voir tous les détails de l'acheteur",
     "cancel": "Annuler",
     "save": "Enregistrer",
     "edit": "Modifier",
@@ -59,6 +68,25 @@
     "enter_vet_name": "Entrer le nom du vétérinaire",
     "enter_new_activity": "Entrer une nouvelle activité",
     "add_activity": "Ajouter une activité",
-    "select_date": "Sélectionner une date"
+    "select_date": "Sélectionner une date",
+    "payment": "Paiement",
+    "buyer_name": "Nom de l'acheteur",
+    "sale_date": "Date de vente",
+    "agreed_amount": "Montant convenu",
+    "paid_amount": "Montant payé",
+    "remaining_amount": "Montant restant.",
+    "payment_status": "Statut du paiement",
+    "partially_paid": "Partiellement payé",
+    "picked_up_ratio": "Ratio récupéré",
+    "FullName": "Nom complet",
+    "CIN": "CIN",
+    "Address": "Adresse",
+    "Phone": "Telephone",
+    "Sheep": "Mouton",
+    "Cattle": "Bétail",
+    "Goat": "Chèvre",
+    "Cow": "Vache",
+    "SaleDetail": "Détail de la vente",
+    "SaleInfo": "Informations de vente"
   }
 }

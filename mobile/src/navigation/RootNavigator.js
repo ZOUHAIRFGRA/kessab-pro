@@ -11,6 +11,7 @@ import AnimalsList from "../components/AnimalsList";
 import Colors from "../utils/Colors";
 import SaleDetailScreen from "../screens/sale/SaleDetailScreen";
 import SalesScreen from "../screens/SalesScreen";
+import { t } from "i18next";
 
 const Stack = createStackNavigator();
 
@@ -49,15 +50,11 @@ export default function RootNavigator() {
             />
             <Stack.Screen name="AnimalsList" component={AnimalsList} />
             <Stack.Screen
-              options={{ title: "Sale Info" }}
+              options={{ title: t("common.SaleDetail") }}
               name="SellDetail"
               component={SaleDetailScreen}
             />
-            <Stack.Screen
-              options={{ title: "Sale Info" }}
-              name="Sales"
-              component={SalesScreen}
-            />
+            <Stack.Screen name="Sales" component={SalesScreen} />
           </>
         ) : (
           <>

@@ -9,7 +9,7 @@ import Container from "../../components/global/Container";
 import { Ionicons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FallBack from "../../components/global/Fallback";
-
+import { t } from "i18next";
 const SaleDetailScreen = ({ route }) => {
   const Tab = createBottomTabNavigator();
   const sale = route.params?.sale;
@@ -21,6 +21,7 @@ const SaleDetailScreen = ({ route }) => {
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
+
           tabBarStyle: {
             height: 60,
             backgroundColor: Colors.secondary,
@@ -35,7 +36,7 @@ const SaleDetailScreen = ({ route }) => {
         <Tab.Screen
           name="saleInfo"
           options={{
-            tabBarLabel: "Info ",
+            tabBarLabel: t("common.Info"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="information-outline" size={22} color={color} />
             ),
@@ -47,7 +48,7 @@ const SaleDetailScreen = ({ route }) => {
         <Tab.Screen
           name="buyerInfo"
           options={{
-            tabBarLabel: "Buyer ",
+            tabBarLabel: t("common.Buyer"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="person-outline" size={22} color={color} />
             ),
@@ -59,7 +60,7 @@ const SaleDetailScreen = ({ route }) => {
         <Tab.Screen
           name="animalList"
           options={{
-            tabBarLabel: "Animals",
+            tabBarLabel: t("common.Animals"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="cart-outline" size={22} color={color} />
             ),
@@ -75,7 +76,7 @@ const SaleDetailScreen = ({ route }) => {
         <Tab.Screen
           name="transactions"
           options={{
-            tabBarLabel: "Transactions",
+            tabBarLabel: t("common.Transactions"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="pricetags-outline" size={22} color={color} />
             ),
