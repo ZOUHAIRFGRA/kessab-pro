@@ -8,7 +8,8 @@ import BuyerScreen from "../screens/BuyerScreen";
 import AddTransaction from "../components/AddTransaction";
 import AnimalDetailsScreen from "../screens/AnimalDetailsScreen";
 import AnimalsList from "../components/AnimalsList";
-import Colors from '../utils/Colors'; 
+import Colors from "../utils/Colors";
+import SaleDetailScreen from "../screens/sell/SaleDetailScreen";
 
 const Stack = createStackNavigator();
 
@@ -20,9 +21,9 @@ export default function RootNavigator() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: Colors.primary, 
+            backgroundColor: Colors.primary,
           },
-          headerTintColor: "#fff", 
+          headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
           },
@@ -37,8 +38,12 @@ export default function RootNavigator() {
             />
             <Stack.Screen name="Buyer" component={BuyerScreen} />
             <Stack.Screen name="AddTransaction" component={AddTransaction} />
-            <Stack.Screen name="AnimalDetails" component={AnimalDetailsScreen} />
+            <Stack.Screen
+              name="AnimalDetails"
+              component={AnimalDetailsScreen}
+            />
             <Stack.Screen name="AnimalsList" component={AnimalsList} />
+            <Stack.Screen name="SellDetail" component={SaleDetailScreen} />
           </>
         ) : (
           <>

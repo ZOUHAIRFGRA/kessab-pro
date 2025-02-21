@@ -8,11 +8,13 @@ import AnimalsListCardView from "../../components/Animal/AnimalsListCardView";
 import Container from "../../components/global/Container";
 import { Ionicons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import FallBack from "../../components/global/Fallback";
 
 const SaleDetailScreen = ({ route }) => {
   const Tab = createBottomTabNavigator();
-  const { sale } = route.params;
-  const buyerId = sale.buyer?.id;
+  const sale = route.params?.sale;
+
+  if (!sale) return <FallBack />;
 
   return (
     <Container sx={{ flex: 1 }}>
@@ -51,7 +53,7 @@ const SaleDetailScreen = ({ route }) => {
             ),
           }}
         >
-          {() => <BuyerInfoView id={buyerId} />}
+          {() => <BuyerInfoView id={sale.buyer?.id} />}
         </Tab.Screen>
 
         <Tab.Screen
