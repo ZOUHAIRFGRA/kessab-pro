@@ -15,6 +15,7 @@ import { resetAnimals } from "../features/animalSlice";
 import Colors from "../utils/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import AddAnimalModal from "./AddAnimalModal";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -22,6 +23,7 @@ export default function HomeScreen() {
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText] = useDebounce(searchText, 500);
+  const [isAddAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
 
   const handleSearch = () => {
     if (debouncedSearchText) {
@@ -35,6 +37,14 @@ export default function HomeScreen() {
 
   const handleSearchChange = (text) => {
     setSearchText(text);
+  };
+
+  const handleAddSheepPress = () => {
+    setAddAnimalModalVisible(true);
+  };
+
+  const closeAddAnimalModal = () => {
+    setAddAnimalModalVisible(false);
   };
 
   return (
@@ -86,6 +96,7 @@ export default function HomeScreen() {
             key: "AddSheep",
             name: t("common.add_sheep"),
             icon: "sheep",
+            onPress: handleAddSheepPress,
           },
           {
             key: "MySellsScreen",
@@ -100,7 +111,7 @@ export default function HomeScreen() {
         ].map((action, index) => (
           <HorizontalActionItem
             key={index}
-            onPress={() => navigation.navigate(action.key)}
+            onPress={action.onPress || (() => navigation.navigate(action.key))}
             accessibilityRole="button"
             accessibilityLabel={`Navigate to ${action.name}`}
           >
@@ -128,6 +139,11 @@ export default function HomeScreen() {
           </BottomNavItem>
         ))}
       </BottomNav>
+
+      <AddAnimalModal
+        visible={isAddAnimalModalVisible}
+        onClose={closeAddAnimalModal}
+      />
     </Container>
   );
 }
