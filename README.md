@@ -142,7 +142,7 @@ For questions or collaboration:
 
 ## 🌐 Landing Page
 
-In addition to the mobile app, we have created a landing page in the `client` folder that showcases the features of KessabPro and provides potential users with information about the app. This landing page serves as a promotional tool to encourage farmers to download and use the app.
+In addition to the mobile app, we have created a landing page in the `web` folder that showcases the features of KessabPro and provides potential users with information about the app. This landing page serves as a promotional tool to encourage farmers to download and use the app.
 
 ---
 
