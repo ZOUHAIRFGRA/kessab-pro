@@ -1,4 +1,5 @@
 import { trimStringWithEllipsis } from "./gloablHelpers";
+import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 
 export function getAnimalCategoryCounts(sale) {

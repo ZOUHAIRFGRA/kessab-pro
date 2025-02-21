@@ -4,18 +4,18 @@ import { useSelector } from "react-redux";
 import RegisterScreen from "../screens/RegisterScreen";
 import LoginScreen from "../screens/LoginScreen";
 import AppNavigator from "./AppNavigator";
-import BuyerScreen from "../screens/BuyerScreen";
+import BuyerScreen from "../screens/buyer/BuyerScreen";
 import AddTransaction from "../components/AddTransaction";
 import AnimalDetailsScreen from "../screens/AnimalDetailsScreen";
 import AnimalsList from "../components/AnimalsList";
 import Colors from "../utils/Colors";
 import SaleDetailScreen from "../screens/sale/SaleDetailScreen";
 import SalesScreen from "../screens/SalesScreen";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const Stack = createStackNavigator();
-
 export default function RootNavigator() {
+  const { t } = useTranslation();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (

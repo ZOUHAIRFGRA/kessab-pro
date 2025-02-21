@@ -8,13 +8,15 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { SearchBar } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import SalesListCardView from "../../components/sale/SalesListCardView";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 export default function SalesScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(null);
   };
+
+  const { t } = useTranslation();
 
   return (
     <>

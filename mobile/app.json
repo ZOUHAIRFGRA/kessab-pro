@@ -1,5 +1,10 @@
 {
   "expo": {
+    "extra": {
+      "supportsRTL": true,
+      "forcesRTL": true
+    },
+
     "name": "mobile",
     "slug": "mobile",
     "version": "1.0.0",
@@ -31,8 +36,8 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends.",
           "cameraPermission": "The app uses your camera to let you share photos with your friends."
         }
-        
-      ]
+      ],
+      ["expo-localization"]
     ]
   }
 }

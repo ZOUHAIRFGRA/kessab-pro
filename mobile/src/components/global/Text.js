@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { Text as ReactNativeText } from "react-native";
-import { t } from "i18next";
+
 
 const Text = ({ style, children }) => {
+    const { t } = useTranslation();
   return (
     <ReactNativeText
       style={{

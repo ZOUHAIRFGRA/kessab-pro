@@ -9,8 +9,10 @@ import Container from "../../components/global/Container";
 import { Ionicons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FallBack from "../../components/global/Fallback";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+
 const SaleDetailScreen = ({ route }) => {
+  const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
   const sale = route.params?.sale;
 

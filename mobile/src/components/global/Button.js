@@ -1,9 +1,11 @@
 import { Text, TouchableOpacity } from "react-native";
 import Colors from "../../utils/Colors";
 import { FontAwesome } from "@expo/vector-icons";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+
 
 const Button = ({ type, children: text, style, textStyle, icon = null }) => {
+  const { t } = useTranslation();
   return (
     <TouchableOpacity
       style={{

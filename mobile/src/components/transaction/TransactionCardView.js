@@ -6,8 +6,10 @@ import { useNavigation } from "@react-navigation/native";
 import { Icon } from "@rneui/base";
 import Container from "../global/Container";
 import Text from "../../components/global/Text";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+
 const TransactionCardView = ({ transaction }) => {
+  const { t } = useTranslation();
   const navigator = useNavigation();
   const handleTransactionClick = () => {
     navigator.navigate("TransactionDetail", { transaction: transaction.id });

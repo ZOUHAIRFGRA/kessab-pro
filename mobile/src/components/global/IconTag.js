@@ -1,7 +1,7 @@
 import { styled } from "dripsy";
 import { View, Text } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const Tag = styled(View)({
   borderWidth: 1,
@@ -10,11 +10,12 @@ const Tag = styled(View)({
 });
 
 const IconTag = ({ tagName, color, content, style, textStyle = null }) => {
+  const { t } = useTranslation();
   return (
     <Tag
       sx={{
         display: "flex",
-        flexDirection: "row-reverse",
+        flexDirection: t("dir") == "ltr" ? "row" : "row-reverse",
         alignItems: "center",
         gap: 3,
         paddingY: 1,
