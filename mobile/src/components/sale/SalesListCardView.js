@@ -7,6 +7,8 @@ import { getSales } from "../../features/saleSlice";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
 
+
+
 const SalesListCardView = ({ searchText: propSearchText, route }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();

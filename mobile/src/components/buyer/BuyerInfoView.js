@@ -11,8 +11,10 @@ import Card from "../global/Card";
 import Button from "../global/Button";
 import { Icon } from "@rneui/base";
 import Text from "../../components/global/Text";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+
 export default function BuyerInfoView({ id }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getBuyer(id));

@@ -8,7 +8,8 @@ import Loading from "../global/Loading";
 import { getSale } from "../../features/saleSlice";
 import CardIcon from "../global/CardIcon";
 import { getPickedUpRatio } from "../../helpers/AnimalHelpers";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+
 
 const Container = styled(View)({
   flex: 1,
@@ -17,6 +18,7 @@ const Container = styled(View)({
 });
 
 export default function SaleInfoView({ id }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getSale(id));

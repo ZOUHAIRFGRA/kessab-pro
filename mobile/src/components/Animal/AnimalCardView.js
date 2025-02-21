@@ -4,15 +4,13 @@ import Card from "../global/Card";
 import IconTag from "../global/IconTag";
 import { getBaseURL } from "../../api/axiosInstance";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
-import { getAnimalById } from "../../features/animalSlice";
-import Loading from "../global/Loading";
-import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Colors from "../../utils/Colors";
 import { getPickedUpDate } from "../../helpers/AnimalHelpers";
 import Text from "../../components/global/Text";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+
 const AnimalCardView = ({ animal }) => {
+  const { t } = useTranslation();
   const navigator = useNavigation();
   const handleAnimalClick = () => {
     navigator.navigate("AnimalDetails", { animalId: animal.id });
