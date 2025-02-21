@@ -10,12 +10,11 @@ import { useFocusEffect } from "@react-navigation/native"; // Importing the hook
 import CardIcon from "../global/CardIcon";
 import { getBuyer } from "../../features/buyerSlice";
 import Colors from "../../utils/Colors";
-
-const Container = styled(View)({
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-});
+import Header from "../global/Header";
+import Container from "../global/Container";
+import Card from "../global/Card";
+import Button from "../global/Button";
+import { Icon } from "@rneui/base";
 
 export default function BuyerInfoView({ id }) {
   const dispatch = useDispatch();
@@ -41,28 +40,57 @@ export default function BuyerInfoView({ id }) {
           padding: 18,
         }}
       >
-        <CardIcon
-          icon="person-outline"
-          text="Buyer name"
-          subText={buyer.fullName}
-        />
-        <CardIcon icon="card-outline" text="Sale Date" subText={buyer.cin} />
-
-        <CardIcon
-          icon="wallet-outline"
-          text="map-outline"
-          subText={buyer.address}
-          style={{ flex: 1 }}
-        />
-
-        <CardIcon
-          icon="wallet-outline"
-          text="call-outline"
-          subText={buyer.phone}
-          style={{ flex: 1 }}
-        />
-
-        {/* <FallBack type={FALLBACK_TYPE.NOT_FOUND} message={"Not Found"} /> */}
+        <Card sx={{ gap: 24, flexDirection: "column", padding: 20 }}>
+          <Container sx={{ justifyContent: "center", flexDirection: "row" }}>
+            <Icon
+              name="person"
+              size={36}
+              reverse
+              raised
+              color={Colors.primary}
+            />
+          </Container>
+          <Container style={{ flex: 1, justifyContent: "end" }}>
+            <Text>{"Full name"}</Text>
+            <Header level={"h3"}>{buyer.fullName}</Header>
+          </Container>
+          <Container style={{ flex: 1, justifyContent: "end" }}>
+            <Text>{"CIN"}</Text>
+            <Header level={"h3"}>{buyer.cin}</Header>
+          </Container>
+          <Container style={{ flex: 1, justifyContent: "end" }}>
+            <Text>{"ADDRESS"}</Text>
+            <Header level={"h3"}>{buyer.address}</Header>
+          </Container>
+          <Container style={{ flex: 1, justifyContent: "end" }}>
+            <Text>{"Phone"}</Text>
+            <Header level={"h3"}>{buyer.phone}</Header>
+          </Container>
+        </Card>
+        <Button
+          type="primary"
+          style={{
+            padding: 12,
+            marginRight: 12,
+            marginLeft: 12,
+            marginBottom: 8,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          textStyle={{
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "center",
+            fontSize: 16,
+          }}
+          icon={{
+            name: "reply-all",
+            color: Colors.white,
+          }}
+        >
+          See full buyer details
+        </Button>
       </Container>
     </ScrollView>
   );

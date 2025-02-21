@@ -4,6 +4,8 @@ import Card from "../global/Card";
 import IconTag from "../global/IconTag";
 import { useNavigation } from "@react-navigation/native";
 import { Icon } from "@rneui/base";
+import Header from "../global/Header";
+import Container from "../global/Container";
 
 const TransactionCardView = ({ transaction }) => {
   const navigator = useNavigation();
@@ -17,10 +19,18 @@ const TransactionCardView = ({ transaction }) => {
         sx={{
           display: "flex",
           flexDirection: "row",
+          justifyContent: "space-between",
           padding: 15,
         }}
       >
-        <View style={{ justifyContent: "center" }}>
+        <View
+          style={{
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: 6,
+            alignItems: "center",
+          }}
+        >
           <Icon
             name="wallet-plus-outline"
             color={"green"}
@@ -28,39 +38,23 @@ const TransactionCardView = ({ transaction }) => {
             reverse
             type="material-community"
           />
+          <Container>
+            <Text style={{ fontSize: 16 }}>{transaction.transactionDate}</Text>
+            <Text style={{ fontSize: 16 }}>{transaction.method}</Text>
+          </Container>
         </View>
 
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-evenly",
-            flex: 1,
-            gap: 4,
-          }}
-        >
-          <IconTag tagName="money" color="grey" content={transaction.amount} />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 6,
-              justifyContent: "space-evenly",
+        <View>
+          <IconTag
+            tagName="plus"
+            color="grey"
+            content={transaction.amount + " DH"}
+            style={{ flex: 1, borderWidth: 0 }}
+            textStyle={{
+              fontSize: 24,
+              fontWeight: "bold",
             }}
-          >
-            <IconTag
-              tagName="calendar"
-              color="grey"
-              content={transaction.transactionDate}
-              style={{ flex: 1 }}
-            />
-            <IconTag
-              tagName="money"
-              color="grey"
-              content={transaction.method}
-              style={{ flex: 1 }}
-            />
-          </View>
+          />
         </View>
       </Card>
     </TouchableOpacity>

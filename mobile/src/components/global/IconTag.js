@@ -8,7 +8,7 @@ const Tag = styled(View)({
   borderRadius: 2,
 });
 
-const IconTag = ({ tagName, color, content, style }) => {
+const IconTag = ({ tagName, color, content, style, textStyle = null }) => {
   return (
     <Tag
       sx={{
@@ -27,7 +27,7 @@ const IconTag = ({ tagName, color, content, style }) => {
         color={color}
         sx={{ marginRight: 4 }}
       />
-      <Text>{content}</Text>
+      <Text style={{ ...textStyle }}>{content}</Text>
     </Tag>
   );
 };
