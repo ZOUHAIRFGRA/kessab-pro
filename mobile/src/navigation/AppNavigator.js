@@ -26,9 +26,8 @@ export default function AppNavigator() {
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Management" component={ManagementScreen} />
-      <Drawer.Screen name="Sales" component={MySellsScreen} />
-      <Drawer.Screen name="MySellsScreen" component={SellsScreen} />
-      <Drawer.Screen name="SellDetail" component={SellDetailScreen} />
+      {/* <Drawer.Screen name="Sales" component={MySellsScreen} /> */}
+      <Drawer.Screen name="Sales" component={SellsScreen} />
       {/* <Drawer.Screen name="AnimalsList" component={AnimalsList} /> */}
 
       <Drawer.Screen name="Food" component={FoodScreen} />
