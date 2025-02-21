@@ -28,7 +28,7 @@ public class AnimalDTO {
 
     private UUID saleId;
     private String category;
-
+    private LocalDate pickUpDate;
 
     // For image existence check, only used for internal processing
     @JsonIgnore

@@ -27,7 +27,7 @@ public class AnimalMapper {
         dto.setSaleId(animal.getSale() != null ? animal.getSale().getId() : null);
 
         dto.setCategory(animal.getCategory() != null ? animal.getCategory().getId().toString() : null);
-
+        dto.setPickUpDate(animal.getPickUpDate());
         return dto;
     }
 
@@ -74,7 +74,8 @@ public class AnimalMapper {
                 animal.getPrice(),
                 animal.getWeight(),
                animal.getImagePaths(),
-               AnimalCategoryMapper.toAnimalCategoryDTO(animal.getCategory())
+               AnimalCategoryMapper.toAnimalCategoryDTO(animal.getCategory()),
+                animal.getPickUpDate()
         );
     }
 

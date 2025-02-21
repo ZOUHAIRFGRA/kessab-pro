@@ -8,6 +8,7 @@ import Loading from "../global/Loading";
 import { getSale } from "../../features/saleSlice";
 import { useFocusEffect } from "@react-navigation/native"; // Importing the hook
 import CardIcon from "../global/CardIcon";
+import { getPickedUpRatio } from "../../helpers/AnimalHelpers";
 
 const Container = styled(View)({
   flex: 1,
@@ -15,23 +16,28 @@ const Container = styled(View)({
   alignItems: "center",
 });
 
-export default function SaleInfoView({id}) {
-  const dispatch = useDispatch()
-  useEffect(()=>{
-    dispatch(getSale(id))
-  },[dispatch,id])
+export default function SaleInfoView({ id }) {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getSale(id));
+  }, [dispatch, id]);
 
-  const sale = useSelector(({sales}) => sales.sale)
-  const loading = useSelector(({sales}) => sales.loading)
-  const error = useSelector(({sales}) => sales.error)
-  
-  if (loading || !sale) return <Loading/>
-  if(error ) return  <FallBack type={FALLBACK_TYPE.NOT_FOUND}/>
-  
-  
+  useEffect(() => {
+    console.log("mounted");
+    return () => {
+      console.log("unmount");
+    };
+  }, []);
+
+  const { sale, loading, error } = useSelector(({ sales }) => sales);
+  console.log({ animals: sale?.animals });
+
+  if (loading || !sale) return <Loading />;
+  if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
+
   return (
     <ScrollView>
-        <Container
+      <Container
         sx={{
           gap: 12,
           justifyContent: "start",
@@ -40,8 +46,16 @@ export default function SaleInfoView({id}) {
           padding: 18,
         }}
       >
-        <CardIcon icon="person-outline" text="Buyer name" subText={sale.buyer.fullName} />
-        <CardIcon icon="calendar-outline" text="Sale Date" subText={sale.saleDate} />
+        <CardIcon
+          icon="person-outline"
+          text="Buyer name"
+          subText={sale.buyer.fullName}
+        />
+        <CardIcon
+          icon="calendar-outline"
+          text="Sale Date"
+          subText={sale.saleDate}
+        />
         <Container
           sx={{
             flexDirection: "row",
@@ -54,16 +68,15 @@ export default function SaleInfoView({id}) {
             iconType="font-awesome"
             text="Agreed amount"
             subText={sale.agreedAmount}
-          hideIcon
-          style={{ flex: 1 }}
+            hideIcon
+            style={{ flex: 1 }}
           />
           <CardIcon
             icon="wallet-outline"
             text="Paid amount"
             subText={sale.agreedAmount}
-          hideIcon
-          style={{ flex: 1 }}
-
+            hideIcon
+            style={{ flex: 1 }}
           />
         </Container>
 
@@ -72,13 +85,12 @@ export default function SaleInfoView({id}) {
           text="Payment statut"
           subText={sale.paymentStatus}
         />
-        <CardIcon icon="cart-outline" text="Animal count" subText={sale.animals.length} />
-        <CardIcon
-          icon="log-out-outline"
-          text="is picked up"
-          subText={"salam"}
-        />
 
+        <CardIcon
+          icon="cart-outline"
+          text="picked up ratio"
+          subText={getPickedUpRatio(sale.animals)}
+        />
       </Container>
     </ScrollView>
   );

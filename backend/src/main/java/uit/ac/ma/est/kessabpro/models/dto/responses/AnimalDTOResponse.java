@@ -1,5 +1,7 @@
 package uit.ac.ma.est.kessabpro.models.dto.responses;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.cglib.core.Local;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalCategoryDTO;
 
 import java.math.BigDecimal;
@@ -15,7 +17,9 @@ public record AnimalDTOResponse(
          BigDecimal price,
          BigDecimal weight,
          List<String> gallery,
-         AnimalCategoryDTOResponse category
+         AnimalCategoryDTOResponse category,
+         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+         LocalDate pickUpDate
 //         SaleDTOResponse sale
 ) {
 }

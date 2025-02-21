@@ -16,3 +16,5 @@ export function getAnimalCategoryCounts(sale) {
     .map(([category, count]) => `${category}: ${count}`)
     .join(', '), 20);
 }
+
+

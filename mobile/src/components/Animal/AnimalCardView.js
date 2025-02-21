@@ -9,13 +9,15 @@ import { getAnimalById } from "../../features/animalSlice";
 import Loading from "../global/Loading";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Colors from "../../utils/Colors";
+import { getPickedUpDate } from "../../helpers/AnimalHelpers";
 
 const AnimalCardView = ({ animal }) => {
   const navigator = useNavigation();
   const handleAnimalClick = () => {
     navigator.navigate("AnimalDetails", { animalId: animal.id });
   };
-
+  console.log({animalfromCard : animal});
+  
   return (
     <TouchableOpacity onPress={() => handleAnimalClick()}>
       <Card
@@ -78,7 +80,11 @@ const AnimalCardView = ({ animal }) => {
               style={{ flex: 1 }}
             />
           </View>
-          <IconTag tagName="truck" color="grey" content={"salam"} />
+          <IconTag
+            tagName="truck"
+            color="grey"
+            content={getPickedUpDate(animal)}
+          />
         </View>
       </Card>
     </TouchableOpacity>

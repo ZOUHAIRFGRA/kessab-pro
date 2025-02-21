@@ -9,7 +9,8 @@ import AddTransaction from "../components/AddTransaction";
 import AnimalDetailsScreen from "../screens/AnimalDetailsScreen";
 import AnimalsList from "../components/AnimalsList";
 import Colors from "../utils/Colors";
-import SaleDetailScreen from "../screens/sell/SaleDetailScreen";
+import SaleDetailScreen from "../screens/sale/SaleDetailScreen";
+import SalesScreen from "../screens/SalesScreen";
 
 const Stack = createStackNavigator();
 
@@ -36,14 +37,27 @@ export default function RootNavigator() {
               component={AppNavigator}
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="Buyer" component={BuyerScreen} />
+            <Stack.Screen
+              name="Buyer"
+              options={{ title: "Buyer Info" }}
+              component={BuyerScreen}
+            />
             <Stack.Screen name="AddTransaction" component={AddTransaction} />
             <Stack.Screen
               name="AnimalDetails"
               component={AnimalDetailsScreen}
             />
             <Stack.Screen name="AnimalsList" component={AnimalsList} />
-            <Stack.Screen name="SellDetail" component={SaleDetailScreen} />
+            <Stack.Screen
+              options={{ title: "Sale Info" }}
+              name="SellDetail"
+              component={SaleDetailScreen}
+            />
+            <Stack.Screen
+              options={{ title: "Sale Info" }}
+              name="Sales"
+              component={SalesScreen}
+            />
           </>
         ) : (
           <>
