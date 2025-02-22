@@ -1,10 +1,5 @@
 {
   "expo": {
-    "extra": {
-      "supportsRTL": true,
-      "forcesRTL": true
-    },
-
     "name": "mobile",
     "slug": "mobile",
     "version": "1.0.0",
