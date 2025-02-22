@@ -1,18 +1,23 @@
-# 🐑 kessab-pro Mobile App
+# 🐑 KessabPro Mobile App
 
-kessab-pro is a React Native app designed to help farmers and buyers efficiently manage livestock transactions. This app enables farmers to list their animals, track sales, and provide buyers with quick access to animal details using QR codes.
+KessabPro is a React Native app designed to help farmers efficiently manage livestock transactions. This app enables farmers to list their animals, track sales, and provide quick access to animal details using QR codes.
 
-
+**Note:** This is a beta version of the app with some features still under development.
 
 ## 📱 Features
-- **Farmer Interface**:
-  - Add, update, and manage animals.
-  - Track sales and payment statuses.
-  - View and generate QR codes for each animal.
 
-- **Buyer Interface**:
-  - Scan QR codes to view animal details.
-  - Place orders and receive transaction documents.
+- **Farmer Interface**:
+  - Login access for farmers.
+  - Add, update, and manage animals with CRUD operations (including image uploads).
+  - Track sales and payment statuses, viewing the buyer and animal status.
+  - Add logs for medical and activity tracking.
+  - Create sales by selecting animals, choosing or adding buyers, specifying quantities, and entering amounts (supports multiple transactions).
+  - View all sales and associated transactions.
+  - Search for animals and sales efficiently.
+  - **QR Scanner**: Scan QR codes for quick access to animal and sale details.
+  - **Weather Widget**: Display current weather conditions.
+  - **Marketplace Button**: A placeholder for future marketplace functionality (not yet implemented).
+  - **Inventory & Food Management**: Features planned for future versions.
 
 - **Offline Mode**:
   - Manage data offline and sync when reconnected.
@@ -20,26 +25,29 @@ kessab-pro is a React Native app designed to help farmers and buyers efficiently
 ---
 
 ## 🛠 Tech Stack
+
 - **Frontend**: React Native (Expo)
-- **Backend**: Spring Boot
+- **Backend**: Spring Boot with JPA
 - **Database**: MySQL
-- **Styling**: Tailwind CSS
+- **Styling**: Dripsy
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js** (v16 or later)
 - **Expo CLI**
 - **Git**
-
+- **Java (17+)**
+- **Maven**
 
 ### Installation
 
 1. Clone the repository:
-   ```
-    git clone https://github.com/zouhairfgra/kessab-pro.git
+   ```bash
+   git clone https://github.com/zouhairfgra/kessab-pro.git
    cd kessab-pro
    ```
 
@@ -47,61 +55,64 @@ kessab-pro is a React Native app designed to help farmers and buyers efficiently
 
    #### Mobile App (React Native with Expo):
    - Navigate to the `mobile` folder:
-     ```
-        cd mobile
+     ```bash
+     cd mobile
      ```
    - Install dependencies:
-     ```
-        npm install
+     ```bash
+     npm install
      ```
    - Start the development server:
-     ```
-        npm start
+     ```bash
+     npm start
      ```
    - Scan the QR code using the **Expo Go** app on your device.
 
    #### Frontend Web (React with Vite):
-   - Navigate to the `client` folder:
-     ```
-        cd ../client
+   - Navigate to the `web` folder:
+     ```bash
+     cd ../web
      ```
    - Install dependencies:
-     ```
-        npm install
+     ```bash
+     npm install
      ```
    - Start the development server:
-     ```
-        npm run dev
+     ```bash
+     npm run dev
      ```
 
    #### Backend (Spring Boot):
    - Navigate to the `backend` folder:
-     ```
-        cd ../backend
+     ```bash
+     cd ../backend
      ```
    - Run the Spring Boot application:
-     ```
-        ./mvnw spring-boot:run
+     ```bash
+     ./mvnw spring-boot:run
      ```
 
 ---
 
 ### Notes
+
 - Ensure you have **Node.js**, **npm**, **Expo CLI**, **Java (17+)**, and **Maven** installed on your machine.
 - Update the environment variables for the backend and frontend as needed.
 
 ## 📚 Project Structure
+
 ```plaintext
 kessab-pro/
 ├── mobile/           # React Native (Expo) app
 ├── backend/          # Spring Boot backend
-├── client/           # React web app 
+├── web/           # React web app 
 └── README.md         # Project overview
 ```
 
 ---
 
 ## 🌟 Contributing
+
 Contributions are welcome! Follow these steps:
 1. Fork the repository.
 2. Create a new branch: `git checkout -b feature-name`.
@@ -112,22 +123,31 @@ Contributions are welcome! Follow these steps:
 ---
 
 ## 📝 License
+
 This project is licensed under the [MIT License](LICENSE).
 
 ---
 
 ## 📧 Contact
+
 For questions or collaboration:
 - **Email**: 
-    zouhairfgra@gmail.com
-    lahbouch.dev@gmail.com
+    - zouhairfgra@gmail.com
+    - lahbouch.dev@gmail.com
 - **GitHub**: 
-    [zouhairfgra](https://github.com/zouhairfgra)
-    [lahbouch](https://github.com/lahbouch)
+    - [zouhairfgra](https://github.com/zouhairfgra)
+    - [lahbouch](https://github.com/lahbouch)
+
+---
+
+## 🌐 Landing Page
+
+In addition to the mobile app, we have created a landing page in the `web` folder that showcases the features of KessabPro and provides potential users with information about the app. This landing page serves as a promotional tool to encourage farmers to download and use the app.
 
 ---
 
 ### 📦 Dependencies
+
 - **Expo CLI**: Development environment for React Native.
 - **React Navigation**: Navigation between screens.
 - **AsyncStorage**: Offline storage for data.
