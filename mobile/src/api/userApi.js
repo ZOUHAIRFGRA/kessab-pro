@@ -12,7 +12,7 @@ export const getUserProfile = async () => {
 
 export const updateUserProfile = async (updatedUser) => {
   try {
-    const response = await axiosInstance.put('/api/users/update', updatedUser);
+    const response = await axiosInstance.put('/users/update', updatedUser);
     return response.data;
   } catch (error) {
     console.error('Error updating user profile:', error);
