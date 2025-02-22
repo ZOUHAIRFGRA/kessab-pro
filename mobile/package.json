@@ -27,12 +27,14 @@
     "dripsy": "^4.3.8",
     "expo": "~52.0.32",
     "expo-image-picker": "~16.0.6",
+    "expo-localization": "~16.0.1",
     "expo-location": "~18.0.6",
     "expo-status-bar": "~2.0.1",
     "i18next": "^24.2.2",
     "react": "18.3.1",
     "react-i18next": "^15.4.0",
     "react-native": "0.76.7",
+    "react-native-collapsible": "^1.6.2",
     "react-native-country-flag": "^2.0.2",
     "react-native-dotenv": "^3.4.11",
     "react-native-element-dropdown": "^2.12.4",
@@ -47,8 +49,7 @@
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-redux": "^9.2.0",
-    "use-debounce": "^10.0.4",
-    "expo-localization": "~16.0.1"
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

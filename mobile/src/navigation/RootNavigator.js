@@ -13,6 +13,7 @@ import SalesScreen from "../screens/SalesScreen";
 import { useTranslation } from "react-i18next";
 import BuyersScreen from "../screens/buyer/BuyersScreen";
 import BuyerDetailScreen from "../screens/buyer/BuyerDetailScreen";
+import AddSaleScreen from "../screens/sale/AddSaleScreen";
 
 const Stack = createStackNavigator();
 export default function RootNavigator() {
@@ -61,6 +62,7 @@ export default function RootNavigator() {
               component={BuyerDetailScreen}
             />
             <Stack.Screen name="Sales" component={SalesScreen} />
+            <Stack.Screen name="AddSale" component={AddSaleScreen} />
           </>
         ) : (
           <>

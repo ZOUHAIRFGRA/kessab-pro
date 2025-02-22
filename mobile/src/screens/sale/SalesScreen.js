@@ -9,11 +9,24 @@ import { SearchBar } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import SalesListCardView from "../../components/sale/SalesListCardView";
 import { useTranslation } from "react-i18next";
+import { useNavigation } from "@react-navigation/native";
+import Dialogs from "../../components/global/Dialog";
+import { color } from "@rneui/base";
 export default function SalesScreen() {
+  const navigator = useNavigation();
+  const [isDialogVisible, setDialogVisible] = useState(false);
+  const [counter, setCounter] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(null);
+  };
+
+  const onAddSaleClick = (counter) => {
+    setDialogVisible(false);
+    console.log(counter);
+    setCounter(1);
+    navigator.navigate("AddSale", { qte: counter });
   };
 
   const { t } = useTranslation();
@@ -21,6 +34,31 @@ export default function SalesScreen() {
   return (
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>
+        <Dialogs
+          title={"qte"}
+          visible={isDialogVisible}
+          toggleDialog={() => setDialogVisible(!isDialogVisible)}
+        >
+          <Text>{counter}</Text>
+          <Container
+            sx={{
+              flexDirection: "row",
+              gap: 5,
+              justifyContent: "space-between",
+            }}
+          >
+            <Button onPress={() => setCounter(counter + 1)}>+</Button>
+            <Button onPress={() => setCounter(counter - 1)}>-</Button>
+          </Container>
+
+          <Button
+            type={"primary"}
+            textStyle={{ color: Colors.white }}
+            onPress={() => onAddSaleClick(counter)}
+          >
+            salam
+          </Button>
+        </Dialogs>
         <Container sx={{ display: "flex", flexDirection: "row" }}>
           <Container sx={{ flex: 6 }}>
             <SearchBar
@@ -32,7 +70,7 @@ export default function SalesScreen() {
               inputContainerStyle={{ padding: 0 }}
               round
               lightTheme
-              placeholder="search by buyer name"
+              placeholder={t("common.SearchByBuyerNameOrCIN")}
             />
           </Container>
           <Text
@@ -71,24 +109,27 @@ export default function SalesScreen() {
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
               values={[{ label: "Item 1", value: "1" }]}
-              label={"category"}
+              label={t("common.category")}
               focusLabel={"..."}
-              notFocusLabel={"category"}
-              searchLabel={"category name..."}
+              notFocusLabel={t("common.category")}
+              searchLabel={t("common.category_placeholder")}
               iconName="appstore-o"
             />
           </Container>
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
               values={[
-                { label: "FULLY_PAID", value: "FULLY_PAID" },
-                { label: "PARTIALLY_PAID", value: "PARTIALLY_PAID" },
-                { label: "NOT_PAID", value: "NOT_PAID" },
+                { label: t(`payment_type.FULLY_PAID`), value: "FULLY_PAID" },
+                {
+                  label: t(`payment_type.PARTIALLY_PAID`),
+                  value: "PARTIALLY_PAID",
+                },
+                { label: t(`payment_type.NOT_PAID`), value: "NOT_PAID" },
               ]}
-              label={"Payment"}
+              label={t("common.payment")}
               focusLabel={"..."}
-              notFocusLabel={"Payment"}
-              searchLabel={"Payment type..."}
+              notFocusLabel={t("common.payment")}
+              searchLabel={t("common.payment_placeholder")}
               iconName="wallet"
             />
           </Container>
@@ -117,6 +158,7 @@ export default function SalesScreen() {
           name: "plus",
           color: Colors.white,
         }}
+        onPress={() => setDialogVisible(true)}
       >
         {t("common.AddNewSale")}
       </Button>

@@ -48,6 +48,8 @@
     "price": "السعر",
     "birthDate": "تاريخ الولادة",
     "cant_find_category_add_one?": "لا تجد النوع؟ إضافة واحد؟",
+    "Payment_placeholder": "نوع لخلاص ...",
+    "Category_placeholder": "اسم نوع ...",
     "category": "النوع",
     "select_imgs_from_gallery": "اختر صور من المعرض",
     "take_photo": "التقط صورة",
@@ -68,8 +70,12 @@
     "Buyer": "المشتري",
     "Animals": "الحيوانات",
     "Transactions": "المعاملات",
+    "BuyerDetail": "تفاصيل لكليان",
+    "Purchases": "المشتريات",
+    "AddNewClient": "زيد كليان جديد",
     "AddNewSale": "زيد مبيعة جديدة",
     "payment": "لخلاص",
+    "SearchByBuyerNameOrCIN": "بحث بالاسم ديال لكليان ولا ر.ب.و",
     "buyer_name": "اسم لكليان",
     "sale_date": "تاريخ البيع",
     "agreed_amount": "المبلغ المتفق عليه",
@@ -87,11 +93,11 @@
     "Cow": "بقرة",
     "SaleDetail": "تفاصيل المبيعة",
     "SaleInfo": "معلومات المبيعة",
-    "Profile" : "الملف الشخصي",
-    "Username" : "اسم المستخدم",
-    "Email" : "البريد الإلكتروني",
-    "Edit_Profile" : "تعديل الملف الشخصي",
-    "Logout" : "تسجيل الخروج",
-    "SaveProfile" : "حفظ الملف الشخصي"
-    }
+    "Profile": "الملف الشخصي",
+    "Username": "اسم المستخدم",
+    "Email": "البريد الإلكتروني",
+    "Edit_Profile": "تعديل الملف الشخصي",
+    "Logout": "تسجيل الخروج",
+    "SaveProfile": "حفظ الملف الشخصي"
+  }
 }

@@ -20,6 +20,12 @@
     "inventory": "Inventaire",
     "dashboard": "Tableau de bord",
     "QRscanner": "Scanner QR",
+    "BuyerDetail": "Détail de l'acheteur",
+    "Purchases": "Achats",
+    "AddNewClient": "Ajouter un nouveau client",
+    "SearchByBuyerNameOrCIN": "par nom de l'acheteur ou CIN",
+    "Payment_placeholder": "Type de paiement ...",
+    "Category_placeholder": "Nom de la catégorie ...",
     "Info": "Info",
     "Buyer": "Acheteur",
     "Animals": "Animaux",
@@ -88,12 +94,11 @@
     "Cow": "Vache",
     "SaleDetail": "Détail de la vente",
     "SaleInfo": "Informations de vente",
-    "Profile" : "Profile",
-    "Username" : "Nom d'utilisateur",
-    "Email" : "Email",
-    "Edit_Profile" : "Modifier le profil",
-    "Logout" : "Se déconnecter",
-    "SaveProfile" : "Enregistrer le profil"
-    
+    "Profile": "Profile",
+    "Username": "Nom d'utilisateur",
+    "Email": "Email",
+    "Edit_Profile": "Modifier le profil",
+    "Logout": "Se déconnecter",
+    "SaveProfile": "Enregistrer le profil"
   }
 }
