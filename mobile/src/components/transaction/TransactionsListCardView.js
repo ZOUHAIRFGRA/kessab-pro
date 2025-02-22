@@ -4,15 +4,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-import { getTransactionsBySale } from "../../features/transactionSlice";
+import {
+  getTransactionsByBuyer,
+  getTransactionsBySale,
+} from "../../features/transactionSlice";
 import TransactionCardView from "./TransactionCardView";
 
-const TransactionListCardView = ({ id, type }) => {
+const TransactionListCardView = ({ id, type = "sale" }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getTransactionsBySale(id));
+    if (type === "sale") {
+      dispatch(getTransactionsBySale(id));
+    }
+
+    if (type === "buyer") {
+      dispatch(getTransactionsByBuyer(id));
+    }
   }, [dispatch]);
 
   const { transactions, loading, error } = useSelector(
@@ -20,6 +29,8 @@ const TransactionListCardView = ({ id, type }) => {
   );
 
   if (loading) return <Loading />;
+  console.log({ error });
+
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (

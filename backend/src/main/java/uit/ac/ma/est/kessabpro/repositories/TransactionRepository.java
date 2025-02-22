@@ -16,4 +16,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     List<Double> findAmountsBySaleId(UUID saleId);
 
     List<Transaction> getTransactionBySaleId(UUID saleId);
+    @Query("SELECT t FROM Transaction t JOIN t.sale s WHERE s.buyer.id = :buyerId")
+    List<Transaction> getTransactionByBuyerId(UUID buyerId);
+
 }

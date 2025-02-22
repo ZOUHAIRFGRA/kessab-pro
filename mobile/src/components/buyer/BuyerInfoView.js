@@ -12,8 +12,9 @@ import Button from "../global/Button";
 import { Icon } from "@rneui/base";
 import Text from "../../components/global/Text";
 import { useTranslation } from "react-i18next";
+import { useNavigation } from "@react-navigation/native";
 
-export default function BuyerInfoView({ id }) {
+export default function BuyerInfoView({ id, hideLinkButton = false }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -21,6 +22,11 @@ export default function BuyerInfoView({ id }) {
   }, [dispatch, id]);
 
   const { error, loading, buyer } = useSelector(({ buyers }) => buyers);
+  const navigator = useNavigation();
+
+  const handleBuyerLinkClick = () => {
+    navigator.navigate("buyerDetail", { buyer });
+  };
 
   if (loading || !buyer) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
@@ -63,30 +69,33 @@ export default function BuyerInfoView({ id }) {
             <Header level={"h3"}>{buyer.phone}</Header>
           </Container>
         </Card>
-        <Button
-          type="primary"
-          style={{
-            padding: 12,
-            marginRight: 12,
-            marginLeft: 12,
-            marginBottom: 8,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          textStyle={{
-            color: "white",
-            fontWeight: "bold",
-            textAlign: "center",
-            fontSize: 16,
-          }}
-          icon={{
-            name: "reply-all",
-            color: Colors.white,
-          }}
-        >
-          {t("common.SeeAllBuyerDetails")}
-        </Button>
+        {!hideLinkButton && (
+          <Button
+            type="primary"
+            style={{
+              padding: 12,
+              marginRight: 12,
+              marginLeft: 12,
+              marginBottom: 8,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            textStyle={{
+              color: "white",
+              fontWeight: "bold",
+              textAlign: "center",
+              fontSize: 16,
+            }}
+            icon={{
+              name: "reply-all",
+              color: Colors.white,
+            }}
+            onclick={handleBuyerLinkClick}
+          >
+            {t("common.SeeAllBuyerDetails")}
+          </Button>
+        )}
       </Container>
     </ScrollView>
   );

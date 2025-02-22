@@ -11,6 +11,7 @@ public interface ITransactionService {
     List<Transaction> getAllTransactions();
     Transaction getTransactionById(UUID id);
     List<Transaction> getTransactionBySaleId(UUID saleId);
+    List<Transaction> getTransactionByBuyerId(UUID buyerId);
     Transaction createTransaction(Transaction transactionDTO);
     Transaction updateTransaction(UUID id, Transaction updatedTransaction);
     void deleteTransaction(UUID id);

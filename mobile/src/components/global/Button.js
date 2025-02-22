@@ -3,8 +3,14 @@ import Colors from "../../utils/Colors";
 import { FontAwesome } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-
-const Button = ({ type, children: text, style, textStyle, icon = null }) => {
+const Button = ({
+  type,
+  children: text,
+  style,
+  textStyle,
+  icon = null,
+  onclick,
+}) => {
   const { t } = useTranslation();
   return (
     <TouchableOpacity
@@ -22,6 +28,7 @@ const Button = ({ type, children: text, style, textStyle, icon = null }) => {
         shadowOffset: { width: 0, height: 2 },
         ...style,
       }}
+      onPress={onclick}
     >
       {icon != null && (
         <FontAwesome name={icon["name"]} size={16} color={icon["color"]} />

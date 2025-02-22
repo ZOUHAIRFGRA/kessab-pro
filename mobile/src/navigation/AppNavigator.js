@@ -6,7 +6,7 @@ import FoodScreen from "../screens/FoodScreen";
 import MarketplaceScreen from "../screens/MarketplaceScreen";
 import DashboardScreen from "../screens/DashboardScreen";
 import QRScannerScreen from "../screens/QRScannerScreen";
-import BuyersListScreen from "../screens/buyer/BuyersListScreen";
+import BuyersListScreen from "../screens/buyer/BuyersScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import CustomHeader from "../components/CustomHeader";
 import SalesScreen from "../screens/sale/SalesScreen";

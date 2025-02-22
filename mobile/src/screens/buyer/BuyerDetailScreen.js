@@ -10,13 +10,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FallBack from "../../components/global/Fallback";
 import { useTranslation } from "react-i18next";
+import SalesListCardView from "../../components/sale/SalesListCardView";
 
-const SaleDetailScreen = ({ route }) => {
+const BuyerDetailScreen = ({ route }) => {
   const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
-  const sale = route.params?.sale;
+  const buyer = route.params?.buyer;
 
-  if (!sale) return <FallBack />;
+  if (!buyer) return <FallBack />;
 
   return (
     <Container sx={{ flex: 1 }}>
@@ -26,37 +27,25 @@ const SaleDetailScreen = ({ route }) => {
 
           tabBarStyle: {
             height: 65,
-            backgroundColor: Colors.secondary,
+            backgroundColor: Colors.secondaryLight,
           },
-          tabBarActiveTintColor: Colors.white,
-          tabBarInactiveTintColor: Colors.primaryLight,
+          tabBarActiveTintColor: Colors.secondary,
+          tabBarInactiveTintColor: Colors.primary,
           tabBarLabelStyle: { fontSize: 13, fontWeight: "bold" },
           tabBarPosition: "top",
           animation: "shift",
         }}
       >
         <Tab.Screen
-          name="saleInfo"
-          options={{
-            tabBarLabel: t("common.Info"),
-            tabBarIcon: ({ color }) => (
-              <Ionicons name="information-outline" size={22} color={color} />
-            ),
-          }}
-        >
-          {() => <SaleInfoView id={sale.id} />}
-        </Tab.Screen>
-
-        <Tab.Screen
           name="buyerInfo"
           options={{
-            tabBarLabel: t("common.Buyer"),
+            tabBarLabel: t("common.Info"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="person-outline" size={22} color={color} />
             ),
           }}
         >
-          {() => <BuyerInfoView id={sale.buyer?.id} />}
+          {() => <BuyerInfoView id={buyer?.id} hideLinkButton />}
         </Tab.Screen>
 
         <Tab.Screen
@@ -70,11 +59,26 @@ const SaleDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16 }}>
-              <AnimalsListCardView id={sale.id} type={"sale"} />
+              <AnimalsListCardView id={buyer.id} type={"buyer"} />
             </Container>
           )}
         </Tab.Screen>
 
+        <Tab.Screen
+          name="sales"
+          options={{
+            tabBarLabel: t("common.sales"),
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="pricetags-outline" size={22} color={color} />
+            ),
+          }}
+        >
+          {() => (
+            <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
+              <SalesListCardView id={buyer.id} type={"buyer"} />
+            </Container>
+          )}
+        </Tab.Screen>
         <Tab.Screen
           name="transactions"
           options={{
@@ -86,7 +90,7 @@ const SaleDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <TransactionsListCardView id={sale.id} type={"sale"} />
+              <TransactionsListCardView id={buyer.id} type={"buyer"} />
             </Container>
           )}
         </Tab.Screen>
@@ -95,4 +99,4 @@ const SaleDetailScreen = ({ route }) => {
   );
 };
 
-export default SaleDetailScreen;
+export default BuyerDetailScreen;

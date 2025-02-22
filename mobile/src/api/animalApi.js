@@ -23,7 +23,7 @@ export const fetchAnimalsBySale = (saleId) => {
 };
 
 export const fetchAnimalsByBuyer = (buyerId) => {
-  return axiosInstance.get(`/animals/by-buyer/${saleId}`);
+  return axiosInstance.get(`/animals/by-buyer/${buyerId}`);
 };
 
 export const fetchAnimalById = async (id) => {

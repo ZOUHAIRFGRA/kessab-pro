@@ -32,6 +32,8 @@ public class Transaction extends BaseEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+
+
     private LocalDate transactionDate;
     private double amount;
 

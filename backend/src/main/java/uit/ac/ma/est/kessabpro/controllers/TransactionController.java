@@ -32,6 +32,12 @@ public class TransactionController {
         return ResponseEntity.ok(TransactionMapper.toTransactionDTOList(transactions));
     }
 
+    @GetMapping("/buyer/{buyerId}")
+    public ResponseEntity<List<TransactionDTOResponse>> getTransactionsByBuyerId(@PathVariable UUID buyerId) {
+        List<Transaction> transactions = transactionService.getTransactionByBuyerId(buyerId);
+        return ResponseEntity.ok(TransactionMapper.toTransactionDTOList(transactions));
+    }
+
     @GetMapping
     public ResponseEntity<List<TransactionDTOResponse>> getAllTransactions() {
         List<Transaction> transactions = transactionService.getAllTransactions();

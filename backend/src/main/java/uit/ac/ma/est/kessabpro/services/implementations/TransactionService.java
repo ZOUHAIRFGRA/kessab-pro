@@ -49,6 +49,11 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
+    public List<Transaction> getTransactionByBuyerId(UUID buyerId) {
+        return transactionRepository.getTransactionByBuyerId(buyerId);
+    }
+
+    @Override
     @Transactional
     public Transaction createTransaction(Transaction transaction) {
         Sale sale = saleRepository.findById(transaction.getSale().getId())
