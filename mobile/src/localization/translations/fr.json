@@ -87,6 +87,13 @@
     "Goat": "Chèvre",
     "Cow": "Vache",
     "SaleDetail": "Détail de la vente",
-    "SaleInfo": "Informations de vente"
+    "SaleInfo": "Informations de vente",
+    "Profile" : "Profile",
+    "Username" : "Nom d'utilisateur",
+    "Email" : "Email",
+    "Edit_Profile" : "Modifier le profil",
+    "Logout" : "Se déconnecter",
+    "SaveProfile" : "Enregistrer le profil"
+    
   }
 }
