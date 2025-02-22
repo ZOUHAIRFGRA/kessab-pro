@@ -1,11 +1,15 @@
 import React from "react";
 import { TextInput, View, Text } from "react-native";
 import { styled } from "dripsy";
+import { useTranslation } from "react-i18next";
 
 const Input = ({ placeholder, value, onChangeText, editable = true, style ,keyboardType}) => {
+  const {t }= useTranslation();
+  const isRTL = t("dir") === "rtl";
+
   return (
     <View style={{ marginBottom: 10 }}>
-      <Text style={{ fontWeight: "bold" }}>{placeholder}</Text>
+      <Text style={{ fontWeight: "bold", textAlign: isRTL ? "right" : "left" }}>{placeholder}</Text>
       <StyledTextInput
         placeholder={placeholder}
         value={value}
@@ -14,6 +18,8 @@ const Input = ({ placeholder, value, onChangeText, editable = true, style ,keybo
         style={style}
         placeholderTextColor="black"
         keyboardType={keyboardType}
+        textAlign={isRTL ? "right" : "left"} 
+
       />
     </View>
   );

@@ -30,12 +30,13 @@ import {
 import { Dimensions } from "react-native";
 import Colors from "../../utils/Colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import IconButton from "../IconButton";
+import IconButton from "./IconButton";
 import { useToast } from "../../hooks/useToast";
 import { useTranslation } from "react-i18next";
 export const AnimalDetailsTab = ({ animalId }) => {
-  const {t} = useTranslation();
-    const { showSuccessToast, showErrorToast } = useToast();
+  const { t } = useTranslation();
+  const { showSuccessToast, showErrorToast } = useToast();
+  const isRTL = t("dir") === "rtl";
   const screenWidth = Dimensions.get("window").width;
   const dispatch = useDispatch();
   const animal = useSelector((state) =>
@@ -69,10 +70,9 @@ export const AnimalDetailsTab = ({ animalId }) => {
         editAnimal({ id: editedAnimal.id, updatedAnimal: editedAnimal })
       );
       showSuccessToast("Animal updated successfully");
-     setEditing(false);
-
+      setEditing(false);
     } catch (error) {
-        showErrorToast("Failed to update animal");
+      showErrorToast("Failed to update animal");
     }
   };
 
@@ -171,7 +171,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
         )}
 
         {editing ? (
-          <EditContainer>
+          <EditContainer style={{ direction: isRTL ? "rtl" : "ltr" }}>
             <FieldContainer>
               <LabelText>{t("common.tag")}</LabelText>
               <InputField
@@ -179,7 +179,8 @@ export const AnimalDetailsTab = ({ animalId }) => {
                 onChangeText={(text) =>
                   setEditedAnimal({ ...editedAnimal, tag: text })
                 }
-                placeholder="Tag"
+                placeholder={t("common.tag")}
+                textAlign={isRTL ? "right" : "left"} 
               />
             </FieldContainer>
 
@@ -191,7 +192,8 @@ export const AnimalDetailsTab = ({ animalId }) => {
                   setEditedAnimal({ ...editedAnimal, price: parseFloat(text) })
                 }
                 keyboardType="numeric"
-                placeholder="Price"
+                placeholder={t("common.price")}
+                textAlign={isRTL ? "right" : "left"} 
               />
             </FieldContainer>
 
@@ -203,19 +205,26 @@ export const AnimalDetailsTab = ({ animalId }) => {
                   setEditedAnimal({ ...editedAnimal, weight: parseFloat(text) })
                 }
                 keyboardType="numeric"
-                placeholder="Weight"
+                placeholder={t("common.weight")}
+                textAlign={isRTL ? "right" : "left"} 
               />
             </FieldContainer>
 
             <FieldContainer>
               <LabelText>{t("common.sex")}</LabelText>
-              <View style={{ flexDirection: "row", marginTop: 5 }}>
+              <View
+                style={{
+                  flexDirection: isRTL ? "row-reverse" : "row",
+                  marginTop: 5,
+                }}
+              >
                 <IconButton
                   label={t("common.male")}
-                  selected={editedAnimal.sex}
+                  selected={editedAnimal.sex} 
                   onPress={() =>
                     setEditedAnimal({ ...editedAnimal, sex: "Male" })
                   }
+                  value="Male"
                 />
                 <IconButton
                   label={t("common.female")}
@@ -223,6 +232,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
                   onPress={() =>
                     setEditedAnimal({ ...editedAnimal, sex: "Female" })
                   }
+                  value="Female"
                 />
               </View>
             </FieldContainer>
@@ -233,7 +243,8 @@ export const AnimalDetailsTab = ({ animalId }) => {
                 <InputField
                   value={editedAnimal.birthDate}
                   editable={false}
-                  placeholder="YYYY-MM-DD"
+                  placeholder={t("common.birthDatePlaceholder")}
+                  textAlign={isRTL ? "right" : "left"} 
                 />
               </TouchableOpacity>
               {showBirthDatePicker && (
@@ -264,7 +275,8 @@ export const AnimalDetailsTab = ({ animalId }) => {
                 <InputField
                   value={editedAnimal.pickUpDate}
                   editable={false}
-                  placeholder="YYYY-MM-DD"
+                  placeholder={t("common.pickupDatePlaceholder")}
+                  textAlign={isRTL ? "right" : "left"}
                 />
               </TouchableOpacity>
               {showPickUpDatePicker && (
@@ -289,7 +301,9 @@ export const AnimalDetailsTab = ({ animalId }) => {
               )}
             </FieldContainer>
 
-            <ActionButtons>
+            <ActionButtons
+              style={{ flexDirection: isRTL ? "row-reverse" : "row" }}
+            >
               <SaveButton onPress={handleSave}>
                 <Text style={{ color: "white" }}>💾 {t("common.save")}</Text>
               </SaveButton>
@@ -300,26 +314,36 @@ export const AnimalDetailsTab = ({ animalId }) => {
           </EditContainer>
         ) : (
           <>
-            <Card>
+            <Card style={{ direction: isRTL ? "rtl" : "ltr" }}>
               <InfoRow>
-                <InfoText>🔖 Tag: {editedAnimal.tag}</InfoText>
-              </InfoRow>
-              <InfoRow>
-                <InfoText>💰 Price: {editedAnimal.price} DH</InfoText>
-              </InfoRow>
-              <InfoRow>
-                <InfoText>⚖️ Weight: {editedAnimal.weight} kg</InfoText>
-              </InfoRow>
-              <InfoRow>
-                <InfoText>🚻 Sex: {editedAnimal.sex}</InfoText>
-              </InfoRow>
-
-              <InfoRow>
-                <InfoText>📅 Birth Date: {editedAnimal.birthDate}</InfoText>
+                <InfoText>
+                  🔖 {t("common.tag")}: {editedAnimal.tag}
+                </InfoText>
               </InfoRow>
               <InfoRow>
                 <InfoText>
-                  📅 Pickup Date:{" "}
+                  💰 {t("common.price")}: {editedAnimal.price} DH
+                </InfoText>
+              </InfoRow>
+              <InfoRow>
+                <InfoText>
+                  ⚖️ {t("common.weight")}: {editedAnimal.weight} kg
+                </InfoText>
+              </InfoRow>
+              <InfoRow>
+                <InfoText>
+                  🚻 {t("common.sex")}: {editedAnimal.sex}
+                </InfoText>
+              </InfoRow>
+
+              <InfoRow>
+                <InfoText>
+                  📅 {t("common.birthDate")}: {editedAnimal.birthDate}
+                </InfoText>
+              </InfoRow>
+              <InfoRow>
+                <InfoText>
+                  📅 {t("common.pickup_date")}:{" "}
                   {editedAnimal.pickUpDate
                     ? editedAnimal.pickUpDate
                     : "Not Available"}
