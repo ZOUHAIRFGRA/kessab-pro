@@ -6,21 +6,31 @@ import Loading from "../global/Loading";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Container from "../global/Container";
 import AnimalCardView from "./AnimalCardView";
-import { getAnimalsBySale } from "../../features/animalSlice";
+import {
+  getAnimalsByBuyer,
+  getAnimalsBySale,
+} from "../../features/animalSlice";
 
-export default function AnimalsListCardView({ id, type }) {
+export default function AnimalsListCardView({ id, type = "sale" }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAnimalsBySale(id));
+    if (type === "sale") {
+      dispatch(getAnimalsBySale(id));
+    }
+
+    if (type === "buyer") {
+      dispatch(getAnimalsByBuyer(id));
+    }
   }, [dispatch, id]);
 
   const animals = useSelector(({ animals }) => animals.animals);
   const loading = useSelector(({ animals }) => animals.loading);
   const error = useSelector(({ animals }) => animals.error);
 
-
   if (loading || !animals) return <Loading />;
+  console.log(error);
+
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (
