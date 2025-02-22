@@ -19,7 +19,7 @@ export default function BuyersScreen() {
           inputContainerStyle={{ padding: 0 }}
           round
           lightTheme
-          placeholder="search by buyer name or cin"
+          placeholder={t("common.SearchByBuyerNameOrCIN")}
         />
       </Container>
       <Container sx={{ padding: 12, flex: 1 }}>
@@ -46,7 +46,7 @@ export default function BuyersScreen() {
           color: Colors.white,
         }}
       >
-        {t("common.AddNewSale")}
+        {t("common.AddNewClient")}
       </Button>
     </>
   );

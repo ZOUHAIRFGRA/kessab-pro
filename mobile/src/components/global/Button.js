@@ -9,7 +9,7 @@ const Button = ({
   style,
   textStyle,
   icon = null,
-  onclick,
+  onPress,
 }) => {
   const { t } = useTranslation();
   return (
@@ -28,7 +28,7 @@ const Button = ({
         shadowOffset: { width: 0, height: 2 },
         ...style,
       }}
-      onPress={onclick}
+      onPress={onPress}
     >
       {icon != null && (
         <FontAwesome name={icon["name"]} size={16} color={icon["color"]} />

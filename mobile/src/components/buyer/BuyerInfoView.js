@@ -26,6 +26,7 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
 
   const handleBuyerLinkClick = () => {
     navigator.navigate("buyerDetail", { buyer });
+    console.log("navigate", buyer);
   };
 
   if (loading || !buyer) return <Loading />;

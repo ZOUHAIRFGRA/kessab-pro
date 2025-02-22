@@ -62,7 +62,7 @@ const SaleDetailScreen = ({ route }) => {
         <Tab.Screen
           name="animalList"
           options={{
-            tabBarLabel: t("common.Animals"),
+            tabBarLabel: t("common.Purchases"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="cart-outline" size={22} color={color} />
             ),
