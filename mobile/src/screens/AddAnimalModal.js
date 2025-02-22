@@ -16,7 +16,7 @@ import { format } from "date-fns";
 import { useImagePicker } from "../hooks/useImagePicker";
 import { useCategorySelector } from "../hooks/useCategorySelector";
 import { useAnimalForm } from "../hooks/useAnimalForm";
-import IconButton from "../components/IconButton";
+import IconButton from "../components/AnimalDetailsComponents/IconButton";
 import Input from "../components/Input";
 import AddCategory from "../components/AddCategory";
 import ImagePickerButton from "../components/ImagePickerButton";
@@ -95,6 +95,7 @@ const AddAnimalModal = ({ visible, onClose }) => {
   const closeModal = () => {
     setSelectedImage(null);
   };
+  const isRTL = t("dir") === "rtl";
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
@@ -110,10 +111,15 @@ const AddAnimalModal = ({ visible, onClose }) => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
         >
-          <Container>
+          <Container isRTL={isRTL}>
             <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
               <Text
-                style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  marginBottom: 10,
+                  textAlign: isRTL ? "right" : "left",
+                }}
               >
                 {t("common.addAnimal")}{" "}
               </Text>
@@ -126,18 +132,20 @@ const AddAnimalModal = ({ visible, onClose }) => {
 
               <View
                 style={{
-                  flexDirection: "row",
+                  flexDirection: isRTL ? "row-reverse" : "row",
                   alignItems: "center",
                   marginBottom: 10,
                 }}
               >
                 <IconButton
                   label={t("common.male")}
+                  value="Male"
                   selected={sex}
                   onPress={() => setSex("Male")}
                 />
                 <IconButton
                   label={t("common.female")}
+                  value="Female"
                   selected={sex}
                   onPress={() => setSex("Female")}
                 />
@@ -239,13 +247,9 @@ const AddAnimalModal = ({ visible, onClose }) => {
               <AddButton title={t("common.addAnimal")} onPress={handleSubmit}>
                 <Text style={{ color: "white" }}>{t("common.addAnimal")}</Text>
               </AddButton>
-              <CnclButton
-                title={t("common.close")}
-                onPress={onClose}
-              >
+              <CnclButton title={t("common.close")} onPress={onClose}>
                 <Text style={{ color: "white" }}>{t("common.close")}</Text>
               </CnclButton>
-             
             </ScrollView>
           </Container>
         </KeyboardAvoidingView>
@@ -273,7 +277,7 @@ const AddAnimalModal = ({ visible, onClose }) => {
   );
 };
 
-const Container = styled(View)({
+const Container = styled(View)(({ isRTL }) => ({
   width: "100%",
   backgroundColor: "white",
   padding: 35,
@@ -286,6 +290,7 @@ const Container = styled(View)({
   marginTop: 45,
   marginBottom: 45,
   flex: 1,
-});
+  alignItems: isRTL ? "flex-end" : "flex-start",
+}));
 
 export default AddAnimalModal;

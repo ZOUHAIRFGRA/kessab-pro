@@ -26,6 +26,7 @@ export default function ManagementScreen() {
   const [debouncedSearchText] = useDebounce(searchText, 1000);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isRTL = t("dir") === "rtl";
 
   const handleSearchChange = (text) => {
     setSearchText(text);
@@ -54,8 +55,8 @@ export default function ManagementScreen() {
 
   return (
     <Container>
-      <SectionTitle>{t("common.quick_actions")}</SectionTitle>
-      <QuickActionList>
+      <SectionTitle isRTL={isRTL}>{t("common.quick_actions")}</SectionTitle>
+      <QuickActionList isRTL={isRTL}>
         {[
           {
             name: t("common.add_animal"),
@@ -69,7 +70,7 @@ export default function ManagementScreen() {
           //   action: () => setTransactionModalVisible(true),
           // },
         ].map((action, index) => (
-          <QuickActionItem key={index} onPress={action.action}>
+          <QuickActionItem key={index} onPress={action.action} isRTL={isRTL}>
             <Icon name={action.icon} color="#4A90E2" size={36} />
             <Text>{action.name}</Text>
           </QuickActionItem>
@@ -77,6 +78,7 @@ export default function ManagementScreen() {
       </QuickActionList>
 
       <SearchInput
+        isRTL={isRTL}
         placeholder={t("common.search_by_tag")}
         value={searchText}
         onChangeText={handleSearchChange}
@@ -122,30 +124,32 @@ const Container = styled(View)({
   backgroundColor: "background",
 });
 
-const SearchInput = styled(TextInput)({
+const SearchInput = styled(TextInput)(({ isRTL }) => ({
   borderWidth: 1,
   borderColor: "border",
   padding: 12,
   borderRadius: 8,
+  textAlign: isRTL ? "right" : "left",
   marginBottom: 16,
   height: 48,
   backgroundColor: "inputBackground",
-});
+}));
 
-const SectionTitle = styled(Text)({
+const SectionTitle = styled(Text)(({ isRTL }) =>({
   fontSize: 18,
   fontWeight: "bold",
   color: "text",
   marginBottom: 12,
-});
+  textAlign: isRTL ? "right" : "left",
+}));
 
-const QuickActionList = styled(View)({
-  flexDirection: "row",
+const QuickActionList = styled(View)(({ isRTL }) => ({
+  flexDirection: isRTL ? "row-reverse" : "row",
   gap: 16,
   marginBottom: 16,
-});
+}));
 
-const QuickActionItem = styled(TouchableOpacity)(({ isLast }) => ({
+const QuickActionItem = styled(TouchableOpacity)(({ isRTL }) => ({
   backgroundColor: "#f9f9f9",
   padding: 12,
   borderRadius: 16,
@@ -153,7 +157,8 @@ const QuickActionItem = styled(TouchableOpacity)(({ isLast }) => ({
   height: 100,
   justifyContent: "space-around",
   alignItems: "center",
-  marginRight: isLast ? 0 : 16,
+  marginLeft: isRTL ? 16 : 0,
+  marginRight: isRTL ? 0 : 16,
   borderWidth: 1,
   borderColor: "#ddd",
   shadowColor: "#000",
@@ -162,3 +167,4 @@ const QuickActionItem = styled(TouchableOpacity)(({ isLast }) => ({
   shadowRadius: 4,
   elevation: 2,
 }));
+

@@ -22,6 +22,8 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const isRTL = t("dir") === "rtl";
+  console.log('isrtl',isRTL);
 
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText] = useDebounce(searchText, 500);
@@ -51,65 +53,37 @@ export default function HomeScreen() {
 
   return (
     <Container>
-      {/* <WeatherWidget /> */}
       <SearchInput
         placeholder={t("common.search_placeholder")}
         value={searchText}
         onChangeText={handleSearchChange}
         onSubmitEditing={handleSearch}
         placeholderTextColor="black"
+        textAlign={isRTL ? "right" : "left"}
       />
       <Grid>
         {[
-          {
-            key: "Management",
-            name: t("common.management"),
-            icon: "playlist-edit",
-          },
+          { key: "Management", name: t("common.management"), icon: "playlist-edit" },
           { key: "Sales", name: t("common.sales"), icon: "cart-outline" },
           { key: "Food", name: t("common.food"), icon: "corn" },
           { key: "Marketplace", name: t("common.marketplace"), icon: "store" },
         ].map((item) => (
-          <GridItem
-            key={item.key}
-            onPress={() => navigation.navigate(item.key)}
-          >
+          <GridItem key={item.key} onPress={() => navigation.navigate(item.key)}>
             <Icon name={item.icon} size={36} color="dark" />
-            <GridItemText sx={{ variant: "text.subheading", marginTop: 8 }}>
+            <GridItemText sx={{ variant: "text.subheading", marginTop: 8, textAlign: isRTL ? "right" : "left" }}>
               {item.name}
             </GridItemText>
           </GridItem>
         ))}
       </Grid>
-
+  
       <HorizontalScroll horizontal showsHorizontalScrollIndicator={false}>
         {[
-          {
-            key: "AddBuyer",
-            name: t("common.add_buyer"),
-            icon: "account-plus",
-          },
-          {
-            key: "BuyersList",
-            name: t("common.view_buyers"),
-            icon: "account-group",
-          },
-          {
-            key: "AddSheep",
-            name: t("common.add_sheep"),
-            icon: "sheep",
-            onPress: handleAddSheepPress,
-          },
-          {
-            key: "MySellsScreen",
-            name: t("common.view_sales"),
-            icon: "chart-line",
-          },
-          {
-            key: "Inventory",
-            name: t("common.inventory"),
-            icon: "warehouse",
-          },
+          { key: "AddBuyer", name: t("common.add_buyer"), icon: "account-plus" },
+          { key: "BuyersList", name: t("common.view_buyers"), icon: "account-group" },
+          { key: "AddSheep", name: t("common.add_sheep"), icon: "sheep", onPress: handleAddSheepPress },
+          { key: "MySellsScreen", name: t("common.view_sales"), icon: "chart-line" },
+          { key: "Inventory", name: t("common.inventory"), icon: "warehouse" },
         ].map((action, index) => (
           <HorizontalActionItem
             key={index}
@@ -118,11 +92,11 @@ export default function HomeScreen() {
             accessibilityLabel={`Navigate to ${action.name}`}
           >
             <ActionIcon name={action.icon} />
-            <ActionText>{action.name}</ActionText>
+            <ActionText sx={{ textAlign: isRTL ? "right" : "center" }}>{action.name}</ActionText>
           </HorizontalActionItem>
         ))}
       </HorizontalScroll>
-
+  
       <BottomNav sx={{ marginVertical: 16 }}>
         {[
           { label: t("common.dashboard"), route: "Dashboard" },
@@ -135,19 +109,17 @@ export default function HomeScreen() {
             accessibilityRole="button"
             accessibilityLabel={`Navigate to ${item.label}`}
           >
-            <BottomNavText sx={{ variant: "text.secondary" }}>
+            <BottomNavText sx={{ variant: "text.secondary", textAlign: isRTL ? "right" : "center" }}>
               {item.label}
             </BottomNavText>
           </BottomNavItem>
         ))}
       </BottomNav>
-
-      <AddAnimalModal
-        visible={isAddAnimalModalVisible}
-        onClose={closeAddAnimalModal}
-      />
+  
+      <AddAnimalModal visible={isAddAnimalModalVisible} onClose={closeAddAnimalModal} />
     </Container>
   );
+  
 }
 
 const Container = styled(View)({
