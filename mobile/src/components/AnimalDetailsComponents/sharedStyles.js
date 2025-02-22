@@ -34,12 +34,13 @@ export const LogText = styled(Text)({
   marginBottom: 5, 
 });
 
-export const LabelText = styled(Text)({
+export const LabelText = styled(Text) (({ isRTL }) => ({
   fontSize: 14,
   fontWeight: '600',
   color: '#333', 
   marginBottom: 6,
-});
+  textAlign: isRTL ? 'right' : 'left',
+}));
 
 export const InputField = styled(TextInput)({
   fontSize: 16,

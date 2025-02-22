@@ -9,11 +9,12 @@ import { useTranslation } from "react-i18next";
 const Tab = createBottomTabNavigator();
 
 const AnimalDetailsScreen = ({ route }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { animalId } = route.params;
+  const isRTL = t("dir") === "rtl";
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }} >
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <Tab.Navigator
         initialRouteName="Details"
         screenOptions={({ route }) => ({
@@ -33,25 +34,38 @@ const AnimalDetailsScreen = ({ route }) => {
           tabBarActiveTintColor: "#4CAF50",
           tabBarInactiveTintColor: "#999",
           tabBarStyle: {
-            height: 75, 
+            height: 75,
             borderTopWidth: 1,
             borderTopColor: "#ddd",
+            flexDirection: isRTL ? "row-reverse" : "row", 
           },
-          tabBarLabelStyle: { fontSize: 12, fontWeight: "bold" },
+          tabBarLabelStyle: { 
+            fontSize: 12, 
+            fontWeight: "bold", 
+            textAlign: "center", 
+            writingDirection: isRTL ? "rtl" : "ltr", 
+          },
           tabBarPosition: "top",
           headerShown: false,
           animation: "shift",
         })}
       >
-        <Tab.Screen name="Details"
-        options={{title: t("common.details")}}
+        <Tab.Screen 
+          name="Details"
+          options={{ title: t("common.details") }}
         >
-          {() => <AnimalDetailsTab animalId={animalId} />}
+          {() => <AnimalDetailsTab animalId={animalId}  />}
         </Tab.Screen>
-        <Tab.Screen name="Medical Logs"  options={{title:t("common.medical_logs")}}>
+        <Tab.Screen 
+          name="Medical Logs"  
+          options={{ title: t("common.medical_logs") }}
+        >
           {() => <MedicalLogsTab animalId={animalId} />}
         </Tab.Screen>
-        <Tab.Screen name="Activity Logs"  options={{title:t("common.activity_logs")}}>
+        <Tab.Screen 
+          name="Activity Logs"  
+          options={{ title: t("common.activity_logs") }}
+        >
           {() => <ActivityLogsTab animalId={animalId} />}
         </Tab.Screen>
       </Tab.Navigator>
