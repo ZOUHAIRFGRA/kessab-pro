@@ -1,5 +1,5 @@
 import { styled } from "dripsy";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,11 +16,13 @@ import Colors from "../utils/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import AddAnimalModal from "./AddAnimalModal";
+import { logout } from "../features/authSlice";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText] = useDebounce(searchText, 500);
   const [isAddAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
