@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.config;
 
+import org.springframework.security.config.http.SessionCreationPolicy;
 import uit.ac.ma.est.kessabpro.security.JwtAuthenticationFilter;
 import uit.ac.ma.est.kessabpro.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
@@ -29,8 +30,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 🔥 Ensure stateless session
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll() // Allow all auth-related endpoints
                         .requestMatchers("/images/**", "/icons/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -39,6 +41,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
