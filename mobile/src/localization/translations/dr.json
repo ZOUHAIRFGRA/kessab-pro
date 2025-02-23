@@ -8,6 +8,7 @@
   },
   "common": {
     "kessabPro": "كساب برو",
+    "HomePage": "الصفحة الرئيسية",
     "search_placeholder": "بحث عن خروف بالرقم",
     "management": "الإدارة",
     "sales": "المبيعات",
@@ -98,6 +99,7 @@
     "Email": "البريد الإلكتروني",
     "Edit_Profile": "تعديل الملف الشخصي",
     "Logout": "تسجيل الخروج",
-    "SaveProfile": "حفظ الملف الشخصي"
+    "SaveProfile": "حفظ الملف الشخصي",
+    "buyersList": "قائمة العملاء"
   }
 }

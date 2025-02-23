@@ -99,6 +99,9 @@
     "Email": "Email",
     "Edit_Profile": "Modifier le profil",
     "Logout": "Se déconnecter",
-    "SaveProfile": "Enregistrer le profil"
+    "SaveProfile": "Enregistrer le profil",
+    "buyersList": "Liste des acheteurs",
+    "HomePage": "Page d'accueil"
+
   }
 }
