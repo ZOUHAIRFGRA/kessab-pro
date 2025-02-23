@@ -23,7 +23,6 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const isRTL = t("dir") === "rtl";
-  console.log('isrtl',isRTL);
 
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText] = useDebounce(searchText, 500);

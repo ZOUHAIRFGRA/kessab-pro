@@ -11,23 +11,22 @@ const languageDetectorPlugin = {
   init: () => {},
   detect: async function (callback) {
     try {
-      await AsyncStorage.getItem(STORE_LANGUAGE_KEY).then((language) => {
-        if (language) {
-          return callback(language);
-        } else {
-          return callback("fr");
-        }
-      });
+      const language = await AsyncStorage.getItem(STORE_LANGUAGE_KEY);
+      callback(language || "fr"); // Fallback to "fr" if no language found
     } catch (error) {
       console.log("Error reading language", error);
+      callback("fr"); // Fallback in case of an error
     }
   },
   cacheUserLanguage: async function (language) {
     try {
       await AsyncStorage.setItem(STORE_LANGUAGE_KEY, language);
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error caching language", error);
+    }
   },
 };
+
 const resources = {
   dr: {
     translation: dr,
@@ -48,4 +47,5 @@ i18n
       escapeValue: false,
     },
   });
+
 export default i18n;

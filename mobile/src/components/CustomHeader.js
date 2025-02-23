@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 const CustomHeader = ({ navigation, options }) => {
   const { t } = useTranslation(); 
   const [language, setLanguage] = useState(i18n.language); 
-
   
   const toggleLanguage = () => {
     const currentLang = i18n.language;
@@ -19,10 +18,12 @@ const CustomHeader = ({ navigation, options }) => {
     setLanguage(newLang); 
   };
 
+  const isRTL = language === "dr"; 
+
   return (
-    <View style={styles.headerContainer}>
-      <TouchableOpacity onPress={() => navigation.openDrawer()}>
-        <Ionicons name="menu" size={24} color="#fff" />
+    <View style={[styles.headerContainer, isRTL && styles.rtlHeader]}>
+      <TouchableOpacity onPress={() => navigation.openDrawer()} style={isRTL ? styles.rtlMenuButton : styles.menuButton}>
+        <Ionicons name="menu" size={30} color="#fff" />
       </TouchableOpacity>
 
       <Container
@@ -54,6 +55,9 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: Colors.primary,
   },
+  rtlHeader: {
+    flexDirection: "row-reverse",
+  },
   headerTitle: {
     color: "#fff",
     fontSize: 18,
@@ -64,6 +68,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "transparent",
     marginLeft: "auto",
+  },
+  rtlMenuButton: {
+    marginLeft: "auto", 
+  },
+  menuButton: {
+    marginRight: "auto", 
   },
 });
 
