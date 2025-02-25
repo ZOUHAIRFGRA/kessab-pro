@@ -9,8 +9,14 @@ let localIP = "localhost";
 
 for (const name of Object.keys(nets)) {
   for (const net of nets[name]) {
-    if (net.family === "IPv4" && !net.internal) {
+    if (
+      net.family === "IPv4" &&
+      !net.internal &&
+      !net.address.startsWith("172.") && 
+      !net.address.startsWith("192.168.122.") 
+    ) {
       localIP = net.address;
+      break; 
     }
   }
 }
