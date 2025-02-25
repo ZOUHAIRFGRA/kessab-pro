@@ -9,8 +9,8 @@ import uit.ac.ma.est.kessabpro.repositories.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -31,9 +31,18 @@ public class AnimalSeeder {
     @Autowired
     private AnimalMedicalLogRepository animalMedicalLogRepository;
 
+    @Autowired
+    private UserRepository userRepository;
 
     public void seedData() {
         if (animalRepository.count() == 0) {
+            Optional<User> optionalUser = userRepository.findAll().stream().findFirst();
+            if (optionalUser.isEmpty()) {
+                System.out.println("No users found. Please seed users first.");
+                return;
+            }
+            User user = optionalUser.get();
+
             AnimalIcon cowIcon = AnimalIcon.builder()
                     .iconPath("/icons/cow.png")
                     .build();
@@ -64,6 +73,7 @@ public class AnimalSeeder {
                     .weight(new BigDecimal("500.0"))
                     .category(cowCategory)
                     .pickUpDate(null)
+                    .user(user) // Assign the first user
                     .build();
 
             try {
@@ -81,6 +91,7 @@ public class AnimalSeeder {
                     .weight(new BigDecimal("60.0"))
                     .category(sheepCategory)
                     .pickUpDate(LocalDate.of(2025, 2, 15))
+                    .user(user) // Assign the first user
                     .build();
 
             try {
@@ -127,5 +138,4 @@ public class AnimalSeeder {
             System.out.println("Database already seeded. No new data added.");
         }
     }
-
 }

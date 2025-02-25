@@ -1,7 +1,6 @@
 package uit.ac.ma.est.kessabpro.services.interfaces;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 

@@ -243,7 +243,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
                 <InputField
                   value={editedAnimal.birthDate}
                   editable={false}
-                  placeholder={t("common.birthDatePlaceholder")}
+                  placeholder={t("common.birthDate")}
                   textAlign={isRTL ? "right" : "left"} 
                 />
               </TouchableOpacity>
@@ -275,7 +275,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
                 <InputField
                   value={editedAnimal.pickUpDate}
                   editable={false}
-                  placeholder={t("common.pickupDatePlaceholder")}
+                  placeholder={t("common.pickup_date")}
                   textAlign={isRTL ? "right" : "left"}
                 />
               </TouchableOpacity>
