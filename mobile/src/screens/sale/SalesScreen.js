@@ -11,7 +11,6 @@ import SalesListCardView from "../../components/sale/SalesListCardView";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import Dialogs from "../../components/global/Dialog";
-import { color } from "@rneui/base";
 export default function SalesScreen() {
   const navigator = useNavigation();
   const [isDialogVisible, setDialogVisible] = useState(false);

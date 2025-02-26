@@ -1,18 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {createCategory,getCategories} from "../api/categoryApi"; 
+import { createCategory, getCategories } from "../api/categoryApi";
 
+export const fetchCategories = createAsyncThunk(
+  "categories/fetch",
+  async () => {
+    const response = await getCategories();
+    return response;
+  }
+);
 
-export const fetchCategories = createAsyncThunk("categories/fetch", async () => {
-  const response = await getCategories();
-  return response;
-});
-
-
-export const addCategory = createAsyncThunk("categories/add", async (categoryData) => {
-  const response = await createCategory(categoryData);  
-  return response;
-});
-
+export const addCategory = createAsyncThunk(
+  "categories/add",
+  async (categoryData) => {
+    const response = await createCategory(categoryData);
+    return response;
+  }
+);
 
 const categorySlice = createSlice({
   name: "categories",

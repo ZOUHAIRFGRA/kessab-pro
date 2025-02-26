@@ -13,6 +13,8 @@ const BaseDropdown = ({
   iconName,
   values: data,
   containerStyle = null,
+  onValueChange,
+  disable,
 }) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
@@ -79,6 +81,7 @@ const BaseDropdown = ({
         iconStyle={styles.iconStyle}
         data={data}
         search
+        disable={disable}
         maxHeight={300}
         labelField="label"
         valueField="value"
@@ -89,6 +92,7 @@ const BaseDropdown = ({
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
           setValue(item.value);
+          onValueChange(item.value);
           setIsFocus(false);
         }}
         renderLeftIcon={() => (
