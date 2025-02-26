@@ -27,29 +27,28 @@ const cardVariants = {
 
 const Features = () => {
   return (
-    <section className="relative py-24 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+    <section className="relative pt-12 pb-24 bg-gradient-to-b from-white to-blue-50 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
       
-      {/* Background Blur Effects */}
-      <div className="absolute w-[400px] h-[400px] bg-blue-400 opacity-20 blur-3xl rounded-full -top-24 left-10 -z-10 animate-pulse"></div>
-      <div className="absolute w-[300px] h-[300px] bg-green-500 opacity-20 blur-3xl rounded-full bottom-10 right-10 -z-10 animate-pulse"></div>
+      <div className="absolute w-[450px] h-[450px] bg-blue-500/30 blur-[100px] rounded-full top-[-100px] left-24 z-0 animate-pulse"></div>
+      <div className="absolute w-[400px] h-[400px] bg-indigo-500/30 blur-[80px] rounded-full bottom-16 right-10 z-0 animate-pulse"></div>
 
-      {/* Section Title */}
       <motion.h2 
         className="text-center text-4xl font-extrabold text-gray-900 dark:text-white"
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }}
+        whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }}
+        viewport={{ once: true }}
       >
         Why Choose <span className="text-blue-600 dark:text-blue-400">KessabPro?</span>
       </motion.h2>
 
-      {/* Features Grid */}
       <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 px-6">
         {features.map((feature, index) => (
           <motion.div
             key={index}
             variants={cardVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
