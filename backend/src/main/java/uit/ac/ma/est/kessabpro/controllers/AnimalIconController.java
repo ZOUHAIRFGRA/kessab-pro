@@ -22,7 +22,6 @@ public class AnimalIconController {
         return ResponseEntity.ok(savedIcon);
     }
 
-    // Change UUID to Long for ID
     @GetMapping("/{id}")
     public ResponseEntity<AnimalIcon> getAnimalIconById(@PathVariable Long id) {
         Optional<AnimalIcon> icon = animalIconService.findById(id);

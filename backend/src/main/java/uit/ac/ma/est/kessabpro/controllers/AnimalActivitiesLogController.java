@@ -1,6 +1,6 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
-import uit.ac.ma.est.kessabpro.models.entities.AnimalActivitiesLog;
+import uit.ac.ma.est.kessabpro.models.dto.AnimalActivitiesLogDTO;
 import uit.ac.ma.est.kessabpro.services.implementations.AnimalActivitiesLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,33 +18,29 @@ public class AnimalActivitiesLogController {
     private AnimalActivitiesLogService animalActivitiesLogService;
 
     @PostMapping
-    public ResponseEntity<AnimalActivitiesLog> createAnimalActivitiesLog(@RequestBody AnimalActivitiesLog animalActivitiesLog) {
-        AnimalActivitiesLog savedLog = animalActivitiesLogService.save(animalActivitiesLog);
-        return ResponseEntity.ok(savedLog);
+    public ResponseEntity<AnimalActivitiesLogDTO> createAnimalActivitiesLog(@RequestBody AnimalActivitiesLogDTO dto) {
+        return ResponseEntity.ok(animalActivitiesLogService.save(dto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AnimalActivitiesLog> getAnimalActivitiesLogById(@PathVariable UUID id) {
-        Optional<AnimalActivitiesLog> log = animalActivitiesLogService.findById(id);
+    public ResponseEntity<AnimalActivitiesLogDTO> getAnimalActivitiesLogById(@PathVariable UUID id) {
+        Optional<AnimalActivitiesLogDTO> log = animalActivitiesLogService.findById(id);
         return log.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<AnimalActivitiesLog>> getAllAnimalActivitiesLogs() {
-        List<AnimalActivitiesLog> logs = animalActivitiesLogService.findAll();
-        return ResponseEntity.ok(logs);
+    public ResponseEntity<List<AnimalActivitiesLogDTO>> getAllAnimalActivitiesLogs() {
+        return ResponseEntity.ok(animalActivitiesLogService.findAll());
     }
 
     @GetMapping("/animal/{animalId}")
-    public ResponseEntity<List<AnimalActivitiesLog>> getLogsByAnimalId(@PathVariable UUID animalId) {
-        List<AnimalActivitiesLog> logs = animalActivitiesLogService.findByAnimalId(animalId);
-        return ResponseEntity.ok(logs);
+    public ResponseEntity<List<AnimalActivitiesLogDTO>> getLogsByAnimalId(@PathVariable UUID animalId) {
+        return ResponseEntity.ok(animalActivitiesLogService.findByAnimalId(animalId));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AnimalActivitiesLog> updateAnimalActivitiesLog(@PathVariable UUID id, @RequestBody AnimalActivitiesLog animalActivitiesLog) {
-        AnimalActivitiesLog updatedLog = animalActivitiesLogService.update(id, animalActivitiesLog);
-        return updatedLog != null ? ResponseEntity.ok(updatedLog) : ResponseEntity.notFound().build();
+    public ResponseEntity<AnimalActivitiesLogDTO> updateAnimalActivitiesLog(@PathVariable UUID id, @RequestBody AnimalActivitiesLogDTO dto) {
+        return ResponseEntity.ok(animalActivitiesLogService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")

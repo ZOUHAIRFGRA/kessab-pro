@@ -29,7 +29,6 @@ public class UserSeeder {
                     .phone("123456789")
                     .address("123 Admin Street")
                     .password(passwordEncoder.encode("admin"))
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             User user2 = User.builder()
@@ -38,7 +37,6 @@ public class UserSeeder {
                     .phone("987654321")
                     .address("456 User Lane")
                     .password(passwordEncoder.encode("user1"))
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             userRepository.saveAll(Arrays.asList(user1, user2));

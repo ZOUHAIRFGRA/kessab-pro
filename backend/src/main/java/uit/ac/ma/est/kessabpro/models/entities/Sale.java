@@ -1,44 +1,60 @@
 package uit.ac.ma.est.kessabpro.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
+import uit.ac.ma.est.kessabpro.events.listeners.SaleListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Sale {
+@EntityListeners(SaleListener.class)
+public class Sale extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "animal_id")
-    private Animal animal;
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Animal> animals = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     private LocalDate saleDate;
-    private BigDecimal agreedAmount;
+    private double agreedAmount;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus;
+    private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Transaction> transactions = new ArrayList<>();
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public List<UUID> getAnimalIds() {
+        List<UUID> animalIds = new ArrayList<>();
+        for (Animal animal : animals) {
+            animalIds.add(animal.getId());
+        }
+        return animalIds;
+    }
 }
-

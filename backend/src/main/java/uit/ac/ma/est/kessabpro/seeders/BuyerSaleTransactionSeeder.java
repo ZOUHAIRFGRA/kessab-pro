@@ -13,21 +13,36 @@ import uit.ac.ma.est.kessabpro.repositories.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Component
 public class BuyerSaleTransactionSeeder {
 
-    @Autowired private BuyerRepository buyerRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private AnimalRepository animalRepository;
-    @Autowired private SaleRepository saleRepository;
-    @Autowired private TransactionRepository transactionRepository;
+    private final BuyerRepository buyerRepository;
+    private final UserRepository userRepository;
+    private final AnimalRepository animalRepository;
+    private final SaleRepository saleRepository;
+    private final TransactionRepository transactionRepository;
 
     @PersistenceContext private EntityManager entityManager;
 
-    @PostConstruct
+    @Autowired
+    BuyerSaleTransactionSeeder(
+            BuyerRepository buyerRepository,
+            UserRepository userRepository,
+            AnimalRepository animalRepository,
+            SaleRepository saleRepository,
+            TransactionRepository transactionRepository) {
+
+        this.buyerRepository = buyerRepository;
+        this.userRepository = userRepository;
+        this.animalRepository = animalRepository;
+        this.saleRepository = saleRepository;
+        this.transactionRepository = transactionRepository;
+    }
+
+    @Transactional
     public void init() {
         seedData();
     }
@@ -40,8 +55,11 @@ public class BuyerSaleTransactionSeeder {
             return;
         }
 
-        User firstUser = firstUserOpt.get();
-        firstUser = entityManager.merge(firstUser);
+        User firstUser = entityManager.find(User.class, firstUserOpt.get().getId());
+        if (firstUser == null) {
+            System.out.println("❌ User not found in the persistence context!");
+            return;
+        }
 
         if (buyerRepository.count() == 0) {
             Buyer buyer = Buyer.builder()
@@ -50,40 +68,38 @@ public class BuyerSaleTransactionSeeder {
                     .CIN("AB123456")
                     .phone("0654321987")
                     .address("789 Buyer Street")
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             buyer = buyerRepository.save(buyer);
             System.out.println("✅ Buyer seeded successfully!");
 
-            // Get the first Animal
-            Optional<Animal> firstAnimalOpt = animalRepository.findAll().stream().findFirst();
-            if (firstAnimalOpt.isEmpty()) {
+            List<Animal> animalsForSale = animalRepository.findAll().stream().limit(3).toList();
+            if (animalsForSale.isEmpty()) {
                 System.out.println("❌ No animals found. Please seed animals first!");
                 return;
             }
-            Animal firstAnimal = firstAnimalOpt.get();
 
-            // Create a Sale linked to Buyer & Animal
             Sale sale = Sale.builder()
-                    .animal(firstAnimal)
                     .buyer(buyer)
                     .saleDate(LocalDate.now())
-                    .agreedAmount(BigDecimal.valueOf(1500.00))
+                    .agreedAmount(1500.00)
                     .paymentStatus(PaymentStatus.PARTIALLY_PAID)
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             sale = saleRepository.save(sale);
-            System.out.println("✅ Sale seeded successfully!");
 
-            // Create a Transaction linked to the Sale
+            for (Animal animal : animalsForSale) {
+                animal.setSale(sale);
+                animalRepository.save(animal);
+            }
+
+            System.out.println("✅ Sale seeded successfully with " + animalsForSale.size() + " animals.");
+
             Transaction transaction = Transaction.builder()
                     .sale(sale)
                     .transactionDate(LocalDate.now())
-                    .amount(BigDecimal.valueOf(500.00))
+                    .amount(500.00)
                     .method(PaymentMethod.CASH)
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             transactionRepository.save(transaction);

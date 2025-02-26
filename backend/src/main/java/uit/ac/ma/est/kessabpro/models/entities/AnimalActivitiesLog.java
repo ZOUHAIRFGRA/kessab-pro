@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Data  // @Data already includes @Getter, @Setter, @ToString, etc.
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnimalActivitiesLog {
+public class AnimalActivitiesLog extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,6 +28,5 @@ public class AnimalActivitiesLog {
     private LocalDate logDate;
     private String activity;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+
 }

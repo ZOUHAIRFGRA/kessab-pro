@@ -1,6 +1,6 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
-import uit.ac.ma.est.kessabpro.models.entities.AnimalMedicalLog;
+import uit.ac.ma.est.kessabpro.models.dto.AnimalMedicalLogDTO;
 import uit.ac.ma.est.kessabpro.services.implementations.AnimalMedicalLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,32 +18,31 @@ public class AnimalMedicalLogController {
     private AnimalMedicalLogService animalMedicalLogService;
 
     @PostMapping
-    public ResponseEntity<AnimalMedicalLog> createAnimalMedicalLog(@RequestBody AnimalMedicalLog animalMedicalLog) {
-        AnimalMedicalLog savedLog = animalMedicalLogService.save(animalMedicalLog);
-        return ResponseEntity.ok(savedLog);
+    public ResponseEntity<AnimalMedicalLogDTO> createAnimalMedicalLog(@RequestBody AnimalMedicalLogDTO dto) {
+       return ResponseEntity.ok(animalMedicalLogService.save(dto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AnimalMedicalLog> getAnimalMedicalLogById(@PathVariable UUID id) {
-        Optional<AnimalMedicalLog> log = animalMedicalLogService.findById(id);
+    public ResponseEntity<AnimalMedicalLogDTO> getAnimalMedicalLogById(@PathVariable UUID id) {
+        Optional<AnimalMedicalLogDTO> log = animalMedicalLogService.findById(id);
         return log.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<AnimalMedicalLog>> getAllAnimalMedicalLogs() {
-        List<AnimalMedicalLog> logs = animalMedicalLogService.findAll();
+    public ResponseEntity<List<AnimalMedicalLogDTO>> getAllAnimalMedicalLogs() {
+        List<AnimalMedicalLogDTO> logs = animalMedicalLogService.findAll();
         return ResponseEntity.ok(logs);
     }
 
     @GetMapping("/animal/{animalId}")
-    public ResponseEntity<List<AnimalMedicalLog>> getLogsByAnimalId(@PathVariable UUID animalId) {
-        List<AnimalMedicalLog> logs = animalMedicalLogService.findByAnimalId(animalId);
+    public ResponseEntity<List<AnimalMedicalLogDTO>> getLogsByAnimalId(@PathVariable UUID animalId) {
+        List<AnimalMedicalLogDTO> logs = animalMedicalLogService.findByAnimalId(animalId);
         return ResponseEntity.ok(logs);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AnimalMedicalLog> updateAnimalMedicalLog(@PathVariable UUID id, @RequestBody AnimalMedicalLog animalMedicalLog) {
-        AnimalMedicalLog updatedLog = animalMedicalLogService.update(id, animalMedicalLog);
+    public ResponseEntity<AnimalMedicalLogDTO> updateAnimalMedicalLog(@PathVariable UUID id, @RequestBody AnimalMedicalLogDTO animalMedicalLogDTO) {
+        AnimalMedicalLogDTO updatedLog = animalMedicalLogService.update(id, animalMedicalLogDTO);
         return updatedLog != null ? ResponseEntity.ok(updatedLog) : ResponseEntity.notFound().build();
     }
 

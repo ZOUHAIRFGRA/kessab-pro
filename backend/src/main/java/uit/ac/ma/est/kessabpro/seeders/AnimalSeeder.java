@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.seeders;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,8 +9,8 @@ import uit.ac.ma.est.kessabpro.repositories.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -30,38 +31,40 @@ public class AnimalSeeder {
     @Autowired
     private AnimalMedicalLogRepository animalMedicalLogRepository;
 
-    @PostConstruct
+    @Autowired
+    private UserRepository userRepository;
+
     public void seedData() {
         if (animalRepository.count() == 0) {
-            // Create AnimalIcon
+            Optional<User> optionalUser = userRepository.findAll().stream().findFirst();
+            if (optionalUser.isEmpty()) {
+                System.out.println("No users found. Please seed users first.");
+                return;
+            }
+            User user = optionalUser.get();
+
             AnimalIcon cowIcon = AnimalIcon.builder()
                     .iconPath("/icons/cow.png")
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             AnimalIcon sheepIcon = AnimalIcon.builder()
                     .iconPath("/icons/sheep.png")
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             animalIconRepository.saveAll(Arrays.asList(cowIcon, sheepIcon));
 
-            // Create AnimalCategory
             AnimalCategory cowCategory = AnimalCategory.builder()
                     .typeName("Cow")
                     .icon(cowIcon)
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             AnimalCategory sheepCategory = AnimalCategory.builder()
                     .typeName("Sheep")
                     .icon(sheepIcon)
-                    .createdAt(LocalDateTime.now())
                     .build();
 
             animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory));
 
-            // Create Animals
             Animal animal1 = Animal.builder()
                     .tag("COW-001")
                     .sex("Female")
@@ -69,11 +72,16 @@ public class AnimalSeeder {
                     .price(new BigDecimal("1500.00"))
                     .weight(new BigDecimal("500.0"))
                     .category(cowCategory)
-                    .imagePaths("/images/cow1.png")
                     .pickUpDate(null)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
+                    .user(user) // Assign the first user
                     .build();
+
+            try {
+                animal1.addImagePath("/images/cow1.png");
+                animal1.addImagePath("/images/cow2.png");
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
 
             Animal animal2 = Animal.builder()
                     .tag("SHEEP-001")
@@ -82,62 +90,38 @@ public class AnimalSeeder {
                     .price(new BigDecimal("800.00"))
                     .weight(new BigDecimal("60.0"))
                     .category(sheepCategory)
-                    .imagePaths("/images/sheep1.png")
                     .pickUpDate(LocalDate.of(2025, 2, 15))
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
-            Animal animal3 = Animal.builder()
-                    .tag("SHEEP-001")
-                    .sex("Male")
-                    .birthDate(LocalDate.of(2021, 5, 20))
-                    .price(new BigDecimal("800.00"))
-                    .weight(new BigDecimal("60.0"))
-                    .category(sheepCategory)
-                    .imagePaths("/images/sheep1.png")
-                    .pickUpDate(LocalDate.of(2025, 2, 15))
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
-            Animal animal4 = Animal.builder()
-                    .tag("SHEEP-001")
-                    .sex("Male")
-                    .birthDate(LocalDate.of(2021, 5, 20))
-                    .price(new BigDecimal("800.00"))
-                    .weight(new BigDecimal("60.0"))
-                    .category(sheepCategory)
-                    .imagePaths("/images/sheep1.png")
-                    .pickUpDate(LocalDate.of(2025, 2, 15))
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
+                    .user(user) // Assign the first user
                     .build();
 
-            animalRepository.saveAll(Arrays.asList(animal1, animal2,animal3,animal4));
+            try {
+                animal2.addImagePath("/images/sheep1.png");
+                animal2.addImagePath("/images/sheep1.png");
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
 
-            // Create AnimalActivitiesLog
+            animalRepository.saveAll(Arrays.asList(animal1, animal2));
+
             AnimalActivitiesLog log1 = AnimalActivitiesLog.builder()
                     .animal(animal1)
                     .logDate(LocalDate.now().minusDays(10))
                     .activity("Feeding")
-                    .createdAt(LocalDateTime.now().minusDays(10))
                     .build();
 
             AnimalActivitiesLog log2 = AnimalActivitiesLog.builder()
                     .animal(animal2)
                     .logDate(LocalDate.now().minusDays(5))
                     .activity("Shearing")
-                    .createdAt(LocalDateTime.now().minusDays(5))
                     .build();
 
             animalActivitiesLogRepository.saveAll(Arrays.asList(log1, log2));
 
-            // Create AnimalMedicalLog
             AnimalMedicalLog medicalLog1 = AnimalMedicalLog.builder()
                     .animal(animal1)
                     .logDate(LocalDate.now().minusMonths(1))
                     .description("Routine check-up, vaccinated for FMD.")
                     .vetName("Dr. Smith")
-                    .createdAt(LocalDateTime.now().minusMonths(1))
                     .build();
 
             AnimalMedicalLog medicalLog2 = AnimalMedicalLog.builder()
@@ -145,7 +129,6 @@ public class AnimalSeeder {
                     .logDate(LocalDate.now().minusMonths(2))
                     .description("Treated for parasitic infection.")
                     .vetName("Dr. Jones")
-                    .createdAt(LocalDateTime.now().minusMonths(2))
                     .build();
 
             animalMedicalLogRepository.saveAll(Arrays.asList(medicalLog1, medicalLog2));

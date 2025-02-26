@@ -18,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Transaction {
+public class Transaction extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,13 +28,20 @@ public class Transaction {
     @JoinColumn(name = "sale_id")
     private Sale sale;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+
+
     private LocalDate transactionDate;
-    private BigDecimal amount;
+    private double amount;
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod method;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+    @Version
+    private Integer version;
+
 }
 

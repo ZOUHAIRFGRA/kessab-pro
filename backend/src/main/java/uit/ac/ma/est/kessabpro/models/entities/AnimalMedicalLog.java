@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnimalMedicalLog {
+public class AnimalMedicalLog extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,7 +30,6 @@ public class AnimalMedicalLog {
     private String description;
     private String vetName;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+
 }
 

@@ -5,40 +5,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Location from 'expo-location';
 import { WEATHER_API_KEY } from '@env'; 
 
-const WidgetContainer = styled(View)({
-  padding: 16,
-  backgroundColor: '#ffffff',
-  borderRadius: 16,
-  marginBottom: 16,
-  shadowColor: '#000',
-  shadowOpacity: 0.2,
-  shadowOffset: { width: 0, height: 2 },
-  shadowRadius: 8,
-  elevation: 5,
-  borderWidth: 1,
-  borderColor: '#e0e0e0',
-});
-
-
-
-const WeatherInfo = styled(View)({
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  alignItems: 'center',
-  paddingVertical: 8,
-});
-
-const WeatherDetail = styled(View)({
-  alignItems: 'center',
-  flex: 1,
-});
-
-const WeatherText = styled(Text)({
-  fontSize: 14,
-  color: '#004d40',
-  marginTop: 4,
-  textAlign: 'center',
-});
 
 export default function WeatherWidget() {
   const [location, setLocation] = useState(null);
@@ -140,3 +106,39 @@ export default function WeatherWidget() {
     </WidgetContainer>
   );
 }
+
+
+const WidgetContainer = styled(View)({
+  padding: 16,
+  backgroundColor: '#ffffff',
+  borderRadius: 16,
+  marginBottom: 16,
+  shadowColor: '#000',
+  shadowOpacity: 0.2,
+  shadowOffset: { width: 0, height: 2 },
+  shadowRadius: 8,
+  elevation: 5,
+  borderWidth: 1,
+  borderColor: '#e0e0e0',
+});
+
+
+
+const WeatherInfo = styled(View)({
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+  paddingVertical: 8,
+});
+
+const WeatherDetail = styled(View)({
+  alignItems: 'center',
+  flex: 1,
+});
+
+const WeatherText = styled(Text)({
+  fontSize: 14,
+  color: '#004d40',
+  marginTop: 4,
+  textAlign: 'center',
+});
