@@ -1,4 +1,4 @@
-package uit.ac.ma.est.kessabpro.models.dto.responses;
+package uit.ac.ma.est.kessabpro.exceptions;
 
 import lombok.Data;
 

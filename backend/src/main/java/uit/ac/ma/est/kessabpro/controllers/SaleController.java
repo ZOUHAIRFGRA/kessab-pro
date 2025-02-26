@@ -1,12 +1,16 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
 import uit.ac.ma.est.kessabpro.mappers.SaleMapper;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
 import uit.ac.ma.est.kessabpro.models.dto.SaleDTO;
+import uit.ac.ma.est.kessabpro.models.dto.requests.SaleDTORequest;
 import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
@@ -17,6 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/sales")
+@Validated
 public class SaleController {
 
     @Autowired
@@ -25,11 +30,11 @@ public class SaleController {
     private SaleMapper saleMapper;
 
     @PostMapping
-    public ResponseEntity<SaleDTOResponse> createSale(@RequestBody SaleDTO saleDTO) {
-        Sale sale = saleService.createSale(saleDTO);
-        return ResponseEntity.ok(saleMapper.toSaleDTO(sale));
+    public ResponseEntity<?> createSale(@Valid @RequestBody SaleDTORequest saleDTORequest) {
+//        Sale sale = saleService.createSale(saleDTO);
+//        return ResponseEntity.ok(saleMapper.toSaleDTO(sale));
+        return new ResponseEntity<>("slam", HttpStatus.CREATED);
     }
-
 
 
     @GetMapping("/{id}")

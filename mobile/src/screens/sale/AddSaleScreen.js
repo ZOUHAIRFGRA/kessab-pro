@@ -1,4 +1,4 @@
-import { CheckBox, color, Icon, Input } from "@rneui/base";
+import { CheckBox, Icon, Input } from "@rneui/base";
 import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import Collapsible from "react-native-collapsible";
@@ -19,8 +19,6 @@ const AddSaleScreen = ({ route }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const qte = route.params?.qte;
-
-  // Format date function
 
   // Global state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -101,49 +99,46 @@ const AddSaleScreen = ({ route }) => {
     }
   }, [buyerExisting, dispatch]);
 
-  // Handle submission
+  // Submission error state
   const [err, setErr] = useState("");
 
-  useEffect(() => {
-    if (isSubmitting) {
-      const validateForm = () => {
-        if (animalFormData.some((el) => el.tag === ""))
-          return "tag must be filled";
-        if (!buyerExisting && buyerFormData.fullName === "")
-          return "buyer fullname must be filled";
-        if (buyerExisting && !buyerFormData.id) return "buyer must be choosed";
-        if (summaryFormData === "") return "saleDetail must be filled";
-        if (summaryFormData.agreedAmount === "")
-          return "agreedAmount must be filled";
-        if (summaryFormData.paidAmount === "")
-          return "paidAmount must be filled";
-        return null; // No error
-      };
+  // onSubmit function handles form validation and submission
+  const onSubmit = () => {
+    setIsSubmitting(true);
 
-      const error = validateForm();
-      if (error) {
-        setErr(error);
-        return;
-      }
+    const validateForm = () => {
+      if (animalFormData.some((el) => el.tag === ""))
+        return "tag must be filled";
+      if (animalFormData.some((el) => el.category === ""))
+        return "category must be filled";
+      if (!buyerExisting && buyerFormData.fullName === "")
+        return "buyer fullname must be filled";
+      if (buyerExisting && !buyerFormData.id) return "buyer must be choosed";
+      if (summaryFormData === "") return "saleDetail must be filled";
+      if (summaryFormData.agreedAmount === "")
+        return "agreedAmount must be filled";
+      if (summaryFormData.paidAmount === "") return "paidAmount must be filled";
+      return null;
+    };
 
-      const finalData = {
-        animals: animalFormData,
-        buyer: buyerExisting ? { id: buyerFormData.id } : buyerFormData,
-        saleDetail: summaryFormData,
-      };
-
-      setErr("");
-      console.log({ submitData: finalData, animals: finalData.animals });
-      setSubmitData(finalData);
+    const error = validateForm();
+    if (error) {
+      setErr(error);
       setIsSubmitting(false);
+      return;
     }
-  }, [
-    isSubmitting,
-    animalFormData,
-    buyerFormData,
-    buyerExisting,
-    summaryFormData,
-  ]);
+
+    const finalData = {
+      animals: animalFormData,
+      buyer: buyerExisting ? { id: buyerFormData.id } : buyerFormData,
+      saleDetail: summaryFormData,
+    };
+
+    setErr("");
+    console.log({ submitData: finalData, animals: finalData.animals });
+    setSubmitData(finalData);
+    setIsSubmitting(false);
+  };
 
   // Toggle buyer existing and fetch buyers immediately
   const toggleBuyerExisting = () => {
@@ -200,12 +195,43 @@ const AddSaleScreen = ({ route }) => {
     }
   };
 
-  // Toggle collapsed states
+  // Updated toggle functions to collapse other sections when one opens
+
+  // For animals, only one open at a time.
   const toggleAnimalCollapsed = (index) => {
     setAnimalCollapsed((prev) => {
-      const newCollapsed = [...prev];
-      newCollapsed[index] = !newCollapsed[index];
+      const newCollapsed = prev.map((_, i) =>
+        i === index ? !prev[index] : true
+      );
+      if (!newCollapsed[index]) {
+        setBuyerCollapsed(true);
+        setSummaryCollapsed(true);
+      }
       return newCollapsed;
+    });
+  };
+
+  // When opening Buyer, collapse animals and summary.
+  const toggleBuyerCollapsed = () => {
+    setBuyerCollapsed((prev) => {
+      const newState = !prev;
+      if (!newState) {
+        setAnimalCollapsed((prev) => prev.map(() => true));
+        setSummaryCollapsed(true);
+      }
+      return newState;
+    });
+  };
+
+  // When opening Summary, collapse animals and buyer.
+  const toggleSummaryCollapsed = () => {
+    setSummaryCollapsed((prev) => {
+      const newState = !prev;
+      if (!newState) {
+        setAnimalCollapsed((prev) => prev.map(() => true));
+        setBuyerCollapsed(true);
+      }
+      return newState;
     });
   };
 
@@ -225,9 +251,7 @@ const AddSaleScreen = ({ route }) => {
         {/* Buyer Section */}
         <Card sx={{ flexDirection: "column", padding: 0 }}>
           <Container sx={{ padding: 16 }}>
-            <Text onPress={() => setBuyerCollapsed(!buyerCollapsed)}>
-              Buyer
-            </Text>
+            <Text onPress={toggleBuyerCollapsed}>Buyer</Text>
           </Container>
           <Collapsible collapsed={buyerCollapsed}>
             <Container>
@@ -247,7 +271,6 @@ const AddSaleScreen = ({ route }) => {
                   title="already exists?"
                 />
               </Container>
-
               {!buyerExisting && (
                 <Container sx={{ marginHorizontal: 10 }}>
                   <Input
@@ -313,7 +336,6 @@ const AddSaleScreen = ({ route }) => {
                   />
                 </Container>
               )}
-
               {buyerExisting && (
                 <Container sx={{ padding: 10 }}>
                   {buyers && buyers.length > 0 ? (
@@ -361,6 +383,16 @@ const AddSaleScreen = ({ route }) => {
                       justifyContent: "center",
                     }}
                   >
+                    <CheckBox
+                      checked={animalFormData[index]?.isPickedUp || false}
+                      onPress={() => toggleAnimalPickedUp(index)}
+                      iconType="material-community"
+                      checkedIcon="checkbox-marked"
+                      uncheckedIcon="checkbox-blank-outline"
+                      checkedColor={Colors.secondary}
+                      title="already Exists"
+                    />
+
                     <CheckBox
                       checked={animalFormData[index]?.isPickedUp || false}
                       onPress={() => toggleAnimalPickedUp(index)}
@@ -439,9 +471,7 @@ const AddSaleScreen = ({ route }) => {
             />
           )}
           <Container sx={{ padding: 16 }}>
-            <Text onPress={() => setSummaryCollapsed(!summaryCollapsed)}>
-              Summary
-            </Text>
+            <Text onPress={toggleSummaryCollapsed}>Summary</Text>
           </Container>
           <Collapsible collapsed={summaryCollapsed}>
             <Container sx={{ marginHorizontal: 10 }}>
@@ -507,15 +537,14 @@ const AddSaleScreen = ({ route }) => {
             fontSize: 16,
           }}
           icon={{
-            name: "plus",
+            name: "send",
+            size: 25,
+            type: "material",
             color: "white",
           }}
-          onPress={() => {
-            setIsSubmitting(true);
-          }}
-        >
-          submit
-        </Button>
+          title={isSubmitting ? "Submitting..." : "Submit Sale"}
+          onPress={onSubmit}
+        />
       </Container>
     </ScrollView>
   );

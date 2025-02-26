@@ -51,7 +51,11 @@ public class AnimalSeeder {
                     .iconPath("/icons/sheep.png")
                     .build();
 
-            animalIconRepository.saveAll(Arrays.asList(cowIcon, sheepIcon));
+            AnimalIcon LiveStockIcon = AnimalIcon.builder()
+                    .iconPath("/icons/live_stock.png")
+                    .build();
+
+            animalIconRepository.saveAll(Arrays.asList(cowIcon, sheepIcon, LiveStockIcon));
 
             AnimalCategory cowCategory = AnimalCategory.builder()
                     .typeName("Cow")
@@ -63,7 +67,13 @@ public class AnimalSeeder {
                     .icon(sheepIcon)
                     .build();
 
-            animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory));
+            AnimalCategory defaultCategory = AnimalCategory.builder()
+                    .typeName("Livestock")
+                    .icon(LiveStockIcon)
+                    .build();
+
+
+            animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory, defaultCategory));
 
             Animal animal1 = Animal.builder()
                     .tag("COW-001")
