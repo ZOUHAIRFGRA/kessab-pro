@@ -1,58 +1,33 @@
-import axiosInstance from './axiosInstance'; 
+import axiosInstance from './axiosInstance';
 
-
-export const fetchTransactions = async () => {
-  try {
-    const response = await axiosInstance.get('/transactions');
-    return response.data; 
-  } catch (error) {
-    console.error('Error fetching Transactions:', error);
-    throw error;
+class TransactionsService {
+  fetchTransactions() {
+    return axiosInstance.get('/transactions').then(res => res.data);
   }
-};
 
-
-export const fetchTransactionById = async (id) => {
-  try {
-    const response = await axiosInstance.get(`/transactions/${id}`);
-    return response.data; 
-  } catch (error) {
-    console.error(`Error fetching Transaction with id ${id}:`, error);
-    throw error;
+  fetchTransactionById(id) {
+    return axiosInstance.get(`/transactions/${id}`).then(res => res.data);
   }
-};
 
-
-export const createTransaction = async (TransactionData) => {
-  try {
-    const response = await axiosInstance.post('/transactions', TransactionData);
-    return response.data; 
-  } catch (error) {
-    console.error('Error creating Transaction:', error);
-    throw error;
+  createTransaction(transactionData) {
+    return axiosInstance.post('/transactions', transactionData).then(res => res.data);
   }
-};
 
-
-export const updateTransaction = async (id, TransactionData) => {
-  try {
-    // console.log(`Updating Transaction ID: ${id}`, TransactionData); 
-    const response = await axiosInstance.put(`/transactions/${id}`, TransactionData);
-    // console.log("Update Response:", response.data); 
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating Transaction with id ${id}:`, error.response?.data || error);
-    throw error;
+  updateTransaction(id, transactionData) {
+    return axiosInstance.put(`/transactions/${id}`, transactionData).then(res => res.data);
   }
-};
 
-
-export const deleteTransaction = async (id) => {
-  try {
-    const response = await axiosInstance.delete(`/transactions/${id}`);
-    return response.data; 
-  } catch (error) {
-    console.error(`Error deleting Transaction with id ${id}:`, error);
-    throw error;
+  deleteTransaction(id) {
+    return axiosInstance.delete(`/transactions/${id}`).then(res => res.data);
   }
-};
+
+  fetchTransactionsBySale(saleId) {
+    return axiosInstance.get(`/transactions/sale/${saleId}`).then(res => res.data);
+  }
+
+  fetchTransactionsByBuyer(buyerId) {
+    return axiosInstance.get(`/transactions/buyer/${buyerId}`).then(res => res.data);
+  }
+}
+
+export default new TransactionsService();

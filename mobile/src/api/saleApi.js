@@ -1,56 +1,25 @@
-import axiosInstance from './axiosInstance'; 
+import axiosInstance from './axiosInstance';
 
-
-export const fetchSales = async () => {
-  try {
-    const response = await axiosInstance.get('/sales');
-    return response.data; 
-  } catch (error) {
-    console.error('Error fetching Sales:', error);
-    throw error;
+class SalesService {
+  fetchSales() {
+    return axiosInstance.get('/sales').then(res => res.data);
   }
-};
 
-
-export const fetchSaleById = async (id) => {
-  try {
-    const response = await axiosInstance.get(`/sales/${id}`);
-    return response.data; 
-  } catch (error) {
-    console.error(`Error fetching Sale with id ${id}:`, error);
-    throw error;
+  fetchSaleById(id) {
+    return axiosInstance.get(`/sales/${id}`).then(res => res.data);
   }
-};
 
-
-export const createSale = async (SaleData) => {
-  try {
-    const response = await axiosInstance.post('/sales', SaleData);
-    return response.data; 
-  } catch (error) {
-    console.error('Error creating Sale:', error);
-    throw error;
+  createSale(SaleData) {
+    return axiosInstance.post('/sales', SaleData).then(res => res.data);
   }
-};
 
-
-export const updateSale = async (id, SaleData) => {
-  try {
-    const response = await axiosInstance.put(`/sales/${id}`, SaleData);
-    return response.data; 
-  } catch (error) {
-    console.error(`Error updating Sale with id ${id}:`, error);
-    throw error;
+  updateSale(id, SaleData) {
+    return axiosInstance.put(`/sales/${id}`, SaleData).then(res => res.data);
   }
-};
 
-
-export const deleteSale = async (id) => {
-  try {
-    const response = await axiosInstance.delete(`/sales/${id}`);
-    return response.data; 
-  } catch (error) {
-    console.error(`Error deleting Sale with id ${id}:`, error);
-    throw error;
+  deleteSale(id) {
+    return axiosInstance.delete(`/sales/${id}`).then(res => res.data);
   }
-};
+}
+
+export default new SalesService();

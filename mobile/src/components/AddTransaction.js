@@ -5,38 +5,7 @@ import { getSales } from "../features/saleSlice";
 import { addTransaction } from "../features/transactionSlice";
 import { styled } from "dripsy";
 
-const Container = styled(View)({
-  width: "90%",
-  padding: 20,
-  backgroundColor: "white",
-  borderRadius: 10,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.2,
-  shadowRadius: 4,
-  elevation: 5,
-});
 
-const Input = styled(TextInput)({
-  borderWidth: 1,
-  borderColor: "#ccc",
-  borderRadius: 8,
-  padding: 12,
-  marginBottom: 12,
-  fontSize: 16,
-  backgroundColor: "#f9f9f9",
-});
-
-const Dropdown = styled(TouchableOpacity)({
-  borderWidth: 1,
-  borderColor: "#ccc",
-  borderRadius: 8,
-  padding: 12,
-  marginBottom: 12,
-  backgroundColor: "#f9f9f9",
-});
-
-// const ButtonContainer = styled(View)({
 //   flexDirection: "row",
 //   justifyContent: "space-between",
 //   marginTop: 12,
@@ -126,3 +95,35 @@ export default function AddTransaction({ onClose }) {
   );
 }
 
+const Container = styled(View)({
+  width: "90%",
+  padding: 20,
+  backgroundColor: "white",
+  borderRadius: 10,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
+  elevation: 5,
+});
+
+const Input = styled(TextInput)({
+  borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 8,
+  padding: 12,
+  marginBottom: 12,
+  fontSize: 16,
+  backgroundColor: "#f9f9f9",
+});
+
+const Dropdown = styled(TouchableOpacity)({
+  borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 8,
+  padding: 12,
+  marginBottom: 12,
+  backgroundColor: "#f9f9f9",
+});
+
+// const ButtonContainer = styled(View)({
