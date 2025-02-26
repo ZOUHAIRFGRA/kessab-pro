@@ -1,4 +1,4 @@
-import { CheckBox, Icon, Input } from "@rneui/base";
+import { CheckBox, color, Icon, Input } from "@rneui/base";
 import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import Collapsible from "react-native-collapsible";
@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../features/categorySlice";
 import { getBuyers } from "../../features/buyerSlice";
-import { generateIndexArray } from "../../utils/Global";
+import { formatDate, generateIndexArray } from "../../utils/Global";
 import Colors from "../../utils/Colors";
 import Container from "../../components/global/Container";
 import Card from "../../components/global/Card";
@@ -21,13 +21,6 @@ const AddSaleScreen = ({ route }) => {
   const qte = route.params?.qte;
 
   // Format date function
-  const formatDate = (date) => {
-    const d = new Date(date);
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = d.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
 
   // Global state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,14 +102,37 @@ const AddSaleScreen = ({ route }) => {
   }, [buyerExisting, dispatch]);
 
   // Handle submission
+  const [err, setErr] = useState("");
+
   useEffect(() => {
     if (isSubmitting) {
+      const validateForm = () => {
+        if (animalFormData.some((el) => el.tag === ""))
+          return "tag must be filled";
+        if (!buyerExisting && buyerFormData.fullName === "")
+          return "buyer fullname must be filled";
+        if (buyerExisting && !buyerFormData.id) return "buyer must be choosed";
+        if (summaryFormData === "") return "saleDetail must be filled";
+        if (summaryFormData.agreedAmount === "")
+          return "agreedAmount must be filled";
+        if (summaryFormData.paidAmount === "")
+          return "paidAmount must be filled";
+        return null; // No error
+      };
+
+      const error = validateForm();
+      if (error) {
+        setErr(error);
+        return;
+      }
+
       const finalData = {
         animals: animalFormData,
         buyer: buyerExisting ? { id: buyerFormData.id } : buyerFormData,
         saleDetail: summaryFormData,
       };
 
+      setErr("");
       console.log({ submitData: finalData, animals: finalData.animals });
       setSubmitData(finalData);
       setIsSubmitting(false);
@@ -193,9 +209,6 @@ const AddSaleScreen = ({ route }) => {
     });
   };
 
-
-  
-
   // Common styles
   const inputStyles = {
     inputStyle: {
@@ -205,9 +218,9 @@ const AddSaleScreen = ({ route }) => {
     },
   };
 
-
   return (
     <ScrollView style={{ padding: 12 }}>
+      <Text>{err}</Text>
       <Container sx={{ flexDirection: "column", gap: 12 }}>
         {/* Buyer Section */}
         <Card sx={{ flexDirection: "column", padding: 0 }}>
@@ -262,9 +275,6 @@ const AddSaleScreen = ({ route }) => {
                     }
                     placeholder="Full Name"
                     value={buyerFormData.fullName}
-                    errorMessage={
-                      requiredFileds.fullName ? requiredFileds.fullName : ""
-                    }
                     onChangeText={(value) =>
                       handleBuyerChange("fullName", value)
                     }
