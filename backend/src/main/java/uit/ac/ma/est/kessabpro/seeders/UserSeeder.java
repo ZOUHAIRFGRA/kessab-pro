@@ -9,6 +9,7 @@ import uit.ac.ma.est.kessabpro.repositories.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 @Component
@@ -31,15 +32,9 @@ public class UserSeeder {
                     .password(passwordEncoder.encode("admin"))
                     .build();
 
-            User user2 = User.builder()
-                    .username("user1")
-                    .email("user1@gmail.com")
-                    .phone("987654321")
-                    .address("456 User Lane")
-                    .password(passwordEncoder.encode("user1"))
-                    .build();
 
-            userRepository.saveAll(Arrays.asList(user1, user2));
+
+            userRepository.saveAll(Collections.singletonList(user1));
             System.out.println("Seeding for users completed!");
         } else {
             System.out.println("Users already seeded.");

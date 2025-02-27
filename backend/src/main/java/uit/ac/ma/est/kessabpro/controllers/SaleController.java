@@ -33,7 +33,7 @@ public class SaleController {
     public ResponseEntity<?> createSale(@Valid @RequestBody SaleDTORequest saleDTORequest) {
 //        Sale sale = saleService.createSale(saleDTO);
 //        return ResponseEntity.ok(saleMapper.toSaleDTO(sale));
-        return new ResponseEntity<>("slam", HttpStatus.CREATED);
+        return new ResponseEntity<>(saleDTORequest, HttpStatus.CREATED);
     }
 
 

@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -17,7 +19,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationError(MethodArgumentNotValidException ex) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Validation failed.", ex.getMessage());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Validation failed.", ex.getBindingResult().getAllErrors().getFirst().getDefaultMessage());
     }
 
     private ResponseEntity<Object> buildErrorResponse(HttpStatus status, String message, String details) {

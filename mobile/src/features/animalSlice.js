@@ -88,6 +88,7 @@ const animalSlice = createSlice({
         state.animals = action.payload.content;
         state.page = action.payload.page.number;
         state.totalPages = action.payload.page.totalPages;
+        console.log({ animals: state.animals[0].buyer });
       })
       .addCase(getAnimals.rejected, (state, action) => {
         state.loading = false;

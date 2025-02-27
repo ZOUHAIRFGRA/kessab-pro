@@ -5,9 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
+import java.util.UUID;
+
 public record AnimalDTORequest(
-        @NotBlank(message = "Tag must be filled") String tag,
+        UUID id,
+        String tag,
         BigDecimal price,
-        @NotBlank(message = "Category must be filled") String category,
+        UUID category,
         Boolean isPickedUp
 ) {}

@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.models.dto.requests;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -29,6 +30,7 @@ public record SaleDTORequest(
 
         @NotNull(message = "Sale date must be provided")
         @PastOrPresent(message = "Sale date cannot be in the future")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
         LocalDate saleDate,
 
         @NotNull(message = "Agreed amount must be provided")
