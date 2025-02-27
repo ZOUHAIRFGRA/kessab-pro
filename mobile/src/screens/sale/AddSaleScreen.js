@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../features/categorySlice";
 import { getBuyers } from "../../features/buyerSlice";
+import { getAnimals } from "../../features/animalSlice";
 import { formatDate, generateIndexArray } from "../../utils/Global";
 import Colors from "../../utils/Colors";
 import Container from "../../components/global/Container";
@@ -15,10 +16,10 @@ import Text from "../../components/global/Text";
 import Button from "../../components/global/Button";
 import BaseDropdown from "../../components/global/BaseDropdown";
 
-const AddSaleScreen = ({ route }) => {
+const AddSaleScreen = ({ route, navigation }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const qte = route.params?.qte;
+  const qte = route.params?.qte || 1; // Added default value
 
   // Global state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,6 +40,13 @@ const AddSaleScreen = ({ route }) => {
     loading: buyersLoading,
     error: buyersError,
   } = useSelector((states) => states.buyers);
+
+  // Animals state
+  const {
+    animals,
+    loading: animalsLoading,
+    error: animalsError,
+  } = useSelector((states) => states.animals);
 
   // Collapsed states
   const [animalCollapsed, setAnimalCollapsed] = useState([]);
@@ -61,6 +69,7 @@ const AddSaleScreen = ({ route }) => {
 
   // Animal form states
   const [animalFormData, setAnimalFormData] = useState([]);
+  const [animalExisting, setAnimalExisting] = useState([]);
 
   // Sale summary form state
   const [summaryFormData, setSummaryFormData] = useState({
@@ -69,6 +78,9 @@ const AddSaleScreen = ({ route }) => {
     paidAmount: "",
   });
 
+  // Submission error state
+  const [err, setErr] = useState("");
+
   // Initialize collapsed state and form data for animals
   useEffect(() => {
     if (qte) {
@@ -76,14 +88,18 @@ const AddSaleScreen = ({ route }) => {
       setAnimalCollapsed(newCollapsed);
 
       const newAnimalFormData = Array(qte)
-        .fill({})
+        .fill(null)
         .map(() => ({
           tag: "",
           price: "",
           category: "",
           isPickedUp: false,
+          id: null,
         }));
       setAnimalFormData(newAnimalFormData);
+
+      // Initialize animalExisting state
+      setAnimalExisting(Array(qte).fill(false));
     }
   }, [qte]);
 
@@ -99,25 +115,49 @@ const AddSaleScreen = ({ route }) => {
     }
   }, [buyerExisting, dispatch]);
 
-  // Submission error state
-  const [err, setErr] = useState("");
+  // Fetch animals when needed
+  useEffect(() => {
+    const shouldFetchAnimals = animalExisting.some((exists) => exists);
+    if (shouldFetchAnimals) {
+      dispatch(getAnimals({ page: 0, size: 10 }));
+      console.log("dispatched");
+    }
+  }, [animalExisting, dispatch]);
 
   // onSubmit function handles form validation and submission
   const onSubmit = () => {
     setIsSubmitting(true);
 
     const validateForm = () => {
-      if (animalFormData.some((el) => el.tag === ""))
-        return "tag must be filled";
-      if (animalFormData.some((el) => el.category === ""))
-        return "category must be filled";
-      if (!buyerExisting && buyerFormData.fullName === "")
-        return "buyer fullname must be filled";
-      if (buyerExisting && !buyerFormData.id) return "buyer must be choosed";
-      if (summaryFormData === "") return "saleDetail must be filled";
-      if (summaryFormData.agreedAmount === "")
-        return "agreedAmount must be filled";
-      if (summaryFormData.paidAmount === "") return "paidAmount must be filled";
+      for (let i = 0; i < animalFormData.length; i++) {
+        const animal = animalFormData[i] || {}; // Add null check
+        if (animalExisting[i] && !animal.id) {
+          return `Animal ${i + 1} must be selected`;
+        }
+        if (!animalExisting[i] && !animal.tag) {
+          return `Animal ${i + 1} tag must be filled`;
+        }
+        if (!animalExisting[i] && !animal.category) {
+          return `Animal ${i + 1} category must be filled`;
+        }
+        // Always check price regardless of existing status
+        if (!animal.price) {
+          return `Animal ${i + 1} price must be filled`;
+        }
+      }
+
+      if (!buyerExisting && !buyerFormData.fullName) {
+        return "Buyer full name must be filled";
+      }
+      if (buyerExisting && !buyerFormData.id) {
+        return "Buyer must be chosen";
+      }
+      if (!summaryFormData.agreedAmount) {
+        return "Agreed amount must be filled";
+      }
+      if (!summaryFormData.paidAmount) {
+        return "Paid amount must be filled";
+      }
       return null;
     };
 
@@ -128,25 +168,84 @@ const AddSaleScreen = ({ route }) => {
       return;
     }
 
+    // Process animals data - always include price and isPickedUp
+    const processedAnimals = animalFormData.map((animal, index) => {
+      if (animalExisting[index]) {
+        return {
+          id: animal.id,
+          price: animal.price ? parseFloat(animal.price) : 0,
+          isPickedUp: animal.isPickedUp || false,
+        };
+      } else {
+        return {
+          ...animal,
+          price: animal.price ? parseFloat(animal.price) : 0,
+          isPickedUp: animal.isPickedUp || false,
+        };
+      }
+    });
+
     const finalData = {
-      animals: animalFormData,
+      animals: processedAnimals,
       buyer: buyerExisting ? { id: buyerFormData.id } : buyerFormData,
-      saleDetail: summaryFormData,
+      ...summaryFormData,
+      agreedAmount: parseFloat(summaryFormData.agreedAmount),
+      paidAmount: parseFloat(summaryFormData.paidAmount),
     };
 
     setErr("");
-    console.log({ submitData: finalData, animals: finalData.animals });
+    console.log("Submitting:", finalData);
     setSubmitData(finalData);
-    setIsSubmitting(false);
+
+    // Here you would typically call an API to save the data
+    // For now, just simulate a successful submission
+    setTimeout(() => {
+      setIsSubmitting(false);
+      // Navigate back or to confirmation screen
+      // navigation.goBack();
+    }, 1000);
   };
 
   // Toggle buyer existing and fetch buyers immediately
   const toggleBuyerExisting = () => {
     const newValue = !buyerExisting;
     setBuyerExisting(newValue);
-    if (newValue && !buyers) {
+    if (newValue) {
       dispatch(getBuyers());
     }
+  };
+
+  // Toggle animal existing for a specific index
+  const toggleAnimalExisting = (index) => {
+    setAnimalExisting((prev) => {
+      const newExisting = [...prev];
+      newExisting[index] = !newExisting[index];
+
+      // If toggling to existing, fetch animals
+      if (newExisting[index]) {
+        dispatch(getAnimals());
+      }
+
+      // Reset the form data for this animal but preserve isPickedUp state
+      setAnimalFormData((prev) => {
+        const newData = [...prev];
+        const currentIsPickedUp = newData[index]?.isPickedUp || false;
+        const currentPrice = newData[index]?.price || "";
+
+        newData[index] = {
+          ...newData[index],
+          tag: "",
+          category: "",
+          id: null,
+          // Preserve these values
+          isPickedUp: currentIsPickedUp,
+          price: currentPrice,
+        };
+        return newData;
+      });
+
+      return newExisting;
+    });
   };
 
   // Handle form changes
@@ -160,6 +259,9 @@ const AddSaleScreen = ({ route }) => {
   const handleAnimalChange = (index, field, value) => {
     setAnimalFormData((prev) => {
       const newData = [...prev];
+      if (!newData[index]) {
+        newData[index] = {};
+      }
       newData[index] = {
         ...newData[index],
         [field]: value,
@@ -168,13 +270,46 @@ const AddSaleScreen = ({ route }) => {
     });
   };
 
+  // Handle selecting an existing animal - preserve price input and isPickedUp
+  const handleExistingAnimalSelect = (index, animalId) => {
+    if (animals && animals.length > 0) {
+      const selectedAnimal = animals.find((animal) => animal.id === animalId);
+      if (selectedAnimal) {
+        setAnimalFormData((prev) => {
+          const newData = [...prev];
+          // Preserve existing price and isPickedUp if they exist
+          const currentPrice =
+            newData[index]?.price || selectedAnimal.price?.toString() || "";
+          const currentIsPickedUp =
+            newData[index]?.isPickedUp !== undefined
+              ? newData[index].isPickedUp
+              : selectedAnimal.isPickedUp || false;
+
+          newData[index] = {
+            ...newData[index],
+            id: animalId,
+            tag: selectedAnimal.tag || "",
+            category: selectedAnimal.category?.id || "",
+            price: currentPrice,
+            isPickedUp: currentIsPickedUp,
+          };
+          return newData;
+        });
+      }
+    }
+  };
+
   const toggleAnimalPickedUp = (index) => {
     setAnimalFormData((prev) => {
       const newData = [...prev];
-      newData[index] = {
-        ...newData[index],
-        isPickedUp: !newData[index].isPickedUp,
-      };
+      if (!newData[index]) {
+        newData[index] = { isPickedUp: true, price: "" };
+      } else {
+        newData[index] = {
+          ...newData[index],
+          isPickedUp: !newData[index].isPickedUp,
+        };
+      }
       return newData;
     });
   };
@@ -196,8 +331,6 @@ const AddSaleScreen = ({ route }) => {
   };
 
   // Updated toggle functions to collapse other sections when one opens
-
-  // For animals, only one open at a time.
   const toggleAnimalCollapsed = (index) => {
     setAnimalCollapsed((prev) => {
       const newCollapsed = prev.map((_, i) =>
@@ -211,7 +344,6 @@ const AddSaleScreen = ({ route }) => {
     });
   };
 
-  // When opening Buyer, collapse animals and summary.
   const toggleBuyerCollapsed = () => {
     setBuyerCollapsed((prev) => {
       const newState = !prev;
@@ -223,7 +355,6 @@ const AddSaleScreen = ({ route }) => {
     });
   };
 
-  // When opening Summary, collapse animals and buyer.
   const toggleSummaryCollapsed = () => {
     setSummaryCollapsed((prev) => {
       const newState = !prev;
@@ -246,7 +377,11 @@ const AddSaleScreen = ({ route }) => {
 
   return (
     <ScrollView style={{ padding: 12 }}>
-      <Text>{err}</Text>
+      {err ? (
+        <Text style={{ color: "red", textAlign: "center", marginBottom: 10 }}>
+          {err}
+        </Text>
+      ) : null}
       <Container sx={{ flexDirection: "column", gap: 12 }}>
         {/* Buyer Section */}
         <Card sx={{ flexDirection: "column", padding: 0 }}>
@@ -344,10 +479,10 @@ const AddSaleScreen = ({ route }) => {
                         label: buyer.fullName,
                         value: buyer.id,
                       }))}
-                      label={t("common.category")}
+                      label={t("common.select_buyer")}
                       focusLabel="..."
-                      notFocusLabel={t("common.category")}
-                      searchLabel={t("common.category_placeholder")}
+                      notFocusLabel={t("common.select_buyer")}
+                      searchLabel={t("common.buyer_placeholder")}
                       containerStyle={inputStyles}
                       selectedValue={buyerFormData.id}
                       onValueChange={(value) => handleBuyerChange("id", value)}
@@ -384,13 +519,13 @@ const AddSaleScreen = ({ route }) => {
                     }}
                   >
                     <CheckBox
-                      checked={animalFormData[index]?.isPickedUp || false}
-                      onPress={() => toggleAnimalPickedUp(index)}
+                      checked={animalExisting[index] || false}
+                      onPress={() => toggleAnimalExisting(index)}
                       iconType="material-community"
                       checkedIcon="checkbox-marked"
                       uncheckedIcon="checkbox-blank-outline"
                       checkedColor={Colors.secondary}
-                      title="already Exists"
+                      title="already exists?"
                     />
 
                     <CheckBox
@@ -403,57 +538,108 @@ const AddSaleScreen = ({ route }) => {
                       title="pickedUp"
                     />
                   </Container>
-                  <Input
-                    leftIcon={
-                      <Icon
-                        name="pricetag"
-                        size={24}
-                        color={Colors.secondary}
-                        type="ionicon"
+
+                  {animalExisting[index] ? (
+                    <Container sx={{ padding: 10, gap: 12 }}>
+                      {animals && animals.length > 0 ? (
+                        <BaseDropdown
+                          values={animals.map((animal) => ({
+                            label: `${animal.tag} `,
+                            value: animal.id,
+                          }))}
+                          label={t("common.select_animal")}
+                          focusLabel="..."
+                          notFocusLabel={t("common.select_animal")}
+                          searchLabel={t("common.animal_placeholder")}
+                          containerStyle={inputStyles}
+                          selectedValue={animalFormData[index]?.id || ""}
+                          onValueChange={(value) =>
+                            handleExistingAnimalSelect(index, value)
+                          }
+                          disable={animalsLoading}
+                        />
+                      ) : (
+                        <Text>
+                          {animalsLoading
+                            ? "Loading animals..."
+                            : "No animals available"}
+                        </Text>
+                      )}
+
+                      {/* Always show price input regardless of animal selection */}
+                      <Input
+                        leftIcon={
+                          <Icon
+                            name="cash-outline"
+                            type="ionicon"
+                            size={24}
+                            color={Colors.secondary}
+                          />
+                        }
+                        placeholder="Price..."
+                        keyboardType="numeric"
+                        value={animalFormData[index]?.price || ""}
+                        onChangeText={(value) =>
+                          handleAnimalChange(index, "price", value)
+                        }
+                        {...inputStyles}
                       />
-                    }
-                    placeholder="Tag..."
-                    value={animalFormData[index]?.tag || ""}
-                    onChangeText={(value) =>
-                      handleAnimalChange(index, "tag", value)
-                    }
-                    {...inputStyles}
-                  />
-                  <Input
-                    leftIcon={
-                      <Icon
-                        name="cash-outline"
-                        type="ionicon"
-                        size={24}
-                        color={Colors.secondary}
+                    </Container>
+                  ) : (
+                    <Container>
+                      <Input
+                        leftIcon={
+                          <Icon
+                            name="pricetag"
+                            size={24}
+                            color={Colors.secondary}
+                            type="ionicon"
+                          />
+                        }
+                        placeholder="Tag..."
+                        value={animalFormData[index]?.tag || ""}
+                        onChangeText={(value) =>
+                          handleAnimalChange(index, "tag", value)
+                        }
+                        {...inputStyles}
                       />
-                    }
-                    placeholder="Price..."
-                    keyboardType="numeric"
-                    value={animalFormData[index]?.price || ""}
-                    onChangeText={(value) =>
-                      handleAnimalChange(index, "price", value)
-                    }
-                    {...inputStyles}
-                  />
-                  <Container sx={{ paddingX: 10, marginVertical: 15 }}>
-                    <BaseDropdown
-                      values={categories?.map((category) => ({
-                        label: category.typeName,
-                        value: category.id,
-                      }))}
-                      label={t("common.category")}
-                      focusLabel="..."
-                      notFocusLabel={t("common.category")}
-                      searchLabel={t("common.category_placeholder")}
-                      containerStyle={inputStyles}
-                      selectedValue={animalFormData[index]?.category || ""}
-                      onValueChange={(value) =>
-                        handleAnimalChange(index, "category", value)
-                      }
-                      disable={categoriesLoading}
-                    />
-                  </Container>
+                      <Input
+                        leftIcon={
+                          <Icon
+                            name="cash-outline"
+                            type="ionicon"
+                            size={24}
+                            color={Colors.secondary}
+                          />
+                        }
+                        placeholder="Price..."
+                        keyboardType="numeric"
+                        value={animalFormData[index]?.price || ""}
+                        onChangeText={(value) =>
+                          handleAnimalChange(index, "price", value)
+                        }
+                        {...inputStyles}
+                      />
+                      <Container sx={{ paddingX: 10, marginVertical: 15 }}>
+                        <BaseDropdown
+                          values={categories?.map((category) => ({
+                            label: category.typeName,
+                            value: category.id,
+                          }))}
+                          label={t("common.category")}
+                          focusLabel="..."
+                          notFocusLabel={t("common.category")}
+                          searchLabel={t("common.category_placeholder")}
+                          containerStyle={inputStyles}
+                          selectedValue={animalFormData[index]?.category || ""}
+                          onValueChange={(value) =>
+                            handleAnimalChange(index, "category", value)
+                          }
+                          disable={categoriesLoading}
+                        />
+                      </Container>
+                    </Container>
+                  )}
                 </Container>
               </Collapsible>
             </Card>
@@ -544,6 +730,7 @@ const AddSaleScreen = ({ route }) => {
           }}
           title={isSubmitting ? "Submitting..." : "Submit Sale"}
           onPress={onSubmit}
+          disabled={isSubmitting}
         />
       </Container>
     </ScrollView>
