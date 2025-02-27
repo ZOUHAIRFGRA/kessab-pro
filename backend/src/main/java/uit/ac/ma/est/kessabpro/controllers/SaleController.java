@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,10 +31,11 @@ public class SaleController {
     private SaleMapper saleMapper;
 
     @PostMapping
+    @Transactional
     public ResponseEntity<?> createSale(@Valid @RequestBody SaleDTORequest saleDTORequest) {
-//        Sale sale = saleService.createSale(saleDTO);
-//        return ResponseEntity.ok(saleMapper.toSaleDTO(sale));
-        return new ResponseEntity<>(saleDTORequest, HttpStatus.CREATED);
+        Sale sale = saleService.createSale(saleDTORequest);
+        System.out.println(sale);
+        return ResponseEntity.ok(sale);
     }
 
 

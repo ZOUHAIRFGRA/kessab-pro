@@ -18,7 +18,7 @@ public class SaleMapper {
 
     SaleService saleService = new SaleService();
 
-    public SaleDTOResponse toSaleDTO(Sale sale) {
+    public  SaleDTOResponse toSaleDTO(Sale sale) {
         return new SaleDTOResponse(
                 sale.getId(),
                 toBuyerDTO(sale.getBuyer()),

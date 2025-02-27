@@ -7,6 +7,7 @@ import {
   fetchAnimalById,
   fetchAnimalsBySale,
   fetchAnimalsByBuyer,
+  fetchUnsoldAnimals,
 } from "../api/animalApi";
 
 export const getAnimalsBySale = createAsyncThunk(
@@ -29,6 +30,14 @@ export const getAnimals = createAsyncThunk(
   async ({ page = 0, size = 2, search = "", filterType = "tag" }) => {
     const response = await fetchAnimals(page, size, search, filterType);
     return response;
+  }
+);
+
+export const getUnsoldAnimals = createAsyncThunk(
+  "animals/fetchUnsold",
+  async () => {
+    const response = await fetchUnsoldAnimals();
+    return response.data;
   }
 );
 
@@ -88,9 +97,19 @@ const animalSlice = createSlice({
         state.animals = action.payload.content;
         state.page = action.payload.page.number;
         state.totalPages = action.payload.page.totalPages;
-        console.log({ animals: state.animals[0].buyer });
       })
       .addCase(getAnimals.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch animals.";
+      })
+      .addCase(getUnsoldAnimals.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUnsoldAnimals.fulfilled, (state, action) => {
+        state.loading = false;
+        state.animals = action.payload;
+      })
+      .addCase(getUnsoldAnimals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch animals.";
       })
@@ -138,7 +157,6 @@ const animalSlice = createSlice({
       .addCase(getAnimalsByBuyer.fulfilled, (state, action) => {
         state.loading = false;
         state.animals = action.payload;
-        console.log({ action });
       })
       .addCase(getAnimalsByBuyer.rejected, (state, action) => {
         state.loading = false;

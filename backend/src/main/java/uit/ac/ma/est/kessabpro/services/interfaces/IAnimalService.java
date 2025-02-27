@@ -18,6 +18,8 @@ public interface IAnimalService {
 
     Animal updateAnimal(UUID id, Animal animal);
 
+    List<Animal> getUnsoldAnimals();
+
     boolean deleteAnimal(UUID id);
 
     List<Animal> getAnimalsBySaleId(UUID saleId);

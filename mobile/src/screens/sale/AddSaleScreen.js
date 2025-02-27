@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../features/categorySlice";
 import { getBuyers } from "../../features/buyerSlice";
-import { getAnimals } from "../../features/animalSlice";
+import { getUnsoldAnimals } from "../../features/animalSlice";
 import { formatDate, generateIndexArray } from "../../utils/Global";
 import Colors from "../../utils/Colors";
 import Container from "../../components/global/Container";
@@ -119,7 +119,7 @@ const AddSaleScreen = ({ route, navigation }) => {
   useEffect(() => {
     const shouldFetchAnimals = animalExisting.some((exists) => exists);
     if (shouldFetchAnimals) {
-      dispatch(getAnimals({ page: 0, size: 10 }));
+      dispatch(getUnsoldAnimals());
       console.log("dispatched");
     }
   }, [animalExisting, dispatch]);
@@ -223,7 +223,7 @@ const AddSaleScreen = ({ route, navigation }) => {
 
       // If toggling to existing, fetch animals
       if (newExisting[index]) {
-        dispatch(getAnimals());
+        dispatch(getUnsoldAnimals());
       }
 
       // Reset the form data for this animal but preserve isPickedUp state

@@ -3,8 +3,11 @@ package uit.ac.ma.est.kessabpro.services.implementations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
+import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
+import uit.ac.ma.est.kessabpro.mappers.BuyerMapper;
 import uit.ac.ma.est.kessabpro.mappers.SaleMapper;
 import uit.ac.ma.est.kessabpro.models.dto.SaleDTO;
+import uit.ac.ma.est.kessabpro.models.dto.requests.SaleDTORequest;
 import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
@@ -36,34 +39,22 @@ public class SaleService implements ISaleService {
     private SaleMapper saleMapper;
 
     @Override
-    public Sale createSale(SaleDTO saleDTO) {
-        List<Animal> animals = animalRepository.findAllById(saleDTO.getAnimalIds());
-
-        if (animals.isEmpty()) {
-            throw new RuntimeException("No animals found for the provided IDs.");
-        }
-
-        Buyer buyer = buyerRepository.findById(saleDTO.getBuyerId())
-                .orElseThrow(() -> new RuntimeException("Buyer not found"));
-
-        Sale sale = Sale.builder()
-                .saleDate(saleDTO.getSaleDate())
-                .agreedAmount(saleDTO.getAgreedAmount())
-                .paymentStatus(saleDTO.getPaymentStatus() != null ? saleDTO.getPaymentStatus() : PaymentStatus.NOT_PAID)
-                .buyer(buyer)
-                .animals(new ArrayList<>())
-                .build();
-
-        for (Animal animal : animals) {
-            animal.setSale(sale);
-            sale.getAnimals().add(animal);
-        }
-
-        Sale savedSale = saleRepository.save(sale);
-
-        animalRepository.saveAll(animals);
-
-        return savedSale;
+    public Sale createSale(SaleDTORequest saleDTORequest) {
+        Sale.SaleBuilder sale = Sale.builder();
+        //animals
+        List<Animal> animals = animalRepository.saveAll(AnimalMapper.toAnimalEntityList(saleDTORequest.animals()));
+        //buyer
+        Buyer buyer = buyerRepository.save(BuyerMapper.toBuyerEntity(saleDTORequest.buyer()));
+        //saleDetail
+        sale.buyer(buyer);
+        sale.animals(animals);
+        sale.saleDate(saleDTORequest.saleDate());
+        sale.agreedAmount(saleDTORequest.agreedAmount());
+        sale.paymentStatus(PaymentStatus.NOT_PAID);
+        Sale newSale = sale.build();
+        //sale to animal
+        animals.forEach(animal -> animal.setSale(newSale));
+        return saleRepository.save(newSale);
     }
 
 

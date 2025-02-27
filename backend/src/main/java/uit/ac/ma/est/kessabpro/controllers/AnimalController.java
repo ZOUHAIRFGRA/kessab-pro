@@ -127,4 +127,9 @@ public class AnimalController {
         return ResponseEntity.ok(animalDTOs);
     }
 
+    @GetMapping("/unsold")
+    public ResponseEntity<List<Animal>> getUnsoldAnimals() {
+        return ResponseEntity.ok(animalService.getUnsoldAnimals());
+    }
+
 }

@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.services.interfaces;
 
+import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.AnimalIcon;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public interface IAnimalIconService {
     Optional<AnimalIcon> findById(Long id);
 
     List<AnimalIcon> findAll();
+
 
     void deleteById(Long id);
 

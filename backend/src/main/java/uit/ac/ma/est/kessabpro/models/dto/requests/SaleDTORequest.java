@@ -36,7 +36,7 @@ public record SaleDTORequest(
         @NotNull(message = "Agreed amount must be provided")
         @PositiveOrZero(message = "Agreed amount must be zero or positive")
         @Digits(integer = 10, fraction = 2, message = "Invalid agreed amount format")
-        BigDecimal agreedAmount,
+        double agreedAmount,
 
         @NotNull(message = "Paid amount must be provided")
         @PositiveOrZero(message = "Paid amount must be zero or positive")
@@ -44,11 +44,5 @@ public record SaleDTORequest(
         BigDecimal paidAmount
 ) {
 
-//        @AssertTrue(message = "Paid amount cannot exceed agreed amount")
-//        public boolean isValidPaidAmount() {
-//                if (paidAmount == null || agreedAmount == null) {
-//                        return true; // Let @NotNull handle this case
-//                }
-//                return paidAmount.compareTo(agreedAmount) <= 0;
-//        }
+
 }

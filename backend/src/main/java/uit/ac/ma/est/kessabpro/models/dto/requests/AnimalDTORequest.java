@@ -12,5 +12,6 @@ public record AnimalDTORequest(
         String tag,
         BigDecimal price,
         UUID category,
+        @NotNull(message = "isPickedUp must be provided")
         Boolean isPickedUp
 ) {}

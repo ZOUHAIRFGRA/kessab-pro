@@ -73,7 +73,7 @@ public class SaleDTORequestValidator implements ConstraintValidator<ValidateSale
                 isValid = false;
             }
 
-            if (animal.id() != null && animalRepository.findById(animal.id()).isEmpty()) {
+            if (animal.id() != null && animalRepository.findById(animal.id()).isEmpty() && animalRepository.findById(animal.id()).get().getPickUpDate() != null) {
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 constraintValidatorContext.buildConstraintViolationWithTemplate("The animal id is not valid.")
                         .addPropertyNode("animals")
@@ -87,7 +87,13 @@ public class SaleDTORequestValidator implements ConstraintValidator<ValidateSale
         }
 
 
-
+        if (saleDTORequest.paidAmount().doubleValue() > saleDTORequest.agreedAmount()){
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("paid amount should not surpass agreed amount.")
+                    .addPropertyNode("sale_detail")
+                    .addConstraintViolation();
+             isValid = false;
+        }
 
 
 

@@ -2,15 +2,17 @@ package uit.ac.ma.est.kessabpro.mappers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
-import uit.ac.ma.est.kessabpro.models.dto.responses.AnimalCategoryDTOResponse;
+import uit.ac.ma.est.kessabpro.models.dto.requests.AnimalDTORequest;
 import uit.ac.ma.est.kessabpro.models.dto.responses.AnimalDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.AnimalCategory;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 
+import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class AnimalMapper {
 
@@ -30,7 +32,6 @@ public class AnimalMapper {
         dto.setPickUpDate(animal.getPickUpDate());
         return dto;
     }
-
 
 
     public static Animal toEntity(AnimalDTO dto) throws JsonProcessingException {
@@ -66,6 +67,10 @@ public class AnimalMapper {
 
 
     public static AnimalDTOResponse toAnimalDTO(Animal animal) {
+        List<String> gallery = animal.getImagePaths();
+        if (gallery.isEmpty()) {
+            gallery.add("/icons/live_stock.png");
+        }
         return new AnimalDTOResponse(
                 animal.getId(),
                 animal.getTag(),
@@ -73,8 +78,8 @@ public class AnimalMapper {
                 animal.getBirthDate(),
                 animal.getPrice(),
                 animal.getWeight(),
-               animal.getImagePaths(),
-               AnimalCategoryMapper.toAnimalCategoryDTO(animal.getCategory()),
+                gallery,
+                AnimalCategoryMapper.toAnimalCategoryDTO(animal.getCategory()),
                 animal.getPickUpDate()
         );
     }
@@ -83,6 +88,38 @@ public class AnimalMapper {
         return animals.stream()
                 .map(AnimalMapper::toAnimalDTO)
                 .toList();
+    }
+
+    public static List<Animal> toAnimalEntityList(List<AnimalDTORequest> animals) {
+        return animals.stream()
+                .map(AnimalMapper::toAnimalEntity)
+                .toList();
+    }
+
+
+    public static Animal toAnimalEntity(AnimalDTORequest animalDTORequest) {
+
+        Animal.AnimalBuilder animal = Animal.builder()
+                .id(animalDTORequest.id())
+                .pickUpDate(animalDTORequest.isPickedUp() ? LocalDate.now() : null);
+
+        if (animalDTORequest.price() != null) {
+            animal.price(animalDTORequest.price());
+        }
+
+        if (animalDTORequest.tag() != null) {
+            animal.tag(animalDTORequest.tag());
+        }
+
+        if (animalDTORequest.category() != null) {
+            animal.category(
+                    AnimalCategory.builder()
+                            .id(animalDTORequest.category())
+                            .build());
+        }
+
+        return animal.build();
+
     }
 
 }
