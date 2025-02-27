@@ -21,6 +21,9 @@ export const fetchAnimals = async (
 export const fetchAnimalsBySale = (saleId) => {
   return axiosInstance.get(`/animals/by-sale/${saleId}`);
 };
+export const fetchUnsoldAnimals = () => {
+  return axiosInstance.get(`/animals/unsold`);
+};
 
 export const fetchAnimalsByBuyer = (buyerId) => {
   return axiosInstance.get(`/animals/by-buyer/${buyerId}`);
