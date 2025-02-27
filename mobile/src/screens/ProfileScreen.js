@@ -5,11 +5,13 @@ import { fetchUserProfile, updateProfile } from '../features/userSlice';
 import { styled } from 'dripsy';
 import { logout } from '../features/authSlice';
 import { useTranslation } from 'react-i18next';
+
 const ProfileScreen = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { userProfile, loading, error } = useSelector((state) => state.user);
-  
+  const isRTL = t("dir") === "rtl";
+
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
@@ -67,32 +69,36 @@ const ProfileScreen = () => {
       <Title>{t('common.Profile')}</Title>
       {isEditing ? (
         <>
-          <InputContainer>
+          <InputContainer isRTL={isRTL}>
             <Label>{t('common.Username')}</Label>
             <Input
               value={updatedUsername}
               onChangeText={setUpdatedUsername}
+              isRTL={isRTL}
             />
           </InputContainer>
-          <InputContainer>
+          <InputContainer isRTL={isRTL}>
             <Label>{t('common.Email')}</Label>
             <Input
               value={updatedEmail}
               onChangeText={setUpdatedEmail}
+              isRTL={isRTL}
             />
           </InputContainer>
-          <InputContainer>
+          <InputContainer isRTL={isRTL}>
             <Label>{t('common.Phone')}</Label>
             <Input
               value={updatedPhone}
               onChangeText={setUpdatedPhone}
+              isRTL={isRTL}
             />
           </InputContainer>
-          <InputContainer>
+          <InputContainer isRTL={isRTL}>
             <Label>{t('common.Address')}</Label>
             <Input
               value={updatedAddress}
               onChangeText={setUpdatedAddress}
+              isRTL={isRTL}
             />
           </InputContainer>
           <ButtonContainer>
@@ -106,19 +112,19 @@ const ProfileScreen = () => {
         </>
       ) : (
         <>
-          <ProfileItem>
+          <ProfileItem isRTL={isRTL}>
             <Label>{t('common.Username')}:</Label>
             <ProfileText>{userProfile?.username}</ProfileText>
           </ProfileItem>
-          <ProfileItem>
+          <ProfileItem isRTL={isRTL}>
             <Label>{t('common.Email')}:</Label>
             <ProfileText>{userProfile?.email}</ProfileText>
           </ProfileItem>
-          <ProfileItem>
+          <ProfileItem isRTL={isRTL}>
             <Label>{t('common.Phone')}:</Label>
             <ProfileText>{userProfile?.phone}</ProfileText>
           </ProfileItem>
-          <ProfileItem>
+          <ProfileItem isRTL={isRTL}>
             <Label>{t('common.Address')}:</Label>
             <ProfileText>{userProfile?.address}</ProfileText>
           </ProfileItem>
@@ -138,7 +144,6 @@ const ProfileScreen = () => {
   );
 };
 
-
 const Container = styled(View)({
   flex: 1,
   justifyContent: 'center',
@@ -154,10 +159,12 @@ const Title = styled(Text)({
   color: '#333',
 });
 
-const InputContainer = styled(View)({
+const InputContainer = styled(View)(({ isRTL }) => ({
   marginBottom: 20,
   width: '100%',
-});
+  flexDirection: 'column',
+  alignItems: isRTL ? 'flex-end' : 'flex-start',
+}));
 
 const Label = styled(Text)({
   fontSize: 18,
@@ -165,17 +172,20 @@ const Label = styled(Text)({
   color: '#555',
 });
 
-const Input = styled(TextInput)({
+const Input = styled(TextInput)(({ isRTL }) => ({
+  width: '100%',
   height: 45,
   borderColor: '#ccc',
   borderWidth: 1,
-  paddingLeft: 15,
+  paddingLeft: isRTL ? 0 : 15,
+  paddingRight: isRTL ? 15 : 0,
+  textAlign: isRTL ? 'right' : 'left',
   borderRadius: 8,
   backgroundColor: '#fff',
-});
+}));
 
-const ProfileItem = styled(View)({
-  flexDirection: 'row',
+const ProfileItem = styled(View)(({ isRTL }) => ({
+  flexDirection: isRTL ? 'row-reverse' : 'row',
   justifyContent: 'space-between',
   width: '100%',
   marginBottom: 15,
@@ -187,7 +197,7 @@ const ProfileItem = styled(View)({
   shadowOpacity: 0.1,
   shadowRadius: 4,
   elevation: 2,
-});
+}));
 
 const ProfileText = styled(Text)({
   fontSize: 16,
@@ -201,7 +211,7 @@ const ButtonContainer = styled(View)({
   marginTop: 20,
 });
 
-const StyledButton = styled(TouchableOpacity)(({ secondary,danger }) => ({
+const StyledButton = styled(TouchableOpacity)(({ secondary, danger }) => ({
   flex: 1,
   paddingVertical: 15,
   paddingHorizontal: 20,
