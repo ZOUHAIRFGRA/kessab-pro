@@ -16,6 +16,7 @@ import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import uit.ac.ma.est.kessabpro.repositories.BuyerRepository;
 import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
+import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
 import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
 
 import java.util.ArrayList;
@@ -37,6 +38,10 @@ public class SaleService implements ISaleService {
 
     @Autowired
     private SaleMapper saleMapper;
+    @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
+    private TransactionService transactionService;
 
     @Override
     public Sale createSale(SaleDTORequest saleDTORequest) {
@@ -51,10 +56,16 @@ public class SaleService implements ISaleService {
         sale.saleDate(saleDTORequest.saleDate());
         sale.agreedAmount(saleDTORequest.agreedAmount());
         sale.paymentStatus(PaymentStatus.NOT_PAID);
-        Sale newSale = sale.build();
+        Sale newSale = saleRepository.save(sale.build());
+        //transaction
+//        Transaction transaction = transactionService.createTransaction(
+//                new Transaction(null,null,)
+//        )
+
         //sale to animal
         animals.forEach(animal -> animal.setSale(newSale));
-        return saleRepository.save(newSale);
+//        transaction.setSale(newSale);
+        return newSale;
     }
 
 

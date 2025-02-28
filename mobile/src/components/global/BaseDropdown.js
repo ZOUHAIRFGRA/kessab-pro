@@ -15,6 +15,7 @@ const BaseDropdown = ({
   containerStyle = null,
   onValueChange,
   disable,
+  search
 }) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
@@ -80,7 +81,7 @@ const BaseDropdown = ({
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
         data={data}
-        search
+        search={search}
         disable={disable}
         maxHeight={300}
         labelField="label"

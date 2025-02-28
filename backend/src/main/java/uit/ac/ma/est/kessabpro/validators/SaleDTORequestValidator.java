@@ -28,7 +28,7 @@ public class SaleDTORequestValidator implements ConstraintValidator<ValidateSale
     public boolean isValid(SaleDTORequest saleDTORequest, ConstraintValidatorContext constraintValidatorContext) {
         boolean isValid = true;
 
-        if (saleDTORequest == null || saleDTORequest.buyer() == null || saleDTORequest.animals() == null || saleDTORequest.animals().isEmpty()) {
+        if (saleDTORequest == null || saleDTORequest.buyer() == null || saleDTORequest.animals() == null || saleDTORequest.animals().isEmpty() || saleDTORequest.paidAmount() == null) {
             return isValid ;
         }
 

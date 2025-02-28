@@ -9,10 +9,12 @@ import iconsReducer from "../features/iconsSlice";
 import authReducer from "../features/authSlice";
 import userReducer from "../features/userSlice";
 import buyerReducer from "../features/buyerSlice";
+import enumReduces from "../features/enumSlice";
 export const store = configureStore({
   reducer: {
     animals: animalReducer,
     user: userReducer,
+    enums: enumReduces,
     transactions: transactionReducer,
     sales: saleReducer,
     categories: categoryReducer,
