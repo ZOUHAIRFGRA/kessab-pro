@@ -9,11 +9,13 @@ import {
   getTransactionsBySale,
 } from "../../features/transactionSlice";
 import TransactionCardView from "./TransactionCardView";
+import Button from "../global/Button";
+import AddTransactionModal from "./AddTransactionModal";
 
 const TransactionListCardView = ({ id, type = "sale" }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
+  const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
     if (type === "sale") {
       dispatch(getTransactionsBySale(id));
@@ -45,6 +47,39 @@ const TransactionListCardView = ({ id, type = "sale" }) => {
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         />
       )}
+      {isVisible && (
+        <AddTransactionModal
+          id={id}
+          type={type}
+          visible={isVisible}
+          toggleDialog={setIsVisible}
+        />
+      )}
+      <Button
+        type={"primary"}
+        style={{
+          padding: 12,
+          marginRight: 12,
+          marginLeft: 12,
+          marginBottom: 8,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        textStyle={{
+          color: "white",
+          fontWeight: "bold",
+          textAlign: "center",
+          fontSize: 16,
+        }}
+        icon={{
+          name: "plus",
+          color: "white",
+        }}
+        onPress={() => setIsVisible(true)}
+      >
+        Add new transaction
+      </Button>
     </View>
   );
 };

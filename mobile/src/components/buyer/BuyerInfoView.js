@@ -92,7 +92,7 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
               name: "reply-all",
               color: Colors.white,
             }}
-            onclick={handleBuyerLinkClick}
+            onPress={handleBuyerLinkClick}
           >
             {t("common.SeeAllBuyerDetails")}
           </Button>
