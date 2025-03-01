@@ -32,7 +32,7 @@ public class TransactionAmountValidator implements ConstraintValidator<ValidateT
         if (transactionDTORequest.sale_id() == null || !ValidationHelper.isValidUUID(String.valueOf(transactionDTORequest.sale_id())))
             return true;
 
-        Optional<Sale> sale = saleRepository.findById(transactionDTORequest.sale_id());
+        Optional<Sale> sale = saleRepository.findById(UUID.fromString(transactionDTORequest.sale_id()));
 
         if (sale.isEmpty()) {
             return false;

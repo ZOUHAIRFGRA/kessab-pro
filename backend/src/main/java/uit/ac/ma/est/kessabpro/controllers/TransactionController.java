@@ -1,6 +1,9 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import uit.ac.ma.est.kessabpro.mappers.TransactionMapper;
+import uit.ac.ma.est.kessabpro.models.dto.requests.TransactionDTORequest;
 import uit.ac.ma.est.kessabpro.models.dto.responses.TransactionDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.services.interfaces.ITransactionService;
@@ -45,9 +48,10 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<TransactionDTOResponse> createTransaction(@RequestBody Transaction transaction) {
-        Transaction createdTransaction = transactionService.createTransaction(transaction);
-        return ResponseEntity.ok(TransactionMapper.toTransactionDTO(createdTransaction));
+    public ResponseEntity<?> createTransaction(@Valid @RequestBody TransactionDTORequest transactionDTO) {
+        Transaction createdTransaction = transactionService.createTransaction(TransactionMapper.toTransactionEntity(transactionDTO));
+//        return ResponseEntity.ok(TransactionMapper.toTransactionDTO(createdTransaction));
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

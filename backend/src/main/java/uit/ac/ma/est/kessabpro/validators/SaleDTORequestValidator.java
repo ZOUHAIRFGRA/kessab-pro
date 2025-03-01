@@ -80,10 +80,6 @@ public class SaleDTORequestValidator implements ConstraintValidator<ValidateSale
                         .addConstraintViolation();
                 isValid = false;
             }
-
-
-
-
         }
 
 

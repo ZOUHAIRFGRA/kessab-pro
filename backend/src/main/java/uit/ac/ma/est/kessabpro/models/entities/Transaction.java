@@ -25,7 +25,7 @@ public class Transaction extends BaseEntity {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "sale_id")
+    @JoinColumn( name = "sale_id")
     private Sale sale;
 
     @ManyToOne

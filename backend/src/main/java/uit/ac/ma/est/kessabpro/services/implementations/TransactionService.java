@@ -3,6 +3,7 @@ package uit.ac.ma.est.kessabpro.services.implementations;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
 import uit.ac.ma.est.kessabpro.events.TransactionCreatedEvent;
@@ -22,14 +23,15 @@ import java.util.stream.Collectors;
 public class TransactionService implements ITransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final SaleRepository saleRepository;
+
     private final ApplicationEventPublisher eventPublisher;
+    private final SaleService saleService;
 
     @Autowired
-    public TransactionService(TransactionRepository transactionRepository, SaleRepository saleRepository, ApplicationEventPublisher eventPublisher) {
+    public TransactionService(TransactionRepository transactionRepository,  ApplicationEventPublisher eventPublisher, @Lazy SaleService saleService) {
         this.transactionRepository = transactionRepository;
-        this.saleRepository = saleRepository;
         this.eventPublisher = eventPublisher;
+        this.saleService = saleService;
     }
 
     @Override
@@ -56,12 +58,18 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public Transaction createTransaction(Transaction transaction) {
-        Sale sale = saleRepository.findById(transaction.getSale().getId())
-                .orElseThrow(() -> new RuntimeException("Sale not found"));
+        System.out.println("Transaction created");
+        System.out.println(transaction);
+        //validate sale exists
+        Sale sale = saleService.getSaleById(transaction.getSale().getId());
+        //validate paid amount
+        if (saleService.getRemainingAmount(sale) < transaction.getAmount()){
+            throw new IllegalArgumentException("Amount exceeds maximum amount of transaction");
+        }
 
-        transaction.setSale(sale);
-        transaction.setTransactionDate(LocalDate.now());
         Transaction savedTransaction = transactionRepository.save(transaction);
+        transaction.setSale(sale);
+
         publishTransactionCreatedEvent(savedTransaction);
         return savedTransaction;
     }

@@ -1,12 +1,11 @@
 package uit.ac.ma.est.kessabpro.models.dto.requests;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import uit.ac.ma.est.kessabpro.annotations.EntityExists;
-import uit.ac.ma.est.kessabpro.annotations.ValidateSaleID;
+import uit.ac.ma.est.kessabpro.annotations.ValidDateFormat;
+import uit.ac.ma.est.kessabpro.annotations.ValidEnum;
 import uit.ac.ma.est.kessabpro.annotations.ValidateTransactionAmount;
 import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
@@ -16,16 +15,17 @@ import java.util.UUID;
 
 public record TransactionDTORequest(
         @NotNull
-        PaymentMethod method ,
+        @ValidEnum(enumClass = PaymentMethod.class)
+        String method,
         @NotNull
-        @EntityExists(entityClass = Sale.class)
-        UUID sale_id,
+        @org.hibernate.validator.constraints.UUID(message = "must be a valid UUID")
+        String sale_id,
         @NotNull
         @Positive
         @DecimalMin("0.01")
-        @ValidateTransactionAmount
         double amount,
-        @JsonFormat(pattern = "dd-MM-yyyy")
-        LocalDate transactionDate
+        @NotNull
+        @ValidDateFormat(pattern = "dd-MM-yyyy",check ="PastOrPresent")
+        String transactionDate
 ) {
 }

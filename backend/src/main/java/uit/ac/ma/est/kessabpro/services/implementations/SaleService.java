@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
@@ -74,7 +75,7 @@ public class SaleService implements ISaleService {
     @Override
     public Sale getSaleById(UUID id) {
         return saleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sale not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Sale not found"));
     }
 
     public Double getPaidAmount(Sale sale) {
