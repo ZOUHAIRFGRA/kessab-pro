@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,5 +17,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     List<Transaction> getTransactionBySaleId(UUID saleId);
     @Query("SELECT t FROM Transaction t JOIN t.sale s WHERE s.buyer.id = :buyerId")
     List<Transaction> getTransactionByBuyerId(UUID buyerId);
+
 
 }

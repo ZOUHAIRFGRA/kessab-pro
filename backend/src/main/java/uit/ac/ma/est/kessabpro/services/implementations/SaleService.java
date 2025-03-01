@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
-import uit.ac.ma.est.kessabpro.events.SaleCreatedEvent;
+import uit.ac.ma.est.kessabpro.events.Sale.SaleCreatedEvent;
 import uit.ac.ma.est.kessabpro.helpers.DateHelper;
 import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
 import uit.ac.ma.est.kessabpro.mappers.BuyerMapper;
@@ -22,6 +22,7 @@ import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
 import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -135,31 +136,26 @@ public class SaleService implements ISaleService {
     }
 
     public boolean isPartiallyPaid(Sale sale) {
-        return (this.getPaidAmount(sale) < sale.getAgreedAmount()) && (this.getPaidAmount(sale) > 0);
+        return (getPaidAmount(sale) < sale.getAgreedAmount()) && (getPaidAmount(sale) > 0);
     }
 
     public boolean isFullyPaid(Sale sale) {
-        return this.getPaidAmount(sale) >= sale.getAgreedAmount();
+        return getPaidAmount(sale) >= sale.getAgreedAmount();
     }
 
     public boolean isNotPaid(Sale sale) {
-        return this.getPaidAmount(sale) == 0.0;
+        return getPaidAmount(sale) == 0.0;
     }
 
-    public void updatePaymentStatus(Sale sale) {
-        if (isNotPaid(sale)) {
-            System.out.println(sale.getPaymentStatus());
-            sale.setPaymentStatus(PaymentStatus.NOT_PAID);
-            return;
-        }
-        if (isPartiallyPaid(sale)) {
-            System.out.println(sale.getPaymentStatus());
-            sale.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
-            return;
-        }
-        if (isFullyPaid(sale)) {
-            sale.setPaymentStatus(PaymentStatus.FULLY_PAID);
-        }
+    public void updatePaymentStatus(Sale sale,Double transactionAmount) {
+
+        double paidAmount = (double) getPaidAmount(sale);
+        double agreedAmount = sale.getAgreedAmount();
+
+        if ((paidAmount + transactionAmount) == agreedAmount ) sale.setPaymentStatus(PaymentStatus.FULLY_PAID);
+        if ((paidAmount + transactionAmount) < agreedAmount ) sale.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
+        if ((paidAmount + transactionAmount) == 0 ) sale.setPaymentStatus(PaymentStatus.NOT_PAID);
+
     }
 
 }

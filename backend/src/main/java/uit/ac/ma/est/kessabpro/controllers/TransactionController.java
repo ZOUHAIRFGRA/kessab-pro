@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import uit.ac.ma.est.kessabpro.mappers.TransactionMapper;
@@ -67,8 +68,8 @@ public class TransactionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransaction(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteTransaction(@PathVariable UUID id) {
         transactionService.deleteTransaction(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }

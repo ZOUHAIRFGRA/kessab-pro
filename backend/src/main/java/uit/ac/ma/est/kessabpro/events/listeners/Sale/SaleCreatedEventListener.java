@@ -1,11 +1,10 @@
-package uit.ac.ma.est.kessabpro.events.listeners;
+package uit.ac.ma.est.kessabpro.events.listeners.Sale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
-import uit.ac.ma.est.kessabpro.events.SaleCreatedEvent;
-import uit.ac.ma.est.kessabpro.events.TransactionCreatedEvent;
+import uit.ac.ma.est.kessabpro.events.Sale.SaleCreatedEvent;
 import uit.ac.ma.est.kessabpro.helpers.DateHelper;
 import uit.ac.ma.est.kessabpro.models.dto.requests.SaleDTORequest;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;

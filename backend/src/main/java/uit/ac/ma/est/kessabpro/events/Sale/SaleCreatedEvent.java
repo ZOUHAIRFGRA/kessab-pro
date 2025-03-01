@@ -1,10 +1,9 @@
-package uit.ac.ma.est.kessabpro.events;
+package uit.ac.ma.est.kessabpro.events.Sale;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 import uit.ac.ma.est.kessabpro.models.dto.requests.SaleDTORequest;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
-import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 
 
 @Getter

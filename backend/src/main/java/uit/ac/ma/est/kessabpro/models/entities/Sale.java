@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import jakarta.persistence.*;
-import uit.ac.ma.est.kessabpro.events.listeners.TransactionCreatedEventListener;
+import uit.ac.ma.est.kessabpro.events.listeners.Transaction.TransactionCreatedEventListener;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
