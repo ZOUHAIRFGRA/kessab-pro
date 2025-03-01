@@ -24,8 +24,8 @@ public class Transaction extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn( name = "sale_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sale_id")
     private Sale sale;
 
     @ManyToOne

@@ -2,26 +2,22 @@ package uit.ac.ma.est.kessabpro.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import uit.ac.ma.est.kessabpro.events.listeners.SaleListener;
+import uit.ac.ma.est.kessabpro.events.listeners.TransactionCreatedEventListener;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EntityListeners(SaleListener.class)
+@EntityListeners(TransactionCreatedEventListener.class)
 public class Sale extends BaseEntity {
 
     @Id

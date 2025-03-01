@@ -18,5 +18,4 @@ public interface ITransactionService {
 
     List<Double> testFindAmountsBySaleId(UUID saleId);
 
-    void publishTransactionCreatedEvent(Transaction transactionDTO);
 }

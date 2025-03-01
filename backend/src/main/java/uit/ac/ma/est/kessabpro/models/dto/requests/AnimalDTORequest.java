@@ -11,7 +11,8 @@ public record AnimalDTORequest(
         UUID id,
         String tag,
         BigDecimal price,
-        UUID category,
+        @org.hibernate.validator.constraints.UUID(message = "must be a valid UUID")
+        String category,
         @NotNull(message = "isPickedUp must be provided")
         Boolean isPickedUp
 ) {}

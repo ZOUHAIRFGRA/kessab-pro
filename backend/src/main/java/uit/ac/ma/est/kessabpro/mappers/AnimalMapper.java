@@ -114,7 +114,7 @@ public class AnimalMapper {
         if (animalDTORequest.category() != null) {
             animal.category(
                     AnimalCategory.builder()
-                            .id(animalDTORequest.category())
+                            .id(UUID.fromString(animalDTORequest.category()))
                             .build());
         }
 

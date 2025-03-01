@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
 
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 
 @RestControllerAdvice
@@ -22,6 +23,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleHttpMessageNotReadable(EntityNotFoundException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Entity not found.", ex.getMessage());
+    }@ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadable(DateTimeParseException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Date invalid.", "the provided date is invalid");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

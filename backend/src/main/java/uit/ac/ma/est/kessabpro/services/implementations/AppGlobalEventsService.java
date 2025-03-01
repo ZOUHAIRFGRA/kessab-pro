@@ -1,6 +1,5 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -10,7 +9,7 @@ import uit.ac.ma.est.kessabpro.seeders.BuyerSaleTransactionSeeder;
 import uit.ac.ma.est.kessabpro.seeders.UserSeeder;
 
 @Service
-public class EventService {
+public class AppGlobalEventsService {
 
     private AnimalSeeder animalSeeder;
      private BuyerSaleTransactionSeeder buyerSaleTransactionSeeder;

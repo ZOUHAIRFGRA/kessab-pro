@@ -5,19 +5,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
 import uit.ac.ma.est.kessabpro.events.TransactionCreatedEvent;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
-import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
 import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
 import uit.ac.ma.est.kessabpro.services.interfaces.ITransactionService;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -58,19 +52,16 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public Transaction createTransaction(Transaction transaction) {
-        System.out.println("Transaction created");
-        System.out.println(transaction);
         //validate sale exists
         Sale sale = saleService.getSaleById(transaction.getSale().getId());
         //validate paid amount
         if (saleService.getRemainingAmount(sale) < transaction.getAmount()){
             throw new IllegalArgumentException("Amount exceeds maximum amount of transaction");
         }
-
-        Transaction savedTransaction = transactionRepository.save(transaction);
+        //transaction
         transaction.setSale(sale);
-
-        publishTransactionCreatedEvent(savedTransaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        eventPublisher.publishEvent(new TransactionCreatedEvent(this,savedTransaction));
         return savedTransaction;
     }
 
@@ -97,8 +88,5 @@ public class TransactionService implements ITransactionService {
         return transactionRepository.findAmountsBySaleId(saleId);
     }
 
-    @Override
-    public void publishTransactionCreatedEvent(Transaction transaction) {
-        eventPublisher.publishEvent(new TransactionCreatedEvent(this, transaction));
-    }
+
 }

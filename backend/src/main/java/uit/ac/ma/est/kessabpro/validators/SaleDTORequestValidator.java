@@ -28,22 +28,24 @@ public class SaleDTORequestValidator implements ConstraintValidator<ValidateSale
     public boolean isValid(SaleDTORequest saleDTORequest, ConstraintValidatorContext constraintValidatorContext) {
         boolean isValid = true;
 
-        if (saleDTORequest == null || saleDTORequest.buyer() == null || saleDTORequest.animals() == null || saleDTORequest.animals().isEmpty() || saleDTORequest.paidAmount() == null) {
+        if (saleDTORequest == null || saleDTORequest.buyer() == null || saleDTORequest.animals() == null || saleDTORequest.animals().isEmpty() || saleDTORequest.paidAmount() == null || saleDTORequest.method() == null ||
+                saleDTORequest.agreedAmount() == null
+        ) {
             return isValid ;
         }
 
         if (saleDTORequest.buyer().fullName() == null && saleDTORequest.buyer().id() == null) {
             constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("A buyer name or id must be provided.")
-                    .addPropertyNode("buyer_id")
+            constraintValidatorContext.buildConstraintViolationWithTemplate("name or id must be provided.")
+                    .addPropertyNode("buyer")
                     .addConstraintViolation();
             return false;
         }
 
         if (saleDTORequest.buyer().id() != null && buyerRepository.findById(saleDTORequest.buyer().id()).isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("The buyer id is not valid.")
-                    .addPropertyNode("buyer_id")
+            constraintValidatorContext.buildConstraintViolationWithTemplate("id is not valid.")
+                    .addPropertyNode("buyer")
                     .addConstraintViolation();
             isValid = false;
         }
@@ -65,7 +67,7 @@ public class SaleDTORequestValidator implements ConstraintValidator<ValidateSale
                 isValid = false;
             }
 
-            if (animal.category() != null && ValidationHelper.isValidUUID(String.valueOf(animal.category())) && animalCategoryRepository.findById(animal.category()).isEmpty()) {
+            if (animal.category() != null && ValidationHelper.isValidUUID(String.valueOf(animal.category())) && animalCategoryRepository.findById(UUID.fromString(animal.category())).isEmpty()) {
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 constraintValidatorContext.buildConstraintViolationWithTemplate("The category  is not valid.")
                         .addPropertyNode("animals")
@@ -88,7 +90,7 @@ public class SaleDTORequestValidator implements ConstraintValidator<ValidateSale
             constraintValidatorContext.buildConstraintViolationWithTemplate("paid amount should not surpass agreed amount.")
                     .addPropertyNode("sale_detail")
                     .addConstraintViolation();
-             isValid = false;
+            isValid = false;
         }
 
 

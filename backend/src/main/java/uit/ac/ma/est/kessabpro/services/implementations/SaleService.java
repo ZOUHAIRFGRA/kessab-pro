@@ -2,14 +2,15 @@ package uit.ac.ma.est.kessabpro.services.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
+import uit.ac.ma.est.kessabpro.events.SaleCreatedEvent;
+import uit.ac.ma.est.kessabpro.helpers.DateHelper;
 import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
 import uit.ac.ma.est.kessabpro.mappers.BuyerMapper;
 import uit.ac.ma.est.kessabpro.mappers.SaleMapper;
-import uit.ac.ma.est.kessabpro.models.dto.SaleDTO;
 import uit.ac.ma.est.kessabpro.models.dto.requests.SaleDTORequest;
-import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
@@ -20,8 +21,6 @@ import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
 import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
 import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,10 +42,16 @@ public class SaleService implements ISaleService {
     private TransactionRepository transactionRepository;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public Sale createSale(SaleDTORequest saleDTORequest) {
-        Sale.SaleBuilder sale = Sale.builder();
+        Sale.SaleBuilder sale = Sale.builder()
+                .saleDate(DateHelper.parseStringDate(saleDTORequest.saleDate()))
+                .agreedAmount(saleDTORequest.agreedAmount())
+                .paymentStatus(PaymentStatus.NOT_PAID);
+
         //animals
         List<Animal> animals = animalRepository.saveAll(AnimalMapper.toAnimalEntityList(saleDTORequest.animals()));
         //buyer
@@ -54,22 +59,13 @@ public class SaleService implements ISaleService {
         //saleDetail
         sale.buyer(buyer);
         sale.animals(animals);
-        sale.saleDate(saleDTORequest.saleDate());
-        sale.agreedAmount(saleDTORequest.agreedAmount());
-        sale.paymentStatus(PaymentStatus.NOT_PAID);
         Sale newSale = saleRepository.save(sale.build());
-        //transaction
-//        Transaction transaction = transactionService.createTransaction(
-//                new Transaction(null,null,)
-//        )
-
         //sale to animal
         animals.forEach(animal -> animal.setSale(newSale));
-//        transaction.setSale(newSale);
+        //transaction for sale
+        eventPublisher.publishEvent(new SaleCreatedEvent(this, newSale, saleDTORequest));
         return newSale;
     }
-
-
 
 
     @Override
@@ -80,34 +76,34 @@ public class SaleService implements ISaleService {
 
     public Double getPaidAmount(Sale sale) {
         double paidAmount = 0;
-        if (sale.getPaymentStatus() == PaymentStatus.PARTIALLY_PAID){
+        if (sale.getPaymentStatus() == PaymentStatus.PARTIALLY_PAID) {
             for (Transaction transaction : sale.getTransactions()) {
+                System.out.println(transaction);
                 paidAmount += transaction.getAmount();
             }
             return paidAmount;
         }
 
         if (sale.getPaymentStatus() == PaymentStatus.FULLY_PAID) {
-           return sale.getAgreedAmount();
+            return sale.getAgreedAmount();
         }
 
         return paidAmount;
     }
+
     public Double getRemainingAmount(Sale sale) {
         double remainingAmount = 0;
 
-        if (sale.getPaymentStatus() == PaymentStatus.PARTIALLY_PAID){
+        if (sale.getPaymentStatus() == PaymentStatus.PARTIALLY_PAID) {
             return sale.getAgreedAmount() - getPaidAmount(sale);
         }
 
-        if (sale.getPaymentStatus() == PaymentStatus.NOT_PAID){
-          return sale.getAgreedAmount();
+        if (sale.getPaymentStatus() == PaymentStatus.NOT_PAID) {
+            return sale.getAgreedAmount();
         }
 
         return remainingAmount;
     }
-
-
 
 
     @Override
@@ -137,4 +133,37 @@ public class SaleService implements ISaleService {
     public void deleteSale(UUID id) {
         saleRepository.deleteById(id);
     }
+
+    public boolean isPartiallyPaid(Sale sale) {
+        return (this.getPaidAmount(sale) < sale.getAgreedAmount()) && (this.getPaidAmount(sale) > 0);
+    }
+
+    public boolean isFullyPaid(Sale sale) {
+        return this.getPaidAmount(sale) >= sale.getAgreedAmount();
+    }
+
+    public boolean isNotPaid(Sale sale) {
+        System.out.println("is not paid");
+        System.out.println(this.getPaidAmount(sale));
+        System.out.println("condiftion");
+        System.out.println(this.getPaidAmount(sale) == 0.0);
+        return this.getPaidAmount(sale) == 0.0;
+    }
+
+    public void updatePaymentStatus(Sale sale) {
+        if (isNotPaid(sale)) {
+            System.out.println(sale.getPaymentStatus());
+            sale.setPaymentStatus(PaymentStatus.NOT_PAID);
+            return;
+        }
+        if (isPartiallyPaid(sale)) {
+            System.out.println(sale.getPaymentStatus());
+            sale.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
+            return;
+        }
+        if (isFullyPaid(sale)) {
+            sale.setPaymentStatus(PaymentStatus.FULLY_PAID);
+        }
+    }
+
 }
