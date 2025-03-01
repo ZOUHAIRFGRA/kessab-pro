@@ -143,10 +143,6 @@ public class SaleService implements ISaleService {
     }
 
     public boolean isNotPaid(Sale sale) {
-        System.out.println("is not paid");
-        System.out.println(this.getPaidAmount(sale));
-        System.out.println("condiftion");
-        System.out.println(this.getPaidAmount(sale) == 0.0);
         return this.getPaidAmount(sale) == 0.0;
     }
 

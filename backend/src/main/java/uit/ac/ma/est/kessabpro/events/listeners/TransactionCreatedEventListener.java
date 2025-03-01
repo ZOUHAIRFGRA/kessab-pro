@@ -27,11 +27,12 @@ public class TransactionCreatedEventListener {
 
     @EventListener
     public void afterTransactionChange(TransactionCreatedEvent event) {
-        Sale sale = event.getTransaction().getSale();
         Transaction transaction = event.getTransaction();
-        saleService.updatePaymentStatus(sale);
+        Sale sale = transaction.getSale();
 
-        System.out.println(sale.getPaymentStatus());
+        if (saleService.getRemainingAmount(sale) == transaction.getAmount()) sale.setPaymentStatus(PaymentStatus.FULLY_PAID);
+        if (saleService.getRemainingAmount(sale) > transaction.getAmount()) sale.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
+
         saleRepository.save(sale);
     }
 

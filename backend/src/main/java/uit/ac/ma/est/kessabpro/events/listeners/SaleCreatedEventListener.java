@@ -41,7 +41,7 @@ public class SaleCreatedEventListener {
             return;
         }
 
-        Transaction transaction = transactionService.createTransaction(
+        transactionService.createTransaction(
                 Transaction.builder()
                         .method(PaymentMethod.valueOf(saleDTO.method()))
                         .amount(saleDTO.paidAmount())
