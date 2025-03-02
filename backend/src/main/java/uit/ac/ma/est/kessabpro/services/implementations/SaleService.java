@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
+import uit.ac.ma.est.kessabpro.events.Sale.SaleClosedEvent;
 import uit.ac.ma.est.kessabpro.events.Sale.SaleCreatedEvent;
 import uit.ac.ma.est.kessabpro.helpers.DateHelper;
 import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
@@ -22,7 +23,6 @@ import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
 import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -133,6 +133,12 @@ public class SaleService implements ISaleService {
     @Override
     public void deleteSale(UUID id) {
         saleRepository.deleteById(id);
+    }
+
+    @Override
+    public void closeSale(Sale sale) {
+        if (sale.getPaymentStatus().equals(PaymentStatus.FULLY_PAID)) return;
+        eventPublisher.publishEvent(new SaleClosedEvent(this,sale));
     }
 
     public boolean isPartiallyPaid(Sale sale) {

@@ -14,4 +14,5 @@ public interface ISaleService {
     List<Sale> getAllSales();
     Sale updateSale(UUID id, Sale updatedSale, List<UUID> newAnimalIds);
     void deleteSale(UUID id);
+    void closeSale(Sale sale);
 }

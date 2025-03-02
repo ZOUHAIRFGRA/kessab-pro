@@ -16,6 +16,7 @@ import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
+import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,10 +26,15 @@ import java.util.UUID;
 @Validated
 public class SaleController {
 
-    @Autowired
-    private SaleService saleService;
-    @Autowired
-    private SaleMapper saleMapper;
+
+    private final ISaleService saleService;
+    private final SaleMapper saleMapper;
+
+    SaleController(ISaleService saleService, SaleMapper saleMapper) {
+        this.saleService = saleService;
+        this.saleMapper = saleMapper;
+    }
+
 
     @PostMapping
     @Transactional
@@ -36,6 +42,14 @@ public class SaleController {
         Sale sale = saleService.createSale(saleDTORequest);
         System.out.println(sale);
         return ResponseEntity.ok(sale);
+    }
+
+    @PostMapping(value = "/{id}/close")
+    @Transactional
+    public ResponseEntity<?> closeSale(@PathVariable  UUID id) {
+        Sale sale = saleService.getSaleById(id);
+        saleService.closeSale(sale);
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 
 
