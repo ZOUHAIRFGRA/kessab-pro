@@ -2,9 +2,10 @@ package uit.ac.ma.est.kessabpro.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.springframework.beans.factory.annotation.Autowired;
+import uit.ac.ma.est.kessabpro.services.implementations.AuthService;
+import uit.ac.ma.est.kessabpro.services.interfaces.IAuthService;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 @Entity
 @Getter
@@ -27,6 +28,7 @@ public class Buyer extends BaseEntity {
     private String CIN;
     private String phone;
     private String address;
+   
 
 
 }

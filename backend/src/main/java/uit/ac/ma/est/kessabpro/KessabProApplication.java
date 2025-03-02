@@ -2,10 +2,12 @@ package uit.ac.ma.est.kessabpro;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.BufferedImageHttpMessageConverter;
@@ -13,6 +15,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import uit.ac.ma.est.kessabpro.models.entities.User;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
@@ -32,10 +35,6 @@ public class KessabProApplication {
         SpringApplication.run(KessabProApplication.class, args);
     }
 
-    @Bean
-    public HttpMessageConverter<BufferedImage> bufferedImageHttpMessageConverter() {
-        return new BufferedImageHttpMessageConverter();
-    }
 
 
 }

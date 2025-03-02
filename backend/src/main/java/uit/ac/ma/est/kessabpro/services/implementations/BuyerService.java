@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
@@ -23,7 +24,7 @@ public class BuyerService implements IBuyerService {
     @Override
     public Buyer getBuyerById(UUID id) {
         return buyerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Buyer not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
     }
 
     @Override
@@ -34,10 +35,19 @@ public class BuyerService implements IBuyerService {
     @Override
     public Buyer updateBuyer(UUID id, Buyer buyer) {
         Buyer existingBuyer = getBuyerById(id);
-        existingBuyer.setFullName(buyer.getFullName());
-        existingBuyer.setCIN(buyer.getCIN());
-        existingBuyer.setPhone(buyer.getPhone());
-        existingBuyer.setAddress(buyer.getAddress());
+        if (buyer.getFullName() != null) {
+            existingBuyer.setFullName(buyer.getFullName());
+        }
+        if (buyer.getCIN() != null) {
+            existingBuyer.setCIN(buyer.getCIN());
+        }
+        if (buyer.getPhone() != null) {
+            existingBuyer.setPhone(buyer.getPhone());
+        }
+        if (buyer.getAddress() != null) {
+            existingBuyer.setAddress(buyer.getAddress());
+        }
+
         return buyerRepository.save(existingBuyer);
     }
 

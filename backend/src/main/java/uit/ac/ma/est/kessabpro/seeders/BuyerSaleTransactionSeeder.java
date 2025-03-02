@@ -63,10 +63,10 @@ public class BuyerSaleTransactionSeeder {
 
         if (buyerRepository.count() == 0) {
             Buyer buyer = Buyer.builder()
-                    .user(firstUser)
                     .fullName("John Doe")
                     .CIN("AB123456")
                     .phone("0654321987")
+                    .user(firstUser)
                     .address("789 Buyer Street")
                     .build();
 

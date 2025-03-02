@@ -21,7 +21,6 @@ public record SaleDTORequest(
         List<AnimalDTORequest> animals,
 
         @NotNull(message = "details information must be provided")
-        @Valid
         BuyerDTORequest buyer,
 
         @NotNull(message = "must be provided")

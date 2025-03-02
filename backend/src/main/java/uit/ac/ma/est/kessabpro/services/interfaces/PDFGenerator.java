@@ -18,7 +18,6 @@ public class PDFGenerator implements DocumentExport {
 
     private final IQRCodeService qrCodeService;
 
-    // Font constants
     private static final Font TITLE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
     private static final Font HEADER_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
     private static final Font NORMAL_FONT = FontFactory.getFont(FontFactory.HELVETICA, 10);
