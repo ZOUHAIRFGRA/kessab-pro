@@ -1,10 +1,12 @@
-package uit.ac.ma.est.kessabpro.controllers;
+package uit.ac.ma.est.kessabpro.services.implementations;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;
 import org.springframework.stereotype.Service;
+import uit.ac.ma.est.kessabpro.services.interfaces.IQRCodeService;
+
 import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -14,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 @Service
-public class QRCodeService {
+public class QRCodeService implements IQRCodeService {
     public byte[] generateQRCode(String text) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 200, 200);

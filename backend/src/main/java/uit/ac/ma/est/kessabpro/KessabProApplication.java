@@ -1,13 +1,18 @@
 package uit.ac.ma.est.kessabpro;
 
-import io.github.cdimascio.dotenv.Dotenv;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+import java.awt.image.BufferedImage;
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
-import uit.ac.ma.est.kessabpro.seeders.*;
+import org.springframework.http.converter.BufferedImageHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
@@ -15,7 +20,6 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @EnableJpaAuditing
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class KessabProApplication {
-
 
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.load();
@@ -27,4 +31,11 @@ public class KessabProApplication {
         System.setProperty("DB_URL", dotenv.get("DB_URL"));
         SpringApplication.run(KessabProApplication.class, args);
     }
+
+    @Bean
+    public HttpMessageConverter<BufferedImage> bufferedImageHttpMessageConverter() {
+        return new BufferedImageHttpMessageConverter();
+    }
+
+
 }
