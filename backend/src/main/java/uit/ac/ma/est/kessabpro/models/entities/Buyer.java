@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uit.ac.ma.est.kessabpro.services.implementations.AuthService;
 import uit.ac.ma.est.kessabpro.services.interfaces.IAuthService;
 
+import java.util.List;
 import java.util.UUID;
 @Entity
 @Getter
@@ -22,6 +23,10 @@ public class Buyer extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @OneToMany(mappedBy = "buyer")
+    List<Sale> sales;
+
 
 
     private String fullName;

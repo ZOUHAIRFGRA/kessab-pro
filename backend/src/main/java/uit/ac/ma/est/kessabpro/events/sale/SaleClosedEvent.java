@@ -1,4 +1,4 @@
-package uit.ac.ma.est.kessabpro.events.Sale;
+package uit.ac.ma.est.kessabpro.events.sale;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

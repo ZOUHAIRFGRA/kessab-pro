@@ -1,2 +1,4 @@
-package uit.ac.ma.est.kessabpro.validators.groups;public interface onCreate {
+package uit.ac.ma.est.kessabpro.validators.groups;
+
+public interface onCreate {
 }
