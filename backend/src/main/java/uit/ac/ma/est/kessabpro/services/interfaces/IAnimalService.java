@@ -20,6 +20,9 @@ public interface IAnimalService {
 
     List<Animal> getUnsoldAnimals();
 
+    // New method to delete images
+    void deleteAnimalImages(List<String> imagesToDelete);
+
     boolean deleteAnimal(UUID id);
 
     List<Animal> getAnimalsBySaleId(UUID saleId);

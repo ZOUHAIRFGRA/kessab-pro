@@ -42,7 +42,6 @@ public class AnimalMapper {
         animal.setBirthDate(dto.getBirthDate());
         animal.setPrice(dto.getPrice());
         animal.setWeight(dto.getWeight());
-
         animal.setImagePaths(dto.getImagePaths());
 
         if (dto.getSaleId() != null) {
@@ -62,9 +61,8 @@ public class AnimalMapper {
             }
         }
 
-        return animal;
+        return animal; // imagesToDelete is handled in the controller/service
     }
-
 
     public static AnimalDTOResponse toAnimalDTO(Animal animal) {
         List<String> gallery = animal.getImagePaths();
