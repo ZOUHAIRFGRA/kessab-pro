@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +20,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 import uit.ac.ma.est.kessabpro.models.entities.User;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
-
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)

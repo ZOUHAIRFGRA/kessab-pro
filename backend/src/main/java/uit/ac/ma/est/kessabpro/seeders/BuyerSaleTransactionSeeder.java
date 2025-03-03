@@ -65,6 +65,7 @@ public class BuyerSaleTransactionSeeder {
             Buyer buyer = Buyer.builder()
                     .fullName("John Doe")
                     .CIN("AB123456")
+                    .user(firstUser)
                     .phone("0654321987")
                     .user(firstUser)
                     .address("789 Buyer Street")

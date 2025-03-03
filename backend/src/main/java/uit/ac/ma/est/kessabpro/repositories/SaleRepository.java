@@ -8,7 +8,7 @@ import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import java.util.List;
 import java.util.UUID;
 
-public interface SaleRepository extends JpaRepository<Sale, UUID> {
+public interface SaleRepository extends UserAwareRepository<Sale,UUID> {
 
     @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.sale.id IN :saleIds")
     Double sumAmountBySaleIdIn(List<UUID> saleIds);

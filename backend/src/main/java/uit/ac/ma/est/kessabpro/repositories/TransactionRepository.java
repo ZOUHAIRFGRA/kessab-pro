@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
+public interface TransactionRepository extends UserAwareRepository<Transaction,UUID> {
 
     @Query("SELECT t.amount FROM Transaction t WHERE t.sale.id = :saleId")
     List<Double> findAmountsBySaleId(UUID saleId);
