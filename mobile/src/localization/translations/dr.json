@@ -7,6 +7,15 @@
     "NOT_PAID": "غير مدفوع"
   },
   "common": {
+    "category_added_success" : "تمت إضافة الفئة بنجاح",
+    "icon_required": "الرمز مطلوب",
+"category_add_failed": "فشلت إضافة الفئة",
+    "category_name_required": "اسم الفئة مطلوب",
+    "no_icons_available": "لا توجد أيقونات متاحة",
+    "add_category" : "إضافة فئة",
+    "enter_category_name": "أدخل اسم الفئة",
+    "add_new_category": "إضافة فئة جديدة",
+    "select_icon": "اختر أيقونة",
     "search_too_short": "البحث يجب أن يكون أطول من 3 أحرف",
     "nav_hint_dashboard": "لوحة التحكم",
     "nav_hint_qrscanner": "ماسح QR",
