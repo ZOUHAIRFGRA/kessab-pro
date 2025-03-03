@@ -107,7 +107,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
         if (editedAnimal.imagePaths && editedAnimal.imagePaths.length > 0) {
             const imagePathsJson = JSON.stringify(editedAnimal.imagePaths);
             console.log("Sending imagePaths:", imagePathsJson);
-            formData.append("imagePaths", imagePathsJson);
+            formData.append("imagePaths", imagePathsJson); // Keep as-is for now
         }
 
         newImages.forEach((uri, index) => {
@@ -121,12 +121,14 @@ export const AnimalDetailsTab = ({ animalId }) => {
         });
 
         if (imagesToDelete.length > 0) {
-            const imagesToDeleteJson = JSON.stringify(imagesToDelete);
-            console.log("Sending imagesToDelete:", imagesToDeleteJson);
-            formData.append("imagesToDelete", imagesToDeleteJson);
+            imagesToDelete.forEach((path, index) => {
+                console.log(`Appending imagesToDelete[${index}]: ${path}`);
+                formData.append("imagesToDelete", path); // Send each path individually
+            });
+        } else {
+            console.log("No images to delete.");
         }
 
-        // Log FormData contents (for debugging, as FormData isn’t easily printable)
         for (let pair of formData._parts) {
             console.log(`FormData entry: ${pair[0]} = ${pair[1]}`);
         }

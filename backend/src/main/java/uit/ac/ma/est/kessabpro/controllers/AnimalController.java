@@ -136,7 +136,6 @@ public class AnimalController {
                     new ArrayList<>(existingAnimal.getImagePaths()) : new ArrayList<>();
             System.out.println("Initial currentImagePaths from DB: " + currentImagePaths);
 
-            // Handle new image uploads
             if (animalDTO.isImagesExists()) {
                 UploadHelper.createDirIfNotExist(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR);
                 List<String> uploadedImagePaths = animalService.uploadAnimalImages(animalDTO.getTag(), animalDTO.getImages());
@@ -144,29 +143,15 @@ public class AnimalController {
                 currentImagePaths.addAll(uploadedImagePaths);
             }
 
-            // Handle images to delete
-            List<String> imagesToDelete = null;
-            if (animalDTO.getImagesToDelete() != null && !animalDTO.getImagesToDelete().isEmpty()) {
-                String imagesToDeleteRaw = animalDTO.getImagesToDelete().get(0);
-                System.out.println("Raw imagesToDelete from FormData: " + imagesToDeleteRaw);
-                try {
-                    Object rawParsed = objectMapper.readValue(imagesToDeleteRaw, Object.class);
-                    if (rawParsed instanceof List && !((List<?>) rawParsed).isEmpty() && ((List<?>) rawParsed).get(0) instanceof List) {
-                        imagesToDelete = objectMapper.convertValue(((List<?>) rawParsed).get(0), List.class);
-                    } else {
-                        imagesToDelete = objectMapper.convertValue(rawParsed, List.class);
-                    }
-                    System.out.println("Parsed imagesToDelete: " + imagesToDelete);
-                    animalService.deleteAnimalImages(imagesToDelete);
-                    currentImagePaths.removeAll(imagesToDelete);
-                    System.out.println("After applying deletions: " + currentImagePaths);
-                } catch (JsonProcessingException e) {
-                    System.err.println("❌ Failed to parse imagesToDelete: " + e.getMessage());
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-                }
+            List<String> imagesToDelete = animalDTO.getImagesToDelete();
+            if (imagesToDelete != null && !imagesToDelete.isEmpty()) {
+                System.out.println("Images to delete from FormData: " + imagesToDelete);
+                animalService.deleteAnimalImages(imagesToDelete);
+                currentImagePaths.removeAll(imagesToDelete);
+                System.out.println("After applying deletions: " + currentImagePaths);
             }
 
-            // Handle submitted imagePaths
+            // Existing imagePaths handling (unchanged for this fix)
             if (animalDTO.getImagePaths() != null && !animalDTO.getImagePaths().isEmpty()) {
                 String imagePathsRaw = animalDTO.getImagePaths().get(0);
                 System.out.println("Raw imagePaths from FormData: " + imagePathsRaw);
@@ -188,8 +173,7 @@ public class AnimalController {
                     }
                     System.out.println("After applying submitted imagePaths and deletions: " + currentImagePaths);
                 } catch (JsonProcessingException e) {
-                    System.err.println("⚠️ Warning: Failed to parse imagePaths (non-critical, using fallback): " + e.getMessage());
-                    System.out.println("Using currentImagePaths with deletions applied: " + currentImagePaths);
+                    System.out.println("Note: imagePaths parsing skipped (using fallback): " + currentImagePaths);                    System.out.println("Using currentImagePaths with deletions applied: " + currentImagePaths);
                 }
             }
 
@@ -214,7 +198,6 @@ public class AnimalController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 
 
 
