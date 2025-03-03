@@ -27,6 +27,10 @@ export const ImageCarousel = ({ imagePaths, flatListRef, screenWidth, isRTL, t }
 
   if (!imagePaths || imagePaths.length === 0) return <Text>{t("No images available")}</Text>;
 
+  // Adjust chevron icons based on RTL
+  const prevIcon = isRTL ? "chevron-right" : "chevron-left";
+  const nextIcon = isRTL ? "chevron-left" : "chevron-right";
+
   return (
     <View style={{ alignItems: "center", width: screenWidth }}>
       <FlatList
@@ -55,10 +59,10 @@ export const ImageCarousel = ({ imagePaths, flatListRef, screenWidth, isRTL, t }
       />
       <View style={{ flexDirection: isRTL ? "row-reverse" : "row", marginTop: 10 }}>
         <TouchableOpacity onPress={handlePrev} disabled={currentIndex === 0} style={{ marginHorizontal: 10 }}>
-          <MaterialIcons name="chevron-left" size={50} color={currentIndex === 0 ? "gray" : "black"} />
+          <MaterialIcons name={prevIcon} size={50} color={currentIndex === 0 ? "gray" : "black"} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleNext} disabled={currentIndex === imagePaths.length - 1}>
-          <MaterialIcons name="chevron-right" size={50} color={currentIndex === imagePaths.length - 1 ? "gray" : "black"} />
+          <MaterialIcons name={nextIcon} size={50} color={currentIndex === imagePaths.length - 1 ? "gray" : "black"} />
         </TouchableOpacity>
       </View>
     </View>

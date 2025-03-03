@@ -7,6 +7,9 @@
     "NOT_PAID": "Non payé"
   },
   "common": {
+    "No_medical_logs_found": "Aucun dossier médical trouvé",
+    "No_activity_logs_found": "Aucun journal d'activité trouvé",
+    "select_category": "Sélectionner une catégorie",
     "category_name_required": "Le nom de la catégorie est requis",
     "icon_required": "L'icône est requise",
     "category_add_failed": "Échec de l'ajout de la catégorie",

@@ -7,6 +7,9 @@
     "NOT_PAID": "غير مدفوع"
   },
   "common": {
+    "No_medical_logs_found": "لم يتم العثور على سجلات طبية",
+    "No_activity_logs_found": "لم يتم العثور على سجلات نشاط",
+    
     "category_added_success" : "تمت إضافة الفئة بنجاح",
     "icon_required": "الرمز مطلوب",
 "category_add_failed": "فشلت إضافة الفئة",
