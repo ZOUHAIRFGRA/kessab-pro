@@ -7,6 +7,15 @@
     "NOT_PAID": "Non payé"
   },
   "common": {
+    "category_name_required": "Le nom de la catégorie est requis",
+    "icon_required": "L'icône est requise",
+    "category_add_failed": "Échec de l'ajout de la catégorie",
+    "category_added_success" : "Catégorie ajoutée avec succès",
+    "no_icons_available": "Aucune icône disponible",
+    "add_category" : "Ajouter une catégorie",
+    "enter_category_name": "Entrez le nom de la catégorie",
+    "add_new_category": "Ajouter une nouvelle catégorie",
+    "select_icon": "Sélectionner une icône",
     "search_too_short": "La recherche doit comporter plus de 3 caractères",
     "nav_hint_dashboard": "Tableau de bord",
     "nav_hint_qrscanner": "Scanner QR",
@@ -15,7 +24,7 @@
     "action_successful": "Action réussie!",
     "something_went_wrong": "Quelque chose s'est mal passé.",
     "info_message": "Ceci est un message informatif.",
-    
+
     "kessabPro": "Kessab Pro",
     "search_placeholder": "Rechercher un mouton par numéro",
     "management": "Gestion",

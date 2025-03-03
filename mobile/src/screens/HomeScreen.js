@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import { resetAnimals } from "../features/animalSlice";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import AddAnimalModal from "./AddAnimalModal";
+import AddAnimalModal from "../components/AddAnimalModal";
 import { useToast } from "../hooks/useToast";
 
 export default function HomeScreen() {
