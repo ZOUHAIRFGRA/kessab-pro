@@ -3,6 +3,10 @@ package uit.ac.ma.est.kessabpro.controllers;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import uit.ac.ma.est.kessabpro.events.buyer.BuyerGlobalTransactionCreated;
@@ -27,15 +31,10 @@ public class TransactionController {
     private final BuyerService buyerService;
     private final ApplicationEventPublisher eventPublisher;
 
-    public TransactionController(ITransactionService transactionService, BuyerService buyerService,ApplicationEventPublisher eventPublisher) {
+    public TransactionController(ITransactionService transactionService, BuyerService buyerService, ApplicationEventPublisher eventPublisher) {
         this.transactionService = transactionService;
         this.buyerService = buyerService;
         this.eventPublisher = eventPublisher;
-    }
-
-    @GetMapping("/amounts/{saleId}")
-    public List<Double> getTransactionAmounts(@PathVariable UUID saleId) {
-        return transactionService.testFindAmountsBySaleId(saleId);
     }
 
     @GetMapping("/sale/{saleId}")
@@ -51,9 +50,18 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TransactionDTOResponse>> getAllTransactions() {
-        List<Transaction> transactions = transactionService.getAllTransactions();
-        return ResponseEntity.ok(TransactionMapper.toTransactionDTOList(transactions));
+    public ResponseEntity<Page<TransactionDTOResponse>> getTransactions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "transactionDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Transaction> transactions = transactionService.getAllTransactions(pageable);
+        Page<TransactionDTOResponse> transactionsDTOs = transactionService.getAllTransactions(pageable).map(TransactionMapper::toTransactionDTO);
+        return ResponseEntity.ok(transactionsDTOs);
     }
 
     @PostMapping
@@ -65,18 +73,14 @@ public class TransactionController {
 
     @PostMapping(value = "/buyer/{id}")
     @Transactional
-    public ResponseEntity<?> consumeTransaction(@PathVariable  UUID id,@Validated @RequestBody TransactionDTORequest transactionDTO) {
+    public ResponseEntity<?> consumeTransaction(@PathVariable UUID id, @Validated @RequestBody TransactionDTORequest transactionDTO) {
         Buyer buyer = buyerService.getBuyerById(id);
         Transaction transaction = TransactionMapper.toTransactionEntity(transactionDTO);
-        eventPublisher.publishEvent(new BuyerGlobalTransactionCreated(this,buyer,transaction));
+        eventPublisher.publishEvent(new BuyerGlobalTransactionCreated(this, buyer, transaction));
         return ResponseEntity.ok(transaction);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TransactionDTOResponse> updateTransaction(@PathVariable UUID id, @RequestBody Transaction updatedTransaction) {
-        Transaction updated = transactionService.updateTransaction(id, updatedTransaction);
-        return ResponseEntity.ok(TransactionMapper.toTransactionDTO(updated));
-    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<TransactionDTOResponse> getTransactionById(@PathVariable UUID id) {

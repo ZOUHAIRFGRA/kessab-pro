@@ -50,7 +50,6 @@ public class UserAwareAspect {
     @Before("execution(* org.springframework.data.jpa.repository.JpaSpecificationExecutor+.find*(..))")
     public void enableUserFilter(JoinPoint joinPoint) throws AccessDeniedException {
         Object target = joinPoint.getTarget();
-        // Only apply filter if repository extends UserAwareRepository
         if (!(target instanceof UserAwareRepository)) {
             return;
         }

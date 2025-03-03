@@ -3,6 +3,8 @@ package uit.ac.ma.est.kessabpro.services.implementations;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import uit.ac.ma.est.kessabpro.events.sale.SaleClosedEvent;
@@ -147,6 +149,10 @@ public class SaleService implements ISaleService {
 
     public boolean isFullyPaid(Sale sale) {
         return getPaidAmount(sale) >= sale.getAgreedAmount();
+    }
+
+    public Page<Sale> getFilteredSales(String fullName, UUID categoryId, PaymentStatus paymentStatus, Pageable pageable) {
+        return saleRepository.findFilteredSales(fullName, categoryId, paymentStatus, pageable);
     }
 
     public boolean isNotPaid(Sale sale) {

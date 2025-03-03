@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.events.transaction.TransactionCreatedEvent;
 import uit.ac.ma.est.kessabpro.events.transaction.TransactionDeletedEvent;
@@ -64,18 +66,18 @@ public class TransactionService implements ITransactionService {
         return savedTransaction;
     }
 
-    @Override
-    @Transactional
-    public Transaction updateTransaction(UUID id, Transaction updatedTransaction) {
-        Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
-
-        transaction.setAmount(updatedTransaction.getAmount());
-        transaction.setMethod(updatedTransaction.getMethod());
-        transaction.setTransactionDate(updatedTransaction.getTransactionDate());
-
-        return transactionRepository.save(transaction);
-    }
+//    @Override
+//    @Transactional
+//    public Transaction updateTransaction(UUID id, Transaction updatedTransaction) {
+//        Transaction transaction = transactionRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+//
+//        transaction.setAmount(updatedTransaction.getAmount());
+//        transaction.setMethod(updatedTransaction.getMethod());
+//        transaction.setTransactionDate(updatedTransaction.getTransactionDate());
+//
+//        return transactionRepository.save(transaction);
+//    }
 
     @Override
     @Transactional
@@ -85,9 +87,10 @@ public class TransactionService implements ITransactionService {
         transactionRepository.deleteById(id);
     }
 
-    @Override
-    public List<Double> testFindAmountsBySaleId(UUID saleId) {
-        return transactionRepository.findAmountsBySaleId(saleId);
+
+
+    public Page<Transaction> getAllTransactions(Pageable pageable) {
+        return transactionRepository.findAll(pageable);
     }
 
 
