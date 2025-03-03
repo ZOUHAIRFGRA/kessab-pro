@@ -18,6 +18,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     @Query("SELECT t FROM Transaction t JOIN t.sale s WHERE s.buyer.id = :buyerId")
     List<Transaction> getTransactionByBuyerId(UUID buyerId);
 
+    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.sale.id IN :saleIds")
     Double sumAmountBySaleIdIn(List<UUID> saleIds);
 
 

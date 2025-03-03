@@ -3,6 +3,7 @@ package uit.ac.ma.est.kessabpro.models.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import uit.ac.ma.est.kessabpro.auditing.UserAware;
 import uit.ac.ma.est.kessabpro.services.implementations.AuthService;
 import uit.ac.ma.est.kessabpro.services.interfaces.IAuthService;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Buyer extends BaseEntity {
+public class Buyer extends BaseEntity implements UserAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

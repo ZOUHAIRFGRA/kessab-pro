@@ -3,6 +3,7 @@ package uit.ac.ma.est.kessabpro.models.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import uit.ac.ma.est.kessabpro.auditing.UserAware;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import jakarta.persistence.*;
 import uit.ac.ma.est.kessabpro.listeners.transaction.TransactionCreatedEventListener;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @EntityListeners(TransactionCreatedEventListener.class)
-public class Sale extends BaseEntity {
+public class Sale extends BaseEntity implements UserAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

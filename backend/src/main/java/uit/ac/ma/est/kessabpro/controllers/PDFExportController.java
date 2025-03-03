@@ -1,6 +1,7 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +26,7 @@ public class PDFExportController {
     private final SaleService saleService;
     DocumentExport pDFService;
 
-
-    PDFExportController(DocumentExport pDFService, TransactionService transactionService, SaleService saleService){
+    PDFExportController(DocumentExport pDFService, TransactionService transactionService, SaleService saleService) {
         this.pDFService = pDFService;
         this.transactionService = transactionService;
         this.saleService = saleService;
@@ -41,7 +41,7 @@ public class PDFExportController {
         String HeaderKey = "Content-Disposition";
         String HeaderValue = "attachment; filename=\"" + currentDateTime + ".pdf\"";
         response.setHeader(HeaderKey, HeaderValue);
-        pDFService.exportTransactionDocument(response,transaction);
+        pDFService.exportTransactionDocument(response, transaction);
     }
 
     @GetMapping(value = "/sale/{id}")
@@ -53,7 +53,7 @@ public class PDFExportController {
         String HeaderKey = "Content-Disposition";
         String HeaderValue = "attachment; filename=\"" + currentDateTime + ".pdf\"";
         response.setHeader(HeaderKey, HeaderValue);
-        pDFService.exportSaleDocument(response,sale);
+        pDFService.exportSaleDocument(response, sale);
     }
 
 
