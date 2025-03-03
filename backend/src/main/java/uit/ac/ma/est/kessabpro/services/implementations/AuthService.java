@@ -1,7 +1,9 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,30 +18,35 @@ import java.util.UUID;
 @Service
 public class AuthService implements IAuthService {
 
+    private final UserService userService;
     UserRepository userRepository;
 
     @Autowired
-    public AuthService( UserRepository userRepository) {
-            this.userRepository = userRepository;
+    public AuthService(UserRepository userRepository, UserService userService) {
+        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
     public User getLoggedUser() throws AccessDeniedException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated()) {
-            String username = auth.getName();
-            System.out.println("username");
-            System.out.println(username);
-//            return userRepository.findByUsername(username)
-//                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        }
-        throw new AccessDeniedException("No authenticated user");
+        UUID userId = getLoggedUserID();
+        return userService.getUserById(getLoggedUserID());
     }
 
     @Override
     public UUID getLoggedUserID() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User loggedInUser = (User) authentication.getPrincipal();
-        return loggedInUser.getId();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User loggedInUser = (User) authentication.getPrincipal();
+            return loggedInUser.getId();
+        } catch (Exception e) {
+            throw new AuthenticationException("") {
+                @Override
+                public String getMessage() {
+                    return "error, trying to access authenticated user in non-authenticated context";
+                }
+            };
+        }
+
     }
 }

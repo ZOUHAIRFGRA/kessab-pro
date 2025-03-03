@@ -20,6 +20,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid input format.", ex.getMessage());
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadable(NullPointerException ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Server error.", ex.getMessage());
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleHttpMessageNotReadable(EntityNotFoundException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Entity not found.", ex.getMessage());

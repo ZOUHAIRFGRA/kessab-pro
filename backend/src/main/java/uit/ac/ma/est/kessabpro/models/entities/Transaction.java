@@ -1,6 +1,7 @@
 package uit.ac.ma.est.kessabpro.models.entities;
 
 import lombok.*;
+import uit.ac.ma.est.kessabpro.auditing.UserAware;
 import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Transaction extends BaseEntity {
+public class Transaction extends BaseEntity implements UserAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
