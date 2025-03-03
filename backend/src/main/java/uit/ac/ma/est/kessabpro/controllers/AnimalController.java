@@ -1,6 +1,7 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,6 +30,9 @@ public class AnimalController {
 
     @Autowired
     private AnimalCategoryService animalCategoryService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createAnimal(@ModelAttribute AnimalDTO animalDTO) {
@@ -100,13 +104,119 @@ public class AnimalController {
         return ResponseEntity.ok(animalDTOPage);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<AnimalDTO> updateAnimal(@PathVariable UUID id, @RequestBody AnimalDTO animalDTO) throws JsonProcessingException {
-        Animal animal = AnimalMapper.toEntity(animalDTO);
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AnimalDTO> updateAnimal(@PathVariable UUID id, @ModelAttribute AnimalDTO animalDTO) {
+        try {
+            if (animalDTO.getTag() == null || animalDTO.getSex() == null || animalDTO.getBirthDate() == null ||
+                    animalDTO.getPrice() == null || animalDTO.getWeight() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
 
-        Animal updatedAnimal = animalService.updateAnimal(id, animal);
-        return updatedAnimal != null ? ResponseEntity.ok(AnimalMapper.toDTO(updatedAnimal)) : ResponseEntity.notFound().build();
+            AnimalCategory category = null;
+            if (animalDTO.getCategory() != null) {
+                UUID categoryId;
+                try {
+                    categoryId = UUID.fromString(animalDTO.getCategory());
+                    category = animalCategoryService.getCategoryById(categoryId)
+                            .orElseThrow(() -> new RuntimeException("❌ Category not found for ID: " + categoryId));
+                } catch (IllegalArgumentException e) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+            }
+
+            Optional<Animal> existingAnimalOpt = animalService.getAnimalById(id);
+            if (!existingAnimalOpt.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            Animal existingAnimal = existingAnimalOpt.get();
+
+            Animal animal = AnimalMapper.toEntity(animalDTO);
+            animal.setCategory(category);
+            List<String> currentImagePaths = existingAnimal.getImagePaths() != null ?
+                    new ArrayList<>(existingAnimal.getImagePaths()) : new ArrayList<>();
+            System.out.println("Initial currentImagePaths from DB: " + currentImagePaths);
+
+            // Handle new image uploads
+            if (animalDTO.isImagesExists()) {
+                UploadHelper.createDirIfNotExist(UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR);
+                List<String> uploadedImagePaths = animalService.uploadAnimalImages(animalDTO.getTag(), animalDTO.getImages());
+                System.out.println("Uploaded imagePaths: " + uploadedImagePaths);
+                currentImagePaths.addAll(uploadedImagePaths);
+            }
+
+            // Handle images to delete
+            List<String> imagesToDelete = null;
+            if (animalDTO.getImagesToDelete() != null && !animalDTO.getImagesToDelete().isEmpty()) {
+                String imagesToDeleteRaw = animalDTO.getImagesToDelete().get(0);
+                System.out.println("Raw imagesToDelete from FormData: " + imagesToDeleteRaw);
+                try {
+                    Object rawParsed = objectMapper.readValue(imagesToDeleteRaw, Object.class);
+                    if (rawParsed instanceof List && !((List<?>) rawParsed).isEmpty() && ((List<?>) rawParsed).get(0) instanceof List) {
+                        imagesToDelete = objectMapper.convertValue(((List<?>) rawParsed).get(0), List.class);
+                    } else {
+                        imagesToDelete = objectMapper.convertValue(rawParsed, List.class);
+                    }
+                    System.out.println("Parsed imagesToDelete: " + imagesToDelete);
+                    animalService.deleteAnimalImages(imagesToDelete);
+                    currentImagePaths.removeAll(imagesToDelete);
+                    System.out.println("After applying deletions: " + currentImagePaths);
+                } catch (JsonProcessingException e) {
+                    System.err.println("❌ Failed to parse imagesToDelete: " + e.getMessage());
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+            }
+
+            // Handle submitted imagePaths
+            if (animalDTO.getImagePaths() != null && !animalDTO.getImagePaths().isEmpty()) {
+                String imagePathsRaw = animalDTO.getImagePaths().get(0);
+                System.out.println("Raw imagePaths from FormData: " + imagePathsRaw);
+                try {
+                    Object rawParsed = objectMapper.readValue(imagePathsRaw, Object.class);
+                    List<String> submittedImagePaths;
+                    if (rawParsed instanceof List && !((List<?>) rawParsed).isEmpty() && ((List<?>) rawParsed).get(0) instanceof List) {
+                        submittedImagePaths = objectMapper.convertValue(((List<?>) rawParsed).get(0), List.class);
+                    } else if (rawParsed instanceof List) {
+                        submittedImagePaths = objectMapper.convertValue(rawParsed, List.class);
+                    } else {
+                        throw new JsonProcessingException("Invalid imagePaths format") {};
+                    }
+                    System.out.println("Parsed imagePaths: " + submittedImagePaths);
+                    currentImagePaths.clear();
+                    currentImagePaths.addAll(submittedImagePaths);
+                    if (imagesToDelete != null) {
+                        currentImagePaths.removeAll(imagesToDelete);
+                    }
+                    System.out.println("After applying submitted imagePaths and deletions: " + currentImagePaths);
+                } catch (JsonProcessingException e) {
+                    System.err.println("⚠️ Warning: Failed to parse imagePaths (non-critical, using fallback): " + e.getMessage());
+                    System.out.println("Using currentImagePaths with deletions applied: " + currentImagePaths);
+                }
+            }
+
+            animal.setImagePaths(currentImagePaths);
+            System.out.println("Final imagePaths set on animal: " + currentImagePaths);
+
+            Animal updatedAnimal = animalService.updateAnimal(id, animal);
+            if (updatedAnimal == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            AnimalDTO updatedAnimalDTO = AnimalMapper.toDTO(updatedAnimal);
+            System.out.println("Updated animal DTO: " + updatedAnimalDTO);
+            return ResponseEntity.ok(updatedAnimalDTO);
+
+        } catch (RuntimeException e) {
+            System.err.println("❌ Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            System.err.println("❌ Internal Server Error: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAnimal(@PathVariable UUID id) {

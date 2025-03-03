@@ -54,7 +54,11 @@ export const createAnimal = async (animalData) => {
 
 export const updateAnimal = async (id, animalData) => {
   try {
-    const response = await axiosInstance.put(`/animals/${id}`, animalData);
+    console.log("Request payload:", animalData._parts);
+    const response = await axiosInstance.put(`/animals/${id}`, animalData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      transformRequest: (data) => data, // Prevent Axios from converting FormData
+    });
     return response.data;
   } catch (error) {
     console.error(`Error updating animal with id ${id}:`, error);
