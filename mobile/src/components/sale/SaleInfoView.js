@@ -1,15 +1,20 @@
 import React, { useEffect } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Share } from "react-native";
+import * as Sharing from "expo-sharing";
 import { styled } from "dripsy";
 import { useDispatch, useSelector } from "react-redux";
-import NotFound from "../EmptyState/NotFound";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
 import { getSale } from "../../features/saleSlice";
 import CardIcon from "../global/CardIcon";
 import { getPickedUpRatio } from "../../helpers/AnimalHelpers";
 import { useTranslation } from "react-i18next";
+import Button from "../global/Button";
+import Colors from "../../utils/Colors";
+import saleApi from "../../api/saleApi";
+import { formatPdfBase64 } from "../../utils/Global";
 
+// import Share from "react-native-share";
 
 const Container = styled(View)({
   flex: 1,
@@ -30,6 +35,23 @@ export default function SaleInfoView({ id }) {
       console.log("unmount");
     };
   }, []);
+
+  const shareSaleInvoice = async () => {
+    console.log("salam");
+
+    // try {
+    //   const response = await saleApi.fetchSaleInvoice(id);
+    //   const { filename, pdfBase64 } = response;
+    //   console.log({ response });
+
+    //   const showError = await sharePDF(formatPdfBase64(pdfBase64), filename);
+    //   if (showError) {
+    //     console.log("err");
+    //   }
+    // } catch (error) {
+    //   console.error("Error details:", error);
+    // }
+  };
 
   const { sale, loading, error } = useSelector(({ sales }) => sales);
   console.log({ animals: sale?.animals });
@@ -100,6 +122,60 @@ export default function SaleInfoView({ id }) {
           text={t("common.picked_up_ratio")}
           subText={getPickedUpRatio(sale.animals)}
         />
+      </Container>
+      <Container sx={{ padding: 16 }}>
+        <Button
+          type="primary"
+          style={{
+            padding: 12,
+            marginRight: 12,
+            marginLeft: 12,
+            marginBottom: 8,
+            justifyContent: "center",
+            alignItems: "center",
+
+            width: "100%",
+          }}
+          textStyle={{
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "center",
+            fontSize: 16,
+          }}
+          icon={{
+            name: "handshake-o",
+            color: Colors.white,
+          }}
+          // onPress={() => setDialogVisible(true)}
+        >
+          Close Sale
+        </Button>
+        <Button
+          type="secondary"
+          style={{
+            padding: 12,
+            marginRight: 12,
+            marginLeft: 12,
+            marginBottom: 8,
+            justifyContent: "center",
+            alignItems: "center",
+
+            width: "100%",
+          }}
+          textStyle={{
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "center",
+            fontSize: 16,
+          }}
+          icon={{
+            name: "share-alt",
+            color: Colors.white,
+          }}
+          onPress={() => shareSaleInvoice()}
+        >
+          Share
+        </Button>
       </Container>
     </ScrollView>
   );

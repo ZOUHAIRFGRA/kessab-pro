@@ -1,13 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchSales, createSale, updateSale, deleteSale, fetchSaleById } from "../api/saleApi";
-import  SaleService  from "../api/saleApi";
-
+import {
+  fetchSales,
+  createSale,
+  updateSale,
+  deleteSale,
+  fetchSaleById,
+} from "../api/saleApi";
+import SaleService from "../api/saleApi";
 
 export const getSales = createAsyncThunk("sales/fetchAll", async () => {
   const response = await SaleService.fetchSales();
   return response;
 });
-
 
 export const getSale = createAsyncThunk("sales/get", async (id) => {
   const response = await SaleService.fetchSaleById(id);
@@ -20,23 +24,24 @@ export const addSale = createAsyncThunk("sales/add", async (sale) => {
   return response;
 });
 
-
-export const editSale = createAsyncThunk("sales/update", async ({ id, updatedSale }) => {
-  const response = await updateSale(id, updatedSale);
-  return response;
-});
-
+export const editSale = createAsyncThunk(
+  "sales/update",
+  async ({ id, updatedSale }) => {
+    const response = await updateSale(id, updatedSale);
+    return response;
+  }
+);
 
 export const removeSale = createAsyncThunk("sales/delete", async (id) => {
   await deleteSale(id);
-  return id; 
+  return id;
 });
 
 const saleSlice = createSlice({
   name: "sales",
   initialState: {
     sales: [],
-    sale: null,  
+    sale: null,
     loading: false,
     error: null,
     page: 0,
@@ -49,7 +54,7 @@ const saleSlice = createSlice({
       })
       .addCase(getSales.fulfilled, (state, action) => {
         state.loading = false;
-        state.sales = action.payload;
+        state.sales = action.payload.content;
       })
       .addCase(getSales.rejected, (state, action) => {
         state.loading = false;
@@ -62,7 +67,6 @@ const saleSlice = createSlice({
       .addCase(getSale.fulfilled, (state, action) => {
         state.loading = false;
         state.sale = action.payload;
-        
       })
       .addCase(addSale.fulfilled, (state, action) => {
         state.sales.push(action.payload);
