@@ -46,12 +46,5 @@ public class Sale extends BaseEntity implements UserAware {
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Transaction> transactions = new ArrayList<>();
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public List<UUID> getAnimalIds() {
-        List<UUID> animalIds = new ArrayList<>();
-        for (Animal animal : animals) {
-            animalIds.add(animal.getId());
-        }
-        return animalIds;
-    }
+
 }

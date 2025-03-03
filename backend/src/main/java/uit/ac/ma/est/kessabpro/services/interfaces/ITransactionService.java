@@ -1,5 +1,7 @@
 package uit.ac.ma.est.kessabpro.services.interfaces;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import uit.ac.ma.est.kessabpro.models.dto.TransactionDTO;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 
@@ -13,9 +15,7 @@ public interface ITransactionService {
     List<Transaction> getTransactionBySaleId(UUID saleId);
     List<Transaction> getTransactionByBuyerId(UUID buyerId);
     Transaction createTransaction(Transaction transactionDTO);
-    Transaction updateTransaction(UUID id, Transaction updatedTransaction);
     void deleteTransaction(UUID id);
-
-    List<Double> testFindAmountsBySaleId(UUID saleId);
+    public Page<Transaction> getAllTransactions(Pageable pageable);
 
 }

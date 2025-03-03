@@ -2,6 +2,8 @@ package uit.ac.ma.est.kessabpro.services.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 import uit.ac.ma.est.kessabpro.repositories.BuyerRepository;
@@ -55,5 +57,10 @@ public class BuyerService implements IBuyerService {
     public void deleteBuyer(UUID id) {
         Buyer existingBuyer = getBuyerById(id);
         buyerRepository.delete(existingBuyer);
+    }
+
+    @Override
+    public Page<Buyer> findByFullNameOrCin(String fullName, String cin, Pageable pageable) {
+        return buyerRepository.findByFullNameOrCin(fullName, cin, pageable);
     }
 }

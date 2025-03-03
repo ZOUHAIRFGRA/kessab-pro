@@ -3,10 +3,15 @@ package uit.ac.ma.est.kessabpro.controllers;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
 import uit.ac.ma.est.kessabpro.mappers.SaleMapper;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
@@ -59,12 +64,6 @@ public class SaleController {
         return ResponseEntity.ok(saleMapper.toSaleDTO(sale));
     }
 
-    @GetMapping
-    public ResponseEntity<List<SaleDTOResponse>> getAllSales() {
-        List<Sale> sales = saleService.getAllSales();
-        return ResponseEntity.ok(saleMapper.toSaleDTOList(sales));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<SaleDTOResponse> updateSale(@PathVariable UUID id, @RequestBody Sale sale, @RequestParam List<UUID> newAnimalIds) {
         Sale updatedSale = saleService.updateSale(id, sale, newAnimalIds);
@@ -75,6 +74,25 @@ public class SaleController {
     public ResponseEntity<Void> deleteSale(@PathVariable UUID id) {
         saleService.deleteSale(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<SaleDTOResponse>> getSales(
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) UUID categoryId,
+            @RequestParam(required = false) PaymentStatus paymentStatus,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "saleDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Sale> sales = saleService.getFilteredSales(fullName, categoryId, paymentStatus, pageable);
+        Page<SaleDTOResponse> saleDTOs = sales.map(sale -> (new SaleMapper()).toSaleDTO(sale));
+
+        return ResponseEntity.ok(saleDTOs);
     }
 
 

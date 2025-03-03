@@ -1,6 +1,8 @@
 package uit.ac.ma.est.kessabpro.mappers;
 
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 import static uit.ac.ma.est.kessabpro.mappers.BuyerMapper.toBuyerDTO;
 
 @Component
+@NoArgsConstructor
 public class SaleMapper {
 
     SaleService saleService = new SaleService();

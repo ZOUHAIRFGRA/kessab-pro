@@ -8,4 +8,5 @@ public interface IUserService {
     User getAuthenticatedUser();
     User updateUser(UUID id, User updatedUser);
     List<User> getAllUsers();
+    User getUserById(UUID id);
 }

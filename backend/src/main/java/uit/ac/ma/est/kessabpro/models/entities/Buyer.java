@@ -2,6 +2,9 @@ package uit.ac.ma.est.kessabpro.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.springframework.beans.factory.annotation.Autowired;
 import uit.ac.ma.est.kessabpro.auditing.UserAware;
 import uit.ac.ma.est.kessabpro.services.implementations.AuthService;
@@ -15,6 +18,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FilterDef(name = "userFilter", parameters = @ParamDef(name = "userId", type = UUID.class))
+@Filter(name = "userFilter", condition = "user_id = :userId")
 public class Buyer extends BaseEntity implements UserAware {
 
     @Id

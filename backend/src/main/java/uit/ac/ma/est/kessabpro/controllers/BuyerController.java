@@ -2,6 +2,10 @@ package uit.ac.ma.est.kessabpro.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uit.ac.ma.est.kessabpro.mappers.BuyerMapper;
@@ -34,10 +38,22 @@ public class BuyerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BuyerDTOResponse>> getAllBuyers() {
-        List<Buyer> buyers = buyerService.getAllBuyers();
-        return ResponseEntity.ok(BuyerMapper.toBuyerDTOList(buyers));
+    public ResponseEntity<Page<BuyerDTOResponse>> getBuyers(
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String cin,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "fullName") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Buyer> buyers = buyerService.findByFullNameOrCin(fullName, cin, pageable);
+        Page<BuyerDTOResponse> buyersDTOs = buyers.map(BuyerMapper::toBuyerDTO);
+        return ResponseEntity.ok(buyersDTOs);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<BuyerDTOResponse> updateBuyer(@PathVariable UUID id, @RequestBody BuyerDTORequest buyerDTO) {
