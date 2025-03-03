@@ -28,6 +28,4 @@ public class AnimalActivitiesLog extends BaseEntity {
 
     private LocalDate logDate;
     private String activity;
-
-
 }

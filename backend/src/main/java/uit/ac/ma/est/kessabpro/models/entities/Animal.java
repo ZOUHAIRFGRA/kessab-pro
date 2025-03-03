@@ -51,6 +51,12 @@ public class Animal extends BaseEntity {
     @Nullable
     private String imagePaths;
 
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnimalActivitiesLog> activityLogs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnimalMedicalLog> medicalLogs = new ArrayList<>();
+
     public List<String> getImagePaths() {
         try {
             if (imagePaths == null || imagePaths.isEmpty()) {
