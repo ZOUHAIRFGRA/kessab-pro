@@ -7,6 +7,15 @@
     "NOT_PAID": "Non payé"
   },
   "common": {
+    "search_too_short": "La recherche doit comporter plus de 3 caractères",
+    "nav_hint_dashboard": "Tableau de bord",
+    "nav_hint_qrscanner": "Scanner QR",
+    "nav_hint_profile": "Profil",
+
+    "action_successful": "Action réussie!",
+    "something_went_wrong": "Quelque chose s'est mal passé.",
+    "info_message": "Ceci est un message informatif.",
+    
     "kessabPro": "Kessab Pro",
     "search_placeholder": "Rechercher un mouton par numéro",
     "management": "Gestion",
