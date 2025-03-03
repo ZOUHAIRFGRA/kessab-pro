@@ -7,6 +7,13 @@
     "NOT_PAID": "غير مدفوع"
   },
   "common": {
+    "search_too_short": "البحث يجب أن يكون أطول من 3 أحرف",
+    "nav_hint_dashboard": "لوحة التحكم",
+    "nav_hint_qrscanner": "ماسح QR",
+    "nav_hint_profile": "الملف الشخصي",
+    "action_successful": "تمت العملية بنجاح!",
+    "something_went_wrong": "حدث خطأ ما.",
+    "info_message": "هذه رسالة معلوماتية.",
     "kessabPro": "كساب برو",
     "HomePage": "الصفحة الرئيسية",
     "search_placeholder": "بحث عن خروف بالرقم",
