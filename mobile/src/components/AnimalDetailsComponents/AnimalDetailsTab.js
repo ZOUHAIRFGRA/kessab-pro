@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { View, Dimensions, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { getAnimalById, editAnimal, deleteAnimal } from "../../features/animalSlice";
+import { getAnimalById, editAnimal, removeAnimal } from "../../features/animalSlice";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../../hooks/useToast";
 import { ImageCarousel } from "./ImageCarousel";
@@ -108,7 +108,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
   };
 
   const handleDeleteAnimal = () => {
-    dispatch(deleteAnimal(animalId))
+    dispatch(removeAnimal(animalId))
       .then(() => {
         showSuccessToast(t("Animal deleted successfully"));
         navigation.goBack();
