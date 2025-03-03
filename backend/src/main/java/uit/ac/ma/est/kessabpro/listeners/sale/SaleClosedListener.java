@@ -1,18 +1,16 @@
-package uit.ac.ma.est.kessabpro.events.listeners.Sale;
+package uit.ac.ma.est.kessabpro.listeners.sale;
 
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
-import uit.ac.ma.est.kessabpro.events.Sale.SaleClosedEvent;
-import uit.ac.ma.est.kessabpro.helpers.DateHelper;
+import uit.ac.ma.est.kessabpro.events.sale.SaleClosedEvent;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
 import uit.ac.ma.est.kessabpro.services.implementations.TransactionService;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Component
 public class SaleClosedListener {

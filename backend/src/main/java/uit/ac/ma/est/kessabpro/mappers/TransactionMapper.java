@@ -31,12 +31,16 @@ public class TransactionMapper {
 
 
     public static Transaction toTransactionEntity(TransactionDTORequest transaction) {
-        return Transaction.builder()
-                .method(PaymentMethod.valueOf(transaction.method()))
-                .sale(Sale.builder().id(UUID.fromString(transaction.sale_id())).build())
+        Transaction.TransactionBuilder transactionBuilder = Transaction.builder();
+        transactionBuilder.method(PaymentMethod.valueOf(transaction.method()))
                 .amount(transaction.amount())
-                .transactionDate(DateHelper.parseStringDate(transaction.transactionDate()))
-                .build();
+                .transactionDate(DateHelper.parseStringDate(transaction.transactionDate()));
+        if (transaction.sale_id() != null) {
+            transactionBuilder.sale(Sale.builder().id(UUID.fromString(transaction.sale_id())).build());
+
+        }
+        return transactionBuilder.build();
+
     }
 
 

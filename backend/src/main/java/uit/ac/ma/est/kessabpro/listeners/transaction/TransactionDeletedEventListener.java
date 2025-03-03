@@ -1,10 +1,9 @@
-package uit.ac.ma.est.kessabpro.events.listeners.Transaction;
+package uit.ac.ma.est.kessabpro.listeners.transaction;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import uit.ac.ma.est.kessabpro.events.Transaction.TransactionDeletedEvent;
+import uit.ac.ma.est.kessabpro.events.transaction.TransactionDeletedEvent;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
-import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
 import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
 

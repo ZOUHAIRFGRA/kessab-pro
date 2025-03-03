@@ -1,16 +1,14 @@
-package uit.ac.ma.est.kessabpro.events.listeners.Transaction;
+package uit.ac.ma.est.kessabpro.listeners.transaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
-import uit.ac.ma.est.kessabpro.events.Transaction.TransactionCreatedEvent;
+import uit.ac.ma.est.kessabpro.events.transaction.TransactionCreatedEvent;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
 import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
-
-import java.util.List;
 
 @Component
 public class TransactionCreatedEventListener {

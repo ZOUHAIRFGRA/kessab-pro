@@ -10,8 +10,17 @@ import java.util.UUID;
 
 public interface SaleRepository extends JpaRepository<Sale, UUID> {
 
-    @Query("SELECT s FROM Sale s LEFT JOIN FETCH s.animals")
-    List<Sale> findAllWithAnimals();
+    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.sale.id IN :saleIds")
+    Double sumAmountBySaleIdIn(List<UUID> saleIds);
 
+    @Query("SELECT SUM(s.agreedAmount - COALESCE((SELECT SUM(t.amount) FROM Transaction t WHERE t.sale = s), 0)) " +
+            "FROM Sale s WHERE s.buyer.id = :buyerId")
+    Double sumRemainingAmountByBuyerId(UUID buyerId);
+
+    @Query("SELECT COUNT(a) FROM Sale s JOIN s.animals a WHERE s.buyer.id = :buyerId")
+    Integer countAnimalsByBuyerId(UUID buyerId);
+
+    @Query("SELECT COUNT(a) FROM Sale s JOIN s.animals a WHERE s.buyer.id = :buyerId AND a.pickUpDate IS NULL")
+    Integer countAnimalsNotPickedUpByBuyerId(UUID buyerId);
 
 }
