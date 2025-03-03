@@ -8,3 +8,7 @@ export const formatDate = (date) => {
   const year = d.getFullYear();
   return `${day}-${month}-${year}`;
 };
+
+export const formatPdfBase64 = (base64) => {
+  return `data:application/pdf;base64,${base64}`;
+};

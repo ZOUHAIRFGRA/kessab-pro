@@ -32,7 +32,8 @@
           "cameraPermission": "The app uses your camera to let you share photos with your friends."
         }
       ],
-      ["expo-localization"]
+      "expo-localization",
+      "expo-asset"
     ]
   }
 }

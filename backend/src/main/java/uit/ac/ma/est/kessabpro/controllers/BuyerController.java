@@ -25,10 +25,10 @@ public class BuyerController {
     private BuyerService buyerService;
 
     @PostMapping
-    public ResponseEntity<Buyer> createBuyer(@Valid @RequestBody BuyerDTORequest buyerDTO) {
+    public ResponseEntity<BuyerDTOResponse> createBuyer(@Valid @RequestBody BuyerDTORequest buyerDTO) {
         Buyer buyerEntity = BuyerMapper.toBuyerEntity(buyerDTO);
         Buyer buyer = buyerService.createBuyer(buyerEntity);
-        return ResponseEntity.ok(buyer);
+        return ResponseEntity.ok(BuyerMapper.toBuyerDTO(buyer));
     }
 
     @GetMapping("/{id}")

@@ -1,22 +1,19 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
 import uit.ac.ma.est.kessabpro.services.implementations.TransactionService;
 import uit.ac.ma.est.kessabpro.services.interfaces.DocumentExport;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/pdf")
@@ -32,28 +29,30 @@ public class PDFExportController {
         this.saleService = saleService;
     }
 
-    @GetMapping(value = "/transaction/{id}")
-    public void exportTransactionPDFDocument(HttpServletResponse response, @PathVariable UUID id) throws IOException {
+    @PostMapping(value = "/transaction/{id}")
+    public void exportTransactionPDFDocument(ByteArrayOutputStream  response, @PathVariable UUID id) throws IOException {
         Transaction transaction = transactionService.getTransactionById(id);
-        response.setContentType("application/pdf");
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        String currentDateTime = dateFormat.format(new Date());
-        String HeaderKey = "Content-Disposition";
-        String HeaderValue = "attachment; filename=\"" + currentDateTime + ".pdf\"";
-        response.setHeader(HeaderKey, HeaderValue);
         pDFService.exportTransactionDocument(response, transaction);
     }
 
-    @GetMapping(value = "/sale/{id}")
-    public void exportSalePDFDocument(HttpServletResponse response, @PathVariable UUID id) throws IOException {
+    @PostMapping(value = "/sale/{id}")
+    public ResponseEntity<Map<String, String>> exportSalePDFDocument(HttpServletResponse response, @PathVariable UUID id) throws IOException {
         Sale sale = saleService.getSaleById(id);
-        response.setContentType("application/pdf");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        String currentDateTime = dateFormat.format(new Date());
-        String HeaderKey = "Content-Disposition";
-        String HeaderValue = "attachment; filename=\"" + currentDateTime + ".pdf\"";
-        response.setHeader(HeaderKey, HeaderValue);
-        pDFService.exportSaleDocument(response, sale);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // Modify your service to use ByteArrayOutputStream instead of HttpServletResponse
+        pDFService.exportSaleDocument( baos, sale);
+
+        // Convert PDF bytes to Base64
+        String base64Pdf = Base64.getEncoder().encodeToString(baos.toByteArray());
+
+        // Return the Base64 string as JSON
+        Map<String, String> jsonResponse = new HashMap<>();
+        jsonResponse.put("pdfBase64", base64Pdf);
+        jsonResponse.put("filename", "sale_" + id + ".pdf");
+
+        return ResponseEntity.ok(jsonResponse);
     }
 
 
