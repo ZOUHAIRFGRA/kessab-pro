@@ -63,40 +63,37 @@ public class PDFGenerator implements DocumentExport {
         }
     }
 
+
+
     @Override
     public void exportTransactionDocument(ByteArrayOutputStream response, Transaction transaction) throws IOException {
+        Document document = new Document(PageSize.A4);
 
+        try (document) {
+            setupDocument(document, response, "transaction_" + transaction.getId() + ".pdf");
+            addLogo(document);
+            addTitle(document, "REÇU DE TRANSACTION DE VENTE");
+
+            addTransactionDetailSection(document, transaction);
+
+            Sale sale = transaction.getSale();
+            if (sale != null) {
+                addSaleSection(document, sale);
+
+                Buyer buyer = sale.getBuyer();
+                if (buyer != null) {
+                    addBuyerSection(document, buyer);
+                }
+
+                addQRCodesSection(document, sale, buyer);
+            }
+
+            addFooter(document);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-//    @Override
-//    public void exportTransactionDocument(HttpServletResponse response, Transaction transaction) throws IOException {
-//        Document document = new Document(PageSize.A4);
-//
-//        try (document) {
-//            setupDocument(document, response, "transaction_" + transaction.getId() + ".pdf");
-//            addLogo(document);
-//            addTitle(document, "REÇU DE TRANSACTION DE VENTE");
-//
-//            addTransactionDetailSection(document, transaction);
-//
-//            Sale sale = transaction.getSale();
-//            if (sale != null) {
-//                addSaleSection(document, sale);
-//
-//                Buyer buyer = sale.getBuyer();
-//                if (buyer != null) {
-//                    addBuyerSection(document, buyer);
-//                }
-//
-//                addQRCodesSection(document, sale, buyer);
-//            }
-
-//            addFooter(document);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private void setupDocument(Document document, ByteArrayOutputStream  response, String filename) throws Exception {
         PdfWriter.getInstance(document, response);

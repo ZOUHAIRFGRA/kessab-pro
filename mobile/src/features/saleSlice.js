@@ -1,11 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  fetchSales,
-  createSale,
-  updateSale,
-  deleteSale,
-  fetchSaleById,
-} from "../api/saleApi";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
+import saleApi, { createSale, updateSale, deleteSale } from "../api/saleApi";
 import SaleService from "../api/saleApi";
 
 export const getSales = createAsyncThunk("sales/fetchAll", async () => {
@@ -17,7 +13,6 @@ export const getSale = createAsyncThunk("sales/get", async (id) => {
   const response = await SaleService.fetchSaleById(id);
   return response;
 });
-
 
 export const addSale = createAsyncThunk("sales/add", async (sale) => {
   const response = await createSale(sale);
@@ -36,6 +31,20 @@ export const removeSale = createAsyncThunk("sales/delete", async (id) => {
   await deleteSale(id);
   return id;
 });
+
+export const exportSaleInvoice = async (id) => {
+  try {
+    const response = await saleApi.fetchSaleInvoice(id);
+    const { filename, pdfBase64 } = response;
+    let filepath = `${FileSystem.documentDirectory}/${filename}`;
+    await FileSystem.writeAsStringAsync(filepath, pdfBase64, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    await Sharing.shareAsync(filepath, { mimeType: "application/pdf" });
+  } catch (e) {
+    alert(e.message);
+  }
+};
 
 const saleSlice = createSlice({
   name: "sales",
