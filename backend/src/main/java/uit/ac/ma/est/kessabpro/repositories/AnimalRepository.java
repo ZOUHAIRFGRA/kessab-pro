@@ -20,4 +20,5 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
     List<Animal> findByUser_IdAndSale_Id(UUID userId, UUID saleId);
     List<Animal> findByUser_IdAndSale_Buyer_Id(UUID userId, UUID buyerId);
     List<Animal> findByUser_IdAndPickUpDateNull(UUID userId);
+    Long countByUser_Id(UUID userId);
 }

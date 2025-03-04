@@ -104,6 +104,11 @@ public class AnimalController {
         return ResponseEntity.ok(animalDTOPage);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> getAnimalsCount() {
+        return ResponseEntity.ok(animalService.getAnimalsCount());
+    }
+
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnimalDTO> updateAnimal(@PathVariable UUID id, @ModelAttribute AnimalDTO animalDTO) {
         try {

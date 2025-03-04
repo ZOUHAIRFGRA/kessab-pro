@@ -69,6 +69,11 @@ public class AnimalService implements IAnimalService {
     }
 
     @Override
+    public Long getAnimalsCount() {
+        UUID userId = getLoggedInUserId();
+        return Long.valueOf(animalRepository.countByUser_Id(userId));
+    }
+    @Override
     public Optional<Animal> getAnimalById(UUID id) {
         UUID userId = getLoggedInUserId();
         return animalRepository.findById(id).filter(animal -> animal.getUser().getId().equals(userId));
