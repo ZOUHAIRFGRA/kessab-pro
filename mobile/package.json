@@ -51,7 +51,8 @@
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-redux": "^9.2.0",
-    "use-debounce": "^10.0.4"
+    "use-debounce": "^10.0.4",
+    "expo-file-system": "~18.0.11"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -26,9 +26,9 @@ const SaleDetailScreen = ({ route }) => {
 
           tabBarStyle: {
             height: 65,
-            backgroundColor: Colors.secondary,
+            backgroundColor: Colors.secondaryLight,
           },
-          tabBarActiveTintColor: Colors.white,
+          tabBarActiveTintColor: Colors.secondary,
           tabBarInactiveTintColor: Colors.primaryLight,
           tabBarLabelStyle: { fontSize: 13, fontWeight: "bold" },
           tabBarPosition: "top",

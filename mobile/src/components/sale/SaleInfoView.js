@@ -1,18 +1,17 @@
 import React, { useEffect } from "react";
 import { View, Text, ScrollView, Share } from "react-native";
-import * as Sharing from "expo-sharing";
 import { styled } from "dripsy";
 import { useDispatch, useSelector } from "react-redux";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-import { getSale } from "../../features/saleSlice";
+import { getSale, exportSaleInvoice } from "../../features/saleSlice";
 import CardIcon from "../global/CardIcon";
 import { getPickedUpRatio } from "../../helpers/AnimalHelpers";
 import { useTranslation } from "react-i18next";
 import Button from "../global/Button";
 import Colors from "../../utils/Colors";
-import saleApi from "../../api/saleApi";
-import { formatPdfBase64 } from "../../utils/Global";
+
+// import * as Permissions from "expo-permissions";
 
 // import Share from "react-native-share";
 
@@ -35,23 +34,6 @@ export default function SaleInfoView({ id }) {
       console.log("unmount");
     };
   }, []);
-
-  const shareSaleInvoice = async () => {
-    console.log("salam");
-
-    // try {
-    //   const response = await saleApi.fetchSaleInvoice(id);
-    //   const { filename, pdfBase64 } = response;
-    //   console.log({ response });
-
-    //   const showError = await sharePDF(formatPdfBase64(pdfBase64), filename);
-    //   if (showError) {
-    //     console.log("err");
-    //   }
-    // } catch (error) {
-    //   console.error("Error details:", error);
-    // }
-  };
 
   const { sale, loading, error } = useSelector(({ sales }) => sales);
   console.log({ animals: sale?.animals });
@@ -172,9 +154,9 @@ export default function SaleInfoView({ id }) {
             name: "share-alt",
             color: Colors.white,
           }}
-          onPress={() => shareSaleInvoice()}
+          onPress={() => exportSaleInvoice(id)}
         >
-          Share
+          Share / Print
         </Button>
       </Container>
     </ScrollView>
