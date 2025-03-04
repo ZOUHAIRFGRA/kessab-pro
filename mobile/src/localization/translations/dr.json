@@ -103,6 +103,8 @@
     "Purchases": "المشتريات",
     "AddNewClient": "زيد كليان جديد",
     "AddNewSale": "زيد مبيعة جديدة",
+    "loading_dashboard": "جاري تحميل لوحة التحكم",
+    "data_fetch_error": "حدث خطأ أثناء جلب البيانات",
     "payment": "لخلاص",
     "SearchByBuyerNameOrCIN": "بحث بالاسم ديال لكليان ولا ر.ب.و",
     "buyer_name": "اسم لكليان",

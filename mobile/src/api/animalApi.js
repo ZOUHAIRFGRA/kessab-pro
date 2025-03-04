@@ -18,6 +18,16 @@ export const fetchAnimals = async (
   }
 };
 
+export const fetchAnimalsCount = async () => {
+  try {
+    const response = await axiosInstance.get("/animals/count");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching animals count:", error);
+    throw error;
+  }
+}
+
 export const fetchAnimalsBySale = (saleId) => {
   return axiosInstance.get(`/animals/by-sale/${saleId}`);
 };

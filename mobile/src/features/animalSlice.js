@@ -8,6 +8,7 @@ import {
   fetchAnimalsBySale,
   fetchAnimalsByBuyer,
   fetchUnsoldAnimals,
+  fetchAnimalsCount,
 } from "../api/animalApi";
 
 export const getAnimalsBySale = createAsyncThunk(
@@ -33,6 +34,10 @@ export const getAnimals = createAsyncThunk(
   }
 );
 
+export const getAnimalsCount = createAsyncThunk("animals/count", async () => {
+  const response = await fetchAnimalsCount();
+  return response.data;
+});
 export const getUnsoldAnimals = createAsyncThunk(
   "animals/fetchUnsold",
   async () => {
@@ -76,6 +81,7 @@ const animalSlice = createSlice({
     error: null,
     page: 0,
     totalPages: 0,
+    totalAnimals: 0,
   },
   reducers: {
     resetAnimals: (state) => {
@@ -85,6 +91,7 @@ const animalSlice = createSlice({
       state.error = null;
       state.page = 0;
       state.totalPages = 0;
+      state.totalAnimals = 0;
     },
   },
   extraReducers: (builder) => {
@@ -97,11 +104,25 @@ const animalSlice = createSlice({
         state.animals = action.payload.content;
         state.page = action.payload.page.number;
         state.totalPages = action.payload.page.totalPages;
+        state.totalAnimals = action.payload.page.totalElements;
       })
       .addCase(getAnimals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch animals.";
       })
+
+      .addCase(getAnimalsCount.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAnimalsCount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.totalAnimals = action.payload;
+      })
+      .addCase(getAnimalsCount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch animals count.";
+      })
+
       .addCase(getUnsoldAnimals.pending, (state) => {
         state.loading = true;
       })
@@ -126,17 +147,32 @@ const animalSlice = createSlice({
         state.error = action.error.message || "Failed to fetch animal details.";
       })
 
+
       .addCase(addAnimal.fulfilled, (state, action) => {
         state.animals.push(action.payload);
       })
+      .addCase(addAnimal.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to add animal.";
+      })
+
+
       .addCase(editAnimal.fulfilled, (state, action) => {
         state.animals = state.animals.map((a) =>
           a.id === action.payload.id ? action.payload : a
         );
       })
+      .addCase(editAnimal.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to update animal.";
+      })
+
+
       .addCase(removeAnimal.fulfilled, (state, action) => {
         state.animals = state.animals.filter((a) => a.id !== action.payload);
       })
+      .addCase(removeAnimal.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to delete animal.";
+      })
+
 
       .addCase(getAnimalsBySale.pending, (state) => {
         state.loading = true;
@@ -150,6 +186,8 @@ const animalSlice = createSlice({
         state.error =
           action.error.message || "Failed to fetch animals by sale.";
       })
+
+
 
       .addCase(getAnimalsByBuyer.pending, (state) => {
         state.loading = true;
