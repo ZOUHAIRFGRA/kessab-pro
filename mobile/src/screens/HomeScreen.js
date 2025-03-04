@@ -1,5 +1,5 @@
 import { styled } from "dripsy";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -30,9 +30,10 @@ export default function HomeScreen() {
   const [debouncedSearchText] = useDebounce(searchText, 300);
   const [isAddAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
 
-  useEffect(() => {
-    searchInputRef.current?.focus();
-  }, []);
+  // Removed useEffect that auto-focused the input
+  // useEffect(() => {
+  //   searchInputRef.current?.focus();
+  // }, []);
 
   const handleSearch = () => {
     if (debouncedSearchText.length < 3) {
@@ -69,7 +70,6 @@ export default function HomeScreen() {
         <WeatherWidget />
       </WeatherWidgetContainer>
 
-      
       <SearchInputContainer>
         <SearchInput
           ref={searchInputRef}
@@ -133,7 +133,6 @@ export default function HomeScreen() {
           <BottomNavItem
             key={item.route}
             onPress={() => navigation.navigate(item.route)}
-            isActive={item.route === "Dashboard"}
             accessibilityRole="button"
             accessibilityLabel={`Navigate to ${item.label}`}
             accessibilityHint={t(`common.nav_hint_${item.route.toLowerCase()}`)}
@@ -154,7 +153,7 @@ const Container = styled(View)({
   flex: 1,
   padding: 16,
   backgroundColor: "background",
-  gap: 12, 
+  gap: 12,
 });
 
 const WeatherWidgetContainer = styled(View)({
@@ -213,8 +212,8 @@ const GridItemText = styled(Text)({
 });
 
 const HorizontalScrollContainer = styled(View)({
-  flexGrow: 0, 
-  marginBottom: 16, 
+  flexGrow: 0,
+  marginBottom: 16,
 });
 
 const HorizontalScroll = styled(ScrollView)({
@@ -230,7 +229,7 @@ const HorizontalActionItem = styled(TouchableOpacity)(({ pressed }) => ({
   height: 120,
   justifyContent: "space-around",
   alignItems: "center",
-  marginRight: 12, 
+  marginRight: 12,
   borderWidth: 1,
   borderColor: "#ddd",
   shadowColor: "#000",
@@ -260,7 +259,7 @@ const BottomNav = styled(View)({
   borderColor: "border",
   borderRadius: 10,
   backgroundColor: "navBackground",
-  padding: 8
+  padding: 8,
 });
 
 const BottomNavItem = styled(TouchableOpacity)(({ isActive }) => ({
