@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import uit.ac.ma.est.kessabpro.auditing.UserAware;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import jakarta.persistence.*;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 @Filter(name = "userFilter", condition = "user_id = :userId")
 public class Sale extends BaseEntity implements UserAware {
 

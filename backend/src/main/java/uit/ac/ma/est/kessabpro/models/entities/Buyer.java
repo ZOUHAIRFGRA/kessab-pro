@@ -18,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FilterDef(name = "userFilter", parameters = @ParamDef(name = "userId", type = UUID.class))
 @Filter(name = "userFilter", condition = "user_id = :userId")
 public class Buyer extends BaseEntity implements UserAware {
 

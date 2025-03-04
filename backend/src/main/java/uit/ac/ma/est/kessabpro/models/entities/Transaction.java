@@ -2,6 +2,8 @@ package uit.ac.ma.est.kessabpro.models.entities;
 
 import lombok.*;
 import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import uit.ac.ma.est.kessabpro.auditing.UserAware;
 import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
 import jakarta.persistence.*;
