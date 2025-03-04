@@ -39,7 +39,7 @@ const AddSaleScreen = ({ route, navigation }) => {
   } = useSelector((states) => states.buyers);
 
   const {
-    animals,
+    unsoldAnimals : animals,
     loading: animalsLoading,
     error: animalsError,
   } = useSelector((states) => states.animals);
