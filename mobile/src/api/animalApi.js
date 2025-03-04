@@ -103,6 +103,16 @@ export const fetchAnimalActivitiesLogs = async (animalId) => {
   }
 };
 
+export const fetchAllAnimalActivitiesLogs = async () => {
+  try {
+    const response = await axiosInstance.get(`/animal-activities-logs`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all activities logs:", error);
+    throw error;
+  }
+};
+
 export const updateAnimalActivitiesLog = async (logId, logData) => {
   try {
     const response = await axiosInstance.put(

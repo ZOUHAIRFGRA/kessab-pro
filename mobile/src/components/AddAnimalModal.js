@@ -8,7 +8,6 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  Button,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { styled } from "dripsy";
@@ -16,23 +15,25 @@ import { format } from "date-fns";
 import { useImagePicker } from "../hooks/useImagePicker";
 import { useCategorySelector } from "../hooks/useCategorySelector";
 import { useAnimalForm } from "../hooks/useAnimalForm";
-import IconButton from "../components/AnimalDetailsComponents/IconButton";
-import Input from "../components/Input";
-import AddCategory from "../components/AddCategory";
-import ImagePickerButton from "../components/ImagePickerButton";
+import IconButton from "./AnimalDetailsComponents/IconButton";
+import Input from "./Input";
+import AddCategory from "./AddCategory";
+import ImagePickerButton from "./ImagePickerButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
-import {
-  AddButton,
-  CancelButton,
-  CnclButton,
-} from "../components/AnimalDetailsComponents/sharedStyles";
+import { fetchCategoriesIcons } from "../features/iconsSlice";
+import { AddButton, CnclButton } from './AnimalDetailsComponents/sharedStyles';
+import { Button } from "@rneui/themed";
 
 const AddAnimalModal = ({ visible, onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.categories);
   const { icons } = useSelector((state) => state.icons);
+
+  useEffect(() => {
+    dispatch(fetchCategoriesIcons());
+  }, [dispatch]);
 
   const {
     tag,
@@ -58,10 +59,7 @@ const AddAnimalModal = ({ visible, onClose }) => {
     handleSubmit,
   } = useAnimalForm(onClose, dispatch);
 
-  const { pickImages, takeImage, removeImage } = useImagePicker(
-    images,
-    setImages
-  );
+  const { pickImages, takeImage, removeImage } = useImagePicker(images, setImages);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const [selectedImage, setSelectedImage] = useState(null);
@@ -76,8 +74,9 @@ const AddAnimalModal = ({ visible, onClose }) => {
     setNewCategory,
     selectedIcon,
     setSelectedIcon,
-    icons,
-    handleSubmit
+    icons,           
+    handleSubmit,    
+    t                
   );
 
   const handleDateChange = (event, selectedDate) => {
@@ -88,13 +87,13 @@ const AddAnimalModal = ({ visible, onClose }) => {
     }
   };
 
-  const handleImageClick = (imageUri) => {
-    setSelectedImage(imageUri);
-  };
+  const handleImageClick = (imageUri) => setSelectedImage(imageUri);
 
   const closeModal = () => {
     setSelectedImage(null);
+    onClose();
   };
+
   const isRTL = t("dir") === "rtl";
 
   return (
@@ -121,14 +120,10 @@ const AddAnimalModal = ({ visible, onClose }) => {
                   textAlign: isRTL ? "right" : "left",
                 }}
               >
-                {t("common.addAnimal")}{" "}
+                {t("common.addAnimal")}
               </Text>
 
-              <Input
-                placeholder={t("common.tag")}
-                value={tag}
-                onChangeText={setTag}
-              />
+              <Input placeholder={t("common.tag")} value={tag} onChangeText={setTag} />
 
               <View
                 style={{
@@ -202,6 +197,7 @@ const AddAnimalModal = ({ visible, onClose }) => {
                   setSelectedIcon={setSelectedIcon}
                   icons={icons}
                   handleAddCategory={handleAddCategory}
+                  t={t}
                 />
               ) : (
                 <Button
@@ -211,21 +207,14 @@ const AddAnimalModal = ({ visible, onClose }) => {
                 />
               )}
 
-              <ImagePickerButton onPress={pickImages}>
-                {t("common.select_imgs_from_gallery")}
-              </ImagePickerButton>
-              <ImagePickerButton onPress={takeImage}>
-                {t("common.take_photo")}
-              </ImagePickerButton>
+              <ImagePickerButton onPress={pickImages}>{t("common.select_imgs_from_gallery")}</ImagePickerButton>
+              <ImagePickerButton onPress={takeImage}>{t("common.take_photo")}</ImagePickerButton>
 
               <ScrollView horizontal style={{ marginVertical: 10 }}>
                 {images.map((img, index) => (
                   <View key={index} style={{ position: "relative" }}>
                     <TouchableOpacity onPress={() => handleImageClick(img)}>
-                      <Image
-                        source={{ uri: img }}
-                        style={{ width: 80, height: 80, margin: 5 }}
-                      />
+                      <Image source={{ uri: img }} style={{ width: 80, height: 80, margin: 5 }} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => removeImage(index)}

@@ -35,6 +35,7 @@ export const ActivityLogsTab = ({ animalId }) => {
   const { activitiesLogs } = useSelector((state) => state.animalActivitiesLogs);
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const isRTL = t("dir") === "rtl";
   const [editing, setEditing] = useState(null);
   const [editedLog, setEditedLog] = useState({});
   const [newLog, setNewLog] = useState("");
@@ -110,6 +111,7 @@ export const ActivityLogsTab = ({ animalId }) => {
       ]
     );
   };
+
   return (
     <Container>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
@@ -119,12 +121,12 @@ export const ActivityLogsTab = ({ animalId }) => {
               value={newLog}
               onChangeText={setNewLog}
               placeholder={t("common.enter_new_activity")}
+              style={isRTL ? { textAlign: "right" } : { textAlign: "left" }}
             />
-
             <TouchableOpacity
               onPress={() => setShowDatePicker(true)}
               style={{
-                flexDirection: "row",
+                flexDirection: isRTL ? "row-reverse" : "row",
                 alignItems: "center",
                 padding: 10,
                 backgroundColor: "#f0f0f0",
@@ -133,7 +135,9 @@ export const ActivityLogsTab = ({ animalId }) => {
               }}
             >
               <MaterialIcons name="event" size={24} color="gray" />
-              <Text style={{ marginLeft: 8 }}>{logDate.toDateString()}</Text>
+              <Text style={{ marginLeft: isRTL ? 0 : 8, marginRight: isRTL ? 8 : 0 }}>
+                {logDate.toDateString()}
+              </Text>
             </TouchableOpacity>
 
             {showDatePicker && (
@@ -148,7 +152,7 @@ export const ActivityLogsTab = ({ animalId }) => {
               />
             )}
 
-            <ActionButtons>
+            <ActionButtons style={isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }}>
               <SaveButton onPress={handleAddLog}>
                 <MaterialIcons name="check-circle" size={30} color="white" />
               </SaveButton>
@@ -158,15 +162,17 @@ export const ActivityLogsTab = ({ animalId }) => {
             </ActionButtons>
           </View>
         ) : (
-          <AddButton onPress={() => setAdding(true)}>
+          <AddButton onPress={() => setAdding(true)} style={isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }}>
             <MaterialIcons name="add-circle-outline" size={24} color="white" />
-            <AddButtonText>{t("common.add_activity")}</AddButtonText>
+            <AddButtonText style={isRTL ? { marginRight: 8, marginLeft: 0 } : { marginLeft: 8 }}>
+              {t("common.add_activity")}
+            </AddButtonText>
           </AddButton>
         )}
 
         {activitiesLogs.length > 0 ? (
           activitiesLogs.map((log) => (
-            <LogCard key={log.id}>
+            <LogCard key={log.id} style={isRTL ? { direction: "rtl" } : { direction: "ltr" }}>
               {editing === log.id ? (
                 <>
                   <InputField
@@ -174,12 +180,12 @@ export const ActivityLogsTab = ({ animalId }) => {
                     onChangeText={(text) =>
                       setEditedLog({ ...editedLog, activity: text })
                     }
+                    style={isRTL ? { textAlign: "right" } : { textAlign: "left" }}
                   />
-
                   <TouchableOpacity
                     onPress={() => setShowDatePicker(true)}
                     style={{
-                      flexDirection: "row",
+                      flexDirection: isRTL ? "row-reverse" : "row",
                       alignItems: "center",
                       padding: 10,
                       backgroundColor: "#f0f0f0",
@@ -188,7 +194,7 @@ export const ActivityLogsTab = ({ animalId }) => {
                     }}
                   >
                     <MaterialIcons name="event" size={24} color="gray" />
-                    <Text style={{ marginLeft: 8 }}>
+                    <Text style={{ marginLeft: isRTL ? 0 : 8, marginRight: isRTL ? 8 : 0 }}>
                       {editedLog.logDate || t("common.select_date")}
                     </Text>
                   </TouchableOpacity>
@@ -209,7 +215,7 @@ export const ActivityLogsTab = ({ animalId }) => {
                     />
                   )}
 
-                  <ActionButtons>
+                  <ActionButtons style={isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }}>
                     <SaveButton onPress={handleSave}>
                       <MaterialIcons name="save" size={20} color="white" />
                     </SaveButton>
@@ -220,17 +226,31 @@ export const ActivityLogsTab = ({ animalId }) => {
                 </>
               ) : (
                 <>
-                  <LogText>
-                    <MaterialIcons name="event" size={16} color="gray" />{" "}
-                    {log.logDate}
+                  <LogText style={isRTL ? { textAlign: "right" } : {}}>
+                    {isRTL ? (
+                      <>
+                        {log.logDate}{" "}
+                        <MaterialIcons name="event" size={16} color="gray" />
+                      </>
+                    ) : (
+                      <>
+                        <MaterialIcons name="event" size={16} color="gray" />{" "}
+                        {log.logDate}
+                      </>
+                    )}
                   </LogText>
-                  <LogText>
-                    <Feather
-                      name="activity"
-                      size={16}
-                      color="gray"
-                    />{" "}
-                    {log.activity}
+                  <LogText style={isRTL ? { textAlign: "right" } : {}}>
+                    {isRTL ? (
+                      <>
+                        {log.activity}{" "}
+                        <Feather name="activity" size={16} color="gray" />
+                      </>
+                    ) : (
+                      <>
+                        <Feather name="activity" size={16} color="gray" />{" "}
+                        {log.activity}
+                      </>
+                    )}
                   </LogText>
 
                   <View
@@ -240,7 +260,7 @@ export const ActivityLogsTab = ({ animalId }) => {
                       width: "100%",
                     }}
                   >
-                    <ActionButtons>
+                    <ActionButtons style={isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }}>
                       <SaveButton
                         style={{ marginRight: 0 }}
                         onPress={() => handleEdit(log)}
@@ -259,10 +279,12 @@ export const ActivityLogsTab = ({ animalId }) => {
         ) : (
           <EmptyState>
             <MaterialIcons name="error-outline" size={50} color="gray" />
-            <Text>No activity logs found.</Text>
+            <Text>{t("common.No_activity_logs_found")}</Text>
           </EmptyState>
         )}
       </ScrollView>
     </Container>
   );
 };
+
+export default ActivityLogsTab;

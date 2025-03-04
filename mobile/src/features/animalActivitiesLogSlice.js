@@ -3,7 +3,8 @@ import {
   fetchAnimalActivitiesLogs, 
   addAnimalActivitiesLog, 
   updateAnimalActivitiesLog,
-  removeAnimalActivityLog
+  removeAnimalActivityLog,
+  fetchAllAnimalActivitiesLogs
 } from "../api/animalApi";
 
 // Fetch activity logs
@@ -11,6 +12,14 @@ export const getAnimalActivitiesLogs = createAsyncThunk(
   "animalActivitiesLogs/fetch",
   async (animalId) => {
     const response = await fetchAnimalActivitiesLogs(animalId);
+    return response;
+  }
+);
+
+export const getAllAnimalActivitiesLogs = createAsyncThunk(
+  "animalActivitiesLogs/fetchAll",
+  async () => {
+    const response = await fetchAllAnimalActivitiesLogs();
     return response;
   }
 );
@@ -59,6 +68,17 @@ const animalActivitiesLogSlice = createSlice({
         state.activitiesLogs = action.payload;
       })
       .addCase(getAnimalActivitiesLogs.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(getAllAnimalActivitiesLogs.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAllAnimalActivitiesLogs.fulfilled, (state, action) => {
+        state.loading = false;
+        state.activitiesLogs = action.payload;
+      })
+      .addCase(getAllAnimalActivitiesLogs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
