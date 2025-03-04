@@ -147,14 +147,12 @@ const animalSlice = createSlice({
         state.error = action.error.message || "Failed to fetch animal details.";
       })
 
-
       .addCase(addAnimal.fulfilled, (state, action) => {
         state.animals.push(action.payload);
       })
       .addCase(addAnimal.rejected, (state, action) => {
         state.error = action.error.message || "Failed to add animal.";
       })
-
 
       .addCase(editAnimal.fulfilled, (state, action) => {
         state.animals = state.animals.map((a) =>
@@ -165,7 +163,6 @@ const animalSlice = createSlice({
         state.error = action.error.message || "Failed to update animal.";
       })
 
-
       .addCase(removeAnimal.fulfilled, (state, action) => {
         state.animals = state.animals.filter((a) => a.id !== action.payload);
       })
@@ -173,12 +170,12 @@ const animalSlice = createSlice({
         state.error = action.error.message || "Failed to delete animal.";
       })
 
-
       .addCase(getAnimalsBySale.pending, (state) => {
         state.loading = true;
       })
       .addCase(getAnimalsBySale.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.animals = action.payload;
       })
       .addCase(getAnimalsBySale.rejected, (state, action) => {
@@ -186,8 +183,6 @@ const animalSlice = createSlice({
         state.error =
           action.error.message || "Failed to fetch animals by sale.";
       })
-
-
 
       .addCase(getAnimalsByBuyer.pending, (state) => {
         state.loading = true;

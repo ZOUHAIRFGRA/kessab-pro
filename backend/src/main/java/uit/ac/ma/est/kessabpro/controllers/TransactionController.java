@@ -2,6 +2,7 @@ package uit.ac.ma.est.kessabpro.controllers;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.groups.Default;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import uit.ac.ma.est.kessabpro.services.implementations.BuyerService;
 import uit.ac.ma.est.kessabpro.services.interfaces.ITransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uit.ac.ma.est.kessabpro.validators.groups.onCreate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -67,10 +69,9 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTransaction(@Valid @RequestBody TransactionDTORequest transactionDTO) {
+    public ResponseEntity<?> createTransaction(@Validated({Default.class, onCreate.class}) @RequestBody TransactionDTORequest transactionDTO) {
         Transaction createdTransaction = transactionService.createTransaction(TransactionMapper.toTransactionEntity(transactionDTO));
-//        return ResponseEntity.ok(TransactionMapper.toTransactionDTO(createdTransaction));
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return ResponseEntity.ok(TransactionMapper.toTransactionDTO(createdTransaction));
     }
 
     @PostMapping(value = "/buyer/{id}")

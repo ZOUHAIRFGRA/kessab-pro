@@ -6,24 +6,20 @@ import SaleCardView from "./SaleCardView";
 import { getSales, resetSales } from "../../features/saleSlice";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-import { useFocusEffect } from "@react-navigation/native";
+import { getBuyers } from "../../features/buyerSlice";
 
 const SalesListCardView = ({ searchText: propSearchText, route }) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
-  const { sales, loading, error } = useSelector((states) => states.sales);
-  const [currentPage, setCurrentPage] = useState(0);
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(getSales());
-      return () => {
-        dispatch(resetSales());
-      };
-    }, [])
-  );
 
-  console.log({ loading, error, sales });
+  useEffect(() => {
+    dispatch(getSales());
+  }, []);
+
+  const { sales, loading, error } = useSelector((states) => states.sales);
+
+  const [currentPage, setCurrentPage] = useState(0);
 
   if (loading) return <Loading />;
   if (error || !sales) return <FallBack />;

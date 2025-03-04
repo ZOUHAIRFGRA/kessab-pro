@@ -2,14 +2,24 @@ import { Input } from "@rneui/base";
 import Dialogs from "../global/Dialog";
 import BaseDropdown from "../global/BaseDropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { formatDate } from "../../utils/Global";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPaymentMethods } from "../../features/enumSlice";
 import Button from "../global/Button";
 import Container from "../global/Container";
 import { isEmpty, isValidDDMMYYYY } from "../../helpers/gloablHelpers";
-import { VisibilitySensor } from "@futurejj/react-native-visibility-sensor";
+import Text from "../global/Text";
+import Colors from "../../utils/Colors";
+import {
+  addTransaction,
+  getTransactions,
+  getTransactionsByBuyer,
+  getTransactionsBySale,
+} from "../../features/transactionSlice";
+import { useToast } from "../../hooks/useToast";
+import transactionApi from "../../api/transactionApi";
+import { getSale } from "../../features/saleSlice";
 
 const AddTransactionModal = ({
   id,
@@ -54,8 +64,9 @@ const AddTransactionModal = ({
       });
     }
   };
+  const { showSuccessToast, showErrorToast } = useToast();
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const newErrors = {};
     let isValid = true;
 
@@ -83,21 +94,35 @@ const AddTransactionModal = ({
     }));
 
     if (isValid) {
-      console.log({ formData });
-      // Submit form logic here
+      const commonActions = async (dispatchFn) => {
+        showSuccessToast("Transaction added successfully");
+        await dispatch(dispatchFn(id));
+        dispatch(getSale(id));
+      };
+
+      const handleTransaction =
+        type === "sale"
+          ? () => transactionApi.createTransaction({ ...formData, sale_id: id })
+          : () => transactionApi.consumeTransaction(id, formData);
+
+      handleTransaction()
+        .then(() =>
+          commonActions(
+            type === "sale" ? getTransactionsBySale : getTransactionsByBuyer
+          )
+        )
+        .catch(showErrorToast)
+        .finally(toggleDialog);
+
       setFormError({});
     }
   };
 
-  function checkVisible(isVisible) {
-    if (isVisible) {
-      // setIsInView(isVisible);
-      console.log("visible");
-    } else {
-      // setIsInView(isVisible);
-      console.log("notVisible");
-    }
-  }
+  useEffect(() => {
+    return () => {
+      setFormError({});
+    };
+  }, [visible]);
 
   return (
     <>
@@ -117,15 +142,32 @@ const AddTransactionModal = ({
         <Container
           style={{
             flexDirection: "column",
-            gap: 8,
           }}
         >
+          {formError.transactionDate && (
+            <Text
+              style={{
+                color: Colors.danger,
+              }}
+            >
+              {formError.transactionDate}
+            </Text>
+          )}
           <Input
             placeholder="date"
             onPressIn={() => setShowDatePicker(true)}
             value={formData.transactionDate}
-            errorMessage={formError.transactionDate}
           />
+          {formError.amount && (
+            <Text
+              style={{
+                color: Colors.danger,
+              }}
+            >
+              {formError.amount}
+            </Text>
+          )}
+
           <Input
             onChangeText={(value) =>
               setFormData({
@@ -134,15 +176,26 @@ const AddTransactionModal = ({
               })
             }
             keyboardType="numeric"
-            errorMessage={formError.amount}
             placeholder="paid amount"
             value={formData.amount}
+            style={{
+              paddingBottom: 0,
+              marginBottom: 0,
+            }}
           />
+          {formError.method && (
+            <Text
+              style={{
+                color: Colors.danger,
+              }}
+            >
+              {formError.method}
+            </Text>
+          )}
+
           <BaseDropdown
             search={false}
-            notFocusLabel={
-              formError.method ? formError.method : "payment method"
-            }
+            notFocusLabel={"payment method"}
             disable={loadingPaymentMethods}
             values={paymentMethods.map((pm) => ({ label: pm, value: pm }))}
             onValueChange={(value) =>
@@ -152,12 +205,14 @@ const AddTransactionModal = ({
               })
             }
           />
+
           <Button
             type={"primary"}
             style={{
               padding: 12,
               marginRight: 12,
               marginLeft: 12,
+              marginTop: 8,
               marginBottom: 8,
               display: "flex",
               justifyContent: "center",

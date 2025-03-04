@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { View, Text, FlatList } from "react-native";
 import { styled } from "dripsy";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +9,9 @@ import AnimalCardView from "./AnimalCardView";
 import {
   getAnimalsByBuyer,
   getAnimalsBySale,
+  resetAnimals,
 } from "../../features/animalSlice";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function AnimalsListCardView({ id, type = "sale" }) {
   const dispatch = useDispatch();
@@ -24,13 +26,11 @@ export default function AnimalsListCardView({ id, type = "sale" }) {
     }
   }, [dispatch, id]);
 
-  const animals = useSelector(({ animals }) => animals.animals);
-  const loading = useSelector(({ animals }) => animals.loading);
-  const error = useSelector(({ animals }) => animals.error);
+  const { animals, loading, error } = useSelector(({ animals }) => animals);
+
+  console.log({ animals, loading, error });
 
   if (loading || !animals) return <Loading />;
-  console.log(error);
-
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (

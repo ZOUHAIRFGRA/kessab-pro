@@ -85,6 +85,7 @@ const transactionSlice = createSlice({
       })
       .addCase(getTransactions.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.transactions = action.payload;
       })
       .addCase(getTransactions.rejected, (state, action) => {
@@ -96,6 +97,7 @@ const transactionSlice = createSlice({
       })
       .addCase(getTransactionsBySale.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.transactions = action.payload;
       })
       .addCase(getTransactionsBySale.rejected, (state, action) => {
@@ -113,9 +115,7 @@ const transactionSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(addTransaction.fulfilled, (state, action) => {
-        state.transactions.push(action.payload);
-      })
+
       .addCase(editTransaction.fulfilled, (state, action) => {
         state.transactions = state.transactions.map((t) =>
           t.id === action.payload.id ? action.payload : t

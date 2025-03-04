@@ -27,6 +27,8 @@ export default function AddTransaction({ onClose }) {
     dispatch(getSales());
   }, [dispatch]);
 
+  
+
   const handleSubmit = () => {
     if (!selectedSale || !amount.trim()) {
       alert("Please select a sale and enter an amount.");

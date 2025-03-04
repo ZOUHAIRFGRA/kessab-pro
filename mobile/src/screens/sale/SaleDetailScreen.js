@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSale, resetSale } from "../../features/saleSlice";
 import Loading from "../../components/global/Loading";
 import { useFocusEffect } from "@react-navigation/native";
+import { getBuyer } from "../../features/buyerSlice";
 
 const SaleDetailScreen = ({ route }) => {
   const { t } = useTranslation();
@@ -28,14 +29,6 @@ const SaleDetailScreen = ({ route }) => {
 
   const { sale, loading, error } = useSelector((states) => states.sales);
 
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        dispatch(resetSale());
-      };
-    }, [])
-  );
-
   if (loading) return <Loading />;
   if (error || !saleId) return <FallBack />;
 
@@ -50,7 +43,7 @@ const SaleDetailScreen = ({ route }) => {
             backgroundColor: Colors.secondaryLight,
           },
           tabBarActiveTintColor: Colors.secondary,
-          tabBarInactiveTintColor: Colors.primaryLight,
+          tabBarInactiveTintColor: Colors.primary,
           tabBarLabelStyle: { fontSize: 13, fontWeight: "bold" },
           tabBarPosition: "top",
           animation: "shift",
@@ -107,7 +100,7 @@ const SaleDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <TransactionsListCardView id={sale?.id} type={"sale"} />
+              <TransactionsListCardView id={sale?.id} type="sale" />
             </Container>
           )}
         </Tab.Screen>

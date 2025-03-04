@@ -57,6 +57,7 @@ public class TransactionService implements ITransactionService {
     @Transactional
     public Transaction createTransaction(Transaction transaction) {
         Sale sale = saleService.getSaleById(transaction.getSale().getId());
+        System.out.println(saleService.getRemainingAmount(sale));
         if (saleService.getRemainingAmount(sale) < transaction.getAmount()){
             throw new IllegalArgumentException("Amount exceeds maximum amount of transaction");
         }

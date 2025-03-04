@@ -76,6 +76,7 @@ const buyerSlice = createSlice({
       })
       .addCase(getBuyer.fulfilled, (state, action) => {
         state.buyerLoading = false;
+        state.error = null;
         state.buyer = action.payload;
       })
       .addCase(addBuyer.fulfilled, (state, action) => {
