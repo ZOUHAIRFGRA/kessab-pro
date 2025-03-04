@@ -27,9 +27,12 @@ const SaleDetailScreen = ({ route }) => {
   }, [dispatch]);
 
   const { sale, loading, error } = useSelector((states) => states.sales);
-  console.log({ sale, loading });
 
-  if (loading || !sale) return <Loading />;
+
+  
+
+
+  if (loading) return <Loading />;
   if (error || !saleId) return <FallBack />;
 
   return (
@@ -58,7 +61,7 @@ const SaleDetailScreen = ({ route }) => {
             ),
           }}
         >
-          {() => <SaleInfoView id={sale.id} />}
+          {() => <SaleInfoView id={sale?.id} />}
         </Tab.Screen>
 
         <Tab.Screen
@@ -70,7 +73,7 @@ const SaleDetailScreen = ({ route }) => {
             ),
           }}
         >
-          {() => <BuyerInfoView id={sale.buyer?.id} />}
+          {() => <BuyerInfoView id={sale?.buyer?.id} />}
         </Tab.Screen>
 
         <Tab.Screen
@@ -84,7 +87,7 @@ const SaleDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16 }}>
-              <AnimalsListCardView id={sale.id} type={"sale"} />
+              <AnimalsListCardView id={sale?.id} type={"sale"} />
             </Container>
           )}
         </Tab.Screen>
@@ -100,7 +103,7 @@ const SaleDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <TransactionsListCardView id={sale.id} type={"sale"} />
+              <TransactionsListCardView id={sale?.id} type={"sale"} />
             </Container>
           )}
         </Tab.Screen>

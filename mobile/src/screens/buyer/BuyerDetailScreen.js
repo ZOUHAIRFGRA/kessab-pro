@@ -30,7 +30,7 @@ const BuyerDetailScreen = ({ route }) => {
 
   const { buyer, loading, error } = useSelector((states) => states.buyers);
 
-  if (loading || !buyer) return <Loading />;
+  if (loading) return <Loading />;
   if (error || !buyerId) return <FallBack />;
 
   return (

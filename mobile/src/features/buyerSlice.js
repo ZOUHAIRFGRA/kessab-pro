@@ -54,6 +54,9 @@ const buyerSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+      .addCase(getBuyer.pending, (state, action) => {
+        state.loading = true;
+      })
       .addCase(getBuyer.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
