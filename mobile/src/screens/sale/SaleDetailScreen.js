@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Colors from "../../utils/Colors";
 import SaleInfoView from "../../components/sale/SaleInfoView";
@@ -10,15 +10,15 @@ import { Ionicons } from "@expo/vector-icons";
 import FallBack from "../../components/global/Fallback";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { getSale, getSales } from "../../features/saleSlice";
+import { getSale, resetSale } from "../../features/saleSlice";
 import Loading from "../../components/global/Loading";
+import { useFocusEffect } from "@react-navigation/native";
 
 const SaleDetailScreen = ({ route }) => {
   const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
 
   const saleId = route.params?.saleId;
-  console.log({ saleId });
 
   const dispatch = useDispatch();
 
@@ -28,9 +28,13 @@ const SaleDetailScreen = ({ route }) => {
 
   const { sale, loading, error } = useSelector((states) => states.sales);
 
-
-  
-
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        dispatch(resetSale());
+      };
+    }, [])
+  );
 
   if (loading) return <Loading />;
   if (error || !saleId) return <FallBack />;

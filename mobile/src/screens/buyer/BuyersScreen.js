@@ -5,9 +5,15 @@ import React, { useState, useEffect } from "react";
 import { SearchBar } from "@rneui/themed";
 import { useTranslation } from "react-i18next";
 import BuyersListCardView from "../../components/buyer/BuyersListCardView";
+import { useDispatch } from "react-redux";
+import { getBuyers } from "../../features/buyerSlice";
 export default function BuyersScreen() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getBuyers());
+  }, [dispatch]);
   return (
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>

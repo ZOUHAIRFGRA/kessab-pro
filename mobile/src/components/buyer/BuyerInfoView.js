@@ -16,18 +16,15 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function BuyerInfoView({ id, hideLinkButton = false }) {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getBuyer(id));
-  }, [dispatch, id]);
-
-  const { error, loading, buyer } = useSelector(({ buyers }) => buyers);
+  const {
+    error,
+    buyerLoading: loading,
+    buyer,
+  } = useSelector(({ buyers }) => buyers);
   const navigator = useNavigation();
-
   const handleBuyerLinkClick = () => {
     navigator.navigate("buyerDetail", { buyerId: buyer.id });
   };
-
   if (loading || !buyer) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
 
@@ -58,7 +55,7 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.CIN")}</Text>
-            <Header level={"h3"}>{buyer.cin}</Header>
+            <Header level={"h3"}>{buyer.CIN}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.Address")}</Text>

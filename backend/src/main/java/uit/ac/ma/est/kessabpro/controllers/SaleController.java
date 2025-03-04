@@ -23,7 +23,9 @@ import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
 import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -62,6 +64,13 @@ public class SaleController {
     public ResponseEntity<SaleDTOResponse> getSaleById(@PathVariable UUID id) {
         Sale sale = saleService.getSaleById(id);
         return ResponseEntity.ok(saleMapper.toSaleDTO(sale));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Map<String,Long>> getAllCount() {
+        Map<String,Long> response = new HashMap<>();
+        response.put("count",saleService.getAllCount());
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

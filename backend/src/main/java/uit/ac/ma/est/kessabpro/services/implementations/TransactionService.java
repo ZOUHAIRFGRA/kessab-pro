@@ -94,4 +94,8 @@ public class TransactionService implements ITransactionService {
     }
 
 
+    @Override
+    public Long getAllCount() {
+        return transactionRepository.count();
+    }
 }

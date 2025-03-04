@@ -170,4 +170,8 @@ public class SaleService implements ISaleService {
 
     }
 
+    @Override
+    public Long getAllCount() {
+        return saleRepository.count();
+    }
 }

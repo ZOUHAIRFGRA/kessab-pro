@@ -52,32 +52,52 @@ const saleSlice = createSlice({
     sales: [],
     sale: null,
     loading: false,
+    saleLoading: false,
     error: null,
     page: 0,
     totalPages: 0,
+  },
+  reducers: {
+    resetSales: (state) => {
+      state.error = null;
+      state.sales = null;
+      state.loading = false;
+      state.page = 0;
+      state.totalPages = 0;
+    },
+    resetSale: (state) => {
+      state.error = null;
+      state.sale = null;
+      state.saleLoading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getSales.pending, (state) => {
         state.loading = true;
+        console.log("loading");
       })
       .addCase(getSales.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.sales = action.payload.content;
+        console.log("fulfilled");
       })
       .addCase(getSales.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+        console.log("rejected");
       })
       .addCase(getSale.rejected, (state, action) => {
-        state.loading = false;
+        state.saleLoading = false;
         state.error = action.error.message;
       })
       .addCase(getSale.pending, (state) => {
-        state.loading = true;
+        state.saleLoading = true;
       })
       .addCase(getSale.fulfilled, (state, action) => {
-        state.loading = false;
+        state.saleLoading = false;
+        state.error = null;
         state.sale = action.payload;
       })
       .addCase(addSale.fulfilled, (state, action) => {
@@ -93,5 +113,7 @@ const saleSlice = createSlice({
       });
   },
 });
+
+export const { resetSales, resetSale } = saleSlice.actions;
 
 export default saleSlice.reducer;

@@ -63,4 +63,9 @@ public class BuyerService implements IBuyerService {
     public Page<Buyer> findByFullNameOrCin(String fullName, String cin, Pageable pageable) {
         return buyerRepository.findByFullNameOrCin(fullName, cin, pageable);
     }
+
+    @Override
+    public Long getAllCount() {
+        return buyerRepository.count();
+    }
 }

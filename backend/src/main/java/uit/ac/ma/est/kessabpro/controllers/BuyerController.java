@@ -14,7 +14,9 @@ import uit.ac.ma.est.kessabpro.models.dto.responses.BuyerDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 import uit.ac.ma.est.kessabpro.services.implementations.BuyerService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -29,6 +31,13 @@ public class BuyerController {
         Buyer buyerEntity = BuyerMapper.toBuyerEntity(buyerDTO);
         Buyer buyer = buyerService.createBuyer(buyerEntity);
         return ResponseEntity.ok(BuyerMapper.toBuyerDTO(buyer));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Map<String,Long>> getAllCount() {
+        Map<String,Long> response = new HashMap<>();
+        response.put("count",buyerService.getAllCount());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

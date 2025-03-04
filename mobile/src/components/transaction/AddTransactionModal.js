@@ -29,7 +29,6 @@ const AddTransactionModal = ({
       dispatch(fetchPaymentMethods());
     }
   }, [dispatch]);
-  console.log({ paymentMethods });
 
   const [formData, setFormData] = useState({
     transactionDate: formatDate(new Date()),
