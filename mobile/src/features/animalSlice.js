@@ -10,7 +10,7 @@ import {
   fetchUnsoldAnimals,
   fetchAnimalsCount,
 } from "../api/animalApi";
-
+// to check
 export const getAnimalsBySale = createAsyncThunk(
   "animals/fetchAll/bySale",
   async (saleId) => {
@@ -18,6 +18,7 @@ export const getAnimalsBySale = createAsyncThunk(
     return response.data;
   }
 );
+//! to rectify 
 export const getAnimalsByBuyer = createAsyncThunk(
   "animals/fetchAll/byBuyer",
   async (buyerId) => {
@@ -36,13 +37,15 @@ export const getAnimals = createAsyncThunk(
 
 export const getAnimalsCount = createAsyncThunk("animals/count", async () => {
   const response = await fetchAnimalsCount();
-  return response.data;
+  // console.log('res from count', response)
+  return response;
 });
 export const getUnsoldAnimals = createAsyncThunk(
   "animals/fetchUnsold",
   async () => {
     const response = await fetchUnsoldAnimals();
-    return response.data;
+    // console.log('res from unsold', response)
+    return response;
   }
 );
 
@@ -76,22 +79,26 @@ const animalSlice = createSlice({
   name: "animals",
   initialState: {
     animals: [],
+    unsoldAnimals : [],
     animal: null,
     loading: false,
     error: null,
     page: 0,
     totalPages: 0,
     totalAnimals: 0,
+    totalUnsoldAnimals: 0,
   },
   reducers: {
     resetAnimals: (state) => {
       state.animals = [];
+      state.unsoldAnimals = [];
       state.animal = null;
       state.loading = false;
       state.error = null;
       state.page = 0;
       state.totalPages = 0;
       state.totalAnimals = 0;
+      state.totalUnsoldAnimals = 0;
     },
   },
   extraReducers: (builder) => {
@@ -128,11 +135,12 @@ const animalSlice = createSlice({
       })
       .addCase(getUnsoldAnimals.fulfilled, (state, action) => {
         state.loading = false;
-        state.animals = action.payload;
+        state.unsoldAnimals = action.payload;
+        state.totalUnsoldAnimals = action.payload.length;
       })
       .addCase(getUnsoldAnimals.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch animals.";
+        state.error = action.error.message || "Failed to fetch unsold animals.";
       })
 
       .addCase(getAnimalById.pending, (state) => {
