@@ -59,14 +59,20 @@ export const isEmpty = (value) => {
   return false;
 };
 
-export const arrayBufferToBase64 = (buffer) => {
-  let binary = "";
-  const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
+const screenMap = {
+  ANIMAL: "AnimalDetails",
+  BUYER: "buyerDetail",
+  SALE: "SellDetail",
+};
 
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
+const parseAndNavigate = (navigate) => (input) => {
+  const [key, uuid] = input.split("/");
+  const screen = screenMap[key];
+
+  if (!screen) {
+    console.error(`No screen found for key: ${key}`);
+    return;
   }
 
-  return btoa(binary);
+  navigate(screen, { uuid });
 };
