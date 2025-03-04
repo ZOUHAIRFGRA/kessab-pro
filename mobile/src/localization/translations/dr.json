@@ -9,7 +9,16 @@
   "common": {
     "No_medical_logs_found": "لم يتم العثور على سجلات طبية",
     "No_activity_logs_found": "لم يتم العثور على سجلات نشاط",
-    
+    "total_sales": "إجمالي المبيعات",
+    "total_buyers": "إجمالي العملاء",
+    "total_animals": "إجمالي الحيوانات",
+    "total_transactions": "إجمالي المعاملات",
+    "add_transaction": "إضافة معاملة",
+    "recent_activities": "الأنشطة الأخيرة",
+    "view_all": "عرض الكل",
+    "financial_summary": "ملخص مالي",
+    "total_revenue": "إجمالي الإيرادات",
+    "pending_payments": "المدفوعات المعلقة",
     "category_added_success" : "تمت إضافة الفئة بنجاح",
     "icon_required": "الرمز مطلوب",
 "category_add_failed": "فشلت إضافة الفئة",
