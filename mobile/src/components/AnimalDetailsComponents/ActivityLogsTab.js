@@ -30,9 +30,11 @@ import {
 } from "./sharedStyles";
 import { useToast } from "../../hooks/useToast";
 import { useTranslation } from "react-i18next";
+import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
+import Loading from "../global/Loading";
 
 export const ActivityLogsTab = ({ animalId }) => {
-  const { activitiesLogs } = useSelector((state) => state.animalActivitiesLogs);
+  const { activitiesLogs,error,loading } = useSelector((state) => state.animalActivitiesLogs);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const isRTL = t("dir") === "rtl";
@@ -112,6 +114,9 @@ export const ActivityLogsTab = ({ animalId }) => {
     );
   };
 
+  
+  if (loading) return <Loading />;
+  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
   return (
     <Container>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
