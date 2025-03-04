@@ -10,17 +10,52 @@ import {
   View,
   AppState,
 } from "react-native";
+import { parseQrResult } from "../helpers/gloablHelpers";
 
 export default QRScannerScreen = () => {
-  // const [permission, requestPermission] = useCameraPermissions();
-  // const isPermissionGranted = Boolean(permission?.granted);
+  const qrLock = useRef(false);
+  const appState = useRef(AppState.currentState);
 
-  const [qrLock, setQrLock] = useState(false);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        qrLock.current = false;
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const navigator = useNavigation();
+
+  useEffect(() => {
+    const backHandler = (e) => {
+      e.preventDefault();
+      navigator.navigate("Home");
+      return true;
+    };
+
+    navigator.addListener("beforeRemove", backHandler);
+
+    return () => {
+      navigator.removeListener("beforeRemove", backHandler);
+    };
+  }, [navigator]);
 
   useFocusEffect(
     useCallback(() => {
+      console.log("salam");
+
       return () => {
-        setQrLock(false);
+        console.log("bay");
+
+        qrLock.current = null;
       };
     }, [])
   );
@@ -31,11 +66,10 @@ export default QRScannerScreen = () => {
         style={StyleSheet.absoluteFillObject}
         facing="back"
         onBarcodeScanned={({ data }) => {
-          if (data && !qrLock) {
-            setTimeout(async () => {
-              console.log(data);
-            }, 500);
-            setQrLock(true);
+          if (data && !qrLock.current) {
+            qrLock.current = true;
+            const parsedData = parseQrResult(data);
+            navigator.navigate(parsedData.to, parsedData.param);
           }
         }}
       />

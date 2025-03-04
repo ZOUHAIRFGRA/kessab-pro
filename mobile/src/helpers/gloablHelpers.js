@@ -59,20 +59,29 @@ export const isEmpty = (value) => {
   return false;
 };
 
-const screenMap = {
+export const screenMap = {
   ANIMAL: "AnimalDetails",
   BUYER: "buyerDetail",
   SALE: "SellDetail",
 };
+export const screenParamMap = {
+  AnimalDetails: "animalId",
+  buyerDetail: "buyerId",
+  SellDetail: "saleId",
+};
 
-const parseAndNavigate = (navigate) => (input) => {
-  const [key, uuid] = input.split("/");
-  const screen = screenMap[key];
+export const parseQrResult = (input) => {
+  try {
+    const [key, identifier] = input.split("/");
+    const screen = screenMap[key];
 
-  if (!screen) {
-    console.error(`No screen found for key: ${key}`);
-    return;
+    if (!screen) {
+      throw Error("Qr not valid");
+    }
+
+    const screenParam = screenParamMap[screen];
+    return { to: screen, param: { [screenParam]: identifier } };
+  } catch (error) {
+    alert("Qr code not valid!");
   }
-
-  navigate(screen, { uuid });
 };

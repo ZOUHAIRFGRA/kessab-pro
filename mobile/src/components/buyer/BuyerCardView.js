@@ -9,7 +9,7 @@ import { Icon } from "@rneui/base";
 const BuyerCardView = ({ buyer }) => {
   const navigator = useNavigation();
   const handleBuyerClick = () => {
-    navigator.navigate("buyerDetail", { buyer });
+    navigator.navigate("buyerDetail", { buyerId: buyer.id });
   };
 
   return (
