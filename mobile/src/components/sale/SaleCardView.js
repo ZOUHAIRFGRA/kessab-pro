@@ -11,7 +11,7 @@ import Text from "../../components/global/Text";
 const SaleCardView = ({ sale }) => {
   const navigator = useNavigation();
   const handleSaleClick = () => {
-    navigator.navigate("SellDetail", { sale });
+    navigator.navigate("SellDetail", { saleId: sale.id });
   };
 
   return (

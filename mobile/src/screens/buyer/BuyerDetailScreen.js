@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Colors from "../../utils/Colors";
 import SaleInfoView from "../../components/sale/SaleInfoView";
@@ -8,16 +8,30 @@ import AnimalsListCardView from "../../components/Animal/AnimalsListCardView";
 import Container from "../../components/global/Container";
 import { Ionicons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import FallBack from "../../components/global/Fallback";
 import { useTranslation } from "react-i18next";
 import SalesListCardView from "../../components/sale/SalesListCardView";
+import Loading from "../../components/global/Loading";
+import { useDispatch, useSelector } from "react-redux";
+import { getBuyer } from "../../features/buyerSlice";
+import FallBack from "../../components/global/Fallback";
 
 const BuyerDetailScreen = ({ route }) => {
   const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
-  const buyer = route.params?.buyer;
+  const buyerId = route.params?.buyerId;
 
-  if (!buyer) return <FallBack />;
+  console.log({ buyerId });
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getBuyer(buyerId));
+  }, [dispatch]);
+
+  const { buyer, loading, error } = useSelector((states) => states.buyers);
+
+  if (loading || !buyer) return <Loading />;
+  if (error || !buyerId) return <FallBack />;
 
   return (
     <Container sx={{ flex: 1 }}>
