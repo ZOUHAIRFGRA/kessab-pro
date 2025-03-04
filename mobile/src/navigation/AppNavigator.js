@@ -24,7 +24,6 @@ export default function AppNavigator() {
     setRtl(t("dir") === "rtl");
   }, [t("dir")]);
 
-  console.log("rtl", rtl);
 
   return rtl ? <RightDrawer /> : <LeftDrawer />;
 }

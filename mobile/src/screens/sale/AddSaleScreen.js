@@ -19,9 +19,8 @@ import BaseDropdown from "../../components/global/BaseDropdown";
 const AddSaleScreen = ({ route, navigation }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const qte = route.params?.qte || 1; // Added default value
+  const qte = route.params?.qte || 1;
 
-  // Global state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitData, setSubmitData] = useState({
     animals: [],
@@ -29,35 +28,29 @@ const AddSaleScreen = ({ route, navigation }) => {
     saleDetail: {},
   });
 
-  // Categories state
   const { loading: categoriesLoading, categories } = useSelector(
     (states) => states.categories
   );
 
-  // Buyers state
   const {
     buyers,
     loading: buyersLoading,
     error: buyersError,
   } = useSelector((states) => states.buyers);
 
-  // Animals state
   const {
     animals,
     loading: animalsLoading,
     error: animalsError,
   } = useSelector((states) => states.animals);
 
-  // Collapsed states
   const [animalCollapsed, setAnimalCollapsed] = useState([]);
   const [buyerCollapsed, setBuyerCollapsed] = useState(true);
   const [summaryCollapsed, setSummaryCollapsed] = useState(true);
 
-  // Date picker
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateObj, setDateObj] = useState(new Date());
 
-  // Buyer form state
   const [buyerExisting, setBuyerExisting] = useState(false);
   const [buyerFormData, setBuyerFormData] = useState({
     cin: "",
@@ -67,21 +60,17 @@ const AddSaleScreen = ({ route, navigation }) => {
     id: null,
   });
 
-  // Animal form states
   const [animalFormData, setAnimalFormData] = useState([]);
   const [animalExisting, setAnimalExisting] = useState([]);
 
-  // Sale summary form state
   const [summaryFormData, setSummaryFormData] = useState({
     saleDate: formatDate(new Date()),
     agreedAmount: "",
     paidAmount: "",
   });
 
-  // Submission error state
   const [err, setErr] = useState("");
 
-  // Initialize collapsed state and form data for animals
   useEffect(() => {
     if (qte) {
       const newCollapsed = Array(qte).fill(true);
@@ -98,39 +87,33 @@ const AddSaleScreen = ({ route, navigation }) => {
         }));
       setAnimalFormData(newAnimalFormData);
 
-      // Initialize animalExisting state
       setAnimalExisting(Array(qte).fill(false));
     }
   }, [qte]);
 
-  // Fetch categories on mount
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  // Fetch buyers when needed
   useEffect(() => {
     if (buyerExisting) {
       dispatch(getBuyers());
     }
   }, [buyerExisting, dispatch]);
 
-  // Fetch animals when needed
   useEffect(() => {
     const shouldFetchAnimals = animalExisting.some((exists) => exists);
     if (shouldFetchAnimals) {
       dispatch(getUnsoldAnimals());
-      console.log("dispatched");
     }
   }, [animalExisting, dispatch]);
 
-  // onSubmit function handles form validation and submission
   const onSubmit = () => {
     setIsSubmitting(true);
 
     const validateForm = () => {
       for (let i = 0; i < animalFormData.length; i++) {
-        const animal = animalFormData[i] || {}; // Add null check
+        const animal = animalFormData[i] || {}; 
         if (animalExisting[i] && !animal.id) {
           return `Animal ${i + 1} must be selected`;
         }
@@ -140,7 +123,6 @@ const AddSaleScreen = ({ route, navigation }) => {
         if (!animalExisting[i] && !animal.category) {
           return `Animal ${i + 1} category must be filled`;
         }
-        // Always check price regardless of existing status
         if (!animal.price) {
           return `Animal ${i + 1} price must be filled`;
         }
@@ -168,7 +150,6 @@ const AddSaleScreen = ({ route, navigation }) => {
       return;
     }
 
-    // Process animals data - always include price and isPickedUp
     const processedAnimals = animalFormData.map((animal, index) => {
       if (animalExisting[index]) {
         return {
@@ -194,19 +175,13 @@ const AddSaleScreen = ({ route, navigation }) => {
     };
 
     setErr("");
-    console.log("Submitting:", finalData);
     setSubmitData(finalData);
 
-    // Here you would typically call an API to save the data
-    // For now, just simulate a successful submission
     setTimeout(() => {
       setIsSubmitting(false);
-      // Navigate back or to confirmation screen
-      // navigation.goBack();
     }, 1000);
   };
 
-  // Toggle buyer existing and fetch buyers immediately
   const toggleBuyerExisting = () => {
     const newValue = !buyerExisting;
     setBuyerExisting(newValue);
@@ -215,18 +190,15 @@ const AddSaleScreen = ({ route, navigation }) => {
     }
   };
 
-  // Toggle animal existing for a specific index
   const toggleAnimalExisting = (index) => {
     setAnimalExisting((prev) => {
       const newExisting = [...prev];
       newExisting[index] = !newExisting[index];
 
-      // If toggling to existing, fetch animals
       if (newExisting[index]) {
         dispatch(getUnsoldAnimals());
       }
 
-      // Reset the form data for this animal but preserve isPickedUp state
       setAnimalFormData((prev) => {
         const newData = [...prev];
         const currentIsPickedUp = newData[index]?.isPickedUp || false;
@@ -237,7 +209,6 @@ const AddSaleScreen = ({ route, navigation }) => {
           tag: "",
           category: "",
           id: null,
-          // Preserve these values
           isPickedUp: currentIsPickedUp,
           price: currentPrice,
         };
@@ -248,7 +219,6 @@ const AddSaleScreen = ({ route, navigation }) => {
     });
   };
 
-  // Handle form changes
   const handleBuyerChange = (field, value) => {
     setBuyerFormData((prev) => ({
       ...prev,
@@ -270,14 +240,12 @@ const AddSaleScreen = ({ route, navigation }) => {
     });
   };
 
-  // Handle selecting an existing animal - preserve price input and isPickedUp
   const handleExistingAnimalSelect = (index, animalId) => {
     if (animals && animals.length > 0) {
       const selectedAnimal = animals.find((animal) => animal.id === animalId);
       if (selectedAnimal) {
         setAnimalFormData((prev) => {
           const newData = [...prev];
-          // Preserve existing price and isPickedUp if they exist
           const currentPrice =
             newData[index]?.price || selectedAnimal.price?.toString() || "";
           const currentIsPickedUp =
@@ -330,7 +298,6 @@ const AddSaleScreen = ({ route, navigation }) => {
     }
   };
 
-  // Updated toggle functions to collapse other sections when one opens
   const toggleAnimalCollapsed = (index) => {
     setAnimalCollapsed((prev) => {
       const newCollapsed = prev.map((_, i) =>
@@ -366,7 +333,6 @@ const AddSaleScreen = ({ route, navigation }) => {
     });
   };
 
-  // Common styles
   const inputStyles = {
     inputStyle: {
       backgroundColor: Colors.secondaryLight,

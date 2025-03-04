@@ -24,19 +24,12 @@ const Container = styled(View)({
 export default function SaleInfoView({ id }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getSale(id));
-  }, [dispatch, id]);
 
-  useEffect(() => {
-    console.log("mounted");
-    return () => {
-      console.log("unmount");
-    };
-  }, []);
-
-  const { sale, loading, error } = useSelector(({ sales }) => sales);
-  console.log({ animals: sale?.animals });
+  const {
+    sale,
+    saleLoading: loading,
+    error,
+  } = useSelector((states) => states.sales);
 
   if (loading || !sale) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;

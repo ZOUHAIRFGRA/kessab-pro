@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Colors from "../../utils/Colors";
 import SaleInfoView from "../../components/sale/SaleInfoView";
@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import SalesListCardView from "../../components/sale/SalesListCardView";
 import Loading from "../../components/global/Loading";
 import { useDispatch, useSelector } from "react-redux";
-import { getBuyer } from "../../features/buyerSlice";
+import { getBuyer, resetBuyer } from "../../features/buyerSlice";
 import FallBack from "../../components/global/Fallback";
 
 const BuyerDetailScreen = ({ route }) => {
@@ -20,13 +20,19 @@ const BuyerDetailScreen = ({ route }) => {
   const Tab = createBottomTabNavigator();
   const buyerId = route.params?.buyerId;
 
-  console.log({ buyerId });
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getBuyer(buyerId));
   }, [dispatch]);
+
+  useEffect(
+    useCallback(() => {
+      return () => {
+        dispatch(resetBuyer());
+      };
+    }, [])
+  );
 
   const { buyer, loading, error } = useSelector((states) => states.buyers);
 

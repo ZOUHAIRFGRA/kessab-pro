@@ -60,7 +60,7 @@ const BuyerCardView = ({ buyer }) => {
           <IconTag
             tagName="vcard"
             color="grey"
-            content={buyer.cin}
+            content={buyer.CIN}
             style={{ flex: 1, borderWidth: 0 }}
           />
           <IconTag

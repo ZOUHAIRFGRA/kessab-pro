@@ -1,27 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, FlatList } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import SaleCardView from "./SaleCardView";
-import { getSales } from "../../features/saleSlice";
+import { getSales, resetSales } from "../../features/saleSlice";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-
-
+import { useFocusEffect } from "@react-navigation/native";
 
 const SalesListCardView = ({ searchText: propSearchText, route }) => {
   const { t } = useTranslation();
+
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getSales());
-  }, [dispatch]);
-
-  const { sales, loading, error } = useSelector(({ sales }) => sales);
+  const { sales, loading, error } = useSelector((states) => states.sales);
   const [currentPage, setCurrentPage] = useState(0);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getSales());
+      return () => {
+        dispatch(resetSales());
+      };
+    }, [])
+  );
+
+  console.log({ loading, error, sales });
 
   if (loading) return <Loading />;
-  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
+  if (error || !sales) return <FallBack />;
 
   return (
     <View style={{ flex: 1 }}>

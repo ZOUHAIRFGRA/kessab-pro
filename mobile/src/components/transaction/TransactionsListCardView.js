@@ -31,7 +31,6 @@ const TransactionListCardView = ({ id, type = "sale" }) => {
   );
 
   if (loading) return <Loading />;
-  console.log({ error });
 
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 

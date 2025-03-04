@@ -20,7 +20,6 @@ const TransactionCardView = ({ transaction }) => {
     setIsVisible(true);
   };
 
-  console.log({ transaction });
 
   return (
     <>

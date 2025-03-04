@@ -1,9 +1,9 @@
-import { View, Text, ScrollView, TextInput } from "react-native";
+import { Text } from "react-native";
 import Container from "../../components/global/Container";
 import Button from "../../components/global/Button";
 import Colors from "../../utils/Colors";
 import DropdownComponent from "../../components/global/BaseDropdown";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SearchBar } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
@@ -23,13 +23,11 @@ export default function SalesScreen() {
 
   const onAddSaleClick = (counter) => {
     setDialogVisible(false);
-    console.log(counter);
     setCounter(1);
     navigator.navigate("AddSale", { qte: counter });
   };
 
   const { t } = useTranslation();
-
   return (
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>
