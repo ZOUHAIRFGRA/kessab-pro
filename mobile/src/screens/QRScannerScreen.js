@@ -34,27 +34,9 @@ export default QRScannerScreen = () => {
 
   const navigator = useNavigation();
 
-  useEffect(() => {
-    const backHandler = (e) => {
-      e.preventDefault();
-      navigator.navigate("Home");
-      return true;
-    };
-
-    navigator.addListener("beforeRemove", backHandler);
-
-    return () => {
-      navigator.removeListener("beforeRemove", backHandler);
-    };
-  }, [navigator]);
-
   useFocusEffect(
     useCallback(() => {
-      console.log("salam");
-
       return () => {
-        console.log("bay");
-
         qrLock.current = null;
       };
     }, [])

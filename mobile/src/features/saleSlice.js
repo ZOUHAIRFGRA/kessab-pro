@@ -73,6 +73,9 @@ const saleSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+      .addCase(getSale.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(getSale.fulfilled, (state, action) => {
         state.loading = false;
         state.sale = action.payload;
