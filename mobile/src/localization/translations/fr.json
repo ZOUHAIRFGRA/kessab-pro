@@ -7,6 +7,18 @@
     "NOT_PAID": "Non payé"
   },
   "common": {
+
+
+    "total_sales": "Total des ventes",
+    "total_buyers": "Total des acheteurs",
+    "total_animals": "Total des animaux",
+    "total_transactions": "Total des transactions",
+    "add_transaction": "Ajouter une transaction",
+    "recent_activities": "Activités récentes",
+    "view_all": "Voir tout",
+    "financial_summary": "Résumé financier",
+    "total_revenue": "Total des revenus",
+    "pending_payments": "Paiements en attente",
     "No_medical_logs_found": "Aucun dossier médical trouvé",
     "No_activity_logs_found": "Aucun journal d'activité trouvé",
     "select_category": "Sélectionner une catégorie",
