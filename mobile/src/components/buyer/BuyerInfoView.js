@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { ScrollView } from "react-native";
+import { Linking, Pressable, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
@@ -25,6 +25,13 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
   const handleBuyerLinkClick = () => {
     navigator.navigate("buyerDetail", { buyerId: buyer.id });
   };
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!buyer && !error) {
+      dispatch(getBuyer(id));
+    }
+  }, []);
+
   if (loading || !buyer) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
 
@@ -62,8 +69,10 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
             <Header level={"h3"}>{buyer.address}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
-            <Text>{t("common.Phone")}</Text>
-            <Header level={"h3"}>{buyer.phone}</Header>
+            <Pressable onPress={() => Linking.openURL(`tel:${buyer.phone}`)}>
+              <Text>{t("common.Phone")}</Text>
+              <Header level={"h3"}>{buyer.phone}</Header>
+            </Pressable>
           </Container>
         </Card>
         {!hideLinkButton && (

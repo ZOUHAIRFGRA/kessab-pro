@@ -26,15 +26,11 @@ const BuyerDetailScreen = ({ route }) => {
     dispatch(getBuyer(buyerId));
   }, [dispatch]);
 
-  useEffect(
-    useCallback(() => {
-      return () => {
-        dispatch(resetBuyer());
-      };
-    }, [])
-  );
-
-  const { buyer, loading, error } = useSelector((states) => states.buyers);
+  const {
+    buyer,
+    buyerLoading: loading,
+    error,
+  } = useSelector((states) => states.buyers);
 
   if (loading) return <Loading />;
   if (error || !buyerId) return <FallBack />;

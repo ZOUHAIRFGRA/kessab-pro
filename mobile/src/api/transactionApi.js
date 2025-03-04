@@ -12,6 +12,11 @@ class TransactionsService {
   fetchTransactionInvoice(id) {
     return axiosInstance.post(`/pdf/transaction/${id}`).then((res) => res.data);
   }
+  consumeTransaction(buyer_id, transaction) {
+    return axiosInstance
+      .post(`/transactions/buyer/${buyer_id}`, transaction)
+      .then((res) => res.data);
+  }
 
   createTransaction(transactionData) {
     return axiosInstance

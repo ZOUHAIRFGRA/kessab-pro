@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import Toast from "react-native-toast-message";
+import Colors from "../utils/Colors";
 
 export const useToast = () => {
   const { t } = useTranslation();
@@ -15,9 +16,9 @@ export const useToast = () => {
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 60,
-        position: "top", 
+        position: "top",
         style: {
-          backgroundColor: "green",
+          backgroundColor: Colors.primary,
           padding: 15,
           borderRadius: 8,
           flexDirection: isRTL ? "row-reverse" : "row",
@@ -46,7 +47,7 @@ export const useToast = () => {
         topOffset: 60,
         position: "top",
         style: {
-          backgroundColor: "red",
+          backgroundColor: Colors.danger,
           padding: 15,
           borderRadius: 8,
           flexDirection: isRTL ? "row-reverse" : "row",
