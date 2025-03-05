@@ -1,5 +1,6 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +71,6 @@ public class SaleService implements ISaleService {
 
     @Override
     public Sale createSale(SaleDTORequest saleDTORequest) throws AccessDeniedException {
-
-        System.out.println(saleDTORequest);
         Sale sale = Sale.builder()
                 .saleDate(DateHelper.parseStringDate(saleDTORequest.saleDate()))
                 .agreedAmount(saleDTORequest.agreedAmount())
@@ -88,13 +87,18 @@ public class SaleService implements ISaleService {
                         animal.setSale(sale);
                         animals.add(animalService.createAnimal(animal));
                     } else {
-                        Animal animal = Animal.builder()
-                                .tag(animalDTORequest.tag())
-                                .price(animalDTORequest.price())
-                                .category(animalCategoryService.getCategoryById(UUID.fromString(animalDTORequest.category())).get())
-                                .pickUpDate(animalDTORequest.isPickedUp() ? (LocalDate.parse(saleDTORequest.saleDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"))) : null)
-                                .sale(sale)
-                                .build();
+                        Animal animal = new Animal();
+                        animal.setTag(animalDTORequest.tag());
+                        animal.setPrice(animalDTORequest.price());
+                        AnimalCategory category = animalCategoryService.getCategoryById(UUID.fromString(animalDTORequest.category())).get();
+                        animal.setCategory(category);
+                        animal.setPickUpDate(animalDTORequest.isPickedUp() ? (LocalDate.parse(saleDTORequest.saleDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"))) : null);
+                        animal.setSale(sale);
+                        try {
+                            animal.addImagePath(category.getIcon().getIconPath());
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
                         animals.add(animalService.createAnimal(animal));
                     }
 
@@ -202,7 +206,7 @@ public class SaleService implements ISaleService {
     }
 
     public Page<Sale> getFilteredSales(String fullName, UUID categoryId, PaymentStatus paymentStatus, LocalDate saleDate, Pageable pageable) {
-        return saleRepository.findFilteredSales(fullName, categoryId, paymentStatus,saleDate, pageable);
+        return saleRepository.findFilteredSales(fullName, categoryId, paymentStatus, saleDate, pageable);
     }
 
     public boolean isNotPaid(Sale sale) {
