@@ -15,7 +15,6 @@ const AnimalCardView = ({ animal }) => {
   const handleAnimalClick = () => {
     navigator.navigate("AnimalDetails", { animalId: animal.id });
   };
-  console.log({ animalfromCard: animal });
 
   return (
     <TouchableOpacity onPress={() => handleAnimalClick()}>
