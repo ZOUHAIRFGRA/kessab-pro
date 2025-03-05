@@ -75,12 +75,15 @@ export default function HomeScreen() {
             value={searchText}
             onChangeText={handleSearchChange}
             onSubmitEditing={handleSearch}
-            placeholderTextColor="black"
+            placeholderTextColor="#999"
             textAlign={isRTL ? "right" : "left"}
           />
+          <SearchIconContainer isRTL={isRTL}>
+            <Icon name="magnify" size={24} color={Colors.primary} />
+          </SearchIconContainer>
           {searchText.length > 0 && (
             <ClearButton onPress={() => setSearchText("")} isRTL={isRTL}>
-              <Icon name="close-circle" size={20} color="gray" />
+              <Icon name="close-circle" size={20} color="#666" />
             </ClearButton>
           )}
           {debouncedSearchText && !searchText && (
@@ -91,6 +94,7 @@ export default function HomeScreen() {
                 left: isRTL ? 40 : null,
                 top: 14,
               }}
+              color={Colors.primary}
             />
           )}
         </SearchInputContainer>
@@ -139,29 +143,50 @@ export default function HomeScreen() {
       <BottomNavContainer>
         <BottomNav>
           {[
-            { label: t("common.dashboard"), route: "Dashboard" },
-            { label: t("common.QRscanner"), route: "QRScanner" },
-            { label: t("common.profile"), route: "Profile" },
-          ].map((item) => (
-            <BottomNavItem
-              key={item.route}
-              onPress={() => navigation.navigate(item.route)}
-              accessibilityRole="button"
-              accessibilityLabel={`Navigate to ${item.label}`}
-              accessibilityHint={t(
-                `common.nav_hint_${item.route.toLowerCase()}`
-              )}
-            >
-              <BottomNavText
-                sx={{
-                  variant: "text.secondary",
-                  textAlign: isRTL ? "right" : "center",
-                }}
+            {
+              label: t("common.dashboard"),
+              route: "Dashboard",
+              icon: "view-dashboard",
+            },
+            {
+              label: t("common.QRscanner"),
+              route: "QRScanner",
+              icon: "qrcode-scan",
+            },
+            {
+              label: t("common.profile"),
+              route: "Profile",
+              icon: "account",
+            },
+          ].map((item) => {
+            const isActive =
+              navigation.isFocused?.() &&
+              navigation.getCurrentRoute?.().name === item.route;
+
+            return (
+              <BottomNavItem
+                key={item.route}
+                onPress={() => navigation.navigate(item.route)}
+                accessibilityRole="button"
+                accessibilityLabel={`Navigate to ${item.label}`}
+                accessibilityHint={t(
+                  `common.nav_hint_${item.route.toLowerCase()}`
+                )}
+                isActive={isActive}
               >
-                {item.label}
-              </BottomNavText>
-            </BottomNavItem>
-          ))}
+                <BottomNavIcon name={item.icon} isActive={isActive} />
+                <BottomNavText
+                  sx={{
+                    variant: "text.secondary",
+                    textAlign: isRTL ? "right" : "center",
+                  }}
+                  isActive={isActive}
+                >
+                  {item.label}
+                </BottomNavText>
+              </BottomNavItem>
+            );
+          })}
         </BottomNav>
       </BottomNavContainer>
 
@@ -185,23 +210,38 @@ const ContentContainer = styled(ScrollView)({
 
 const SearchInputContainer = styled(View)({
   position: "relative",
-  marginBottom: 12,
+  marginBottom: 16,
 });
 
 const SearchInput = styled(TextInput)({
+  height: 50,
+  borderRadius: 12,
+  backgroundColor: "#fff",
+  paddingHorizontal: 40, // Increased padding to accommodate icons
+  paddingVertical: 12,
+  fontSize: 16,
+  color: "#333",
   borderWidth: 1,
-  borderColor: "border",
-  padding: 12,
-  borderRadius: 8,
-  height: 48,
-  backgroundColor: "inputBackground",
+  borderColor: "#ddd",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 2,
 });
+
+const SearchIconContainer = styled(View)(({ isRTL }) => ({
+  position: "absolute",
+  left: isRTL ? null : 10,
+  right: isRTL ? 10 : null,
+  top: 13,
+}));
 
 const ClearButton = styled(TouchableOpacity)(({ isRTL }) => ({
   position: "absolute",
   right: isRTL ? null : 10,
   left: isRTL ? 10 : null,
-  top: 12,
+  top: 15,
 }));
 
 const Grid = styled(View)({
@@ -288,24 +328,35 @@ const BottomNav = styled(View)({
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "center",
-  borderWidth: 1,
-  borderColor: "border",
-  borderRadius: 10,
-  backgroundColor: "navBackground",
+  borderRadius: 16,
+  backgroundColor: Colors.white,
   padding: 8,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: -2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 5,
 });
 
 const BottomNavItem = styled(TouchableOpacity)(({ isActive }) => ({
   flex: 1,
   alignItems: "center",
   justifyContent: "center",
-  paddingVertical: 12,
+  paddingVertical: 10,
   paddingHorizontal: 8,
-  borderWidth: 1,
-  borderColor: "border",
-  borderRadius: 8,
-  marginHorizontal: 4,
-  backgroundColor: isActive ? "#e0f7fa" : "white",
+  borderRadius: 12,
+  backgroundColor: isActive ? Colors.secondaryLight : "transparent",
+  transition: "all 0.2s ease-in-out",
 }));
 
-const BottomNavText = styled(Text)();
+const BottomNavIcon = styled(Icon)(({ isActive }) => ({
+  fontSize: 24,
+  color: isActive ? Colors.secondary : Colors.primary,
+}));
+
+const BottomNavText = styled(Text)(({ isActive }) => ({
+  fontSize: 12,
+  marginTop: 4,
+  fontWeight: isActive ? "700" : "500",
+  color: isActive ? Colors.secondary : Colors.primary,
+}));

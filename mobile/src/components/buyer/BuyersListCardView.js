@@ -6,7 +6,6 @@ import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
 import BuyerCardView from "./BuyerCardView";
 import { getBuyers, resetBuyers } from "../../features/buyerSlice";
-import { resetAnimals } from "../../features/animalSlice";
 import { useFocusEffect } from "@react-navigation/native";
 
 const BuyersListCardView = ({ searchText: propSearchText, route }) => {

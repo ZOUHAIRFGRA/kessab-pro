@@ -1,6 +1,11 @@
-
 import React, { useEffect } from "react";
-import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { styled } from "dripsy";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
@@ -9,7 +14,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { getAnimalsCount, getUnsoldAnimals } from "../features/animalSlice";
 import { getSales } from "../features/saleSlice";
 import { getTransactions } from "../features/transactionSlice";
-import { getBuyers } from "../features/buyerSlice";
+// import { getBuyers } from "../features/buyerSlice";
 import { getAllAnimalActivitiesLogs } from "../features/animalActivitiesLogSlice";
 
 const DashboardScreen = () => {
@@ -18,42 +23,71 @@ const DashboardScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const { activitiesLogs, loading: activitiesLoading, error: activitiesError } = useSelector(
-    (state) => state.animalActivitiesLogs
-  );
-  const { totalAnimals, totalUnsoldAnimals, loading: animalsLoading, error: animalsError } = useSelector(
-    (state) => state.animals
-  );
-  const { sales, loading: salesLoading, error: salesError } = useSelector(
-    (state) => state.sales
-  );
-  const { transactions, loading: transactionsLoading, error: transactionsError } = useSelector(
-    (state) => state.transactions
-  );
-  const { buyers, loading: buyersLoading, error: buyersError } = useSelector(
-    (state) => state.buyers
-  );
+  const {
+    activitiesLogs,
+    loading: activitiesLoading,
+    error: activitiesError,
+  } = useSelector((state) => state.animalActivitiesLogs);
+  const {
+    totalAnimals,
+    totalUnsoldAnimals,
+    loading: animalsLoading,
+    error: animalsError,
+  } = useSelector((state) => state.animals);
+  const {
+    sales,
+    loading: salesLoading,
+    error: salesError,
+  } = useSelector((state) => state.sales);
+  const {
+    transactions,
+    loading: transactionsLoading,
+    error: transactionsError,
+  } = useSelector((state) => state.transactions);
+  const {
+    buyers,
+    loading: buyersLoading,
+    error: buyersError,
+  } = useSelector((state) => state.buyers);
 
   useEffect(() => {
     console.log("Dispatching getAnimalsCount...");
-    dispatch(getAnimalsCount()).catch(err => console.error("getAnimalsCount failed:", err));
+    dispatch(getAnimalsCount()).catch((err) =>
+      console.error("getAnimalsCount failed:", err)
+    );
     console.log("Dispatching getUnsoldAnimals...");
-    dispatch(getUnsoldAnimals()).catch(err => console.error("getUnsoldAnimals failed:", err));
+    dispatch(getUnsoldAnimals()).catch((err) =>
+      console.error("getUnsoldAnimals failed:", err)
+    );
     console.log("Dispatching getSales...");
-    dispatch(getSales()).catch(err => console.error("getSales failed:", err));
+    dispatch(getSales()).catch((err) => console.error("getSales failed:", err));
     console.log("Dispatching getTransactions...");
-    dispatch(getTransactions()).catch(err => console.error("getTransactions failed:", err));
-    console.log("Dispatching getBuyers...");
-    dispatch(getBuyers()).catch(err => console.error("getBuyers failed:", err));
+    dispatch(getTransactions()).catch((err) =>
+      console.error("getTransactions failed:", err)
+    );
+    // console.log("Dispatching getBuyers...");
+    // dispatch(getBuyers()).catch((err) =>
+    //   console.error("getBuyers failed:", err)
+    // );
     console.log("Dispatching getAllAnimalActivitiesLogs...");
-    dispatch(getAllAnimalActivitiesLogs()).catch(err => console.error("getAllAnimalActivitiesLogs failed:", err));
+    dispatch(getAllAnimalActivitiesLogs()).catch((err) =>
+      console.error("getAllAnimalActivitiesLogs failed:", err)
+    );
   }, [dispatch]);
 
   const isLoading =
-    animalsLoading || salesLoading || transactionsLoading || buyersLoading || activitiesLoading;
+    animalsLoading ||
+    salesLoading ||
+    transactionsLoading ||
+    buyersLoading ||
+    activitiesLoading;
 
   const hasErrors =
-    animalsError || salesError || transactionsError || buyersError || activitiesError;
+    animalsError ||
+    salesError ||
+    transactionsError ||
+    buyersError ||
+    activitiesError;
 
   const navigateTo = (screen) => navigation.navigate(screen);
 
@@ -71,7 +105,11 @@ const DashboardScreen = () => {
       <ErrorContainer>
         <ErrorTitle isRTL={isRTL}>{t("common.data_fetch_error")}</ErrorTitle>
         <ErrorText isRTL={isRTL}>
-          {animalsError || salesError || transactionsError || buyersError || activitiesError}
+          {animalsError ||
+            salesError ||
+            transactionsError ||
+            buyersError ||
+            activitiesError}
         </ErrorText>
       </ErrorContainer>
     );
@@ -84,47 +122,59 @@ const DashboardScreen = () => {
   // console.log("buyers", buyers);
   // console.log("activitiesLogs", activitiesLogs);
 
-  
   const totalAnimalsCount = totalAnimals || 0;
   const totalUnsoldCount = totalUnsoldAnimals || 0;
   const totalSoldCount = totalAnimalsCount - totalUnsoldCount;
   const totalSalesCount = sales.length || 0;
-  const totalTransactionsCount = transactions.content ? transactions.content.length : 0;
+  const totalTransactionsCount = transactions.content
+    ? transactions.content.length
+    : 0;
   const totalRevenue = transactions.content
     ? transactions.content.reduce((sum, t) => {
         const amountStr = t.amount.replace("DH", "").trim();
         return sum + parseFloat(amountStr);
       }, 0)
     : 0;
-  const pendingPayments = sales.filter(s => s.paymentStatus === "NOT_PAID").length || 0;
-  const totalRemainingAmount = sales.reduce((sum, sale) => {
-    const remainingStr = sale.paymentDetail.remainingAmount.replace("DH", "").trim();
-    return sum + parseFloat(remainingStr);
-  }, 0) || 0;
-  const totalAgreedAmount = sales.reduce((sum, sale) => {
-    const agreedStr = sale.agreedAmount.replace("DH", "").trim();
-    return sum + parseFloat(agreedStr);
-  }, 0) || 0;
+  const pendingPayments =
+    sales.filter((s) => s.paymentStatus === "NOT_PAID").length || 0;
+  const totalRemainingAmount =
+    sales.reduce((sum, sale) => {
+      const remainingStr = sale.paymentDetail.remainingAmount
+        .replace("DH", "")
+        .trim();
+      return sum + parseFloat(remainingStr);
+    }, 0) || 0;
+  const totalAgreedAmount =
+    sales.reduce((sum, sale) => {
+      const agreedStr = sale.agreedAmount.replace("DH", "").trim();
+      return sum + parseFloat(agreedStr);
+    }, 0) || 0;
 
-  const currentMonth = new Date().getMonth(); 
-  const currentYear = new Date().getFullYear(); 
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
 
-  const salesThisMonth = sales.filter(s => {
-    const [day, month, year] = s.saleDate.split("-").map(Number); 
-    return month - 1 === currentMonth && year === currentYear;
-  }).length || 0;
+  const salesThisMonth =
+    sales.filter((s) => {
+      const [day, month, year] = s.saleDate.split("-").map(Number);
+      return month - 1 === currentMonth && year === currentYear;
+    }).length || 0;
 
   const transactionsThisMonth = transactions.content
-    ? transactions.content.filter(t => {
+    ? transactions.content.filter((t) => {
         const transDate = new Date(t.transactionDate);
-        return transDate.getMonth() === currentMonth && transDate.getFullYear() === currentYear;
+        return (
+          transDate.getMonth() === currentMonth &&
+          transDate.getFullYear() === currentYear
+        );
       }).length
     : 0;
 
-  const lastSoldAnimals = sales.flatMap(sale => sale.animals).slice(0, 3);
+  const lastSoldAnimals = sales.flatMap((sale) => sale.animals).slice(0, 3);
   console.log("lastSoldAnimals", lastSoldAnimals);
 
-  const recentTransactions = transactions.content ? transactions.content.slice(0, 3) : [];
+  const recentTransactions = transactions.content
+    ? transactions.content.slice(0, 3)
+    : [];
 
   return (
     <Container>
@@ -176,7 +226,9 @@ const DashboardScreen = () => {
 
         {/* Financial Statistics */}
         <StatCard>
-          <StatTitle isRTL={isRTL}>{t("common.financial_statistics")}</StatTitle>
+          <StatTitle isRTL={isRTL}>
+            {t("common.financial_statistics")}
+          </StatTitle>
           <StatItem isRTL={isRTL}>
             <Icon name="cash" size={20} color="#4A90E2" />
             <StatLabel isRTL={isRTL}>{t("common.total_revenue")}</StatLabel>
@@ -184,17 +236,23 @@ const DashboardScreen = () => {
           </StatItem>
           <StatItem isRTL={isRTL}>
             <Icon name="cash-check" size={20} color="#34C759" />
-            <StatLabel isRTL={isRTL}>{t("common.transactions_this_month")}</StatLabel>
+            <StatLabel isRTL={isRTL}>
+              {t("common.transactions_this_month")}
+            </StatLabel>
             <StatValue>{transactionsThisMonth}</StatValue>
           </StatItem>
           <StatItem isRTL={isRTL}>
             <Icon name="cash-remove" size={20} color="#FF3B30" />
-            <StatLabel isRTL={isRTL}>{t("common.remaining_amount_owed")}</StatLabel>
+            <StatLabel isRTL={isRTL}>
+              {t("common.remaining_amount_owed")}
+            </StatLabel>
             <StatValue>{totalRemainingAmount.toFixed(2)} MAD</StatValue>
           </StatItem>
           <StatItem isRTL={isRTL}>
             <Icon name="cash-plus" size={20} color="#4A90E2" />
-            <StatLabel isRTL={isRTL}>{t("common.total_agreed_sales")}</StatLabel>
+            <StatLabel isRTL={isRTL}>
+              {t("common.total_agreed_sales")}
+            </StatLabel>
             <StatValue>{totalAgreedAmount.toFixed(2)} MAD</StatValue>
           </StatItem>
         </StatCard>
@@ -207,12 +265,16 @@ const DashboardScreen = () => {
               <ActivityRow key={index} isRTL={isRTL}>
                 <Icon name="sheep" size={16} color="#64748b" />
                 <ActivityText isRTL={isRTL}>
-                  {animal.tag || "Unknown Tag"} - {sales.find(s => s.animals.includes(animal))?.saleDate || "N/A"}
+                  {animal.tag || "Unknown Tag"} -{" "}
+                  {sales.find((s) => s.animals.includes(animal))?.saleDate ||
+                    "N/A"}
                 </ActivityText>
               </ActivityRow>
             ))
           ) : (
-            <ActivityText isRTL={isRTL}>{t("common.no_sold_animals")}</ActivityText>
+            <ActivityText isRTL={isRTL}>
+              {t("common.no_sold_animals")}
+            </ActivityText>
           )}
           <MoreLink onPress={() => navigateTo("Sales")} isRTL={isRTL}>
             {t("common.view_all_sales")}
@@ -232,9 +294,10 @@ const DashboardScreen = () => {
               </ActivityRow>
             ))
           ) : (
-            <ActivityText isRTL={isRTL}>{t("common.no_transactions")}</ActivityText>
+            <ActivityText isRTL={isRTL}>
+              {t("common.no_transactions")}
+            </ActivityText>
           )}
-         
         </StatCard>
 
         {/* Recent Activities */}
@@ -248,7 +311,6 @@ const DashboardScreen = () => {
               </ActivityText>
             </ActivityRow>
           ))}
-          
         </StatCard>
       </ScrollView>
     </Container>
@@ -257,7 +319,7 @@ const DashboardScreen = () => {
 
 const Container = styled(View)({
   flex: 1,
-  backgroundColor: "#F7F9FC", 
+  backgroundColor: "#F7F9FC",
 });
 
 const LoadingContainer = styled(View)({
@@ -305,7 +367,7 @@ const Header = styled(View)(({ isRTL }) => ({
 const HeaderText = styled(Text)({
   fontSize: 24,
   fontWeight: "700",
-  color: "#1E293B", 
+  color: "#1E293B",
 });
 
 const StatCard = styled(View)({
@@ -314,7 +376,7 @@ const StatCard = styled(View)({
   padding: 16,
   shadowColor: "#000",
   shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.05, 
+  shadowOpacity: 0.05,
   shadowRadius: 3,
   elevation: 1,
 });
