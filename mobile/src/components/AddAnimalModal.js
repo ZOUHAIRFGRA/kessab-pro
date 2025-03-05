@@ -17,13 +17,11 @@ import { useCategorySelector } from "../hooks/useCategorySelector";
 import { useAnimalForm } from "../hooks/useAnimalForm";
 import IconButton from "./AnimalDetailsComponents/IconButton";
 import Input from "./Input";
-import AddCategory from "./AddCategory";
-import ImagePickerButton from "./ImagePickerButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
 import { fetchCategoriesIcons } from "../features/iconsSlice";
-import { AddButton, CnclButton } from './AnimalDetailsComponents/sharedStyles';
-import { Button } from "@rneui/themed";
+import Colors from "../utils/Colors";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const AddAnimalModal = ({ visible, onClose }) => {
   const { t } = useTranslation();
@@ -50,12 +48,6 @@ const AddAnimalModal = ({ visible, onClose }) => {
     setImages,
     selectedCategory,
     setSelectedCategory,
-    newCategory,
-    setNewCategory,
-    selectedIcon,
-    setSelectedIcon,
-    showAddCategory,
-    setShowAddCategory,
     handleSubmit,
   } = useAnimalForm(onClose, dispatch);
 
@@ -64,19 +56,19 @@ const AddAnimalModal = ({ visible, onClose }) => {
   const [date, setDate] = useState(new Date());
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const { categoryPicker, handleAddCategory } = useCategorySelector(
+  const { categoryPicker } = useCategorySelector(
     categories,
     selectedCategory,
     setSelectedCategory,
-    showAddCategory,
-    setShowAddCategory,
-    newCategory,
-    setNewCategory,
-    selectedIcon,
-    setSelectedIcon,
-    icons,           
-    handleSubmit,    
-    t                
+    false,
+    () => {},
+    "",
+    () => {},
+    null,
+    () => {},
+    icons,
+    handleSubmit,
+    t
   );
 
   const handleDateChange = (event, selectedDate) => {
@@ -94,63 +86,49 @@ const AddAnimalModal = ({ visible, onClose }) => {
     onClose();
   };
 
+  const exitViewer = () => setSelectedImage(null);
+
   const isRTL = t("dir") === "rtl";
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.5)",
-        }}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
+      <ModalOverlay>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1, width: "100%" }}>
           <Container isRTL={isRTL}>
             <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  marginBottom: 10,
-                  textAlign: isRTL ? "right" : "left",
-                }}
-              >
-                {t("common.addAnimal")}
-              </Text>
+              <ModalTitle isRTL={isRTL}>{t("common.addAnimal")}</ModalTitle>
 
-              <Input placeholder={t("common.tag")} value={tag} onChangeText={setTag} />
+              <Input
+                placeholder={t("common.tag")}
+                value={tag}
+                onChangeText={setTag}
+                style={{ marginBottom: 12, width: "100%" }}
+              />
 
-              <View
-                style={{
-                  flexDirection: isRTL ? "row-reverse" : "row",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-              >
+              <SexSelector isRTL={isRTL}>
                 <IconButton
                   label={t("common.male")}
                   value="Male"
                   selected={sex}
                   onPress={() => setSex("Male")}
+                  color={Colors.primary}
+                  style={{ flex: 1, marginRight: isRTL ? 0 : 8 }}
                 />
                 <IconButton
                   label={t("common.female")}
                   value="Female"
                   selected={sex}
                   onPress={() => setSex("Female")}
+                  color={Colors.secondary}
+                  style={{ flex: 1, marginLeft: isRTL ? 8 : 0 }}
                 />
-              </View>
+              </SexSelector>
 
               <TouchableOpacity
                 onPress={() => setShowDatePicker(true)}
                 style={{
-                  marginBottom: 10,
-                  flexDirection: "row",
+                  marginBottom: 12, 
+                  flexDirection: isRTL ? "row-reverse" : "row", 
                   alignItems: "center",
                   width: "100%",
                 }}
@@ -160,11 +138,12 @@ const AddAnimalModal = ({ visible, onClose }) => {
                   value={birthDate}
                   editable={false}
                   placeholderTextColor="black"
-                  style={{ flex: 1, width: "250" }}
+                  style={{ flex: 1 , width:250}} 
                 />
-                <Text style={{ marginLeft: 10, fontSize: 35 }}>📅</Text>
+                <DateIcon>
+                  <Icon name="calendar" size={30} color={Colors.primary} />
+                </DateIcon>
               </TouchableOpacity>
-
               {showDatePicker && (
                 <DateTimePicker
                   value={date}
@@ -179,86 +158,59 @@ const AddAnimalModal = ({ visible, onClose }) => {
                 value={price}
                 onChangeText={setPrice}
                 keyboardType="numeric"
+                style={{ marginBottom: 12, width: "100%" }}
               />
               <Input
                 placeholder={t("common.weight")}
                 value={weight}
                 onChangeText={setWeight}
                 keyboardType="numeric"
+                style={{ marginBottom: 12, width: "100%" }}
               />
 
               {categoryPicker}
 
-              {showAddCategory ? (
-                <AddCategory
-                  newCategory={newCategory}
-                  setNewCategory={setNewCategory}
-                  selectedIcon={selectedIcon}
-                  setSelectedIcon={setSelectedIcon}
-                  icons={icons}
-                  handleAddCategory={handleAddCategory}
-                  t={t}
-                />
-              ) : (
-                <Button
-                  title={t("common.cant_find_category_add_one?")}
-                  onPress={() => setShowAddCategory(true)}
-                  color="green"
-                />
-              )}
+              <ImagePickerContainer isRTL={isRTL}>
+                <ImagePickerIcon onPress={pickImages}>
+                  <Icon name="image" size={40} color={Colors.info} />
+                </ImagePickerIcon>
+                <ImagePickerIcon onPress={takeImage}>
+                  <Icon name="camera" size={40} color={Colors.info} />
+                </ImagePickerIcon>
+              </ImagePickerContainer>
 
-              <ImagePickerButton onPress={pickImages}>{t("common.select_imgs_from_gallery")}</ImagePickerButton>
-              <ImagePickerButton onPress={takeImage}>{t("common.take_photo")}</ImagePickerButton>
-
-              <ScrollView horizontal style={{ marginVertical: 10 }}>
+              <ImagePreviewContainer horizontal>
                 {images.map((img, index) => (
-                  <View key={index} style={{ position: "relative" }}>
+                  <ImageWrapper key={index}>
                     <TouchableOpacity onPress={() => handleImageClick(img)}>
-                      <Image source={{ uri: img }} style={{ width: 80, height: 80, margin: 5 }} />
+                      <Thumbnail source={{ uri: img }} />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => removeImage(index)}
-                      style={{
-                        position: "absolute",
-                        top: -5,
-                        right: -5,
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        borderRadius: 15,
-                        padding: 5,
-                      }}
-                    >
-                      <Text style={{ color: "white", fontSize: 16 }}>❌</Text>
-                    </TouchableOpacity>
-                  </View>
+                    <RemoveButton onPress={() => removeImage(index)}>
+                      <Icon name="close" size={16} color={Colors.white} />
+                    </RemoveButton>
+                  </ImageWrapper>
                 ))}
-              </ScrollView>
+              </ImagePreviewContainer>
 
-              <AddButton title={t("common.addAnimal")} onPress={handleSubmit}>
-                <Text style={{ color: "white" }}>{t("common.addAnimal")}</Text>
-              </AddButton>
-              <CnclButton title={t("common.close")} onPress={onClose}>
-                <Text style={{ color: "white" }}>{t("common.close")}</Text>
-              </CnclButton>
+              <ButtonContainer isRTL={isRTL}>
+                <SubmitButton onPress={handleSubmit}>
+                  <ButtonText>{t("common.add")}</ButtonText>
+                </SubmitButton>
+                <CancelButton onPress={closeModal}>
+                  <ButtonText>{t("common.cancel")}</ButtonText>
+                </CancelButton>
+              </ButtonContainer>
             </ScrollView>
           </Container>
         </KeyboardAvoidingView>
-      </View>
+      </ModalOverlay>
+
       {selectedImage && (
         <Modal visible={true} transparent={true} animationType="fade">
-          <TouchableOpacity style={{ flex: 1 }} onPress={closeModal}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "rgba(0,0,0,0.8)",
-              }}
-            >
-              <Image
-                source={{ uri: selectedImage }}
-                style={{ width: "90%", height: "80%", resizeMode: "contain" }}
-              />
-            </View>
+          <TouchableOpacity style={{ flex: 1 }} onPress={exitViewer}>
+            <ImageViewer>
+              <FullImage source={{ uri: selectedImage }} />
+            </ImageViewer>
           </TouchableOpacity>
         </Modal>
       )}
@@ -266,10 +218,18 @@ const AddAnimalModal = ({ visible, onClose }) => {
   );
 };
 
+
+const ModalOverlay = styled(View)({
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0,0,0,0.5)",
+});
+
 const Container = styled(View)(({ isRTL }) => ({
-  width: "100%",
-  backgroundColor: "white",
-  padding: 35,
+  width: "90%",
+  backgroundColor: Colors.white,
+  padding: 40,
   borderRadius: 10,
   shadowColor: "#000",
   shadowOffset: { width: 0, height: 2 },
@@ -279,7 +239,108 @@ const Container = styled(View)(({ isRTL }) => ({
   marginTop: 45,
   marginBottom: 45,
   flex: 1,
-  alignItems: isRTL ? "flex-end" : "flex-start",
+  alignSelf: "center",
+  alignItems: "stretch",
 }));
+
+const ModalTitle = styled(Text)(({ isRTL }) => ({
+  fontSize: 20,
+  fontWeight: "700",
+  color: Colors.primary,
+  marginBottom: 16,
+  textAlign: isRTL ? "right" : "left",
+}));
+
+const SexSelector = styled(View)(({ isRTL }) => ({
+  flexDirection: isRTL ? "row-reverse" : "row",
+  alignItems: "center",
+  justifyContent: "space-evenly",
+  marginBottom: 12,
+  width: "100%",
+}));
+
+const DateIcon = styled(View)({ 
+  padding: 8,
+  top: 6,
+});
+
+const ImagePickerContainer = styled(View)(({ isRTL }) => ({
+  flexDirection: isRTL ? "row-reverse" : "row",
+  justifyContent: "center",
+  gap: 16,
+  marginBottom: 12,
+  width: "100%",
+}));
+
+const ImagePickerIcon = styled(TouchableOpacity)({
+  padding: 8,
+});
+
+const ImagePreviewContainer = styled(ScrollView)({
+  marginBottom: 12,
+  width: "100%",
+});
+
+const ImageWrapper = styled(View)({
+  position: "relative",
+  marginRight: 8,
+});
+
+const Thumbnail = styled(Image)({
+  width: 60,
+  height: 60,
+  borderRadius: 8,
+});
+
+const RemoveButton = styled(TouchableOpacity)({
+  position: "absolute",
+  top: -4,
+  right: -4,
+  backgroundColor: Colors.danger,
+  borderRadius: 12,
+  padding: 2,
+});
+
+const ButtonContainer = styled(View)(({ isRTL }) => ({
+  flexDirection: isRTL ? "row-reverse" : "row",
+  justifyContent: "space-between",
+  gap: 12,
+  width: "100%",
+}));
+
+const SubmitButton = styled(TouchableOpacity)({
+  flex: 1,
+  backgroundColor: Colors.success,
+  paddingVertical: 12,
+  borderRadius: 8,
+  alignItems: "center",
+});
+
+const CancelButton = styled(TouchableOpacity)({
+  flex: 1,
+  backgroundColor: Colors.danger,
+  paddingVertical: 12,
+  borderRadius: 8,
+  alignItems: "center",
+});
+
+const ButtonText = styled(Text)({
+  color: Colors.white,
+  fontSize: 16,
+  fontWeight: "600",
+});
+
+const ImageViewer = styled(View)({
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0,0,0,0.8)",
+});
+
+const FullImage = styled(Image)({
+  width: "90%",
+  height: "80%",
+  resizeMode: "contain",
+});
 
 export default AddAnimalModal;
