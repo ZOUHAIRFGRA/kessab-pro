@@ -16,9 +16,14 @@ export const addBuyer = createAsyncThunk("buyers/add", async (buyer) => {
   return response;
 });
 
-export const editBuyer = createAsyncThunk(
+export const updateBuyer = createAsyncThunk(
   "buyers/update",
-  async ({ id, updateBuyer }) => {
+  async (id, buyer) => {
+    console.log({
+      id,
+      buyer,
+    });
+
     const response = await BuyersService.updateBuyer(id, updateBuyer);
     return response;
   }
@@ -83,7 +88,7 @@ const buyerSlice = createSlice({
       .addCase(addBuyer.fulfilled, (state, action) => {
         state.buyers.push(action.payload);
       })
-      .addCase(editBuyer.fulfilled, (state, action) => {
+      .addCase(updateBuyer.fulfilled, (state, action) => {
         state.buyers = state.buyers.map((s) =>
           s.id === action.payload.id ? action.payload : s
         );
