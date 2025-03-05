@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Linking, Pressable, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
@@ -12,7 +12,7 @@ import Button from "../global/Button";
 import { Icon } from "@rneui/base";
 import Text from "../../components/global/Text";
 import { useTranslation } from "react-i18next";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getValue } from "../../helpers/gloablHelpers";
 
 export default function BuyerInfoView({ id, hideLinkButton = false }) {
@@ -31,6 +31,7 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
     navigator.navigate("buyerDetail", { buyerId: buyer.id });
   };
 
+ 
   if (loading || !buyer) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
 

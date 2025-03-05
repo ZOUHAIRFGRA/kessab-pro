@@ -17,7 +17,6 @@ const BuyerDetailScreen = ({ route }) => {
   const Tab = createBottomTabNavigator();
   const navigator = useNavigation();
   const buyerId = route.params?.buyerId;
-  console.log({ buyerId });
 
   return (
     <Container sx={{ flex: 1 }}>
@@ -56,7 +55,7 @@ const BuyerDetailScreen = ({ route }) => {
                 <Button
                   type="primary"
                   onPress={() => {
-                    navigator.navigate("updateBuyerScreen", buyerId);
+                    navigator.navigate("updateBuyerScreen", { buyerId });
                   }}
                   style={{
                     padding: 12,

@@ -84,9 +84,13 @@ const saleSlice = createSlice({
         state.loading = true;
       })
       .addCase(getSales.fulfilled, (state, action) => {
+        const { content, totalPages, page } = action.payload;
+        state.sales = content;
         state.loading = false;
+        state.totalPages = totalPages;
+        state.page = page + 1;
         state.error = null;
-        state.sales = action.payload.content;
+        console.log("fullied");
       })
       .addCase(getSales.rejected, (state, action) => {
         state.loading = false;

@@ -16,6 +16,7 @@ import AddSaleScreen from "../screens/sale/AddSaleScreen";
 import SalesScreen from "../screens/sale/SalesScreen";
 import AddBuyersScreen from "../screens/buyer/AddBuyerScreen";
 import UpdateBuyersScreen from "../screens/buyer/UpdateBuyerScreen";
+import HomeScreen from "../screens/HomeScreen";
 
 const Stack = createStackNavigator();
 export default function RootNavigator() {
@@ -53,6 +54,11 @@ export default function RootNavigator() {
               component={AnimalDetailsScreen}
             />
             <Stack.Screen name="AnimalsList" component={AnimalsList} />
+            <Stack.Screen
+              options={{ title: t("common.SaleDetail") }}
+              name="HomeScreen"
+              component={HomeScreen}
+            />
             <Stack.Screen
               options={{ title: t("common.SaleDetail") }}
               name="SellDetail"

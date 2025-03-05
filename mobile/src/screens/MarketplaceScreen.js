@@ -1,17 +1,20 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { styled } from 'dripsy';
-
-const Container = styled(View)({
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-});
+import React from "react";
+import { View, Text } from "react-native";
+import { styled } from "dripsy";
 
 export default function MarketplaceScreen() {
   return (
-    <Container>
-      <Text>This Feature is Coming Soon!!!</Text>
+    <Container
+      sx={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {/* <Image
+        source={require("../../../assets/logo.png")}
+        style={{ height: 150, width: 150, resizeMode: "contain" }}
+      /> */}
     </Container>
-  ); 
+  );
 }

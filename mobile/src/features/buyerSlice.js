@@ -18,13 +18,8 @@ export const addBuyer = createAsyncThunk("buyers/add", async (buyer) => {
 
 export const updateBuyer = createAsyncThunk(
   "buyers/update",
-  async (id, buyer) => {
-    console.log({
-      id,
-      buyer,
-    });
-
-    const response = await BuyersService.updateBuyer(id, updateBuyer);
+  async ({ id, buyer }) => {
+    const response = await BuyersService.updateBuyer(id, buyer);
     return response;
   }
 );
@@ -88,7 +83,13 @@ const buyerSlice = createSlice({
       .addCase(addBuyer.fulfilled, (state, action) => {
         state.buyers.push(action.payload);
       })
+      .addCase(updateBuyer.rejected, (state, action) => {
+        console.log(action.error);
+      })
       .addCase(updateBuyer.fulfilled, (state, action) => {
+        console.log("fully");
+        console.log({ action: action.payload });
+
         state.buyers = state.buyers.map((s) =>
           s.id === action.payload.id ? action.payload : s
         );
