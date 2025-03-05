@@ -7,7 +7,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-
+import { Alert, BackHandler } from "react-native";
 import { getBuyer, updateBuyer } from "../../features/buyerSlice";
 import Container from "../../components/global/Container";
 import Header from "../../components/global/Header";
@@ -15,13 +15,15 @@ import { Icon, Input } from "@rneui/base";
 import Button from "../../components/global/Button";
 import Colors from "../../utils/Colors";
 import { useToast } from "../../hooks/useToast";
+
 import Loading from "../../components/global/Loading";
+import buyerApi from "../../api/buyerApi";
 
 export default function UpdateBuyersScreen({ route }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { showSuccessToast } = useToast();
+  const { showSuccessToast, showErrorToast } = useToast();
 
   const { buyerId } = route.params;
 
@@ -101,7 +103,6 @@ export default function UpdateBuyersScreen({ route }) {
 
     return !Object.values(formErrors).some((error) => error !== "");
   };
-
   const handleSubmit = () => {
     if (validateForm()) {
       const payload = {
@@ -109,7 +110,17 @@ export default function UpdateBuyersScreen({ route }) {
         ...buyerData,
       };
       payload["cin"] = payload["CIN"];
-      dispatch(updateBuyer({ id: buyerId, buyer: payload }));
+
+      buyerApi
+        .updateBuyer(buyerId, payload)
+        .then(() => {
+          dispatch(getBuyer(buyerId));
+          showSuccessToast();
+        })
+        .catch(() => {
+          showErrorToast();
+        });
+
       showSuccessToast();
     }
   };
