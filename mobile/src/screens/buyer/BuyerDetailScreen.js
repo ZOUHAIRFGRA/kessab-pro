@@ -12,28 +12,12 @@ import { useTranslation } from "react-i18next";
 import SalesListCardView from "../../components/sale/SalesListCardView";
 import Loading from "../../components/global/Loading";
 import { useDispatch, useSelector } from "react-redux";
-import { getBuyer, resetBuyer } from "../../features/buyerSlice";
 import FallBack from "../../components/global/Fallback";
 
 const BuyerDetailScreen = ({ route }) => {
   const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
   const buyerId = route.params?.buyerId;
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getBuyer(buyerId));
-  }, [dispatch]);
-
-  const {
-    buyer,
-    buyerLoading: loading,
-    error,
-  } = useSelector((states) => states.buyers);
-
-  if (loading) return <Loading />;
-  if (error || !buyerId) return <FallBack />;
 
   return (
     <Container sx={{ flex: 1 }}>
@@ -61,7 +45,7 @@ const BuyerDetailScreen = ({ route }) => {
             ),
           }}
         >
-          {() => <BuyerInfoView id={buyer?.id} hideLinkButton />}
+          {() => <BuyerInfoView id={buyerId} hideLinkButton />}
         </Tab.Screen>
 
         <Tab.Screen
@@ -75,7 +59,7 @@ const BuyerDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16 }}>
-              <AnimalsListCardView id={buyer.id} type={"buyer"} />
+              <AnimalsListCardView id={buyerId} type={"buyer"} />
             </Container>
           )}
         </Tab.Screen>
@@ -91,7 +75,7 @@ const BuyerDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <SalesListCardView id={buyer.id} type={"buyer"} />
+              <SalesListCardView id={buyerId} type={"buyer"} />
             </Container>
           )}
         </Tab.Screen>
@@ -106,7 +90,7 @@ const BuyerDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <TransactionsListCardView id={buyer.id} type={"buyer"} />
+              <TransactionsListCardView id={buyerId} type={"buyer"} />
             </Container>
           )}
         </Tab.Screen>

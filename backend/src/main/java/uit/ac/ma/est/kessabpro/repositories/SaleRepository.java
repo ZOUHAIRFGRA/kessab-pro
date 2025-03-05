@@ -26,6 +26,9 @@ public interface SaleRepository extends UserAwareRepository<Sale, UUID> {
     @Query("SELECT COUNT(a) FROM Sale s JOIN s.animals a WHERE s.buyer.id = :buyerId AND a.pickUpDate IS NULL")
     Integer countAnimalsNotPickedUpByBuyerId(UUID buyerId);
 
+    List<Sale> findByBuyerId(UUID buyerId);
+
+
     @Query("SELECT DISTINCT s FROM Sale s " +
             "LEFT JOIN s.buyer b " +
             "LEFT JOIN s.animals a " +

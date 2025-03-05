@@ -1,5 +1,5 @@
 import { CheckBox, Icon, Input } from "@rneui/base";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import Collapsible from "react-native-collapsible";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -15,10 +15,25 @@ import Card from "../../components/global/Card";
 import Text from "../../components/global/Text";
 import Button from "../../components/global/Button";
 import BaseDropdown from "../../components/global/BaseDropdown";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import saleApi from "../../api/saleApi";
+import { useToast } from "../../hooks/useToast";
+import { fetchPaymentMethods } from "../../features/enumSlice";
 
 const AddSaleScreen = ({ route, navigation }) => {
+  const navigator = useNavigation();
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const { loading: loadingPaymentMethods, paymentMethods } = useSelector(
+    (states) => states.enums
+  );
+
+  useEffect(() => {
+    if (paymentMethods.length < 1) {
+      dispatch(fetchPaymentMethods());
+    }
+  }, [dispatch]);
 
   const qte = route.params?.qte || (route.params?.animalId ? 1 : 1);
   const initialAnimalId = route.params?.animalId;
@@ -69,6 +84,7 @@ const AddSaleScreen = ({ route, navigation }) => {
     saleDate: formatDate(new Date()),
     agreedAmount: "",
     paidAmount: "",
+    method: "",
   });
 
   const [err, setErr] = useState("");
@@ -119,6 +135,35 @@ const AddSaleScreen = ({ route, navigation }) => {
     }
   }, [animalExisting, dispatch, initialAnimalId]);
 
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setErr("");
+        setSubmitData({
+          animals: [],
+          buyer: {},
+          saleDetail: {},
+        });
+
+        setBuyerFormData({
+          cin: "",
+          fullName: "",
+          phone: "",
+          address: "",
+          id: null,
+        });
+        setAnimalFormData([]);
+        setSummaryFormData({
+          saleDate: formatDate(new Date()),
+          agreedAmount: "",
+          paidAmount: "",
+        });
+      };
+    }, [])
+  );
+
+  const { showErrorToast, showSuccessToast } = useToast();
+
   const onSubmit = () => {
     setIsSubmitting(true);
 
@@ -150,6 +195,9 @@ const AddSaleScreen = ({ route, navigation }) => {
       }
       if (!summaryFormData.paidAmount) {
         return "Paid amount must be filled";
+      }
+      if (!summaryFormData.method) {
+        return "Method is required";
       }
       return null;
     };
@@ -184,13 +232,23 @@ const AddSaleScreen = ({ route, navigation }) => {
       agreedAmount: parseFloat(summaryFormData.agreedAmount),
       paidAmount: parseFloat(summaryFormData.paidAmount),
     };
+    console.log({ finalData });
+    console.log({ animals: finalData.animals });
 
     setErr("");
     setSubmitData(finalData);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-    }, 1000);
+    saleApi
+      .createSale(finalData)
+      .then(() => {
+        setIsSubmitting(false);
+        showSuccessToast();
+        navigator.navigate("Sales");
+      })
+      .catch((e) => {
+        showErrorToast();
+        console.log({ e });
+      });
   };
 
   const toggleBuyerExisting = () => {
@@ -311,13 +369,8 @@ const AddSaleScreen = ({ route, navigation }) => {
 
   const toggleAnimalCollapsed = (index) => {
     setAnimalCollapsed((prev) => {
-      const newCollapsed = prev.map((_, i) =>
-        i === index ? !prev[index] : true
-      );
-      if (!newCollapsed[index]) {
-        setBuyerCollapsed(true);
-        setSummaryCollapsed(true);
-      }
+      const newCollapsed = [...prev];
+      newCollapsed[index] = !newCollapsed[index];
       return newCollapsed;
     });
   };
@@ -685,6 +738,15 @@ const AddSaleScreen = ({ route, navigation }) => {
                 }
                 {...inputStyles}
               />
+              <BaseDropdown
+                search={false}
+                notFocusLabel={"payment method"}
+                disable={loadingPaymentMethods}
+                values={paymentMethods.map((pm) => ({ label: pm, value: pm }))}
+                onValueChange={(value) => handleSummaryChange("method", value)}
+                focusLabel={"a"}
+                containerStyle={{ marginBottom: 15 }}
+              />
             </Container>
           </Collapsible>
         </Card>
@@ -707,7 +769,9 @@ const AddSaleScreen = ({ route, navigation }) => {
           title={isSubmitting ? "Submitting..." : "Submit Sale"}
           onPress={onSubmit}
           disabled={isSubmitting}
-        />
+        >
+          Ok
+        </Button>
       </Container>
     </ScrollView>
   );

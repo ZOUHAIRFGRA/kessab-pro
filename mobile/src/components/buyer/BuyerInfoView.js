@@ -13,9 +13,14 @@ import { Icon } from "@rneui/base";
 import Text from "../../components/global/Text";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
+import { getValue } from "../../helpers/gloablHelpers";
 
 export default function BuyerInfoView({ id, hideLinkButton = false }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getBuyer(id));
+  }, [dispatch]);
   const {
     error,
     buyerLoading: loading,
@@ -25,12 +30,6 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
   const handleBuyerLinkClick = () => {
     navigator.navigate("buyerDetail", { buyerId: buyer.id });
   };
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (!buyer && !error) {
-      dispatch(getBuyer(id));
-    }
-  }, []);
 
   if (loading || !buyer) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
@@ -58,20 +57,20 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.FullName")}</Text>
-            <Header level={"h3"}>{buyer.fullName}</Header>
+            <Header level={"h3"}>{getValue(buyer.fullName)}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.CIN")}</Text>
-            <Header level={"h3"}>{buyer.CIN}</Header>
+            <Header level={"h3"}>{getValue(buyer.CIN)}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.Address")}</Text>
-            <Header level={"h3"}>{buyer.address}</Header>
+            <Header level={"h3"}>{getValue(buyer.address)}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Pressable onPress={() => Linking.openURL(`tel:${buyer.phone}`)}>
               <Text>{t("common.Phone")}</Text>
-              <Header level={"h3"}>{buyer.phone}</Header>
+              <Header level={"h3"}>{getValue(buyer.phone)}</Header>
             </Pressable>
           </Container>
         </Card>

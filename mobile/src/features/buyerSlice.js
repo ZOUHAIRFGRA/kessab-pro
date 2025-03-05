@@ -61,7 +61,8 @@ const buyerSlice = createSlice({
       })
       .addCase(getBuyers.fulfilled, (state, action) => {
         state.loading = false;
-        state.buyers = action.payload;
+        state.error = null;
+        state.buyers = action.payload.content;
       })
       .addCase(getBuyers.rejected, (state, action) => {
         state.loading = false;

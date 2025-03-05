@@ -32,7 +32,7 @@ const SaleCardView = ({ sale }) => {
         >
           <Image
             source={{
-              uri: getBaseURL() + sale.animals[0].gallery[0],
+              uri: getBaseURL() + sale?.animals[0]?.gallery[0],
             }}
             style={{
               width: "100%",

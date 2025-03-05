@@ -32,8 +32,6 @@ const TransactionCardView = ({ transaction, id, type = "sale" }) => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const dispatch = useDispatch();
   const onDeleteConfirmation = () => {
-    console.log({ type, id });
-
     transactionApi
       .deleteTransaction(transaction.id)
       .then(() => {
