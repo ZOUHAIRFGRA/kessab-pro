@@ -32,6 +32,34 @@ const ConfirmationModal = ({
             {bodyText}
           </Text>
           <Container>
+            <Button
+              type={btnParams.type}
+              style={{
+                padding: 12,
+                marginRight: 12,
+                marginLeft: 12,
+                marginBottom: 8,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              textStyle={{
+                color: "white",
+                fontWeight: "bold",
+                textAlign: "center",
+                fontSize: 16,
+              }}
+              icon={{
+                name: btnParams.icon.name,
+                color: Colors.white,
+              }}
+              onPress={() => {
+                action();
+                toggleVisible(!visible);
+              }}
+            >
+              {btnParams.btnText}
+            </Button>
             {closable && (
               <Button
                 type={"primary"}
@@ -61,34 +89,6 @@ const ConfirmationModal = ({
                 Close
               </Button>
             )}
-            <Button
-              type={btnParams.type}
-              style={{
-                padding: 12,
-                marginRight: 12,
-                marginLeft: 12,
-                marginBottom: 8,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              textStyle={{
-                color: "white",
-                fontWeight: "bold",
-                textAlign: "center",
-                fontSize: 16,
-              }}
-              icon={{
-                name: btnParams.icon.name,
-                color: Colors.white,
-              }}
-              onPress={() => {
-                action();
-                toggleVisible(!visible);
-              }}
-            >
-              {btnParams.btnText}
-            </Button>
           </Container>
         </Container>
       </Dialogs>

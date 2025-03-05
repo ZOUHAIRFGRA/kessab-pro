@@ -19,6 +19,7 @@ import ConfirmationModal from "../global/ConfirmationModal";
 import transactionApi from "../../api/transactionApi";
 import { useDispatch } from "react-redux";
 import { useToast } from "../../hooks/useToast";
+import { getSale } from "../../features/saleSlice";
 const TransactionCardView = ({ transaction, id, type = "sale" }) => {
   const { t } = useTranslation();
   const navigator = useNavigation();
@@ -40,6 +41,7 @@ const TransactionCardView = ({ transaction, id, type = "sale" }) => {
         if (type === "sale") {
           console.log("triggred frin card view");
           dispatch(getTransactionsBySale(id));
+          dispatch(getSale(id));
         }
         if (type === "buyer") {
           dispatch(getTransactionsByBuyer(id));

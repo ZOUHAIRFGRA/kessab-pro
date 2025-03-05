@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Image,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/authSlice";
 import { styled } from "dripsy";
+import Colors from "../utils/Colors";
 
 const LoginScreen = ({ navigation }) => {
-  const [identifier, setIdentifier] = useState(""); 
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
@@ -16,7 +24,16 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <Container>
-      <Title>Login</Title>
+      <Image
+        source={require("../../assets/logo.png")}
+        style={{
+          height: 250,
+          width: 250,
+          resizeMode: "contain",
+          marginBottom: 40,
+        }}
+      />
+      <Title>Welcome</Title>
 
       <InputContainer>
         <Label>Username or Phone</Label>
@@ -40,7 +57,11 @@ const LoginScreen = ({ navigation }) => {
       {error && <ErrorText>{error}</ErrorText>}
 
       <LoginButton onPress={handleLogin} disabled={loading}>
-        {loading ? <ActivityIndicator color="white" /> : <ButtonText>Login</ButtonText>}
+        {loading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <ButtonText>Login</ButtonText>
+        )}
       </LoginButton>
 
       <RegisterLink onPress={() => navigation.navigate("Register")}>
@@ -94,7 +115,7 @@ const ErrorText = styled(Text)({
 const LoginButton = styled(TouchableOpacity)({
   width: "100%",
   padding: 15,
-  backgroundColor: "#007BFF",
+  backgroundColor: Colors.primary,
   borderRadius: 8,
   alignItems: "center",
   marginTop: 10,
@@ -111,7 +132,7 @@ const RegisterLink = styled(TouchableOpacity)({
 });
 
 const RegisterText = styled(Text)({
-  color: "#007BFF",
+  color: Colors.secondary,
   fontSize: 16,
 });
 

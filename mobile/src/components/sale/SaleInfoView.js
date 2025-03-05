@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Share } from "react-native";
 import { styled } from "dripsy";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,9 @@ import { getPickedUpRatio } from "../../helpers/AnimalHelpers";
 import { useTranslation } from "react-i18next";
 import Button from "../global/Button";
 import Colors from "../../utils/Colors";
+import ConfirmationModal from "../global/ConfirmationModal";
+import saleApi from "../../api/saleApi";
+import { useToast } from "../../hooks/useToast";
 
 // import * as Permissions from "expo-permissions";
 
@@ -24,7 +27,22 @@ const Container = styled(View)({
 export default function SaleInfoView({ id }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const [isCloseConfirmationModalOpen, setIsCloseConfirmationModalOpen] =
+    useState(false);
+  const { showSuccessToast, showErrorToast } = useToast();
+  const onCloseConfirmation = () => {
+    console.log({ id });
 
+    saleApi
+      .closeSale(id)
+      .then(() => {
+        showSuccessToast();
+        dispatch(getSale(id));
+      })
+      .catch((e) => {
+        showErrorToast();
+      });
+  };
   const {
     sale,
     saleLoading: loading,
@@ -36,6 +54,23 @@ export default function SaleInfoView({ id }) {
 
   return (
     <ScrollView>
+      {isCloseConfirmationModalOpen && (
+        <ConfirmationModal
+          visible={isCloseConfirmationModalOpen}
+          toggleVisible={setIsCloseConfirmationModalOpen}
+          action={onCloseConfirmation}
+          title={"confirmation modal"}
+          closable
+          btnParams={{
+            type: "secondary",
+            icon: {
+              name: "trash",
+            },
+            btnText: "confirm",
+          }}
+          bodyText={"are you sure you want to close this sale?"}
+        />
+      )}
       <Container
         sx={{
           gap: 12,
@@ -121,7 +156,8 @@ export default function SaleInfoView({ id }) {
             name: "handshake-o",
             color: Colors.white,
           }}
-          // onPress={() => setDialogVisible(true)}
+          onPress={() => setIsCloseConfirmationModalOpen(true)}
+          disabled={sale?.paymentStatus === "FULLY_PAID"}
         >
           Close Sale
         </Button>

@@ -17,6 +17,7 @@ class TransactionsService {
       .post(`/transactions/buyer/${buyer_id}`, transaction)
       .then((res) => res.data);
   }
+  
 
   createTransaction(transactionData) {
     return axiosInstance
