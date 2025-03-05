@@ -83,9 +83,9 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public void deleteTransaction(UUID id) {
+        System.out.println("deleted + " + id);
         Transaction transaction = getTransactionById(id);
         eventPublisher.publishEvent(new TransactionDeletedEvent(this,transaction.getSale().getId(),transaction.getAmount()));
-        transactionRepository.deleteById(id);
     }
 
 

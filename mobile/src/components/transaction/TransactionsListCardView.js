@@ -17,6 +17,8 @@ const TransactionListCardView = ({ id, type = "sale" }) => {
   const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
+    console.log("triiigreedr");
+
     if (type === "sale") {
       dispatch(getTransactionsBySale(id));
     }
@@ -29,8 +31,7 @@ const TransactionListCardView = ({ id, type = "sale" }) => {
   const { transactions, loading, error } = useSelector(
     ({ transactions }) => transactions
   );
-
-  console.log({ transactions, loading, error });
+  console.log({ loading, error });
 
   if (loading || !transactions) return <Loading />;
 
@@ -44,7 +45,9 @@ const TransactionListCardView = ({ id, type = "sale" }) => {
         <FlatList
           data={transactions}
           keyExtractor={(transaction) => transaction.id.toString()}
-          renderItem={({ item }) => <TransactionCardView transaction={item} />}
+          renderItem={({ item }) => (
+            <TransactionCardView transaction={item} type={type} id={id} />
+          )}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         />
       )}

@@ -25,7 +25,6 @@ public class AppGlobalEventsService {
 
     @EventListener
     public void onReady(ApplicationReadyEvent event){
-        System.out.println("app ready");
         animalSeeder.seedData();
         userSeeder.seedData();
         buyerSaleTransactionSeeder.seedData();

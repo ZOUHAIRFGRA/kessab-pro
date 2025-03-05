@@ -80,7 +80,7 @@ public class TransactionController {
         Buyer buyer = buyerService.getBuyerById(id);
         Transaction transaction = TransactionMapper.toTransactionEntity(transactionDTO);
         eventPublisher.publishEvent(new BuyerGlobalTransactionCreated(this, buyer, transaction));
-        return ResponseEntity.ok(transaction);
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/count")
@@ -100,6 +100,6 @@ public class TransactionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTransaction(@PathVariable UUID id) {
         transactionService.deleteTransaction(id);
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return ResponseEntity.noContent().build();
     }
 }
