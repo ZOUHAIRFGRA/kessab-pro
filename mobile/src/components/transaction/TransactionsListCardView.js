@@ -17,8 +17,6 @@ const TransactionListCardView = ({ id, type = "sale" }) => {
   const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
-    console.log("triiigreedr");
-
     if (type === "sale") {
       dispatch(getTransactionsBySale(id));
     }
@@ -31,7 +29,6 @@ const TransactionListCardView = ({ id, type = "sale" }) => {
   const { transactions, loading, error } = useSelector(
     ({ transactions }) => transactions
   );
-  console.log({ loading, error });
 
   if (loading || !transactions) return <Loading />;
 

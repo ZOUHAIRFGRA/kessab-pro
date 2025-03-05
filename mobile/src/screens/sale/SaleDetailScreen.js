@@ -12,10 +12,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { getSale, resetSale } from "../../features/saleSlice";
 import Loading from "../../components/global/Loading";
-import { useFocusEffect } from "@react-navigation/native";
-import { getBuyer } from "../../features/buyerSlice";
 
 const SaleDetailScreen = ({ route }) => {
+
+
   const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
 

@@ -13,6 +13,16 @@ const BuyersListCardView = ({ searchText: propSearchText, route }) => {
   const { t } = useTranslation();
   const { buyers, loading, error } = useSelector(({ buyers }) => buyers);
   const [currentPage, setCurrentPage] = useState(0);
+
+  const dispatch = useDispatch();
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getBuyers());
+      return () => {};
+    }, [])
+  );
+
   if (loading || !buyers) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
@@ -25,7 +35,7 @@ const BuyersListCardView = ({ searchText: propSearchText, route }) => {
         />
       ) : (
         <FlatList
-          data={buyers.content}
+          data={buyers}
           keyExtractor={(buyer) => buyer.id.toString()}
           renderItem={({ item }) => <BuyerCardView buyer={item} />}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}

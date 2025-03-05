@@ -5,6 +5,7 @@ import IconTag from "../global/IconTag";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../../utils/Colors";
 import { Icon } from "@rneui/base";
+import { getValue, isEmpty } from "../../helpers/gloablHelpers";
 
 const BuyerCardView = ({ buyer }) => {
   const navigator = useNavigation();
@@ -53,20 +54,20 @@ const BuyerCardView = ({ buyer }) => {
             }}
             hideIcon
             color="grey"
-            content={buyer.fullName}
+            content={getValue(buyer.fullName)}
             style={{ borderWidth: 0 }}
           />
 
           <IconTag
             tagName="vcard"
             color="grey"
-            content={buyer.CIN}
+            content={getValue(buyer.CIN)}
             style={{ flex: 1, borderWidth: 0 }}
           />
           <IconTag
             tagName="phone"
             color="grey"
-            content={buyer.phone}
+            content={getValue(buyer.phone)}
             style={{ flex: 1, borderWidth: 0 }}
           />
         </View>

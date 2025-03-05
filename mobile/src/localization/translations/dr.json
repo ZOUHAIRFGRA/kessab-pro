@@ -97,7 +97,8 @@
     "Gender": {
       "Gender": "الجنس",
       "Male": "ذكر",
-      "Female": "أنثى"
+      "Female": "أنثى",
+      "-": "بدون"
     },
     "SeeAllBuyerDetails": "شوف كل التفاصيل ديال لكليان",
     "confirm": "تأكيد",

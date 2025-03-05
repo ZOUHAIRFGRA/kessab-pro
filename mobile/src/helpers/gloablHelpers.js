@@ -6,7 +6,7 @@ export function trimStringWithEllipsis(str, maxLength) {
   return str.slice(0, maxLength) + "...";
 }
 
-export function getValueWithFallback(variable, fallback = "-") {
+export function getValue(variable, fallback = "-") {
   if (variable === null || variable === undefined || variable === "") {
     return fallback;
   }
