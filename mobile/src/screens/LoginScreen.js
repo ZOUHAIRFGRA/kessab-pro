@@ -27,8 +27,8 @@ const LoginScreen = ({ navigation }) => {
       <Image
         source={require("../../assets/logo.png")}
         style={{
-          height: 250,
-          width: 250,
+          height: 220,
+          width: 220,
           resizeMode: "contain",
           marginBottom: 40,
         }}

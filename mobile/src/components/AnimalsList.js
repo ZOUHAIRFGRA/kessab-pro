@@ -1,5 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, Image, FlatList, TouchableOpacity, Animated, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Animated,
+  ActivityIndicator,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAnimals, resetAnimals } from "../features/animalSlice";
 import { fetchCategoryById } from "../features/categorySlice";
@@ -13,7 +21,11 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { animals, error: animalsError, totalPages } = useSelector((state) => state.animals);
+  const {
+    animals,
+    error: animalsError,
+    totalPages,
+  } = useSelector((state) => state.animals);
   const { categories } = useSelector((state) => state.categories);
   const [currentPage, setCurrentPage] = useState(0);
   const [fetchedCategoryIds, setFetchedCategoryIds] = useState(new Set());
@@ -39,14 +51,18 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
 
   useEffect(() => {
     const newCategoryIds = animals
-      .map((animal) => typeof animal.category === "string" ? animal.category : animal.category?.id)
+      .map((animal) =>
+        typeof animal.category === "string"
+          ? animal.category
+          : animal.category?.id
+      )
       .filter((id) => id && !fetchedCategoryIds.has(id) && !categories[id]);
 
     newCategoryIds.forEach((categoryId) => {
       dispatch(fetchCategoryById(categoryId));
       setFetchedCategoryIds((prev) => new Set(prev).add(categoryId));
     });
-  }, [animals, dispatch]); 
+  }, [animals, dispatch]);
 
   const handlePagination = (newPage) => {
     if (newPage >= 0 && newPage < totalPages && !isLoading) {
@@ -63,32 +79,48 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
     if (isLoading) {
       Animated.loop(
         Animated.sequence([
-          Animated.timing(fadeAnim, { toValue: 0.4, duration: 500, useNativeDriver: true }),
-          Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+          Animated.timing(fadeAnim, {
+            toValue: 0.4,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
         ])
       ).start();
     }
   }, [isLoading, fadeAnim]);
 
-  const renderItem = useCallback(({ item }) => {
-    const categoryId = typeof item.category === "string" ? item.category : item.category?.id;
-    const category = categories.find((category) => category.id === categoryId);
-    const categoryName = category ? category.typeName : t("common.uncategorized");
-  
-    return (
-      <ListItem onPress={() => handleAnimalClick(item.id)}>
-        <AnimalImage
-          source={{ uri: `${getBaseURL()}${item.imagePaths[0]}` }}
-          defaultSource={{ uri: "https://placehold.co/50x50" }}
-        />
-        <AnimalInfo>
-          <ListItemText>{item.tag}</ListItemText>
-          <AnimalSubText>{categoryName}</AnimalSubText>
-          <AnimalSubText>{item.sex || t("common.unknown_sex")}</AnimalSubText>
-        </AnimalInfo>
-      </ListItem>
-    );
-  }, [categories, handleAnimalClick, t]);
+  const renderItem = useCallback(
+    ({ item }) => {
+      const categoryId =
+        typeof item.category === "string" ? item.category : item.category?.id;
+      const category = categories.find(
+        (category) => category.id === categoryId
+      );
+      const categoryName = category
+        ? category.typeName
+        : t("common.uncategorized");
+
+      return (
+        <ListItem onPress={() => handleAnimalClick(item.id)}>
+          <AnimalImage
+            source={{ uri: `${getBaseURL()}${item.imagePaths[0]}` }}
+            defaultSource={{ uri: "https://placehold.co/50x50" }}
+          />
+          <AnimalInfo>
+            <ListItemText>{item.tag}</ListItemText>
+            <AnimalSubText>{categoryName}</AnimalSubText>
+            <AnimalSubText>{item.sex || t("common.unknown_sex")}</AnimalSubText>
+          </AnimalInfo>
+        </ListItem>
+      );
+    },
+    [categories, handleAnimalClick, t]
+  );
 
   return (
     <Container>
@@ -99,12 +131,16 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
           </Animated.View>
         </LoadingOverlay>
       ) : animalsError ? (
-        <ErrorText>{t("common.error")}: {animalsError}</ErrorText>
+        <ErrorText>
+          {t("common.error")}: {animalsError}
+        </ErrorText>
       ) : animals.length === 0 ? (
         <NoAnimalsWrapper>
           <Icon name="emoticon-sad" size={40} color={Colors.warning} />
           <NoAnimalsText>{t("common.no_animals_found")}</NoAnimalsText>
-          <AddAnimalPrompt onPress={() => navigation.navigate("ManagementScreen")}>
+          <AddAnimalPrompt
+            onPress={() => navigation.navigate("ManagementScreen")}
+          >
             <PromptText>{t("common.add_animal_prompt")}</PromptText>
           </AddAnimalPrompt>
         </NoAnimalsWrapper>
@@ -115,7 +151,9 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ padding: 8, paddingBottom: 16 }}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={<SectionTitle isRTL={isRTL}>{t("common.animals")}</SectionTitle>}
+          ListHeaderComponent={
+            <SectionTitle isRTL={isRTL}>{t("common.animals")}</SectionTitle>
+          }
           ListFooterComponent={
             <PaginationWrapper isRTL={isRTL}>
               <PaginationButton
@@ -124,7 +162,9 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
               >
                 <Icon name="chevron-left" size={20} color="#fff" />
               </PaginationButton>
-              <CurrentPageText>{`${currentPage + 1} / ${totalPages}`}</CurrentPageText>
+              <CurrentPageText>{`${
+                currentPage + 1
+              } / ${totalPages}`}</CurrentPageText>
               <PaginationButton
                 onPress={() => handlePagination(currentPage + 1)}
                 disabled={currentPage >= totalPages - 1 || isLoading}

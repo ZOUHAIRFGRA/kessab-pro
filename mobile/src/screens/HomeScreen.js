@@ -59,7 +59,12 @@ export default function HomeScreen() {
 
   const actions = [
     { key: "AddBuyer", name: t("common.add_buyer"), icon: "account-plus" },
-    { key: "AddSheep", name: t("common.add_sheep"), icon: "sheep", onPress: handleAddSheepPress },
+    {
+      key: "AddSheep",
+      name: t("common.add_sheep"),
+      icon: "sheep",
+      onPress: handleAddSheepPress,
+    },
     { key: "Category", name: t("common.categories"), icon: "layers" },
     { key: "BuyersList", name: t("common.view_buyers"), icon: "account-group" },
     { key: "MySellsScreen", name: t("common.view_sales"), icon: "chart-line" },
@@ -67,9 +72,9 @@ export default function HomeScreen() {
 
   return (
     <Container>
-      <WeatherWidgetContainer>
+      {/* <WeatherWidgetContainer>
         <WeatherWidget />
-      </WeatherWidgetContainer>
+      </WeatherWidgetContainer> */}
 
       <SearchInputContainer>
         <SearchInput
@@ -100,9 +105,18 @@ export default function HomeScreen() {
 
       <Grid>
         {gridItems.map((item) => (
-          <GridItem key={item.key} onPress={() => navigation.navigate(item.key)}>
+          <GridItem
+            key={item.key}
+            onPress={() => navigation.navigate(item.key)}
+          >
             <Icon name={item.icon} size={36} color="dark" />
-            <GridItemText sx={{ variant: "text.subheading", marginTop: 8, textAlign: isRTL ? "right" : "left" }}>
+            <GridItemText
+              sx={{
+                variant: "text.subheading",
+                marginTop: 8,
+                textAlign: isRTL ? "right" : "left",
+              }}
+            >
               {item.name}
             </GridItemText>
           </GridItem>
@@ -114,12 +128,16 @@ export default function HomeScreen() {
           {actions.map((action, index) => (
             <HorizontalActionItem
               key={index}
-              onPress={action.onPress || (() => navigation.navigate(action.key))}
+              onPress={
+                action.onPress || (() => navigation.navigate(action.key))
+              }
               accessibilityRole="button"
               accessibilityLabel={`Navigate to ${action.name}`}
             >
               <ActionIcon name={action.icon} />
-              <ActionText sx={{ textAlign: isRTL ? "right" : "center" }}>{action.name}</ActionText>
+              <ActionText sx={{ textAlign: isRTL ? "right" : "center" }}>
+                {action.name}
+              </ActionText>
             </HorizontalActionItem>
           ))}
         </HorizontalScroll>
@@ -138,14 +156,22 @@ export default function HomeScreen() {
             accessibilityLabel={`Navigate to ${item.label}`}
             accessibilityHint={t(`common.nav_hint_${item.route.toLowerCase()}`)}
           >
-            <BottomNavText sx={{ variant: "text.secondary", textAlign: isRTL ? "right" : "center" }}>
+            <BottomNavText
+              sx={{
+                variant: "text.secondary",
+                textAlign: isRTL ? "right" : "center",
+              }}
+            >
               {item.label}
             </BottomNavText>
           </BottomNavItem>
         ))}
       </BottomNav>
 
-      <AddAnimalModal visible={isAddAnimalModalVisible} onClose={closeAddAnimalModal} />
+      <AddAnimalModal
+        visible={isAddAnimalModalVisible}
+        onClose={closeAddAnimalModal}
+      />
     </Container>
   );
 }

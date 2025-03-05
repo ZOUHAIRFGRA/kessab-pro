@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, Image } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  CommonActions,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 
 import { getBuyer, updateBuyer } from "../../features/buyerSlice";
@@ -20,6 +24,7 @@ export default function UpdateBuyersScreen({ route }) {
   const { showSuccessToast } = useToast();
 
   const { buyerId } = route.params;
+
   const { buyer, buyerLoading } = useSelector(({ buyers }) => buyers);
 
   const [buyerData, setBuyerData] = useState({
@@ -59,13 +64,13 @@ export default function UpdateBuyersScreen({ route }) {
         if (value.length > 50) return t("validation.fullNameMaxLength");
         return "";
       case "CIN":
-        return ""; // Optional field, no validation
+        return "";
       case "phone":
         return value && !/^\d{10}$/.test(value)
           ? t("validation.phoneFormat")
           : "";
       case "address":
-        return ""; // Optional field, no validation
+        return "";
       default:
         return "";
     }
@@ -99,9 +104,13 @@ export default function UpdateBuyersScreen({ route }) {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      dispatch(updateBuyer(buyerId, buyerPayload));
+      const payload = {
+        ...buyer,
+        ...buyerData,
+      };
+      payload["cin"] = payload["CIN"];
+      dispatch(updateBuyer({ id: buyerId, buyer: payload }));
       showSuccessToast();
-      navigation.goBack();
     }
   };
 
