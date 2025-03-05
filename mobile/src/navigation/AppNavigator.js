@@ -13,6 +13,8 @@ import SalesScreen from "../screens/sale/SalesScreen";
 import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "dripsy";
+import CategoryScreen from "../screens/CategoryScreen";
+import Colors from "../utils/Colors";
 
 const Drawer = createDrawerNavigator();
 
@@ -61,7 +63,7 @@ function DrawerNavigator({ drawerPosition }) {
           fontSize: 18,
           fontWeight: "500",
         },
-        drawerActiveBackgroundColor: "#007AFF",
+        drawerActiveBackgroundColor: Colors.primaryLight,
         drawerActiveTintColor: "#fff",
         drawerInactiveTintColor: "#333",
         drawerItemStyle: { marginVertical: 8, borderRadius: 10, padding: 5 },
@@ -104,6 +106,43 @@ function DrawerNavigator({ drawerPosition }) {
         }}
       />
       <Drawer.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{
+          drawerLabel: () => (
+            <DrawerItemLabel
+              label={t("common.dashboard")}
+              icon={<Ionicons name="grid-outline" size={20} />}
+            />
+          ),
+        }}
+      />
+        <Drawer.Screen
+        name="Category"
+        component={CategoryScreen}
+        options={{
+          drawerLabel: () => (
+            <DrawerItemLabel
+              label={t("common.categories")}
+              icon={<Ionicons name="layers-outline" size={20} />}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="QRScanner"
+        component={QRScannerScreen}
+        options={{
+          drawerLabel: () => (
+            <DrawerItemLabel
+              label={t("common.QRscanner")}
+              icon={<Ionicons name="scan-outline" size={20} />}
+            />
+          ),
+          unmountOnBlur: true,
+        }}
+      />
+       <Drawer.Screen
         name="Food"
         component={FoodScreen}
         options={{
@@ -125,31 +164,6 @@ function DrawerNavigator({ drawerPosition }) {
               icon={<Ionicons name="cart-outline" size={20} />}
             />
           ),
-        }}
-      />
-      <Drawer.Screen
-        name="Dashboard"
-        component={DashboardScreen}
-        options={{
-          drawerLabel: () => (
-            <DrawerItemLabel
-              label={t("common.dashboard")}
-              icon={<Ionicons name="grid-outline" size={20} />}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="QRScanner"
-        component={QRScannerScreen}
-        options={{
-          drawerLabel: () => (
-            <DrawerItemLabel
-              label={t("common.QRscanner")}
-              icon={<Ionicons name="scan-outline" size={20} />}
-            />
-          ),
-          unmountOnBlur: true,
         }}
       />
       <Drawer.Screen
