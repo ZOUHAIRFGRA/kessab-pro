@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import AddAnimalModal from "../components/AddAnimalModal";
 import { useToast } from "../hooks/useToast";
+import Colors from "../utils/Colors";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -241,7 +242,7 @@ const HorizontalActionItem = styled(TouchableOpacity)(({ pressed }) => ({
 }));
 
 const ActionIcon = styled(Icon)({
-  color: "#4A90E2",
+  color: Colors.primary,
   fontSize: 36,
 });
 
