@@ -7,17 +7,17 @@ import TransactionsListCardView from "../../components/transaction/TransactionsL
 import AnimalsListCardView from "../../components/Animal/AnimalsListCardView";
 import Container from "../../components/global/Container";
 import { Ionicons } from "@expo/vector-icons";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
 import SalesListCardView from "../../components/sale/SalesListCardView";
-import Loading from "../../components/global/Loading";
-import { useDispatch, useSelector } from "react-redux";
-import FallBack from "../../components/global/Fallback";
+import Button from "../../components/global/Button";
+import { useNavigation } from "@react-navigation/native";
 
 const BuyerDetailScreen = ({ route }) => {
   const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
+  const navigator = useNavigation();
   const buyerId = route.params?.buyerId;
+  console.log({ buyerId });
 
   return (
     <Container sx={{ flex: 1 }}>
@@ -45,7 +45,42 @@ const BuyerDetailScreen = ({ route }) => {
             ),
           }}
         >
-          {() => <BuyerInfoView id={buyerId} hideLinkButton />}
+          {() => (
+            <>
+              <BuyerInfoView id={buyerId} hideLinkButton />
+              <Container
+                sx={{
+                  padding: 8,
+                }}
+              >
+                <Button
+                  type="primary"
+                  onPress={() => {
+                    navigator.navigate("updateBuyerScreen", buyerId);
+                  }}
+                  style={{
+                    padding: 12,
+                    marginTop: 20,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  textStyle={{
+                    color: Colors.white,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    fontSize: 16,
+                  }}
+                  icon={{
+                    name: "edit",
+                    color: Colors.white,
+                  }}
+                >
+                  {t("common.Update")}
+                </Button>
+              </Container>
+            </>
+          )}
         </Tab.Screen>
 
         <Tab.Screen

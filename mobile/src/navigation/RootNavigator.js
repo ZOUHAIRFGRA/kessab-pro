@@ -14,6 +14,8 @@ import BuyersScreen from "../screens/buyer/BuyersScreen";
 import BuyerDetailScreen from "../screens/buyer/BuyerDetailScreen";
 import AddSaleScreen from "../screens/sale/AddSaleScreen";
 import SalesScreen from "../screens/sale/SalesScreen";
+import AddBuyersScreen from "../screens/buyer/AddBuyerScreen";
+import UpdateBuyersScreen from "../screens/buyer/UpdateBuyerScreen";
 
 const Stack = createStackNavigator();
 export default function RootNavigator() {
@@ -62,6 +64,11 @@ export default function RootNavigator() {
               component={BuyerDetailScreen}
             />
             <Stack.Screen name="Sales" component={SalesScreen} />
+            <Stack.Screen name="addBuyerScreen" component={AddBuyersScreen} />
+            <Stack.Screen
+              name="updateBuyerScreen"
+              component={UpdateBuyersScreen}
+            />
             <Stack.Screen name="AddSale" component={AddSaleScreen} />
           </>
         ) : (

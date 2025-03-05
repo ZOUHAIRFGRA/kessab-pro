@@ -5,9 +5,10 @@ import React from "react";
 import { SearchBar } from "@rneui/themed";
 import { useTranslation } from "react-i18next";
 import BuyersListCardView from "../../components/buyer/BuyersListCardView";
+import { useNavigation } from "@react-navigation/native";
 export default function BuyersScreen() {
+  const navigator = useNavigation();
   const { t } = useTranslation();
-
   return (
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>
@@ -45,6 +46,7 @@ export default function BuyersScreen() {
           name: "plus",
           color: Colors.white,
         }}
+        onPress={() => navigator.navigate("addBuyerScreen")}
       >
         {t("common.AddNewClient")}
       </Button>

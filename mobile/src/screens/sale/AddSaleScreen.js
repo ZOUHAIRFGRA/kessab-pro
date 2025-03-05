@@ -243,7 +243,7 @@ const AddSaleScreen = ({ route, navigation }) => {
       .then(() => {
         setIsSubmitting(false);
         showSuccessToast();
-        navigator.navigate("Sales");
+        navigator.goBack();
       })
       .catch((e) => {
         showErrorToast();
