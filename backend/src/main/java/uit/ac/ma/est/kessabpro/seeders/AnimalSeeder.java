@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class AnimalSeeder {
@@ -34,7 +33,60 @@ public class AnimalSeeder {
     @Autowired
     private UserRepository userRepository;
 
+    @PostConstruct
+    public void init() {
+        seedData();
+    }
+
     public void seedData() {
+        // Step 1: Check if icons already exist
+        long iconCount = animalIconRepository.count();
+        if (iconCount >= 4) {
+            System.out.println("Icons already seeded (Cow, Sheep, Livestock, Goat). Skipping icon and category seeding.");
+        } else {
+            // Step 2: Seed icons if they don't exist
+            AnimalIcon cowIcon = animalIconRepository.findByIconPath("/icons/cow.png")
+                    .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/cow.png").build()));
+
+            AnimalIcon sheepIcon = animalIconRepository.findByIconPath("/icons/sheep.png")
+                    .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/sheep.png").build()));
+
+            AnimalIcon liveStockIcon = animalIconRepository.findByIconPath("/icons/live_stock.png")
+                    .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/live_stock.png").build()));
+
+            AnimalIcon goatIcon = animalIconRepository.findByIconPath("/icons/goat.png")
+                    .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/goat.png").build()));
+
+            // Step 3: Seed categories if they don't exist
+            if (animalCategoryRepository.count() == 0) {
+                AnimalCategory cowCategory = AnimalCategory.builder()
+                        .typeName("Cow")
+                        .icon(cowIcon)
+                        .build();
+
+                AnimalCategory sheepCategory = AnimalCategory.builder()
+                        .typeName("Sheep")
+                        .icon(sheepIcon)
+                        .build();
+
+                AnimalCategory defaultCategory = AnimalCategory.builder()
+                        .typeName("Livestock")
+                        .icon(liveStockIcon)
+                        .build();
+
+                AnimalCategory goatCategory = AnimalCategory.builder()
+                        .typeName("Goat")
+                        .icon(goatIcon)
+                        .build();
+
+                animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory, defaultCategory, goatCategory));
+                System.out.println("Categories seeded: Cow, Sheep, Livestock, Goat.");
+            } else {
+                System.out.println("Categories already exist. Skipping category seeding.");
+            }
+        }
+
+        // Step 4: Seed animals, logs, etc., only if animals table is empty
         if (animalRepository.count() == 0) {
             Optional<User> optionalUser = userRepository.findAll().stream().findFirst();
             if (optionalUser.isEmpty()) {
@@ -43,37 +95,17 @@ public class AnimalSeeder {
             }
             User user = optionalUser.get();
 
-            AnimalIcon cowIcon = AnimalIcon.builder()
-                    .iconPath("/icons/cow.png")
-                    .build();
+            // Fetch categories after ensuring they exist
+            Optional<AnimalCategory> cowCategoryOpt = animalCategoryRepository.findByTypeName("Cow");
+            Optional<AnimalCategory> sheepCategoryOpt = animalCategoryRepository.findByTypeName("Sheep");
 
-            AnimalIcon sheepIcon = AnimalIcon.builder()
-                    .iconPath("/icons/sheep.png")
-                    .build();
+            if (cowCategoryOpt.isEmpty() || sheepCategoryOpt.isEmpty()) {
+                System.out.println("Required categories not found. Ensure categories are seeded.");
+                return;
+            }
 
-            AnimalIcon LiveStockIcon = AnimalIcon.builder()
-                    .iconPath("/icons/live_stock.png")
-                    .build();
-
-            animalIconRepository.saveAll(Arrays.asList(cowIcon, sheepIcon, LiveStockIcon));
-
-            AnimalCategory cowCategory = AnimalCategory.builder()
-                    .typeName("Cow")
-                    .icon(cowIcon)
-                    .build();
-
-            AnimalCategory sheepCategory = AnimalCategory.builder()
-                    .typeName("Sheep")
-                    .icon(sheepIcon)
-                    .build();
-
-            AnimalCategory defaultCategory = AnimalCategory.builder()
-                    .typeName("Livestock")
-                    .icon(LiveStockIcon)
-                    .build();
-
-
-            animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory, defaultCategory));
+            AnimalCategory cowCategory = cowCategoryOpt.get();
+            AnimalCategory sheepCategory = sheepCategoryOpt.get();
 
             Animal animal1 = Animal.builder()
                     .tag("COW-001")
@@ -83,7 +115,7 @@ public class AnimalSeeder {
                     .weight(new BigDecimal("500.0"))
                     .category(cowCategory)
                     .pickUpDate(null)
-                    .user(user) // Assign the first user
+                    .user(user)
                     .build();
 
             try {
@@ -101,7 +133,7 @@ public class AnimalSeeder {
                     .weight(new BigDecimal("60.0"))
                     .category(sheepCategory)
                     .pickUpDate(LocalDate.of(2025, 2, 15))
-                    .user(user) // Assign the first user
+                    .user(user)
                     .build();
 
             try {
@@ -145,7 +177,7 @@ public class AnimalSeeder {
 
             System.out.println("Seeding for animal completed!");
         } else {
-            System.out.println("Database already seeded. No new data added.");
+            System.out.println("Animals already seeded. No new data added.");
         }
     }
 }
