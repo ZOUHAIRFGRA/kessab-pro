@@ -7,6 +7,10 @@
     "NOT_PAID": "Non payé"
   },
   "common": {
+    "selectIcon" : "Sélectionner une icône",
+    "manageCategories": "Gérer les catégories",
+    "categoryName": "Nom de la catégorie",
+    "categories": "Catégories",
     "remaining_amount_owed": "Montant restant",
     "total_agreed_sales": "Total des ventes convenues",
     "animal_statistics": "Statistiques des bestiaux ",

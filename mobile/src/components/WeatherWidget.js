@@ -4,6 +4,7 @@ import { styled } from 'dripsy';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Location from 'expo-location';
 import { WEATHER_API_KEY } from '@env'; 
+import Colors from '../utils/Colors';
 
 
 export default function WeatherWidget() {
@@ -64,8 +65,8 @@ export default function WeatherWidget() {
   if (loading) {
     return (
       <WidgetContainer>
-        <ActivityIndicator size="large" color="#00796b" />
-        <Text style={{ textAlign: 'center', marginTop: 8, color: '#00796b' }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+        <Text style={{ textAlign: 'center', marginTop: 8, color: Colors.primary }}>
           Loading weather data...
         </Text>
       </WidgetContainer>
@@ -87,19 +88,19 @@ export default function WeatherWidget() {
      
       <WeatherInfo>
         <WeatherDetail>
-          <Icon name={getWeatherIcon(weather.condition)} size={40} color="#00796b" />
+          <Icon name={getWeatherIcon(weather.condition)} size={40} color={Colors.primary} />
           <WeatherText>{weather.condition}</WeatherText>
         </WeatherDetail>
         <WeatherDetail>
-          <Icon name="thermometer" size={40} color="#00796b" />
+          <Icon name="thermometer" size={40} color={Colors.primary} />
           <WeatherText>{weather.temperature}°C</WeatherText>
         </WeatherDetail>
         <WeatherDetail>
-          <Icon name="weather-windy" size={40} color="#00796b" />
+          <Icon name="weather-windy" size={40} color={Colors.primary} />
           <WeatherText>{weather.windSpeed} km/h</WeatherText>
         </WeatherDetail>
         <WeatherDetail>
-          <Icon name="water" size={40} color="#00796b" />
+          <Icon name="water" size={40} color={Colors.primary} />
           <WeatherText>{weather.humidity}%</WeatherText>
         </WeatherDetail>
       </WeatherInfo>
@@ -138,7 +139,7 @@ const WeatherDetail = styled(View)({
 
 const WeatherText = styled(Text)({
   fontSize: 14,
-  color: '#004d40',
+  color: Colors.primary,
   marginTop: 4,
   textAlign: 'center',
 });
