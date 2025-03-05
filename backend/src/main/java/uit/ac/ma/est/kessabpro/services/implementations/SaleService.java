@@ -92,6 +92,7 @@ public class SaleService implements ISaleService {
                         animal.setPrice(animalDTORequest.price());
                         AnimalCategory category = animalCategoryService.getCategoryById(UUID.fromString(animalDTORequest.category())).get();
                         animal.setCategory(category);
+                        animal.setSex("-");
                         animal.setPickUpDate(animalDTORequest.isPickedUp() ? (LocalDate.parse(saleDTORequest.saleDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"))) : null);
                         animal.setSale(sale);
                         try {
