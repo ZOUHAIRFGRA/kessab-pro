@@ -39,6 +39,7 @@ const buyerSlice = createSlice({
     error: null,
     page: 0,
     totalPages: 0,
+    trigger: 0,
   },
   reducers: {
     resetBuyers: (state) => {
@@ -48,11 +49,13 @@ const buyerSlice = createSlice({
       state.page = 0;
       state.totalPages = 0;
     },
+
     resetBuyer: (state) => {
       state.error = null;
       state.buyer = null;
       state.buyerLoading = false;
     },
+  
   },
   extraReducers: (builder) => {
     builder

@@ -18,20 +18,20 @@ import { getValue } from "../../helpers/gloablHelpers";
 export default function BuyerInfoView({ id, hideLinkButton = false }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getBuyer(id));
-  }, [dispatch]);
+
   const {
     error,
     buyerLoading: loading,
     buyer,
   } = useSelector(({ buyers }) => buyers);
+  useEffect(() => {
+    dispatch(getBuyer(id));
+  }, [dispatch]);
   const navigator = useNavigation();
   const handleBuyerLinkClick = () => {
     navigator.navigate("buyerDetail", { buyerId: buyer.id });
   };
 
- 
   if (loading || !buyer) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
 
