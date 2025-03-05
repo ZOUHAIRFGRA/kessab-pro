@@ -1,29 +1,13 @@
 import Container from "../../components/global/Container";
 import Button from "../../components/global/Button";
 import Colors from "../../utils/Colors";
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import { SearchBar } from "@rneui/themed";
 import { useTranslation } from "react-i18next";
 import BuyersListCardView from "../../components/buyer/BuyersListCardView";
-import { useDispatch } from "react-redux";
-import { getBuyers, resetBuyers } from "../../features/buyerSlice";
-import { useFocusEffect } from "@react-navigation/native";
 export default function BuyersScreen() {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getBuyers());
-  }, [dispatch]);
-
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(getBuyers());
-      return () => {
-        dispatch(resetBuyers());
-      };
-    }, [])
-  );
   return (
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>

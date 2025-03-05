@@ -2,7 +2,6 @@ package uit.ac.ma.est.kessabpro.controllers;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,17 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
-import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
 import uit.ac.ma.est.kessabpro.mappers.SaleMapper;
-import uit.ac.ma.est.kessabpro.models.dto.AnimalDTO;
-import uit.ac.ma.est.kessabpro.models.dto.SaleDTO;
+import uit.ac.ma.est.kessabpro.mappers.TransactionMapper;
 import uit.ac.ma.est.kessabpro.models.dto.requests.SaleDTORequest;
 import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
-import uit.ac.ma.est.kessabpro.models.entities.Animal;
+import uit.ac.ma.est.kessabpro.models.dto.responses.TransactionDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
-import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
 import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +42,9 @@ public class SaleController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> createSale(@Valid @RequestBody SaleDTORequest saleDTORequest) {
-        Sale sale = saleService.createSale(saleDTORequest);
-        System.out.println(sale);
-        return ResponseEntity.ok(sale);
+    public ResponseEntity<?> createSale(@Valid @RequestBody SaleDTORequest saleDTORequest) throws AccessDeniedException {
+        saleService.createSale(saleDTORequest);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/{id}/close")
@@ -57,6 +53,13 @@ public class SaleController {
         Sale sale = saleService.getSaleById(id);
         saleService.closeSale(sale);
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
+    }
+
+
+    @GetMapping("/buyer/{buyerId}")
+    public ResponseEntity<List<SaleDTOResponse>> getSalesByBuyer(@PathVariable UUID buyerId) {
+        List<Sale> sales = saleService.getSalesByBuyerId(buyerId);
+        return ResponseEntity.ok((new SaleMapper()).toSaleDTOList(sales));
     }
 
 

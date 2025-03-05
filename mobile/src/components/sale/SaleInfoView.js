@@ -31,7 +31,6 @@ export default function SaleInfoView({ id }) {
     useState(false);
   const { showSuccessToast, showErrorToast } = useToast();
   const onCloseConfirmation = () => {
-    console.log({ id });
 
     saleApi
       .closeSale(id)
