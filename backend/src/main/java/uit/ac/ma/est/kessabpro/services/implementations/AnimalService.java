@@ -221,7 +221,9 @@ public class AnimalService implements IAnimalService {
     @Override
     public List<Animal> getUnsoldAnimals() {
         UUID userId = getLoggedInUserId();
-        return animalRepository.findByUser_IdAndPickUpDateNull(userId);
+        return animalRepository.findByUser_IdAndSaleNull(userId);
     }
+
+
 
 }
