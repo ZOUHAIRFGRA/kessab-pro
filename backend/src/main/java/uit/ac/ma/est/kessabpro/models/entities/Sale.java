@@ -47,7 +47,7 @@ public class Sale extends BaseEntity implements UserAware {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
 
-    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sale", fetch = FetchType.LAZY)
     private List<Transaction> transactions = new ArrayList<>();
 
 

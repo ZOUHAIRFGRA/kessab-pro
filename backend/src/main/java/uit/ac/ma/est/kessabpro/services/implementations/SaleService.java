@@ -81,7 +81,6 @@ public class SaleService implements ISaleService {
         double paidAmount = 0;
         if (sale.getPaymentStatus() == PaymentStatus.PARTIALLY_PAID) {
             for (Transaction transaction : sale.getTransactions()) {
-                System.out.println(transaction);
                 paidAmount += transaction.getAmount();
             }
             return paidAmount;

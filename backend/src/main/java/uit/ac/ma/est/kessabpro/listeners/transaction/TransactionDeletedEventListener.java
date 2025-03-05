@@ -23,6 +23,7 @@ public class TransactionDeletedEventListener {
         Sale sale = saleService.getSaleById(event.getSaleId()) ;
         Double transactionAmount = event.getTransactionAmount();
         saleService.updatePaymentStatus(sale, -transactionAmount);
+
         saleRepository.save(sale);
     }
 

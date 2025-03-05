@@ -75,18 +75,15 @@ const saleSlice = createSlice({
     builder
       .addCase(getSales.pending, (state) => {
         state.loading = true;
-        console.log("loading");
       })
       .addCase(getSales.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
         state.sales = action.payload.content;
-        console.log("fulfilled");
       })
       .addCase(getSales.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-        console.log("rejected");
       })
       .addCase(getSale.rejected, (state, action) => {
         state.saleLoading = false;

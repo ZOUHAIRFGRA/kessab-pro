@@ -10,19 +10,68 @@ import { useTranslation } from "react-i18next";
 import Dialogs from "../global/Dialog";
 import Button from "../global/Button";
 import Colors from "../../utils/Colors";
-import { exportTransactionInvoice } from "../../features/transactionSlice";
-
-const TransactionCardView = ({ transaction }) => {
+import {
+  exportTransactionInvoice,
+  getTransactionsByBuyer,
+  getTransactionsBySale,
+} from "../../features/transactionSlice";
+import ConfirmationModal from "../global/ConfirmationModal";
+import transactionApi from "../../api/transactionApi";
+import { useDispatch } from "react-redux";
+import { useToast } from "../../hooks/useToast";
+const TransactionCardView = ({ transaction, id, type = "sale" }) => {
   const { t } = useTranslation();
   const navigator = useNavigation();
   const [isVisible, setIsVisible] = useState(false);
   const handleTransactionClick = () => {
     setIsVisible(true);
   };
+  const { showSuccessToast, showErrorToast } = useToast();
 
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const dispatch = useDispatch();
+  const onDeleteConfirmation = () => {
+    console.log({ type, id });
+
+    transactionApi
+      .deleteTransaction(transaction.id)
+      .then(() => {
+        showSuccessToast();
+        if (type === "sale") {
+          console.log("triggred frin card view");
+          dispatch(getTransactionsBySale(id));
+        }
+        if (type === "buyer") {
+          dispatch(getTransactionsByBuyer(id));
+        }
+      })
+      .catch(() => {
+        showErrorToast();
+      })
+      .finally(() => {
+        setIsVisible(false);
+      });
+  };
 
   return (
     <>
+      {isConfirmationModalOpen && (
+        <ConfirmationModal
+          visible={isConfirmationModalOpen}
+          toggleVisible={setIsConfirmationModalOpen}
+          action={onDeleteConfirmation}
+          title={"confirmation modal"}
+          closable
+          btnParams={{
+            type: "danger",
+            icon: {
+              name: "trash",
+            },
+            btnText: "confirm",
+          }}
+          bodyText={"are you sure you want to delete?"}
+        />
+      )}
       <Dialogs
         title={"Transaction details"}
         visible={isVisible}
@@ -82,7 +131,10 @@ const TransactionCardView = ({ transaction }) => {
               name: "trash",
               color: Colors.white,
             }}
-            onPress={() => {}}
+            onPress={() => {
+              setIsVisible(false);
+              setIsConfirmationModalOpen(true);
+            }}
           >
             Delete
           </Button>

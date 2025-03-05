@@ -57,6 +57,5 @@ public class UserAwareAspect {
         Session session = entityManager.unwrap(Session.class);
         Filter filter = session.enableFilter("userFilter");
         filter.setParameter("userId", authenticatedUserId);
-        System.out.println("setted");
     }
 }
