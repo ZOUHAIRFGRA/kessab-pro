@@ -3,19 +3,39 @@ import { View, Text, FlatList } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import SaleCardView from "./SaleCardView";
-import { getSales, resetSales } from "../../features/saleSlice";
+import {
+  getSales,
+  getSalesByBuyerId,
+  resetSales,
+} from "../../features/saleSlice";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
 import { getBuyers } from "../../features/buyerSlice";
+import { useFocusEffect } from "@react-navigation/native";
 
-const SalesListCardView = ({ searchText: propSearchText, route }) => {
+const SalesListCardView = ({
+  searchText: propSearchText,
+  route,
+  type = null,
+  id,
+}) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getSales());
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (type === "buyer") {
+        dispatch(getSalesByBuyerId(id));
+      }
+
+      if (!type) {
+        dispatch(getSales());
+      }
+
+      return () => {};
+    }, [])
+  );
 
   const { sales, loading, error } = useSelector((states) => states.sales);
 

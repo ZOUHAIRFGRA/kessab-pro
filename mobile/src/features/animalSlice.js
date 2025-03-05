@@ -37,14 +37,12 @@ export const getAnimals = createAsyncThunk(
 
 export const getAnimalsCount = createAsyncThunk("animals/count", async () => {
   const response = await fetchAnimalsCount();
-  // console.log('res from count', response)
   return response;
 });
 export const getUnsoldAnimals = createAsyncThunk(
   "animals/fetchUnsold",
   async () => {
     const response = await fetchUnsoldAnimals();
-    // console.log('res from unsold', response)
     return response;
   }
 );

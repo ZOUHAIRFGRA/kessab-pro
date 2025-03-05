@@ -23,7 +23,6 @@
     "view_all_sales": "Voir toutes les ventes",
     "view_all_transactions": "Voir toutes les transactions",
 
-
     "total_sales": "Total des ventes",
     "total_buyers": "Total des acheteurs",
     "total_animals": "Total des animaux",
@@ -40,9 +39,9 @@
     "category_name_required": "Le nom de la catégorie est requis",
     "icon_required": "L'icône est requise",
     "category_add_failed": "Échec de l'ajout de la catégorie",
-    "category_added_success" : "Catégorie ajoutée avec succès",
+    "category_added_success": "Catégorie ajoutée avec succès",
     "no_icons_available": "Aucune icône disponible",
-    "add_category" : "Ajouter une catégorie",
+    "add_category": "Ajouter une catégorie",
     "enter_category_name": "Entrez le nom de la catégorie",
     "add_new_category": "Ajouter une nouvelle catégorie",
     "select_icon": "Sélectionner une icône",
@@ -95,7 +94,8 @@
     "Gender": {
       "Gender": "Genre",
       "Male": "Mâle",
-      "Female": "Femelle"
+      "Female": "Femelle",
+      "-": "unisex"
     },
     "SeeAllBuyerDetails": "Voir tous les détails de l'acheteur",
     "cancel": "Annuler",
@@ -150,6 +150,5 @@
     "SaveProfile": "Enregistrer le profil",
     "buyersList": "Liste des acheteurs",
     "HomePage": "Page d'accueil"
-
   }
 }

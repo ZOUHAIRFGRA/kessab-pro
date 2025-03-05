@@ -15,7 +15,6 @@ import { useFocusEffect } from "@react-navigation/native";
 
 export default function AnimalsListCardView({ id, type = "sale" }) {
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (type === "sale") {
       dispatch(getAnimalsBySale(id));
@@ -27,7 +26,11 @@ export default function AnimalsListCardView({ id, type = "sale" }) {
   }, [dispatch, id]);
 
   const { animals, loading, error } = useSelector(({ animals }) => animals);
-
+  console.log({
+    animals,
+    loading,
+    error,
+  });
 
   if (loading || !animals) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;

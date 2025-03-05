@@ -4,10 +4,17 @@ import * as FileSystem from "expo-file-system";
 import saleApi, { createSale, updateSale, deleteSale } from "../api/saleApi";
 import SaleService from "../api/saleApi";
 
-export const getSales = createAsyncThunk("sales/fetchAll", async () => {
-  const response = await SaleService.fetchSales();
+export const getSales = createAsyncThunk("sales/fetchAll", async (params) => {
+  const response = await SaleService.fetchSales(params);
   return response;
 });
+export const getSalesByBuyerId = createAsyncThunk(
+  "sales/fetchAllBybuyer",
+  async (buyerId) => {
+    const response = await SaleService.fetchSalesByBuyerId(buyerId);
+    return response;
+  }
+);
 
 export const getSale = createAsyncThunk("sales/get", async (id) => {
   const response = await SaleService.fetchSaleById(id);
@@ -82,6 +89,18 @@ const saleSlice = createSlice({
         state.sales = action.payload.content;
       })
       .addCase(getSales.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(getSalesByBuyerId.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getSalesByBuyerId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.sales = action.payload;
+      })
+      .addCase(getSalesByBuyerId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })

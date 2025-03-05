@@ -9,11 +9,11 @@ import AnimalDetailsScreen from "../screens/AnimalDetailsScreen";
 import AnimalsList from "../components/AnimalsList";
 import Colors from "../utils/Colors";
 import SaleDetailScreen from "../screens/sale/SaleDetailScreen";
-import SalesScreen from "../screens/SalesScreen";
 import { useTranslation } from "react-i18next";
 import BuyersScreen from "../screens/buyer/BuyersScreen";
 import BuyerDetailScreen from "../screens/buyer/BuyerDetailScreen";
 import AddSaleScreen from "../screens/sale/AddSaleScreen";
+import SalesScreen from "../screens/sale/SalesScreen";
 
 const Stack = createStackNavigator();
 export default function RootNavigator() {

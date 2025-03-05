@@ -96,14 +96,11 @@ const transactionSlice = createSlice({
         state.loading = true;
       })
       .addCase(getTransactionsBySale.fulfilled, (state, action) => {
-        console.log("fullyfied");
-
         state.loading = false;
         state.error = null;
         state.transactions = action.payload;
       })
       .addCase(getTransactionsBySale.rejected, (state, action) => {
-        console.log("rejected");
         state.loading = false;
         state.error = action.error.message;
       })

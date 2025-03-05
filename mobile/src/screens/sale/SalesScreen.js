@@ -3,7 +3,7 @@ import Container from "../../components/global/Container";
 import Button from "../../components/global/Button";
 import Colors from "../../utils/Colors";
 import DropdownComponent from "../../components/global/BaseDropdown";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SearchBar } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
@@ -11,49 +11,87 @@ import SalesListCardView from "../../components/sale/SalesListCardView";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import Dialogs from "../../components/global/Dialog";
+import { Input } from "@rneui/base";
+import { useDispatch } from "react-redux";
+import { getSales } from "../../features/saleSlice";
+
 export default function SalesScreen() {
+  const [typeFilter, setTypeFilter] = useState("");
+  const [paimentFilter, setPaimentFilter] = useState("");
+  const [buyerFullNameFilter, setBuyerFullNameFilter] = useState("");
+  const [page, setPage] = useState(10);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      getSales({
+        page,
+        paymentStatus: paimentFilter,
+        categoryId: typeFilter,
+        fullName: buyerFullNameFilter,
+      })
+    );
+  }, [page, buyerFullNameFilter, typeFilter, paimentFilter]);
+
   const navigator = useNavigation();
   const [isDialogVisible, setDialogVisible] = useState(false);
-  const [counter, setCounter] = useState(1);
+  const [qte, setQte] = useState("1");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(null);
   };
 
-  const onAddSaleClick = (counter) => {
+  const onAddSaleClick = () => {
+    console.log({ qte: parseInt(qte) });
+
+    if (qte <= 0 || isNaN(qte)) {
+      alert("quantity must be positive");
+      return;
+    }
     setDialogVisible(false);
-    setCounter(1);
-    navigator.navigate("AddSale", { qte: counter });
+    navigator.navigate("AddSale", { qte });
   };
+
+  useEffect(() => {
+    return () => {
+      setQte("1");
+    };
+  }, [isDialogVisible]);
 
   const { t } = useTranslation();
   return (
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>
         <Dialogs
-          title={"qte"}
+          title={"How many to sold?"}
           visible={isDialogVisible}
           toggleDialog={() => setDialogVisible(!isDialogVisible)}
         >
-          <Text>{counter}</Text>
-          <Container
-            sx={{
-              flexDirection: "row",
-              gap: 5,
-              justifyContent: "space-between",
-            }}
-          >
-            <Button onPress={() => setCounter(counter + 1)}>+</Button>
-            <Button onPress={() => setCounter(counter - 1)}>-</Button>
-          </Container>
+          <Input value={qte} onChangeText={setQte} keyboardType="number-pad" />
 
           <Button
             type={"primary"}
-            textStyle={{ color: Colors.white }}
-            onPress={() => onAddSaleClick(counter)}
+            style={{
+              padding: 12,
+              marginRight: 12,
+              marginLeft: 12,
+              marginBottom: 8,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            textStyle={{
+              color: "white",
+              fontWeight: "bold",
+              textAlign: "center",
+              fontSize: 16,
+            }}
+            icon={{
+              name: "forward",
+              color: Colors.white,
+            }}
+            onPress={() => onAddSaleClick()}
           >
-            salam
+            Continue
           </Button>
         </Dialogs>
         <Container sx={{ display: "flex", flexDirection: "row" }}>
@@ -67,6 +105,7 @@ export default function SalesScreen() {
               inputContainerStyle={{ padding: 0 }}
               round
               lightTheme
+              onChangeText={(v) => setBuyerFullNameFilter(v)}
               placeholder={t("common.SearchByBuyerNameOrCIN")}
             />
           </Container>
