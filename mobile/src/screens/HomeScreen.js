@@ -59,10 +59,10 @@ export default function HomeScreen() {
 
   const actions = [
     { key: "AddBuyer", name: t("common.add_buyer"), icon: "account-plus" },
-    { key: "BuyersList", name: t("common.view_buyers"), icon: "account-group" },
     { key: "AddSheep", name: t("common.add_sheep"), icon: "sheep", onPress: handleAddSheepPress },
+    { key: "Category", name: t("common.categories"), icon: "layers" },
+    { key: "BuyersList", name: t("common.view_buyers"), icon: "account-group" },
     { key: "MySellsScreen", name: t("common.view_sales"), icon: "chart-line" },
-    { key: "Inventory", name: t("common.inventory"), icon: "warehouse" },
   ];
 
   return (
