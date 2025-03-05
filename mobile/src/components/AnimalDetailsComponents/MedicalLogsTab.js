@@ -30,11 +30,13 @@ import {
 } from "./sharedStyles";
 import { useToast } from "../../hooks/useToast";
 import { useTranslation } from "react-i18next";
+import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
+import Loading from "../global/Loading";
 
 export const MedicalLogsTab = ({ animalId }) => {
   const { t } = useTranslation();
   const isRTL = t("dir") === "rtl";
-  const { medicalLogs } = useSelector((state) => state.animalMedicalLogs);
+  const { medicalLogs ,loading,error} = useSelector((state) => state.animalMedicalLogs);
   const dispatch = useDispatch();
   const [editing, setEditing] = useState(null);
   const [editedLog, setEditedLog] = useState({});
@@ -111,6 +113,8 @@ export const MedicalLogsTab = ({ animalId }) => {
     );
   };
 
+  if (loading) return <Loading />;
+  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
   return (
     <Container>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
