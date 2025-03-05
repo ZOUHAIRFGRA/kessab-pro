@@ -22,8 +22,9 @@ import {
 import { fetchCategoriesIcons } from "../features/iconsSlice";
 import Colors from "../utils/Colors";
 import { getBaseURL } from "../api/axiosInstance";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-const BASE_URL = getBaseURL(); 
+const BASE_URL = getBaseURL();
 
 const CategoryScreen = () => {
   const { t } = useTranslation();
@@ -39,12 +40,19 @@ const CategoryScreen = () => {
   const [selectedIconId, setSelectedIconId] = useState(null);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [isIconModalVisible, setIconModalVisible] = useState(false);
+  const [isAddOrEditVisible, setAddOrEditVisible] = useState(false);
   const isRTL = t("dir") === "rtl";
 
+  // Initial fetch of categories and icons on component mount
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchCategoriesIcons());
   }, [dispatch]);
+
+  // Optional: Log for debugging (can remove in production)
+  useEffect(() => {
+    console.log("categoriesLoading:", categoriesLoading, "iconsLoading:", iconsLoading);
+  }, [categoriesLoading, iconsLoading]);
 
   const handleAddOrUpdateCategory = async () => {
     if (!categoryName.trim()) {
@@ -71,15 +79,24 @@ const CategoryScreen = () => {
       }
       setCategoryName("");
       setSelectedIconId(null);
+      setAddOrEditVisible(false);
     } catch (err) {
       Alert.alert(t("common.error"), err.message || t("common.operationFailed"));
     }
+  };
+
+  const handleAddCategoryClick = () => {
+    setAddOrEditVisible(true);
+    setEditingCategoryId(null);
+    setCategoryName("");
+    setSelectedIconId(null);
   };
 
   const handleEditCategory = (category) => {
     setCategoryName(category.typeName);
     setSelectedIconId(category.icon?.id || null);
     setEditingCategoryId(category.id);
+    setAddOrEditVisible(true);
   };
 
   const handleDeleteCategory = (id) => {
@@ -108,6 +125,13 @@ const CategoryScreen = () => {
     setIconModalVisible(false);
   };
 
+  const handleCancel = () => {
+    setAddOrEditVisible(false);
+    setEditingCategoryId(null);
+    setCategoryName("");
+    setSelectedIconId(null);
+  };
+
   const renderIconItem = ({ item }) => (
     <IconItem onPress={() => handleSelectIcon(item.id)}>
       <IconImage source={{ uri: `${BASE_URL}${item.iconPath}` }} />
@@ -117,30 +141,47 @@ const CategoryScreen = () => {
 
   const renderCategoryItem = ({ item }) => (
     <CategoryItem isRTL={isRTL}>
-      <CategoryInfo>
-        {item.icon?.iconPath ? (
-          <IconImage source={{ uri: `${BASE_URL}${item.icon.iconPath}` }} />
-        ) : (
-          <PlaceholderIcon>No Icon</PlaceholderIcon>
-        )}
-        <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
-      </CategoryInfo>
-      <ButtonContainer>
-        <EditButton onPress={() => handleEditCategory(item)}>
-          <ButtonText>{t("common.edit")}</ButtonText>
-        </EditButton>
-        <DeleteButton onPress={() => handleDeleteCategory(item.id)}>
-          <ButtonText>{t("common.delete")}</ButtonText>
-        </DeleteButton>
-      </ButtonContainer>
+      {isRTL ? (
+        <>
+          <ButtonContainer style={{ justifyContent: 'flex-start' }}>
+            <DeleteButton onPress={() => handleDeleteCategory(item.id)}>
+              <ButtonText>{t("common.delete")}</ButtonText>
+            </DeleteButton>
+            <EditButton onPress={() => handleEditCategory(item)}>
+              <ButtonText>{t("common.edit")}</ButtonText>
+            </EditButton>
+          </ButtonContainer>
+          <CategoryInfo style={{ justifyContent: 'flex-end' }}>
+            <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
+            {item.icon?.iconPath ? (
+              <IconImage source={{ uri: `${BASE_URL}${item.icon.iconPath}` }} />
+            ) : (
+              <PlaceholderIcon>No Icon</PlaceholderIcon>
+            )}
+          </CategoryInfo>
+        </>
+      ) : (
+        <>
+          <CategoryInfo style={{ justifyContent: 'flex-start' }}>
+            {item.icon?.iconPath ? (
+              <IconImage source={{ uri: `${BASE_URL}${item.icon.iconPath}` }} />
+            ) : (
+              <PlaceholderIcon>No Icon</PlaceholderIcon>
+            )}
+            <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
+          </CategoryInfo>
+          <ButtonContainer style={{ justifyContent: 'flex-end' }}>
+            <EditButton onPress={() => handleEditCategory(item)}>
+              <ButtonText>{t("common.edit")}</ButtonText>
+            </EditButton>
+            <DeleteButton onPress={() => handleDeleteCategory(item.id)}>
+              <ButtonText>{t("common.delete")}</ButtonText>
+            </DeleteButton>
+          </ButtonContainer>
+        </>
+      )}
     </CategoryItem>
   );
-
-  useEffect(() => {
-    if (!categoriesLoading && !iconsLoading) {
-      dispatch(fetchCategories());
-    }
-  }, [categoriesLoading, iconsLoading, dispatch]);
 
   return (
     <ScreenContainer>
@@ -155,24 +196,41 @@ const CategoryScreen = () => {
         </ErrorText>
       )}
 
-      <InputContainer>
-        <CategoryInput
-          placeholder={t("common.categoryName")}
-          value={categoryName}
-          onChangeText={setCategoryName}
+      <QuickActionList isRTL={isRTL}>
+        <QuickActionItem
+          onPress={handleAddCategoryClick}
           isRTL={isRTL}
-        />
-        <IconSelectButton onPress={() => setIconModalVisible(true)}>
-          <ButtonText>
-            {selectedIconId
-              ? icons.find((icon) => icon.id === selectedIconId)?.iconPath || t("common.selectIcon")
-              : t("common.selectIcon")}
-          </ButtonText>
-        </IconSelectButton>
-        <AddButton onPress={handleAddOrUpdateCategory}>
-          <ButtonText>{editingCategoryId ? t("common.update") : t("common.add")}</ButtonText>
-        </AddButton>
-      </InputContainer>
+          accessibilityRole="button"
+          accessibilityLabel={t("common.add_category")}
+        >
+          <QuickActionIcon name="plus" />
+          <QuickActionText isRTL={isRTL}>{t("common.add_category")}</QuickActionText>
+        </QuickActionItem>
+      </QuickActionList>
+
+      {isAddOrEditVisible && (
+        <InputContainer>
+          <CategoryInput
+            placeholder={t("common.categoryName")}
+            value={categoryName}
+            onChangeText={setCategoryName}
+            isRTL={isRTL}
+          />
+          <IconSelectButton onPress={() => setIconModalVisible(true)}>
+            <ButtonText>
+              {selectedIconId
+                ? icons.find((icon) => icon.id === selectedIconId)?.iconPath || t("common.selectIcon")
+                : t("common.selectIcon")}
+            </ButtonText>
+          </IconSelectButton>
+          <AddButton onPress={handleAddOrUpdateCategory}>
+            <ButtonText>{editingCategoryId ? t("common.update") : t("common.add")}</ButtonText>
+          </AddButton>
+          <CancelButton onPress={handleCancel}>
+            <ButtonText>{t("common.cancel")}</ButtonText>
+          </CancelButton>
+        </InputContainer>
+      )}
 
       <FlatList
         data={categories}
@@ -201,7 +259,7 @@ const CategoryScreen = () => {
   );
 };
 
-
+// Styled Components
 const ScreenContainer = styled(View)({
   flex: 1,
   backgroundColor: Colors.secondaryLight,
@@ -250,8 +308,8 @@ const AddButton = styled(TouchableOpacity)({
   alignItems: "center",
 });
 
-const CategoryItem = styled(View)(({ isRTL }) => ({
-  flexDirection: isRTL ? "row-reverse" : "row",
+const CategoryItem = styled(View)({
+  flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "center",
   padding: 12,
@@ -263,13 +321,14 @@ const CategoryItem = styled(View)(({ isRTL }) => ({
   shadowOpacity: 0.1,
   shadowRadius: 2,
   elevation: 2,
-}));
+});
 
-const CategoryInfo = styled(View)({
-  flexDirection: "row",
+const CategoryInfo = styled(View)(({ isRTL }) => ({
+  flexDirection: isRTL ? "row-reverse" : "row",
   alignItems: "center",
   gap: 8,
-});
+  flex: 1,
+}));
 
 const IconImage = styled(Image)({
   width: 30,
@@ -372,6 +431,63 @@ const CloseButton = styled(TouchableOpacity)({
   borderRadius: 8,
   alignItems: "center",
   marginTop: 16,
+});
+
+const QuickActionList = styled(View)(({ isRTL }) => ({
+  flexDirection: isRTL ? "row-reverse" : "row",
+  gap: 16,
+  marginBottom: 16,
+}));
+
+const QuickActionItem = styled(TouchableOpacity)(({ isRTL, pressed }) => ({
+  backgroundColor: pressed ? "#e6f0fa" : "#fff",
+  padding: 16,
+  borderRadius: 12,
+  width: 120,
+  height: 100,
+  justifyContent: "center",
+  alignItems: "center",
+  marginLeft: isRTL ? 16 : 0,
+  marginRight: isRTL ? 0 : 16,
+  borderWidth: 1,
+  borderColor: "#e0e0e0",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.1,
+  shadowRadius: 6,
+  elevation: 4,
+}));
+
+const QuickActionIcon = styled(Icon)({
+  color: Colors.primary,
+  fontSize: 40,
+  marginBottom: 8,
+});
+
+const QuickActionText = styled(Text)(({ isRTL }) => ({
+  fontSize: 14,
+  fontWeight: "600",
+  color: "#555",
+  textAlign: isRTL ? "right" : "center",
+  numberOfLines: 2,
+}));
+
+const AddCategoryButton = styled(TouchableOpacity)({
+  backgroundColor: Colors.primary,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  borderRadius: 8,
+  alignItems: "center",
+  marginBottom: 16,
+});
+
+const CancelButton = styled(TouchableOpacity)({
+  backgroundColor: Colors.danger,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  borderRadius: 8,
+  alignItems: "center",
+  marginTop: 8,
 });
 
 export default CategoryScreen;
