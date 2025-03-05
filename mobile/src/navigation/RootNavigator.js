@@ -22,7 +22,7 @@ const Stack = createStackNavigator();
 export default function RootNavigator() {
   const { t } = useTranslation();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
+  const isRTL = t("dir") === "rtl";
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -33,6 +33,7 @@ export default function RootNavigator() {
           headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
+            textAlign: isRTL ? "right" : "left",
           },
         }}
       >

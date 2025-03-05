@@ -30,9 +30,7 @@ const DashboardScreen = () => {
   const { transactions, loading: transactionsLoading, error: transactionsError } = useSelector(
     (state) => state.transactions
   );
-  const { buyers, loading: buyersLoading, error: buyersError } = useSelector(
-    (state) => state.buyers
-  );
+
 
   useEffect(() => {
     console.log("Dispatching getAnimalsCount...");
@@ -43,17 +41,16 @@ const DashboardScreen = () => {
     dispatch(getSales()).catch(err => console.error("getSales failed:", err));
     console.log("Dispatching getTransactions...");
     dispatch(getTransactions()).catch(err => console.error("getTransactions failed:", err));
-    console.log("Dispatching getBuyers...");
-    dispatch(getBuyers()).catch(err => console.error("getBuyers failed:", err));
+
     console.log("Dispatching getAllAnimalActivitiesLogs...");
     dispatch(getAllAnimalActivitiesLogs()).catch(err => console.error("getAllAnimalActivitiesLogs failed:", err));
   }, [dispatch]);
 
   const isLoading =
-    animalsLoading || salesLoading || transactionsLoading || buyersLoading || activitiesLoading;
+    animalsLoading || salesLoading || transactionsLoading || activitiesLoading;
 
   const hasErrors =
-    animalsError || salesError || transactionsError || buyersError || activitiesError;
+    animalsError || salesError || transactionsError  || activitiesError;
 
   const navigateTo = (screen) => navigation.navigate(screen);
 
