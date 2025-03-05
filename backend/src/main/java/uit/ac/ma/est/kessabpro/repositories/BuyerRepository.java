@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface BuyerRepository extends UserAwareRepository<Buyer,UUID> {
     @Query("SELECT b FROM Buyer b WHERE " +
             "(:fullName IS NULL OR b.fullName LIKE %:fullName%) " +
-            "AND (:cin IS NULL OR b.CIN LIKE %:cin%)")
+            "OR (:cin IS NULL OR b.CIN LIKE %:cin%)")
     Page<Buyer> findByFullNameOrCin(
             @Param("fullName") String fullName,
             @Param("cin") String cin,

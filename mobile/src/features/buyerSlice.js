@@ -1,10 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import BuyersService from "../api/buyerApi";
 
-export const getBuyers = createAsyncThunk("buyers/fetchAll", async () => {
-  const response = await BuyersService.fetchBuyers();
-  return response;
-});
+export const getBuyers = createAsyncThunk(
+  "buyers/fetchAll",
+  async ({ q, page }) => {
+    const response = await BuyersService.fetchBuyers({
+      fullName: q,
+      cin: q,
+      page,
+    });
+    return response;
+  }
+);
 
 export const getBuyer = createAsyncThunk("buyers/get", async (id) => {
   const response = await BuyersService.fetchBuyerById(id);
@@ -55,7 +62,6 @@ const buyerSlice = createSlice({
       state.buyer = null;
       state.buyerLoading = false;
     },
-  
   },
   extraReducers: (builder) => {
     builder
@@ -66,6 +72,8 @@ const buyerSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.buyers = action.payload.content;
+        state.page = action.payload.page.number;
+        state.totalPages = action.payload.page.totalPages;
       })
       .addCase(getBuyers.rejected, (state, action) => {
         state.loading = false;

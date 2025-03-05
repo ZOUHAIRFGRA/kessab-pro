@@ -18,9 +18,9 @@ const BuyersListCardView = ({ searchText: propSearchText, route }) => {
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(getBuyers());
+      dispatch(getBuyers({ q: propSearchText }));
       return () => {};
-    }, [])
+    }, [propSearchText])
   );
 
   if (loading || !buyers) return <Loading />;

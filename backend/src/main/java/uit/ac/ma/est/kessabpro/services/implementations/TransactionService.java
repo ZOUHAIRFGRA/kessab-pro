@@ -86,6 +86,7 @@ public class TransactionService implements ITransactionService {
         System.out.println("deleted + " + id);
         Transaction transaction = getTransactionById(id);
         eventPublisher.publishEvent(new TransactionDeletedEvent(this,transaction.getSale().getId(),transaction.getAmount()));
+        transactionRepository.deleteById(id);
     }
 
 
