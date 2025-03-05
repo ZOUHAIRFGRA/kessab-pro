@@ -10,7 +10,11 @@ class SalesService {
   }
 
   fetchSaleInvoice(id) {
-    return axiosInstance.post(`/pdf/sale/${id}`).then(res => res.data);
+    return axiosInstance.post(`/pdf/sale/${id}`).then((res) => res.data);
+  }
+
+  closeSale(id) {
+    return axiosInstance.post(`/sales/${id}/close`).then((res) => res.data);
   }
 
   createSale(SaleData) {

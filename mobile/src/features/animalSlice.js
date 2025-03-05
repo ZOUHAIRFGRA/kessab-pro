@@ -18,7 +18,7 @@ export const getAnimalsBySale = createAsyncThunk(
     return response.data;
   }
 );
-//! to rectify 
+//! to rectify
 export const getAnimalsByBuyer = createAsyncThunk(
   "animals/fetchAll/byBuyer",
   async (buyerId) => {
@@ -79,7 +79,7 @@ const animalSlice = createSlice({
   name: "animals",
   initialState: {
     animals: [],
-    unsoldAnimals : [],
+    unsoldAnimals: [],
     animal: null,
     loading: false,
     error: null,
@@ -137,6 +137,7 @@ const animalSlice = createSlice({
         state.loading = false;
         state.unsoldAnimals = action.payload;
         state.totalUnsoldAnimals = action.payload.length;
+        console.log({ animals: state.unsoldAnimals });
       })
       .addCase(getUnsoldAnimals.rejected, (state, action) => {
         state.loading = false;

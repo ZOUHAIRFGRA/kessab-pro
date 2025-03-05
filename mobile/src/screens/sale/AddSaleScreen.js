@@ -19,7 +19,9 @@ import BaseDropdown from "../../components/global/BaseDropdown";
 const AddSaleScreen = ({ route, navigation }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const qte = route.params?.qte || 1;
+
+  const qte = route.params?.qte || (route.params?.animalId ? 1 : 1);
+  const initialAnimalId = route.params?.animalId;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitData, setSubmitData] = useState({
@@ -39,7 +41,7 @@ const AddSaleScreen = ({ route, navigation }) => {
   } = useSelector((states) => states.buyers);
 
   const {
-    unsoldAnimals : animals,
+    unsoldAnimals: animals,
     loading: animalsLoading,
     error: animalsError,
   } = useSelector((states) => states.animals);
@@ -72,7 +74,16 @@ const AddSaleScreen = ({ route, navigation }) => {
   const [err, setErr] = useState("");
 
   useEffect(() => {
-    if (qte) {
+    if (initialAnimalId) {
+      setAnimalExisting([true]);
+      setAnimalFormData([
+        {
+          id: initialAnimalId,
+          price: "",
+          isPickedUp: false,
+        },
+      ]);
+    } else if (qte) {
       const newCollapsed = Array(qte).fill(true);
       setAnimalCollapsed(newCollapsed);
 
@@ -89,7 +100,7 @@ const AddSaleScreen = ({ route, navigation }) => {
 
       setAnimalExisting(Array(qte).fill(false));
     }
-  }, [qte]);
+  }, [qte, initialAnimalId]);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -103,17 +114,17 @@ const AddSaleScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     const shouldFetchAnimals = animalExisting.some((exists) => exists);
-    if (shouldFetchAnimals) {
+    if (shouldFetchAnimals || initialAnimalId) {
       dispatch(getUnsoldAnimals());
     }
-  }, [animalExisting, dispatch]);
+  }, [animalExisting, dispatch, initialAnimalId]);
 
   const onSubmit = () => {
     setIsSubmitting(true);
 
     const validateForm = () => {
       for (let i = 0; i < animalFormData.length; i++) {
-        const animal = animalFormData[i] || {}; 
+        const animal = animalFormData[i] || {};
         if (animalExisting[i] && !animal.id) {
           return `Animal ${i + 1} must be selected`;
         }
@@ -532,7 +543,6 @@ const AddSaleScreen = ({ route, navigation }) => {
                         </Text>
                       )}
 
-                      {/* Always show price input regardless of animal selection */}
                       <Input
                         leftIcon={
                           <Icon
