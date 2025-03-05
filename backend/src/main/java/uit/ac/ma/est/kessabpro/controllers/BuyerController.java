@@ -71,9 +71,4 @@ public class BuyerController {
         return ResponseEntity.ok(BuyerMapper.toBuyerDTO(buyerUpdated));
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<String> deleteBuyer(@PathVariable UUID id) {
-//        buyerService.deleteBuyer(id);
-//        return ResponseEntity.ok("Buyer deleted successfully.");
-//    }
 }

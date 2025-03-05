@@ -3,7 +3,7 @@ import BuyersService from "../api/buyerApi";
 
 export const getBuyers = createAsyncThunk(
   "buyers/fetchAll",
-  async ({ q, page }) => {
+  async ({ q = "", page = 0 }) => {
     const response = await BuyersService.fetchBuyers({
       fullName: q,
       cin: q,
