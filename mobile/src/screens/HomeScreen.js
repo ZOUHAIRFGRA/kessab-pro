@@ -53,7 +53,7 @@ export default function HomeScreen() {
   const gridItems = [
     { key: "Management", name: t("common.management"), icon: "playlist-edit" },
     { key: "Sales", name: t("common.sales"), icon: "cart-outline" },
-    { key: "Food", name: t("common.food"), icon: "corn" },
+    { key: "BuyersList", name: t("common.view_buyers"), icon: "account-group" },
     { key: "Marketplace", name: t("common.marketplace"), icon: "store" },
   ];
 
@@ -66,7 +66,6 @@ export default function HomeScreen() {
       onPress: handleAddSheepPress,
     },
     { key: "Category", name: t("common.categories"), icon: "layers" },
-    { key: "BuyersList", name: t("common.view_buyers"), icon: "account-group" },
     { key: "MySellsScreen", name: t("common.view_sales"), icon: "chart-line" },
   ];
 

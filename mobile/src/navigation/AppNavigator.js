@@ -142,18 +142,6 @@ function DrawerNavigator({ drawerPosition }) {
           unmountOnBlur: true,
         }}
       />
-       <Drawer.Screen
-        name="Food"
-        component={FoodScreen}
-        options={{
-          drawerLabel: () => (
-            <DrawerItemLabel
-              label={t("common.food")}
-              icon={<Ionicons name="fast-food-outline" size={20} />}
-            />
-          ),
-        }}
-      />
       <Drawer.Screen
         name="Marketplace"
         component={MarketplaceScreen}
