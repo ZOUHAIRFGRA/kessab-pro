@@ -14,7 +14,10 @@ import { getBuyers } from "../../features/buyerSlice";
 import { useFocusEffect } from "@react-navigation/native";
 
 const SalesListCardView = ({
-  searchText: propSearchText,
+  fullNameFilter = "",
+  categoryIdFilter = "",
+  paymentStatusFilter = "",
+  saleDate = "",
   route,
   type = null,
   id,
@@ -30,11 +33,24 @@ const SalesListCardView = ({
       }
 
       if (!type) {
-        dispatch(getSales());
+        dispatch(
+          getSales({
+            paymentStatus: paymentStatusFilter,
+            categoryId: categoryIdFilter,
+            fullName: fullNameFilter,
+            saleDate,
+          })
+        );
       }
 
       return () => {};
-    }, [])
+    }, [
+      paymentStatusFilter,
+      categoryIdFilter,
+      fullNameFilter,
+      saleDate,
+      dispatch,
+    ])
   );
 
   const { sales, loading, error } = useSelector((states) => states.sales);

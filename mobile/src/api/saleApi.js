@@ -2,7 +2,7 @@ import axiosInstance from "./axiosInstance";
 
 class SalesService {
   fetchSales(params) {
-    return axiosInstance.get("/sales", params).then((res) => res.data);
+    return axiosInstance.get("/sales", { params }).then((res) => res.data);
   }
   fetchSalesByBuyerId(buyerId) {
     return axiosInstance.get(`/sales/buyer/${buyerId}`).then((res) => res.data);

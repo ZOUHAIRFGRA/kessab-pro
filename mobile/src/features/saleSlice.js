@@ -5,6 +5,10 @@ import saleApi, { createSale, updateSale, deleteSale } from "../api/saleApi";
 import SaleService from "../api/saleApi";
 
 export const getSales = createAsyncThunk("sales/fetchAll", async (params) => {
+  console.log({
+    params,
+  });
+
   const response = await SaleService.fetchSales(params);
   return response;
 });
@@ -69,7 +73,6 @@ const saleSlice = createSlice({
       state.error = null;
       state.sales = null;
       state.loading = false;
-      state.page = 0;
       state.totalPages = 0;
     },
     resetSale: (state) => {
@@ -84,13 +87,11 @@ const saleSlice = createSlice({
         state.loading = true;
       })
       .addCase(getSales.fulfilled, (state, action) => {
-        const { content, totalPages, page } = action.payload;
+        const { content, totalPages } = action.payload;
         state.sales = content;
         state.loading = false;
         state.totalPages = totalPages;
-        state.page = page + 1;
         state.error = null;
-        console.log("fullied");
       })
       .addCase(getSales.rejected, (state, action) => {
         state.loading = false;

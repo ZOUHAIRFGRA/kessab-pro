@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Colors from "../../utils/Colors";
 import { useTranslation } from "react-i18next";
+import { useFocusEffect } from "@react-navigation/native";
 
 const BaseDropdown = ({
+  onValueChange,
   label,
   focusLabel,
   notFocusLabel,
@@ -13,9 +15,8 @@ const BaseDropdown = ({
   iconName,
   values: data,
   containerStyle = null,
-  onValueChange,
   disable,
-  search
+  search,
 }) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
@@ -29,6 +30,14 @@ const BaseDropdown = ({
     }
     return null;
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setValue("");
+      };
+    }, [])
+  );
 
   const { t } = useTranslation();
   const styles = StyleSheet.create({
@@ -93,8 +102,8 @@ const BaseDropdown = ({
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
           setValue(item.value);
-          onValueChange(item.value);
           setIsFocus(false);
+          onValueChange(item.value);
         }}
         renderLeftIcon={() => (
           <AntDesign
