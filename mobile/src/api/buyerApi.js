@@ -1,8 +1,10 @@
 import axiosInstance from "./axiosInstance";
 
 class BuyersService {
-  fetchBuyers() {
-    return axiosInstance.get("/buyers").then((res) => res.data);
+  fetchBuyers(query) {
+    return axiosInstance
+      .get("/buyers", { params: query })
+      .then((res) => res.data);
   }
 
   fetchBuyerById(id) {

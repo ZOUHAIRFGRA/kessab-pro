@@ -37,7 +37,6 @@ const TransactionCardView = ({ transaction, id, type = "sale" }) => {
       .then(() => {
         showSuccessToast();
         if (type === "sale") {
-          console.log("triggred frin card view");
           dispatch(getTransactionsBySale(id));
           dispatch(getSale(id));
         }
