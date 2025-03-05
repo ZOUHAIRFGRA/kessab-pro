@@ -7,6 +7,21 @@
     "NOT_PAID": "Non payé"
   },
   "common": {
+    "remaining_amount_owed": "Montant restant",
+    "total_agreed_sales": "Total des ventes convenues",
+    "animal_statistics": "Statistiques des animaux",
+    "unsold_animals": "Animaux invendus",
+    "sold_animals": "Animaux vendus",
+    "sales_statistics": "Statistiques des ventes",
+    "sales_this_month": "Ventes ce mois-ci",
+    "financial_statistics": "Statistiques financières",
+    "transactions_this_month": "Transactions ce mois-ci",
+    "last_sold_animals": "Derniers animaux vendus",
+    "recent_transactions": "Transactions récentes",
+    "no_sold_animals": "Aucun animal vendu",
+    "no_transactions": "Aucune transaction",
+    "view_all_sales": "Voir toutes les ventes",
+    "view_all_transactions": "Voir toutes les transactions",
 
 
     "total_sales": "Total des ventes",

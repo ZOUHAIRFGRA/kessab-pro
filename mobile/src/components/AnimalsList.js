@@ -8,7 +8,7 @@ import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-
+import Colors from "../utils/Colors";
 const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -95,14 +95,14 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
       {isLoading ? (
         <LoadingOverlay>
           <Animated.View style={{ opacity: fadeAnim }}>
-            <ActivityIndicator size="large" color="#4A90E2" />
+            <ActivityIndicator size="large" color={Colors.primary} />
           </Animated.View>
         </LoadingOverlay>
       ) : animalsError ? (
         <ErrorText>{t("common.error")}: {animalsError}</ErrorText>
       ) : animals.length === 0 ? (
         <NoAnimalsWrapper>
-          <Icon name="emoticon-sad" size={40} color="#b0b0b0" />
+          <Icon name="emoticon-sad" size={40} color={Colors.warning} />
           <NoAnimalsText>{t("common.no_animals_found")}</NoAnimalsText>
           <AddAnimalPrompt onPress={() => navigation.navigate("ManagementScreen")}>
             <PromptText>{t("common.add_animal_prompt")}</PromptText>
@@ -204,7 +204,7 @@ const PaginationButton = styled(TouchableOpacity)(({ disabled }) => ({
   paddingHorizontal: 14,
   paddingVertical: 10,
   borderRadius: 8,
-  backgroundColor: disabled ? "#d1d5db" : "#3b82f6",
+  backgroundColor: disabled ? "#d1d5db" : Colors.primary,
   justifyContent: "center",
   alignItems: "center",
   shadowColor: "#000",
@@ -217,7 +217,7 @@ const PaginationButton = styled(TouchableOpacity)(({ disabled }) => ({
 const CurrentPageText = styled(Text)({
   fontSize: 16,
   fontWeight: "600",
-  color: "#3b82f6",
+  color: Colors.primary,
 });
 
 const NoAnimalsWrapper = styled(View)({

@@ -10,6 +10,8 @@ import { EditForm } from "./EditForm";
 import { Container } from "./sharedStyles";
 import { Text } from "dripsy";
 import { useNavigation } from "@react-navigation/native";
+import Loading from "../global/Loading";
+import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 
 export const AnimalDetailsTab = ({ animalId }) => {
   const { t } = useTranslation();
@@ -124,8 +126,8 @@ export const AnimalDetailsTab = ({ animalId }) => {
     setImagesToDelete([]);
   };
 
-  if (loading) return <Text>{t("Loading...")}</Text>;
-  if (error) return <Text>{t("Error")}: {error}</Text>;
+  if (loading) return <Loading />;
+  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (
     <Container>
