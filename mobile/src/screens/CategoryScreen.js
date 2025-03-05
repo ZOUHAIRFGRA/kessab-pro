@@ -219,7 +219,8 @@ const CategoryScreen = () => {
           <IconSelectButton onPress={() => setIconModalVisible(true)}>
             <ButtonText>
               {selectedIconId
-                ? icons.find((icon) => icon.id === selectedIconId)?.iconPath || t("common.selectIcon")
+                ? <IconImage source={{ uri: `${BASE_URL}${icons.find((icon) =>
+                  icon.id === selectedIconId)?.iconPath}` }} /> || t("common.selectIcon")
                 : t("common.selectIcon")}
             </ButtonText>
           </IconSelectButton>
