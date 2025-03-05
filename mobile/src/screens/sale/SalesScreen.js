@@ -3,43 +3,68 @@ import Container from "../../components/global/Container";
 import Button from "../../components/global/Button";
 import Colors from "../../utils/Colors";
 import DropdownComponent from "../../components/global/BaseDropdown";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SearchBar } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import SalesListCardView from "../../components/sale/SalesListCardView";
 import { useTranslation } from "react-i18next";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Dialogs from "../../components/global/Dialog";
 import { Input } from "@rneui/base";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getSales } from "../../features/saleSlice";
+import { Pagination } from "../../components/global/Pagination";
+import { fetchPaymentStatus } from "../../features/enumSlice";
+import { fetchCategories } from "../../features/categorySlice";
+import { formatDate } from "../../utils/Global";
 
 export default function SalesScreen() {
-  const [typeFilter, setTypeFilter] = useState("");
-  const [paimentFilter, setPaimentFilter] = useState("");
-  const [buyerFullNameFilter, setBuyerFullNameFilter] = useState("");
-  const [page, setPage] = useState(10);
+  const [fullNameFilter, setFullNameFilter] = useState("");
+  const [categoryIdFilter, setCategoryIdFilter] = useState("");
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState("");
+  const [saleDate, setSaleDate] = useState("");
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(
-      getSales({
-        page,
-        paymentStatus: paimentFilter,
-        categoryId: typeFilter,
-        fullName: buyerFullNameFilter,
-      })
-    );
-  }, [page, buyerFullNameFilter, typeFilter, paimentFilter]);
-
   const navigator = useNavigation();
   const [isDialogVisible, setDialogVisible] = useState(false);
   const [qte, setQte] = useState("1");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
+
   const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(null);
+    if (event.type === "dismissed") {
+      setSaleDate("");
+    } else {
+      setSaleDate(formatDate(selectedDate));
+      setDate(selectedDate);
+      setShowDatePicker(false);
+    }
   };
+
+  const { totalPages } = useSelector((states) => states.sales);
+
+  const getNextPage = (page) => {
+    dispatch(
+      getSales({
+        page: page,
+      })
+    );
+  };
+  const { loading: loadingPaymentStatus, paymentStatus } = useSelector(
+    (states) => states.enums
+  );
+  const { loading: categoriesLoading, categories } = useSelector(
+    (states) => states.categories
+  );
+
+  useEffect(() => {
+    if (categories.length < 1) {
+      dispatch(fetchCategories());
+    }
+    if (paymentStatus.length < 1) {
+      dispatch(fetchPaymentStatus());
+    }
+  }, [dispatch]);
 
   const onAddSaleClick = () => {
     console.log({ qte: parseInt(qte) });
@@ -57,6 +82,17 @@ export default function SalesScreen() {
       setQte("1");
     };
   }, [isDialogVisible]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setPaymentStatusFilter("");
+        setCategoryIdFilter("");
+        setFullNameFilter("");
+        setSaleDate("");
+      };
+    }, [])
+  );
 
   const { t } = useTranslation();
   return (
@@ -105,8 +141,9 @@ export default function SalesScreen() {
               inputContainerStyle={{ padding: 0 }}
               round
               lightTheme
-              onChangeText={(v) => setBuyerFullNameFilter(v)}
+              onChangeText={(v) => setFullNameFilter(v)}
               placeholder={t("common.SearchByBuyerNameOrCIN")}
+              value={fullNameFilter}
             />
           </Container>
           <Text
@@ -144,36 +181,49 @@ export default function SalesScreen() {
         >
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
-              values={[{ label: "Item 1", value: "1" }]}
+              values={categories?.map((category) => ({
+                label: category.typeName,
+                value: category.id,
+              }))}
+              disable={categoriesLoading}
               label={t("common.category")}
               focusLabel={"..."}
               notFocusLabel={t("common.category")}
               searchLabel={t("common.category_placeholder")}
               iconName="appstore-o"
+              onValueChange={(v) => setCategoryIdFilter(v)}
             />
           </Container>
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
-              values={[
-                { label: t(`payment_type.FULLY_PAID`), value: "FULLY_PAID" },
-                {
-                  label: t(`payment_type.PARTIALLY_PAID`),
-                  value: "PARTIALLY_PAID",
-                },
-                { label: t(`payment_type.NOT_PAID`), value: "NOT_PAID" },
-              ]}
+              values={paymentStatus.map((pm) => ({ label: pm, value: pm }))}
               label={t("common.payment")}
               focusLabel={"..."}
               notFocusLabel={t("common.payment")}
               searchLabel={t("common.payment_placeholder")}
               iconName="wallet"
+              disable={loadingPaymentStatus}
+              onValueChange={(v) => {
+                setPaymentStatusFilter(v);
+              }}
             />
           </Container>
         </Container>
       </Container>
       <Container sx={{ padding: 12, flex: 1 }}>
-        <SalesListCardView />
+        <SalesListCardView
+          fullNameFilter={fullNameFilter}
+          categoryIdFilter={categoryIdFilter}
+          paymentStatusFilter={paymentStatusFilter}
+          saleDate={saleDate}
+        />
       </Container>
+      {totalPages > 0 && (
+        <Pagination
+          pages={totalPages}
+          onPageChange={(page) => getNextPage(page)}
+        />
+      )}
       <Button
         type="primary"
         style={{

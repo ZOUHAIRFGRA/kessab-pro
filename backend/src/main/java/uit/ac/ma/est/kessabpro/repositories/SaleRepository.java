@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,11 +36,13 @@ public interface SaleRepository extends UserAwareRepository<Sale, UUID> {
             "LEFT JOIN a.category c " +
             "WHERE (:fullName IS NULL OR b.fullName LIKE %:fullName%) " +
             "AND (:categoryId IS NULL OR c.id = :categoryId) " +
-            "AND (:paymentStatus IS NULL OR s.paymentStatus = :paymentStatus)")
+            "AND (:paymentStatus IS NULL OR s.paymentStatus = :paymentStatus) " +
+            "AND (:saleDate IS NULL OR s.saleDate = :saleDate)")
     Page<Sale> findFilteredSales(
             @Param("fullName") String fullName,
             @Param("categoryId") UUID categoryId,
             @Param("paymentStatus") PaymentStatus paymentStatus,
+            @Param("saleDate") LocalDate saleDate,
             Pageable pageable);
 
 }

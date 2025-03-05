@@ -8,6 +8,7 @@ import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,5 +20,5 @@ public interface ISaleService extends IEntityService<Buyer> {
     void deleteSale(UUID id);
     void closeSale(Sale sale);
     List<Sale> getSalesByBuyerId(UUID buyerId);
-    public Page<Sale> getFilteredSales(String fullName, UUID categoryId, PaymentStatus paymentStatus, Pageable pageable);
+    public Page<Sale> getFilteredSales(String fullName, UUID categoryId, PaymentStatus paymentStatus, LocalDate saleDate, Pageable pageable);
 }

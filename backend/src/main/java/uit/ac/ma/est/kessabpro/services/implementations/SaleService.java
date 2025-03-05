@@ -201,8 +201,8 @@ public class SaleService implements ISaleService {
         return getPaidAmount(sale) >= sale.getAgreedAmount();
     }
 
-    public Page<Sale> getFilteredSales(String fullName, UUID categoryId, PaymentStatus paymentStatus, Pageable pageable) {
-        return saleRepository.findFilteredSales(fullName, categoryId, paymentStatus, pageable);
+    public Page<Sale> getFilteredSales(String fullName, UUID categoryId, PaymentStatus paymentStatus, LocalDate saleDate, Pageable pageable) {
+        return saleRepository.findFilteredSales(fullName, categoryId, paymentStatus,saleDate, pageable);
     }
 
     public boolean isNotPaid(Sale sale) {

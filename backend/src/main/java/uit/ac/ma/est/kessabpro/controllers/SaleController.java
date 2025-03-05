@@ -20,6 +20,7 @@ import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,7 @@ public class SaleController {
     @GetMapping
     public ResponseEntity<Page<SaleDTOResponse>> getSales(
             @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) LocalDate saleDate,
             @RequestParam(required = false) UUID categoryId,
             @RequestParam(required = false) PaymentStatus paymentStatus,
             @RequestParam(defaultValue = "0") int page,
@@ -101,7 +103,7 @@ public class SaleController {
         Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<Sale> sales = saleService.getFilteredSales(fullName, categoryId, paymentStatus, pageable);
+        Page<Sale> sales = saleService.getFilteredSales(fullName, categoryId, paymentStatus,  saleDate, pageable);
         Page<SaleDTOResponse> saleDTOs = sales.map(sale -> (new SaleMapper()).toSaleDTO(sale));
 
         return ResponseEntity.ok(saleDTOs);
