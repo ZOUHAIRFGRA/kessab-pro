@@ -17,7 +17,7 @@ import { getSales } from "../../features/saleSlice";
 import { Pagination } from "../../components/global/Pagination";
 import { fetchPaymentStatus } from "../../features/enumSlice";
 import { fetchCategories } from "../../features/categorySlice";
-import { formatDate } from "../../utils/Global";
+import { formatDateToLocalDate } from "../../utils/Global";
 
 export default function SalesScreen() {
   const [fullNameFilter, setFullNameFilter] = useState("");
@@ -35,10 +35,10 @@ export default function SalesScreen() {
     if (event.type === "dismissed") {
       setSaleDate("");
     } else {
-      setSaleDate(formatDate(selectedDate));
+      setSaleDate(formatDateToLocalDate(selectedDate));
       setDate(selectedDate);
-      setShowDatePicker(false);
     }
+    setShowDatePicker(false);
   };
 
   const { totalPages } = useSelector((states) => states.sales);

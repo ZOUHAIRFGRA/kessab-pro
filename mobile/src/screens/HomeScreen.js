@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import WeatherWidget from "../components/WeatherWidget";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -30,11 +31,6 @@ export default function HomeScreen() {
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText] = useDebounce(searchText, 300);
   const [isAddAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
-
-  // Removed useEffect that auto-focused the input
-  // useEffect(() => {
-  //   searchInputRef.current?.focus();
-  // }, []);
 
   const handleSearch = () => {
     if (debouncedSearchText.length < 3) {
@@ -72,101 +68,103 @@ export default function HomeScreen() {
 
   return (
     <Container>
-      {/* <WeatherWidgetContainer>
-        <WeatherWidget />
-      </WeatherWidgetContainer> */}
-
-      <SearchInputContainer>
-        <SearchInput
-          ref={searchInputRef}
-          placeholder={t("common.search_placeholder")}
-          value={searchText}
-          onChangeText={handleSearchChange}
-          onSubmitEditing={handleSearch}
-          placeholderTextColor="black"
-          textAlign={isRTL ? "right" : "left"}
-        />
-        {searchText.length > 0 && (
-          <ClearButton onPress={() => setSearchText("")} isRTL={isRTL}>
-            <Icon name="close-circle" size={20} color="gray" />
-          </ClearButton>
-        )}
-        {debouncedSearchText && !searchText && (
-          <ActivityIndicator
-            style={{
-              position: "absolute",
-              right: isRTL ? null : 40,
-              left: isRTL ? 40 : null,
-              top: 14,
-            }}
+      <ContentContainer>
+        <SearchInputContainer>
+          <SearchInput
+            ref={searchInputRef}
+            placeholder={t("common.search_placeholder")}
+            value={searchText}
+            onChangeText={handleSearchChange}
+            onSubmitEditing={handleSearch}
+            placeholderTextColor="black"
+            textAlign={isRTL ? "right" : "left"}
           />
-        )}
-      </SearchInputContainer>
-
-      <Grid>
-        {gridItems.map((item) => (
-          <GridItem
-            key={item.key}
-            onPress={() => navigation.navigate(item.key)}
-          >
-            <Icon name={item.icon} size={36} color="dark" />
-            <GridItemText
-              sx={{
-                variant: "text.subheading",
-                marginTop: 8,
-                textAlign: isRTL ? "right" : "left",
+          {searchText.length > 0 && (
+            <ClearButton onPress={() => setSearchText("")} isRTL={isRTL}>
+              <Icon name="close-circle" size={20} color="gray" />
+            </ClearButton>
+          )}
+          {debouncedSearchText && !searchText && (
+            <ActivityIndicator
+              style={{
+                position: "absolute",
+                right: isRTL ? null : 40,
+                left: isRTL ? 40 : null,
+                top: 14,
               }}
-            >
-              {item.name}
-            </GridItemText>
-          </GridItem>
-        ))}
-      </Grid>
+            />
+          )}
+        </SearchInputContainer>
 
-      <HorizontalScrollContainer>
-        <HorizontalScroll horizontal showsHorizontalScrollIndicator={false}>
-          {actions.map((action, index) => (
-            <HorizontalActionItem
-              key={index}
-              onPress={
-                action.onPress || (() => navigation.navigate(action.key))
-              }
-              accessibilityRole="button"
-              accessibilityLabel={`Navigate to ${action.name}`}
+        <Grid>
+          {gridItems.map((item) => (
+            <GridItem
+              key={item.key}
+              onPress={() => navigation.navigate(item.key)}
             >
-              <ActionIcon name={action.icon} />
-              <ActionText sx={{ textAlign: isRTL ? "right" : "center" }}>
-                {action.name}
-              </ActionText>
-            </HorizontalActionItem>
+              <Icon name={item.icon} size={36} color="dark" />
+              <GridItemText
+                sx={{
+                  variant: "text.subheading",
+                  marginTop: 8,
+                  textAlign: isRTL ? "right" : "left",
+                }}
+              >
+                {item.name}
+              </GridItemText>
+            </GridItem>
           ))}
-        </HorizontalScroll>
-      </HorizontalScrollContainer>
+        </Grid>
 
-      <BottomNav>
-        {[
-          { label: t("common.dashboard"), route: "Dashboard" },
-          { label: t("common.QRscanner"), route: "QRScanner" },
-          { label: t("common.profile"), route: "Profile" },
-        ].map((item) => (
-          <BottomNavItem
-            key={item.route}
-            onPress={() => navigation.navigate(item.route)}
-            accessibilityRole="button"
-            accessibilityLabel={`Navigate to ${item.label}`}
-            accessibilityHint={t(`common.nav_hint_${item.route.toLowerCase()}`)}
-          >
-            <BottomNavText
-              sx={{
-                variant: "text.secondary",
-                textAlign: isRTL ? "right" : "center",
-              }}
+        <HorizontalScrollContainer>
+          <HorizontalScroll horizontal showsHorizontalScrollIndicator={false}>
+            {actions.map((action, index) => (
+              <HorizontalActionItem
+                key={index}
+                onPress={
+                  action.onPress || (() => navigation.navigate(action.key))
+                }
+                accessibilityRole="button"
+                accessibilityLabel={`Navigate to ${action.name}`}
+              >
+                <ActionIcon name={action.icon} />
+                <ActionText sx={{ textAlign: isRTL ? "right" : "center" }}>
+                  {action.name}
+                </ActionText>
+              </HorizontalActionItem>
+            ))}
+          </HorizontalScroll>
+        </HorizontalScrollContainer>
+      </ContentContainer>
+
+      <BottomNavContainer>
+        <BottomNav>
+          {[
+            { label: t("common.dashboard"), route: "Dashboard" },
+            { label: t("common.QRscanner"), route: "QRScanner" },
+            { label: t("common.profile"), route: "Profile" },
+          ].map((item) => (
+            <BottomNavItem
+              key={item.route}
+              onPress={() => navigation.navigate(item.route)}
+              accessibilityRole="button"
+              accessibilityLabel={`Navigate to ${item.label}`}
+              accessibilityHint={t(
+                `common.nav_hint_${item.route.toLowerCase()}`
+              )}
             >
-              {item.label}
-            </BottomNavText>
-          </BottomNavItem>
-        ))}
-      </BottomNav>
+              <BottomNavText
+                sx={{
+                  variant: "text.secondary",
+                  textAlign: isRTL ? "right" : "center",
+                }}
+              >
+                {item.label}
+              </BottomNavText>
+            </BottomNavItem>
+          ))}
+        </BottomNav>
+      </BottomNavContainer>
 
       <AddAnimalModal
         visible={isAddAnimalModalVisible}
@@ -176,16 +174,14 @@ export default function HomeScreen() {
   );
 }
 
-const Container = styled(View)({
+const Container = styled(SafeAreaView)({
   flex: 1,
-  padding: 16,
   backgroundColor: "background",
-  gap: 12,
 });
 
-const WeatherWidgetContainer = styled(View)({
-  height: 100,
-  marginBottom: 12,
+const ContentContainer = styled(ScrollView)({
+  flex: 1,
+  padding: 16,
 });
 
 const SearchInputContainer = styled(View)({
@@ -276,6 +272,17 @@ const ActionText = styled(Text)({
   fontSize: 14,
   fontWeight: "600",
   color: "#333",
+});
+
+const BottomNavContainer = styled(View)({
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: "background",
+  paddingHorizontal: 16,
+  paddingBottom: 16,
+  paddingTop: 8,
 });
 
 const BottomNav = styled(View)({

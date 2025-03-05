@@ -232,11 +232,11 @@ const AddSaleScreen = ({ route, navigation }) => {
       agreedAmount: parseFloat(summaryFormData.agreedAmount),
       paidAmount: parseFloat(summaryFormData.paidAmount),
     };
-    console.log({ finalData });
-    console.log({ animals: finalData.animals });
 
     setErr("");
     setSubmitData(finalData);
+    console.log({ finalData });
+    console.log({ animals: finalData.animals });
 
     saleApi
       .createSale(finalData)
@@ -248,6 +248,9 @@ const AddSaleScreen = ({ route, navigation }) => {
       .catch((e) => {
         showErrorToast();
         console.log({ e });
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
   };
 
