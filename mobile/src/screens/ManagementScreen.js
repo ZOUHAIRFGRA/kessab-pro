@@ -11,6 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../hooks/useToast";
+import Colors from "../utils/Colors";
 
 export default function ManagementScreen() {
   const { t } = useTranslation();
@@ -94,7 +95,7 @@ export default function ManagementScreen() {
               left: isRTL ? 40 : null,
               top: 14,
             }}
-            color="#4A90E2"
+            color={Colors.primary}
           />
         )}
       </SearchContainer>
@@ -159,7 +160,7 @@ const QuickActionItem = styled(TouchableOpacity)(({ isRTL, pressed }) => ({
 }));
 
 const QuickActionIcon = styled(Icon)({
-  color: "#4A90E2",
+  color: Colors.primary,
   fontSize: 40,
   marginBottom: 8,
 });
