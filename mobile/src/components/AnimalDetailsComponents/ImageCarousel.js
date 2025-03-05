@@ -53,6 +53,7 @@ export const ImageCarousel = ({ imagePaths, flatListRef, screenWidth, isRTL, t }
               source={{ uri: `${baseURL}${item}` }}
               onLoad={() => setImageLoading(false)}
               onError={() => setImageLoading(false)}
+              defaultSource={require("../../../assets/placeholder.png")}
             />
           </View>
         )}
