@@ -29,7 +29,7 @@ export const getAnimalsByBuyer = createAsyncThunk(
 
 export const getAnimals = createAsyncThunk(
   "animals/fetchAll",
-  async ({ page = 0, size = 2, search = "", filterType = "tag" }) => {
+  async ({ page = 0, size = 10, search = "", filterType = "tag" }) => {
     const response = await fetchAnimals(page, size, search, filterType);
     return response;
   }

@@ -4,6 +4,8 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { SERVER_IP } from "@env";
+import { logout } from "../features/authSlice";
+import store from '../store/store';
 
 export const getBaseURL = () => {
   const serverIp = SERVER_IP || "192.168.1.8";
@@ -36,6 +38,21 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+const handleLogout = async () => {
+  await AsyncStorage.clear();
+  store.dispatch(logout());
+};
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      await handleLogout();
+    }
+    return Promise.reject(error);
+  }
 );
 
 export default axiosInstance;
