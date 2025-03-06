@@ -8,10 +8,10 @@ import { ImageCarousel } from "./ImageCarousel";
 import { AnimalInfo } from "./AnimalInfo";
 import { EditForm } from "./EditForm";
 import { Container } from "./sharedStyles";
-import { Text } from "dripsy";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../global/Loading";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
+import ConfirmationModal from "../global/ConfirmationModal";
 
 export const AnimalDetailsTab = ({ animalId }) => {
   const { t } = useTranslation();
@@ -25,6 +25,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
   const [editedAnimal, setEditedAnimal] = useState({});
   const [newImages, setNewImages] = useState([]);
   const [imagesToDelete, setImagesToDelete] = useState([]);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const flatListRef = useRef(null);
   const navigation = useNavigation();
 
@@ -93,7 +94,7 @@ export const AnimalDetailsTab = ({ animalId }) => {
       dispatch(editAnimal({ id: editedAnimal.id, updatedAnimal: formData }))
         .then((response) => {
           console.log("Save response:", response);
-          showSuccessToast(t("Animal updated successfully"));
+          showSuccessToast(t("common.Animal updated successfully"));
           setEditing(false);
           setEditedAnimal(response.payload);
           setNewImages([]);
@@ -101,23 +102,31 @@ export const AnimalDetailsTab = ({ animalId }) => {
         })
         .catch((err) => {
           console.error("Save error:", err);
-          showErrorToast(t("Failed to update animal"));
+          showErrorToast(t("common.Failed to update animal"));
         });
     } catch (error) {
       console.error("HandleSave error:", error);
-      showErrorToast(t("Failed to update animal"));
+      showErrorToast(t("common.Failed to update animal"));
     }
   };
 
   const handleDeleteAnimal = () => {
+    if (animal.saleId) {
+      showErrorToast(t("common.Cannot delete an animal that is part of a sale"));
+      return;
+    }
+    setShowDeleteConfirmation(true);
+  };
+
+  const confirmDeleteAnimal = () => {
     dispatch(removeAnimal(animalId))
       .then(() => {
-        showSuccessToast(t("Animal deleted successfully"));
+        showSuccessToast(t("common.Animal deleted successfully"));
         navigation.goBack();
       })
       .catch((err) => {
         console.error("Delete error:", err);
-        showErrorToast(t("Failed to delete animal"));
+        showErrorToast(t("common.Failed to delete animal"));
       });
   };
 
@@ -162,6 +171,15 @@ export const AnimalDetailsTab = ({ animalId }) => {
           />
         )}
       </ScrollView>
+      <ConfirmationModal
+        visible={showDeleteConfirmation}
+        toggleVisible={() => setShowDeleteConfirmation(false)}
+        action={confirmDeleteAnimal}
+        closable={true}
+        btnParams={{ type: "danger", icon: { name: "check" }, btnText: t("common.delete") }}
+        title={t("common.confirmDelete")}
+        bodyText={t("common.Are you sure you want to delete this animal?")}
+      />
     </Container>
   );
 };

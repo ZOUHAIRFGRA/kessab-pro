@@ -43,6 +43,7 @@ public class AnimalMapper {
         animal.setPrice(dto.getPrice());
         animal.setWeight(dto.getWeight());
         animal.setImagePaths(dto.getImagePaths());
+        animal.setPickUpDate(dto.getPickUpDate());
 
         if (dto.getSaleId() != null) {
             Sale sale = new Sale();
