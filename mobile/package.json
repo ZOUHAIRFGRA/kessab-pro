@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "update-ip": "node update-ip.js",
-    "start": "npm run update-ip && expo start --tunnel",
+    "start": "npm run update-ip && expo start -c",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
