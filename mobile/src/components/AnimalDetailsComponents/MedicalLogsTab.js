@@ -261,8 +261,7 @@ export const MedicalLogsTab = ({ animalId }) => {
           ))
         ) : (
           <EmptyState>
-            <MaterialIcons name="error-outline" size={50} color="gray" />
-            <Text>{t("common.No_medical_logs_found")}</Text>
+            <FallBack type={FALLBACK_TYPE.NO_RESULT} message={t("common.No_medical_logs_found")} />
           </EmptyState>
         )}
       </ScrollView>

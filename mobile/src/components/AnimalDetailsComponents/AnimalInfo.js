@@ -24,7 +24,7 @@ export const AnimalInfo = ({ animal, setEditing, onDelete, isRTL, t }) => {
         <InfoText>📅 {t("common.birthDate")}: {animal.birthDate}</InfoText>
       </InfoRow>
       <InfoRow>
-        <InfoText>📅 {t("common.pickup_date")}: {animal.pickUpDate ? animal.pickUpDate : t("Not Available")}</InfoText>
+        <InfoText>📅 {t("common.pickup_date")}: {animal.pickUpDate ? animal.pickUpDate : t("common.pickup_Date_not_set")}</InfoText>
       </InfoRow>
       <InfoRow>
         <InfoText>  {t("common.Status")}: {animalStatus}</InfoText>
