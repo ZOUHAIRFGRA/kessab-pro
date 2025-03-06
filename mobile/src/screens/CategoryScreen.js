@@ -44,7 +44,7 @@ const CategoryScreen = () => {
   const [isAddOrEditVisible, setAddOrEditVisible] = useState(false);
   const isRTL = t("dir") === "rtl";
 
-  // Initial fetch of categories and icons on component mount
+  
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchCategoriesIcons());
@@ -77,7 +77,7 @@ const CategoryScreen = () => {
       } else {
         await dispatch(addCategory(categoryData)).unwrap();
       }
-      // Refetch categories to ensure the new category includes the full icon object
+      
       await dispatch(fetchCategories());
       setCategoryName("");
       setSelectedIconId(null);
@@ -113,7 +113,6 @@ const CategoryScreen = () => {
           onPress: async () => {
             try {
               await dispatch(deleteCategory(id)).unwrap();
-              // Refetch categories after deletion to ensure state consistency
               await dispatch(fetchCategories());
             } catch (err) {
               Alert.alert(t("common.error"), err.message || t("common.operationFailed"));
@@ -144,7 +143,6 @@ const CategoryScreen = () => {
   );
 
   const renderCategoryItem = ({ item }) => {
-    // Attempt to find the icon in the icons state if item.icon is incomplete
     const icon = item.icon?.iconPath
       ? item.icon
       : icons.find(icon => icon.id === item.icon?.id) || { iconPath: null };
@@ -272,7 +270,7 @@ const CategoryScreen = () => {
   );
 };
 
-// Styled Components remain unchanged
+
 const ScreenContainer = styled(View)({
   flex: 1,
   backgroundColor: Colors.secondaryLight,
