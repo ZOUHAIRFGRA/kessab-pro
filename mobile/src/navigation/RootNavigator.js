@@ -17,25 +17,41 @@ import SalesScreen from "../screens/sale/SalesScreen";
 import AddBuyersScreen from "../screens/buyer/AddBuyerScreen";
 import UpdateBuyersScreen from "../screens/buyer/UpdateBuyerScreen";
 import HomeScreen from "../screens/HomeScreen";
+import { TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Stack = createStackNavigator();
+
 export default function RootNavigator() {
   const { t } = useTranslation();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const isRTL = t("dir") === "rtl";
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={{
+        screenOptions={({ navigation }) => ({
           headerStyle: {
             backgroundColor: Colors.primary,
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
-            textAlign: isRTL ? "right" : "left",
           },
-        }}
+          headerTitleAlign: "center",
+          headerLeft: (props) =>
+            isRTL ? null : (
+              <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
+                <Icon name="arrow-left" size={24} color="#fff" />
+              </TouchableOpacity>
+            ),
+          headerRight: (props) =>
+            isRTL ? (
+              <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10 }}>
+                <Icon name="arrow-right" size={24} color="#fff" />
+              </TouchableOpacity>
+            ) : null,
+        })}
       >
         {isAuthenticated ? (
           <>
@@ -46,15 +62,24 @@ export default function RootNavigator() {
             />
             <Stack.Screen
               name="Buyer"
-              options={{ title: "Buyer Info" }}
+              options={{ title: t("common.BuyerInfo") }}
               component={BuyersScreen}
             />
-            <Stack.Screen name="AddTransaction" component={AddTransaction} />
+            <Stack.Screen
+              name="AddTransaction"
+              options={{ title: t("common.AddTransaction") }}
+              component={AddTransaction}
+            />
             <Stack.Screen
               name="AnimalDetails"
+              options={{ title: t("common.AnimalDetails") }}
               component={AnimalDetailsScreen}
             />
-            <Stack.Screen name="AnimalsList" component={AnimalsList} />
+            <Stack.Screen
+              name="AnimalsList"
+              options={{ title: t("common.AnimalsList") }}
+              component={AnimalsList}
+            />
             <Stack.Screen
               options={{ title: t("common.SaleDetail") }}
               name="HomeScreen"
@@ -70,13 +95,26 @@ export default function RootNavigator() {
               name="buyerDetail"
               component={BuyerDetailScreen}
             />
-            <Stack.Screen name="Sales" component={SalesScreen} />
-            <Stack.Screen name="addBuyerScreen" component={AddBuyersScreen} />
+            <Stack.Screen
+              name="Sales"
+              options={{ title: t("common.Sales") }}
+              component={SalesScreen}
+            />
+            <Stack.Screen
+              name="addBuyerScreen"
+              options={{ title: t("common.AddBuyer") }}
+              component={AddBuyersScreen}
+            />
             <Stack.Screen
               name="updateBuyerScreen"
+              options={{ title: t("common.UpdateBuyer") }}
               component={UpdateBuyersScreen}
             />
-            <Stack.Screen name="AddSale" component={AddSaleScreen} />
+            <Stack.Screen
+              name="AddSale"
+              options={{ title: t("common.AddSale") }}
+              component={AddSaleScreen}
+            />
           </>
         ) : (
           <>
