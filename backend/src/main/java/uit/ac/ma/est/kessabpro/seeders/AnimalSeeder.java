@@ -39,12 +39,23 @@ public class AnimalSeeder {
     }
 
     public void seedData() {
-        // Step 1: Check if icons already exist
+        // Step 1: Check if the first user is "admin"
+        Optional<User> optionalUser = userRepository.findAll().stream().findFirst();
+        if (optionalUser.isEmpty()) {
+            System.out.println("No users found. Please seed users first.");
+            return;
+        }
+        User firstUser = optionalUser.get();
+        if (!"admin".equalsIgnoreCase(firstUser.getUsername())) {
+            System.out.println("First user is not 'admin'. Skipping seeding.");
+            return;
+        }
+
+        // Step 2: Seed icons if they don’t exist
         long iconCount = animalIconRepository.count();
         if (iconCount >= 4) {
-            System.out.println("Icons already seeded (Cow, Sheep, Livestock, Goat). Skipping icon and category seeding.");
+            System.out.println("Icons already seeded (Cow, Sheep, Livestock, Goat). Skipping icon seeding.");
         } else {
-            // Step 2: Seed icons if they don't exist
             AnimalIcon cowIcon = animalIconRepository.findByIconPath("/icons/cow.png")
                     .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/cow.png").build()));
 
@@ -57,30 +68,34 @@ public class AnimalSeeder {
             AnimalIcon goatIcon = animalIconRepository.findByIconPath("/icons/goat.png")
                     .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/goat.png").build()));
 
-            // Step 3: Seed categories if they don't exist
+            // Step 3: Seed categories for admin if they don’t exist
             if (animalCategoryRepository.count() == 0) {
                 AnimalCategory cowCategory = AnimalCategory.builder()
                         .typeName("Cow")
                         .icon(cowIcon)
+                        .user(firstUser) // Admin-specific category
                         .build();
 
                 AnimalCategory sheepCategory = AnimalCategory.builder()
                         .typeName("Sheep")
                         .icon(sheepIcon)
+                        .user(firstUser) // Admin-specific category
                         .build();
 
-                AnimalCategory defaultCategory = AnimalCategory.builder()
+                AnimalCategory livestockCategory = AnimalCategory.builder()
                         .typeName("Livestock")
                         .icon(liveStockIcon)
+                        .user(firstUser) // Admin-specific category, not global
                         .build();
 
                 AnimalCategory goatCategory = AnimalCategory.builder()
                         .typeName("Goat")
                         .icon(goatIcon)
+                        .user(firstUser) // Admin-specific category
                         .build();
 
-                animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory, defaultCategory, goatCategory));
-                System.out.println("Categories seeded: Cow, Sheep, Livestock, Goat.");
+                animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory, livestockCategory, goatCategory));
+                System.out.println("Categories seeded for admin: Cow, Sheep, Livestock, Goat.");
             } else {
                 System.out.println("Categories already exist. Skipping category seeding.");
             }
@@ -88,19 +103,12 @@ public class AnimalSeeder {
 
         // Step 4: Seed animals, logs, etc., only if animals table is empty
         if (animalRepository.count() == 0) {
-            Optional<User> optionalUser = userRepository.findAll().stream().findFirst();
-            if (optionalUser.isEmpty()) {
-                System.out.println("No users found. Please seed users first.");
-                return;
-            }
-            User user = optionalUser.get();
-
-            // Fetch categories after ensuring they exist
-            Optional<AnimalCategory> cowCategoryOpt = animalCategoryRepository.findByTypeName("Cow");
-            Optional<AnimalCategory> sheepCategoryOpt = animalCategoryRepository.findByTypeName("Sheep");
+            // Fetch categories after ensuring they exist for admin
+            Optional<AnimalCategory> cowCategoryOpt = animalCategoryRepository.findByUser_IdAndTypeName(firstUser.getId(), "Cow");
+            Optional<AnimalCategory> sheepCategoryOpt = animalCategoryRepository.findByUser_IdAndTypeName(firstUser.getId(), "Sheep");
 
             if (cowCategoryOpt.isEmpty() || sheepCategoryOpt.isEmpty()) {
-                System.out.println("Required categories not found. Ensure categories are seeded.");
+                System.out.println("Required categories not found for admin. Ensure categories are seeded.");
                 return;
             }
 
@@ -115,7 +123,7 @@ public class AnimalSeeder {
                     .weight(new BigDecimal("500.0"))
                     .category(cowCategory)
                     .pickUpDate(null)
-                    .user(user)
+                    .user(firstUser)
                     .build();
 
             try {
@@ -133,7 +141,7 @@ public class AnimalSeeder {
                     .weight(new BigDecimal("60.0"))
                     .category(sheepCategory)
                     .pickUpDate(LocalDate.of(2025, 2, 15))
-                    .user(user)
+                    .user(firstUser)
                     .build();
 
             try {
@@ -175,7 +183,7 @@ public class AnimalSeeder {
 
             animalMedicalLogRepository.saveAll(Arrays.asList(medicalLog1, medicalLog2));
 
-            System.out.println("Seeding for animal completed!");
+            System.out.println("Seeding for admin completed!");
         } else {
             System.out.println("Animals already seeded. No new data added.");
         }
