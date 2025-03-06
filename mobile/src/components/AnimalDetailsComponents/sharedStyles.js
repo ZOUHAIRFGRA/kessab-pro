@@ -1,5 +1,6 @@
 import { Image, styled, Text, TextInput, View } from "dripsy";
 import { Dimensions, TouchableOpacity } from "react-native";
+import Colors from "../../utils/Colors";
 const { width } = Dimensions.get("window");
 
 
@@ -81,7 +82,7 @@ export const AddButton = styled(TouchableOpacity)({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: "#007bff",
+  backgroundColor: Colors.secondary,
   paddingVertical: 12,
   borderRadius: 10,
   marginBottom: 16,

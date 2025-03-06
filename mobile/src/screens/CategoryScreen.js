@@ -23,6 +23,7 @@ import { fetchCategoriesIcons } from "../features/iconsSlice";
 import Colors from "../utils/Colors";
 import { getBaseURL } from "../api/axiosInstance";
 import Icon from "react-native-vector-icons/FontAwesome";
+import FallBack, { FALLBACK_TYPE } from "../components/global/Fallback";
 
 const BASE_URL = getBaseURL();
 
@@ -43,7 +44,7 @@ const CategoryScreen = () => {
   const [isAddOrEditVisible, setAddOrEditVisible] = useState(false);
   const isRTL = t("dir") === "rtl";
 
-  // Initial fetch of categories and icons on component mount
+  
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchCategoriesIcons());
@@ -76,7 +77,7 @@ const CategoryScreen = () => {
       } else {
         await dispatch(addCategory(categoryData)).unwrap();
       }
-      // Refetch categories to ensure the new category includes the full icon object
+      
       await dispatch(fetchCategories());
       setCategoryName("");
       setSelectedIconId(null);
@@ -112,7 +113,6 @@ const CategoryScreen = () => {
           onPress: async () => {
             try {
               await dispatch(deleteCategory(id)).unwrap();
-              // Refetch categories after deletion to ensure state consistency
               await dispatch(fetchCategories());
             } catch (err) {
               Alert.alert(t("common.error"), err.message || t("common.operationFailed"));
@@ -143,7 +143,6 @@ const CategoryScreen = () => {
   );
 
   const renderCategoryItem = ({ item }) => {
-    // Attempt to find the icon in the icons state if item.icon is incomplete
     const icon = item.icon?.iconPath
       ? item.icon
       : icons.find(icon => icon.id === item.icon?.id) || { iconPath: null };
@@ -248,7 +247,7 @@ const CategoryScreen = () => {
         data={categories}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCategoryItem}
-        ListEmptyComponent={<EmptyText isRTL={isRTL}>{t("common.noCategories")}</EmptyText>}
+        ListEmptyComponent={<FallBack message={t("common.noCategories")} type={FALLBACK_TYPE.NO_RESULT} />}
       />
 
       <Modal visible={isIconModalVisible} animationType="slide" transparent={true}>
@@ -271,7 +270,7 @@ const CategoryScreen = () => {
   );
 };
 
-// Styled Components remain unchanged
+
 const ScreenContainer = styled(View)({
   flex: 1,
   backgroundColor: Colors.secondaryLight,

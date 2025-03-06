@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import Loading from "../global/Loading";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import ConfirmationModal from "../global/ConfirmationModal";
+import Button from "../global/Button";
 
 export const AnimalDetailsTab = ({ animalId }) => {
   const { t } = useTranslation();
@@ -148,6 +149,14 @@ export const AnimalDetailsTab = ({ animalId }) => {
           isRTL={t("dir") === "rtl"}
           t={t}
         />
+        {animal.saleId && (
+          <Button
+            type="primary"
+            onPress={() => navigation.navigate("SellDetail", { saleId: animal.saleId })}
+            children={t("common.viewSale")}
+            textStyle={{ fontSize: 16 , color: "white" , fontWeight: "bold" }}
+          />
+        )}
         {editing ? (
           <EditForm
             editedAnimal={editedAnimal}
