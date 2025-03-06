@@ -7,6 +7,8 @@
     "NOT_PAID": "مازال ماخلصش"
   },
   "common": {
+    "Available" : "متوفر",
+    "pickup_Date_not_set": "ماكانش محدد نهار الاستلام",
     "no_animals_found" : "ما لقيناش حتى شي ماشية",
     "Activity Log added successfully!"  : "تمت إضافة سجل النشاط بنجاح!",
     "Activity Log deleted successfully!"  : "تم حذف سجل النشاط بنجاح!",
