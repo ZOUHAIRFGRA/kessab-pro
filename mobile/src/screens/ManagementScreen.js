@@ -6,12 +6,13 @@ import AnimalsList from "../components/AnimalsList";
 import AddAnimalModal from "../components/AddAnimalModal";
 import { useDebounce } from "use-debounce";
 import { getAnimals, resetAnimals } from "../features/animalSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../hooks/useToast";
 import Colors from "../utils/Colors";
+import FallBack, { FALLBACK_TYPE } from "../components/global/Fallback";
 
 export default function ManagementScreen() {
   const { t } = useTranslation();
@@ -19,6 +20,7 @@ export default function ManagementScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isRTL = t("dir") === "rtl";
+  const { animals } = useSelector((state) => state.animals);
 
   const [addAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -101,7 +103,11 @@ export default function ManagementScreen() {
       </SearchContainer>
 
       <AnimalsListContainer>
-        <AnimalsList searchText={debouncedSearchText} isLoading={isLoading} />
+        {animals.length === 0 && !isLoading ? (
+          <FallBack type={FALLBACK_TYPE.NOT_FOUND} message={t("common.no_animals_found")} />
+        ) : (
+          <AnimalsList searchText={debouncedSearchText} isLoading={isLoading} />
+        )}
       </AnimalsListContainer>
 
       {addAnimalModalVisible && (

@@ -7,6 +7,21 @@
     "NOT_PAID": "Non payé"
   },
   "common": {
+    "pickup_Date_not_set"   : "Date de ramassage non définie",
+    "Available" : "Disponible",
+    "Activity Log added successfully!"  : "Journal d'activité ajouté avec succès!",
+    "Activity Log deleted successfully!"  : "Journal d'activité supprimé avec succès!",
+    "Medical Log deleted successfully!"  : "Dossier médical supprimé avec succès!",
+    "Error adding activity log!"  : "Erreur lors de l'ajout du journal d'activité!",
+    "Are you sure you want to delete this medical log?"  : "Êtes-vous sûr de vouloir supprimer ce dossier médical?",
+    "Medical Log added successfully!"  : "Dossier médical ajouté avec succès!",
+    "Error adding medical log!"  : "Erreur lors de l'ajout du dossier médical!",
+    "Are you sure you want to delete this activity log?"  : "Êtes-vous sûr de vouloir supprimer ce journal d'activité?",
+
+    "no_animals_found" : "Aucun animal trouvé",
+    "Status" : "Statut",
+    "Sold" : "Vendu",
+    "Unsold" : "Invendu",
     "Are you sure you want to delete this animal?": "Êtes-vous sûr de vouloir supprimer cet animal ?",
     "Animal updated successfully": "Animal mis à jour avec succès",
     "Failed to update animal": "Échec de la mise à jour de l'animal",

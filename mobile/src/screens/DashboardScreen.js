@@ -287,14 +287,18 @@ const DashboardScreen = () => {
         {/* Recent Activities */}
         <StatCard>
           <StatTitle isRTL={isRTL}>{t("common.recent_activities")}</StatTitle>
-          {activitiesLogs.slice(0, 3).map((log) => (
-            <ActivityRow key={log.id} isRTL={isRTL}>
-              <Icon name="history" size={16} color="#64748b" />
-              <ActivityText isRTL={isRTL}>
-                {log.activity} - {log.logDate}
-              </ActivityText>
-            </ActivityRow>
-          ))}
+          {activitiesLogs.length > 0 ? (
+            activitiesLogs.slice(0, 3).map((log) => (
+              <ActivityRow key={log.id} isRTL={isRTL}>
+                <Icon name="history" size={16} color="#64748b" />
+                <ActivityText isRTL={isRTL}>
+                  {log.activity} - {log.logDate}
+                </ActivityText>
+              </ActivityRow>
+            ))
+          ) : (
+            <ActivityText isRTL={isRTL}>{t("common.No_activity_logs_found")}</ActivityText>
+          )}
         </StatCard>
       </ScrollView>
     </Container>

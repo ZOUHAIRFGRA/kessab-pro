@@ -4,6 +4,8 @@ import { Text, TouchableOpacity } from "react-native";
 import { View } from 'dripsy';
 
 export const AnimalInfo = ({ animal, setEditing, onDelete, isRTL, t }) => {
+  const animalStatus = animal?.saleId ? t("common.Sold") : t("common.Available");
+
   return (
     <Card style={{ direction: isRTL ? "rtl" : "ltr" }}>
       <InfoRow>
@@ -22,9 +24,10 @@ export const AnimalInfo = ({ animal, setEditing, onDelete, isRTL, t }) => {
         <InfoText>📅 {t("common.birthDate")}: {animal.birthDate}</InfoText>
       </InfoRow>
       <InfoRow>
-        <InfoText>
-          📅 {t("common.pickup_date")}: {animal.pickUpDate ? animal.pickUpDate : t("Not Available")}
-        </InfoText>
+        <InfoText>📅 {t("common.pickup_date")}: {animal.pickUpDate ? animal.pickUpDate : t("common.pickup_Date_not_set")}</InfoText>
+      </InfoRow>
+      <InfoRow>
+        <InfoText>  {t("common.Status")}: {animalStatus}</InfoText>
       </InfoRow>
       <View style={{ flexDirection: isRTL ? "row-reverse" : "row", justifyContent: "space-between", marginTop: 10 }}>
         <EditButton onPress={() => setEditing(true)}>

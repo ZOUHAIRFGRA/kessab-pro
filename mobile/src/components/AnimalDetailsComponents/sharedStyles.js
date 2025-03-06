@@ -11,6 +11,7 @@ export const AnimalImage = styled(Image)({
   borderRadius: 10,
   marginBottom: 16,
   alignSelf: "center",
+  backgroundColor: "white",
   
 });
 

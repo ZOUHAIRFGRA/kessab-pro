@@ -49,7 +49,6 @@ const CategoryScreen = () => {
     dispatch(fetchCategoriesIcons());
   }, [dispatch]);
 
-  // Optional: Log for debugging (can remove in production)
   useEffect(() => {
     console.log("categoriesLoading:", categoriesLoading, "iconsLoading:", iconsLoading);
   }, [categoriesLoading, iconsLoading]);
@@ -77,6 +76,8 @@ const CategoryScreen = () => {
       } else {
         await dispatch(addCategory(categoryData)).unwrap();
       }
+      // Refetch categories to ensure the new category includes the full icon object
+      await dispatch(fetchCategories());
       setCategoryName("");
       setSelectedIconId(null);
       setAddOrEditVisible(false);
@@ -111,6 +112,8 @@ const CategoryScreen = () => {
           onPress: async () => {
             try {
               await dispatch(deleteCategory(id)).unwrap();
+              // Refetch categories after deletion to ensure state consistency
+              await dispatch(fetchCategories());
             } catch (err) {
               Alert.alert(t("common.error"), err.message || t("common.operationFailed"));
             }
@@ -139,49 +142,56 @@ const CategoryScreen = () => {
     </IconItem>
   );
 
-  const renderCategoryItem = ({ item }) => (
-    <CategoryItem isRTL={isRTL}>
-      {isRTL ? (
-        <>
-          <ButtonContainer style={{ justifyContent: 'flex-start' }}>
-            <DeleteButton onPress={() => handleDeleteCategory(item.id)}>
-              <ButtonText>{t("common.delete")}</ButtonText>
-            </DeleteButton>
-            <EditButton onPress={() => handleEditCategory(item)}>
-              <ButtonText>{t("common.edit")}</ButtonText>
-            </EditButton>
-          </ButtonContainer>
-          <CategoryInfo style={{ justifyContent: 'flex-end' }}>
-            <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
-            {item.icon?.iconPath ? (
-              <IconImage source={{ uri: `${BASE_URL}${item.icon.iconPath}` }} />
-            ) : (
-              <PlaceholderIcon>No Icon</PlaceholderIcon>
-            )}
-          </CategoryInfo>
-        </>
-      ) : (
-        <>
-          <CategoryInfo style={{ justifyContent: 'flex-start' }}>
-            {item.icon?.iconPath ? (
-              <IconImage source={{ uri: `${BASE_URL}${item.icon.iconPath}` }} />
-            ) : (
-              <PlaceholderIcon>No Icon</PlaceholderIcon>
-            )}
-            <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
-          </CategoryInfo>
-          <ButtonContainer style={{ justifyContent: 'flex-end' }}>
-            <EditButton onPress={() => handleEditCategory(item)}>
-              <ButtonText>{t("common.edit")}</ButtonText>
-            </EditButton>
-            <DeleteButton onPress={() => handleDeleteCategory(item.id)}>
-              <ButtonText>{t("common.delete")}</ButtonText>
-            </DeleteButton>
-          </ButtonContainer>
-        </>
-      )}
-    </CategoryItem>
-  );
+  const renderCategoryItem = ({ item }) => {
+    // Attempt to find the icon in the icons state if item.icon is incomplete
+    const icon = item.icon?.iconPath
+      ? item.icon
+      : icons.find(icon => icon.id === item.icon?.id) || { iconPath: null };
+
+    return (
+      <CategoryItem isRTL={isRTL}>
+        {isRTL ? (
+          <>
+            <ButtonContainer style={{ justifyContent: 'flex-start' }}>
+              <DeleteButton onPress={() => handleDeleteCategory(item.id)}>
+                <ButtonText>{t("common.delete")}</ButtonText>
+              </DeleteButton>
+              <EditButton onPress={() => handleEditCategory(item)}>
+                <ButtonText>{t("common.edit")}</ButtonText>
+              </EditButton>
+            </ButtonContainer>
+            <CategoryInfo style={{ justifyContent: 'flex-end' }}>
+              <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
+              {icon?.iconPath ? (
+                <IconImage source={{ uri: `${BASE_URL}${icon.iconPath}` }} />
+              ) : (
+                <PlaceholderIcon>No Icon</PlaceholderIcon>
+              )}
+            </CategoryInfo>
+          </>
+        ) : (
+          <>
+            <CategoryInfo style={{ justifyContent: 'flex-start' }}>
+              {icon?.iconPath ? (
+                <IconImage source={{ uri: `${BASE_URL}${icon.iconPath}` }} />
+              ) : (
+                <PlaceholderIcon>No Icon</PlaceholderIcon>
+              )}
+              <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
+            </CategoryInfo>
+            <ButtonContainer style={{ justifyContent: 'flex-end' }}>
+              <EditButton onPress={() => handleEditCategory(item)}>
+                <ButtonText>{t("common.edit")}</ButtonText>
+              </EditButton>
+              <DeleteButton onPress={() => handleDeleteCategory(item.id)}>
+                <ButtonText>{t("common.delete")}</ButtonText>
+              </DeleteButton>
+            </ButtonContainer>
+          </>
+        )}
+      </CategoryItem>
+    );
+  };
 
   return (
     <ScreenContainer>
@@ -219,8 +229,9 @@ const CategoryScreen = () => {
           <IconSelectButton onPress={() => setIconModalVisible(true)}>
             <ButtonText>
               {selectedIconId
-                ? <IconImage source={{ uri: `${BASE_URL}${icons.find((icon) =>
-                  icon.id === selectedIconId)?.iconPath}` }} /> || t("common.selectIcon")
+                ? (icons.find((icon) => icon.id === selectedIconId)?.iconPath
+                  ? <IconImage source={{ uri: `${BASE_URL}${icons.find((icon) => icon.id === selectedIconId)?.iconPath}` }} />
+                  : t("common.selectIcon"))
                 : t("common.selectIcon")}
             </ButtonText>
           </IconSelectButton>
@@ -260,7 +271,7 @@ const CategoryScreen = () => {
   );
 };
 
-// Styled Components
+// Styled Components remain unchanged
 const ScreenContainer = styled(View)({
   flex: 1,
   backgroundColor: Colors.secondaryLight,
