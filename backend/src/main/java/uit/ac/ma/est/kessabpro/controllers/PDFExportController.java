@@ -7,12 +7,10 @@ import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.services.implementations.SaleService;
 import uit.ac.ma.est.kessabpro.services.implementations.TransactionService;
-import uit.ac.ma.est.kessabpro.services.interfaces.DocumentExport;
+import uit.ac.ma.est.kessabpro.services.contracts.DocumentExport;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController

@@ -6,7 +6,7 @@ import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.AnimalMedicalLog;
 import uit.ac.ma.est.kessabpro.repositories.AnimalMedicalLogRepository;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalMedicalLogService;
+import uit.ac.ma.est.kessabpro.services.contracts.IAnimalMedicalLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

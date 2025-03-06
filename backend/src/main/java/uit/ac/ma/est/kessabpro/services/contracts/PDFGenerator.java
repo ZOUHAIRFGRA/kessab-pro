@@ -1,10 +1,9 @@
-package uit.ac.ma.est.kessabpro.services.interfaces;
+package uit.ac.ma.est.kessabpro.services.contracts;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.helpers.GlobalHelper;
 import uit.ac.ma.est.kessabpro.models.entities.*;

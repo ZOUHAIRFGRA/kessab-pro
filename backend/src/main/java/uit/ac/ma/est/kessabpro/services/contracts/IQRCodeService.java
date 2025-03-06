@@ -1,4 +1,4 @@
-package uit.ac.ma.est.kessabpro.services.interfaces;
+package uit.ac.ma.est.kessabpro.services.contracts;
 
 import com.google.zxing.WriterException;
 

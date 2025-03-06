@@ -1,4 +1,4 @@
-package uit.ac.ma.est.kessabpro.services.interfaces;
+package uit.ac.ma.est.kessabpro.services.contracts;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

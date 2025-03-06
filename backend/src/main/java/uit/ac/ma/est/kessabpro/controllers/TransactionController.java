@@ -1,7 +1,6 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import jakarta.validation.groups.Default;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,7 @@ import uit.ac.ma.est.kessabpro.models.dto.responses.TransactionDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.services.implementations.BuyerService;
-import uit.ac.ma.est.kessabpro.services.interfaces.ITransactionService;
+import uit.ac.ma.est.kessabpro.services.contracts.ITransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uit.ac.ma.est.kessabpro.validators.groups.onCreate;

@@ -2,7 +2,7 @@ package uit.ac.ma.est.kessabpro.services.implementations;
 
 import uit.ac.ma.est.kessabpro.models.entities.AnimalCategory;
 import uit.ac.ma.est.kessabpro.repositories.AnimalCategoryRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalCategoryService;
+import uit.ac.ma.est.kessabpro.services.contracts.IAnimalCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;

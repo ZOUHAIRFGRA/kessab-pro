@@ -1,2 +1,4 @@
-package uit.ac.ma.est.kessabpro.seeders.factory;public class TransactionSeederFactory {
+package uit.ac.ma.est.kessabpro.seeders.factory;
+
+public class TransactionSeederFactory {
 }

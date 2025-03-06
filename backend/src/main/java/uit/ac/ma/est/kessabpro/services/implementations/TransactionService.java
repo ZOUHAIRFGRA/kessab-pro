@@ -13,7 +13,7 @@ import uit.ac.ma.est.kessabpro.events.transaction.TransactionDeletedEvent;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
 import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.ITransactionService;
+import uit.ac.ma.est.kessabpro.services.contracts.ITransactionService;
 import java.util.List;
 import java.util.UUID;
 

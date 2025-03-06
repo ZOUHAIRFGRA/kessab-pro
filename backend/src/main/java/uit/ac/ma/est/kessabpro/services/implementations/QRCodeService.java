@@ -5,7 +5,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;
 import org.springframework.stereotype.Service;
-import uit.ac.ma.est.kessabpro.services.interfaces.IQRCodeService;
+import uit.ac.ma.est.kessabpro.services.contracts.IQRCodeService;
 
 import java.awt.image.BufferedImage;
 import java.awt.Color;
