@@ -101,8 +101,8 @@ public class AnimalService implements IAnimalService {
                     existingAnimal.setPrice(animal.getPrice());
                     existingAnimal.setWeight(animal.getWeight());
                     existingAnimal.setCategory(animal.getCategory());
+                    existingAnimal.setPickUpDate(animal.getPickUpDate());
 
-                    // Directly set the provided imagePaths, no merging or appending
                     if (animal.getImagePaths() != null) {
                         try {
                             existingAnimal.setImagePaths(new ArrayList<>(animal.getImagePaths()));
