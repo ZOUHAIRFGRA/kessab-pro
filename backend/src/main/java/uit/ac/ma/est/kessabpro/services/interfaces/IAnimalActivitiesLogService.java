@@ -1,5 +1,7 @@
 package uit.ac.ma.est.kessabpro.services.interfaces;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalActivitiesLogDTO;
 
 import java.util.List;
@@ -14,9 +16,15 @@ public interface IAnimalActivitiesLogService {
 
     List<AnimalActivitiesLogDTO> findAll();
 
+    Page<AnimalActivitiesLogDTO> findAll(Pageable pageable);
+
     List<AnimalActivitiesLogDTO> findByAnimalId(UUID animalId);
+
+    Page<AnimalActivitiesLogDTO> findByAnimalId(UUID animalId, Pageable pageable);
 
     void deleteById(UUID id);
 
     AnimalActivitiesLogDTO update(UUID id, AnimalActivitiesLogDTO dto);
+
+    Long getLogsCount();
 }
