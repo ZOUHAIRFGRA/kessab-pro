@@ -23,6 +23,7 @@ import { fetchCategoriesIcons } from "../features/iconsSlice";
 import Colors from "../utils/Colors";
 import { getBaseURL } from "../api/axiosInstance";
 import Icon from "react-native-vector-icons/FontAwesome";
+import FallBack, { FALLBACK_TYPE } from "../components/global/Fallback";
 
 const BASE_URL = getBaseURL();
 
@@ -248,7 +249,7 @@ const CategoryScreen = () => {
         data={categories}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCategoryItem}
-        ListEmptyComponent={<EmptyText isRTL={isRTL}>{t("common.noCategories")}</EmptyText>}
+        ListEmptyComponent={<FallBack message={t("common.noCategories")} type={FALLBACK_TYPE.NO_RESULT} />}
       />
 
       <Modal visible={isIconModalVisible} animationType="slide" transparent={true}>
