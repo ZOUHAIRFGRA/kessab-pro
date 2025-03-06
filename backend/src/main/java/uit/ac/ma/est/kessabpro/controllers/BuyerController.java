@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import uit.ac.ma.est.kessabpro.mappers.BuyerMapper;
 import uit.ac.ma.est.kessabpro.models.dto.requests.BuyerDTORequest;
 import uit.ac.ma.est.kessabpro.models.dto.responses.BuyerDTOResponse;
+import uit.ac.ma.est.kessabpro.models.dto.responses.BuyerSummaryDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
+import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
+import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
 import uit.ac.ma.est.kessabpro.services.implementations.BuyerService;
 
 import java.util.HashMap;
@@ -25,6 +28,10 @@ public class BuyerController {
 
     @Autowired
     private BuyerService buyerService;
+    @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
+    private SaleRepository saleRepository;
 
     @PostMapping
     public ResponseEntity<BuyerDTOResponse> createBuyer(@Valid @RequestBody BuyerDTORequest buyerDTO) {
@@ -34,10 +41,16 @@ public class BuyerController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Map<String,Long>> getAllCount() {
-        Map<String,Long> response = new HashMap<>();
-        response.put("count",buyerService.getAllCount());
+    public ResponseEntity<Map<String, Long>> getAllCount() {
+        Map<String, Long> response = new HashMap<>();
+        response.put("count", buyerService.getAllCount());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/overview")
+    public ResponseEntity<BuyerSummaryDTOResponse> getOverview(@PathVariable UUID id) {
+        Buyer buyer = buyerService.getBuyerById(id);
+        return ResponseEntity.ok((new BuyerMapper(transactionRepository,saleRepository)).toBuyerSummaryDTO(buyer));
     }
 
     @GetMapping("/{id}")
