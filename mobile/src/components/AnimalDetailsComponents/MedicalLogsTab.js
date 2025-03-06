@@ -79,32 +79,32 @@ export const MedicalLogsTab = ({ animalId }) => {
         );
         setNewLogDescription("");
         setAdding(false);
-        showSuccessToast("Medical Log added successfully!");
+        showSuccessToast(t("common.Medical Log added successfully!"));
       }
     } catch (error) {
       console.error(`Error adding medical log for animal ${animalId}:`, error);
-      showErrorToast("Error adding medical log!");
+      showErrorToast(t("common.Error adding medical log!"));
     }
   };
 
   const handleDelete = (logId) => {
     Alert.alert(
-      "Confirm Deletion",
-      "Are you sure you want to delete this medical log?",
+      t("common.confirmDelete"),
+      t("common.Are you sure you want to delete this medical log?"),
       [
         {
-          text: "Cancel",
+          text: t("common.cancel"),
           style: "cancel",
         },
         {
-          text: "Delete",
+          text: t("common.delete"),
           onPress: () => {
             try {
               dispatch(deleteAnimalMedicalLog(logId));
-              showSuccessToast("Medical Log deleted successfully!");
+              showSuccessToast(t("common.Medical Log deleted successfully!"));
             } catch (error) {
               console.error(`Error deleting medical log with id ${logId}:`, error);
-              showErrorToast("Error deleting medical log!");
+              showErrorToast(t("common.Error deleting medical log!"));
             }
           },
           style: "destructive",
