@@ -7,6 +7,9 @@
     "NOT_PAID": "Non payé"
   },
   "common": {
+    "Status" : "Statut",
+    "Sold" : "Vendu",
+    "Unsold" : "Invendu",
     "Are you sure you want to delete this animal?": "Êtes-vous sûr de vouloir supprimer cet animal ?",
     "Animal updated successfully": "Animal mis à jour avec succès",
     "Failed to update animal": "Échec de la mise à jour de l'animal",
