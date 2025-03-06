@@ -34,9 +34,7 @@ export const EditForm = ({
   const baseURL = getBaseURL();
 
   const handleRemoveExistingImage = (imagePath) => {
-    // Total images in the current session (existing + new)
     const totalImages = editedAnimal.imagePaths.length + newImages.length;
-    // Total images after this deletion (subtract current imagesToDelete plus this one)
     const totalImagesAfterDeletion = totalImages - (imagesToDelete.length + 1);
 
     console.log("Current imagePaths (original):", editedAnimal.imagePaths);
@@ -51,10 +49,8 @@ export const EditForm = ({
     }
 
     setImagesToDelete([...imagesToDelete, imagePath]);
-    // Don't update imagePaths here; let the backend handle it on save
   };
 
-  // Filter displayed images to exclude those marked for deletion
   const displayedImages = editedAnimal.imagePaths.filter(
     (path) => !imagesToDelete.includes(path)
   );
@@ -72,7 +68,7 @@ export const EditForm = ({
                   <Image
                     source={{ uri: imageUri }}
                     style={{ width: 100, height: 100, borderRadius: 5 }}
-                    defaultSource={require("../../../assets/icon.png")}
+                    defaultSource={require("../../../assets/placeholder.png")}
                     onError={(e) => console.error("Preview image error:", e.nativeEvent.error)}
                   />
                   <TouchableOpacity
@@ -96,7 +92,7 @@ export const EditForm = ({
                 <Image
                   source={{ uri }}
                   style={{ width: 100, height: 100, borderRadius: 5 }}
-                  defaultSource={require("../../../assets/icon.png")}
+                  defaultSource={require("../../../assets/placeholder.png")}
                   onError={(e) => console.error("Preview image error:", e.nativeEvent.error)}
                 />
                 <TouchableOpacity
