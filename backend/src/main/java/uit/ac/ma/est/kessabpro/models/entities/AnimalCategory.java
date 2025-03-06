@@ -3,19 +3,24 @@ package uit.ac.ma.est.kessabpro.models.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Filter;
 import org.springframework.data.annotation.CreatedDate;
+import uit.ac.ma.est.kessabpro.auditing.UserAware;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnimalCategory extends BaseEntity {
+@Filter(name = "userFilter", condition = "user_id = :userId")
+public class AnimalCategory extends BaseEntity implements UserAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,6 +31,10 @@ public class AnimalCategory extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "icon_id")
     private AnimalIcon icon;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
 
 }

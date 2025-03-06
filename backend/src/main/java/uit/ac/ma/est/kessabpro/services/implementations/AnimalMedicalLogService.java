@@ -1,9 +1,14 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import uit.ac.ma.est.kessabpro.mappers.AnimalMedicalLogMapper;
 import uit.ac.ma.est.kessabpro.models.dto.AnimalMedicalLogDTO;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.AnimalMedicalLog;
+import uit.ac.ma.est.kessabpro.models.entities.User;
 import uit.ac.ma.est.kessabpro.repositories.AnimalMedicalLogRepository;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import uit.ac.ma.est.kessabpro.services.contracts.IAnimalMedicalLogService;
@@ -27,61 +32,100 @@ public class AnimalMedicalLogService implements IAnimalMedicalLogService {
     @Autowired
     private AnimalMedicalLogMapper logMapper;
 
-    @Override
-    public AnimalMedicalLogDTO save(AnimalMedicalLogDTO dto) {
-        AnimalMedicalLog log = logMapper.toEntity(dto);
-
-        Optional<Animal> animal = animalRepository.findById(dto.getAnimalId());
-        if (animal.isPresent()) {
-            log.setAnimal(animal.get());
-            return logMapper.toDTO(animalMedicalLogRepository.save(log));
-        }
-        throw new RuntimeException("Animal not found");
+    private UUID getLoggedInUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = (User) authentication.getPrincipal();
+        return loggedInUser.getId();
     }
 
+    @Override
+    public AnimalMedicalLogDTO save(AnimalMedicalLogDTO dto) {
+        UUID userId = getLoggedInUserId();
+        AnimalMedicalLog log = logMapper.toEntity(dto);
 
+        Optional<Animal> animalOpt = animalRepository.findByIdAndUser_Id(dto.getAnimalId(), userId);
+
+        if (animalOpt.isPresent()) {
+            log.setAnimal(animalOpt.get());
+            return logMapper.toDTO(animalMedicalLogRepository.save(log));
+        }
+        throw new RuntimeException("Animal not found or does not belong to the logged-in user");
+    }
 
     @Override
     public Optional<AnimalMedicalLogDTO> findById(UUID id) {
-        return animalMedicalLogRepository.findById(id).map(logMapper::toDTO);
+        UUID userId = getLoggedInUserId();
+        return animalMedicalLogRepository.findByIdAndAnimalUserId(id, userId).map(logMapper::toDTO);
     }
 
     @Override
     public List<AnimalMedicalLogDTO> findAll() {
-        return animalMedicalLogRepository.findAll().stream().map(logMapper::toDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<AnimalMedicalLogDTO> findByAnimalId(UUID animalId) {
-        return animalMedicalLogRepository.findByAnimalId(animalId)
+        UUID userId = getLoggedInUserId();
+        return animalMedicalLogRepository.findByAnimalUserId(userId)
                 .stream()
                 .map(logMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
+    public Page<AnimalMedicalLogDTO> findAll(Pageable pageable) {
+        UUID userId = getLoggedInUserId();
+        return animalMedicalLogRepository.findByAnimalUserId(userId, pageable)
+                .map(logMapper::toDTO);
+    }
+
+    @Override
+    public List<AnimalMedicalLogDTO> findByAnimalId(UUID animalId) {
+        UUID userId = getLoggedInUserId();
+        return animalMedicalLogRepository.findByAnimalIdAndAnimalUserId(animalId, userId)
+                .stream()
+                .map(logMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<AnimalMedicalLogDTO> findByAnimalId(UUID animalId, Pageable pageable) {
+        UUID userId = getLoggedInUserId();
+        return animalMedicalLogRepository.findByAnimalIdAndAnimalUserId(animalId, userId, pageable)
+                .map(logMapper::toDTO);
+    }
+
+    @Override
     public void deleteById(UUID id) {
-        animalMedicalLogRepository.deleteById(id);
+        UUID userId = getLoggedInUserId();
+        Optional<AnimalMedicalLog> logOpt = animalMedicalLogRepository.findByIdAndAnimalUserId(id, userId);
+        if (logOpt.isPresent()) {
+            animalMedicalLogRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Log not found or does not belong to an animal owned by the logged-in user");
+        }
     }
 
     @Override
     public AnimalMedicalLogDTO update(UUID id, AnimalMedicalLogDTO dto) {
-        Optional<AnimalMedicalLog> existingLogOptional = animalMedicalLogRepository.findById(id);
-        Optional<Animal> animalOpt = animalRepository.findById(dto.getAnimalId());
+        UUID userId = getLoggedInUserId();
+        Optional<AnimalMedicalLog> existingLogOpt = animalMedicalLogRepository.findByIdAndAnimalUserId(id, userId);
 
-        if (existingLogOptional.isPresent() && animalOpt.isPresent()) {
-            AnimalMedicalLog existingLog = existingLogOptional.get();
+        if (!existingLogOpt.isPresent()) {
+            throw new RuntimeException("Log not found or does not belong to an animal owned by the logged-in user");
+        }
+
+        Optional<Animal> animalOpt = animalRepository.findByIdAndUser_Id(dto.getAnimalId(), userId);
+
+        if (animalOpt.isPresent()) {
+            AnimalMedicalLog existingLog = existingLogOpt.get();
             existingLog.setAnimal(animalOpt.get());
             existingLog.setDescription(dto.getDescription());
             existingLog.setVetName(dto.getVetName());
             existingLog.setLogDate(dto.getLogDate());
-
             return logMapper.toDTO(animalMedicalLogRepository.save(existingLog));
         }
-        return null;
+        throw new RuntimeException("Animal not found or does not belong to the logged-in user");
     }
 
-    private AnimalMedicalLogDTO convertToDTO(AnimalMedicalLog log) {
-        return new AnimalMedicalLogDTO(log.getId(), log.getAnimal().getId(), log.getLogDate(), log.getDescription(), log.getVetName());
+    @Override
+    public Long getLogsCount() {
+        UUID userId = getLoggedInUserId();
+        return animalMedicalLogRepository.countByAnimalUserId(userId);
     }
 }

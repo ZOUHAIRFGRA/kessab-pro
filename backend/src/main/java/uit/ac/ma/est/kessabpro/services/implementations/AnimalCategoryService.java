@@ -1,6 +1,9 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import uit.ac.ma.est.kessabpro.models.entities.AnimalCategory;
+import uit.ac.ma.est.kessabpro.models.entities.User;
 import uit.ac.ma.est.kessabpro.repositories.AnimalCategoryRepository;
 import uit.ac.ma.est.kessabpro.services.contracts.IAnimalCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +13,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class AnimalCategoryService implements IAnimalCategoryService {
+public class AnimalCategoryService implements IAnimalCategoryService  {
 
     @Autowired
     private AnimalCategoryRepository animalCategoryRepository;
+
 
     @Override
     public AnimalCategory createCategory(AnimalCategory category) {
