@@ -5,10 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.models.entities.*;
-import uit.ac.ma.est.kessabpro.repositories.AnimalCategoryRepository;
-import uit.ac.ma.est.kessabpro.repositories.AnimalIconRepository;
-import uit.ac.ma.est.kessabpro.repositories.BuyerRepository;
-import uit.ac.ma.est.kessabpro.repositories.UserRepository;
+import uit.ac.ma.est.kessabpro.repositories.*;
 import uit.ac.ma.est.kessabpro.seeders.factory.*;
 import uit.ac.ma.est.kessabpro.services.contracts.IDatabaseSeederService;
 
@@ -23,13 +20,17 @@ public class DatabaseSeederService implements IDatabaseSeederService {
     private final BuyerRepository buyerRepository;
     private final AnimalCategoryRepository animalCategoryRepository;
     private final AnimalIconRepository animalIconRepository;
+    private final SaleRepository saleRepository;
+    private final AnimalRepository animalRepository;
 
     @Autowired
-    public DatabaseSeederService(UserRepository userRepository, BuyerRepository buyerRepository, AnimalCategoryRepository animalCategoryRepository, AnimalIconRepository animalIconRepository) {
+    public DatabaseSeederService(UserRepository userRepository, BuyerRepository buyerRepository, AnimalCategoryRepository animalCategoryRepository, AnimalIconRepository animalIconRepository, SaleRepository saleRepository, AnimalRepository animalRepository) {
         this.userRepository = userRepository;
         this.buyerRepository = buyerRepository;
         this.animalCategoryRepository = animalCategoryRepository;
         this.animalIconRepository = animalIconRepository;
+        this.saleRepository = saleRepository;
+        this.animalRepository = animalRepository;
     }
 
     @Override
@@ -42,28 +43,37 @@ public class DatabaseSeederService implements IDatabaseSeederService {
             BuyerSeederFactory buyerFactory = new BuyerSeederFactory();
             AnimalIconSeederFactory animalIconSeederFactory = new AnimalIconSeederFactory();
             AnimalCategorySeederFactory animalCategorySeederFactory = new AnimalCategorySeederFactory();
+            AnimalSeederFactory animalSeederFactory = new AnimalSeederFactory();
 
             List<User> users = userFactory.create(10);
             List<Buyer> buyers = new ArrayList<>();
             List<AnimalIcon> animalIcons = animalIconSeederFactory.create();
-            List<AnimalCategory> animalCategories = animalCategorySeederFactory.create(animalIcons);
 
-            // Save animal icons and categories first
+
+            List<User> usersEntities = userRepository.saveAll(users);
+
             animalIconRepository.saveAll(animalIcons);
-            animalCategoryRepository.saveAll(animalCategories);
 
-            // Create buyers for each user
-            for (User user : users) {
-                // Add all animal categories to each user (assuming there's a set method or relation to animal categories)
-                for (AnimalCategory animalCategory : animalCategories) {
-                    animalCategory.set(user); // Assuming an 'addUser' method is available in the AnimalCategory entity
+            try {
+                for (User user : usersEntities) {
+                    List<AnimalCategory> animalCategories = animalCategorySeederFactory.create(animalIcons);
+                    for (AnimalCategory animalCategory : animalCategories) {
+                        animalCategory.setUser(user);
+                        AnimalCategory savedCategory =  animalCategoryRepository.save(animalCategory);
+                        List<Animal> animals = animalSeederFactory.create(savedCategory, user, 11);
+                        //for each animal create 7 medical logs
+                        //for each animal create 7 activites logs
+                        animalRepository.saveAll(animals);
+                    }
+                    buyers.addAll(buyerFactory.create(user, buyerCountPerUser));
                 }
 
-                buyers.addAll(buyerFactory.create(user, buyerCountPerUser));
+            } catch (Exception e) {
+                throw new RuntimeException("error while seeding database", e);
             }
 
-            // Save the users and buyers
-            userRepository.saveAll(users);
+
+            userRepository.saveAll(usersEntities);
             buyerRepository.saveAll(buyers);
         }
     }

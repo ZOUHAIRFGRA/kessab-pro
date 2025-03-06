@@ -28,4 +28,6 @@ public class UploadHelper {
         return sanitizedAnimalName + "_" + UUID.randomUUID() + extension;
     }
 
+
+
 }
