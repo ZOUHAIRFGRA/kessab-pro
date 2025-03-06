@@ -7,6 +7,7 @@
     "NOT_PAID": "مازال ماخلصش"
   },
   "common": {
+    "uncategorized": "ماكاينينش تصنيف",
     "viewSale": "شوف البيع",
     "Available" : "متوفر",
     "pickup_Date_not_set": "ماكانش محدد نهار الاستلام",
