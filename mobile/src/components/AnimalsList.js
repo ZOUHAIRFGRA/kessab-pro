@@ -104,6 +104,7 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
       const categoryName = category
         ? category.typeName
         : t("common.uncategorized");
+      const statusText = item.saleId ? t("common.sold") : t("common.available");
 
       return (
         <ListItem onPress={() => handleAnimalClick(item.id)}>
@@ -115,6 +116,7 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
             <ListItemText>{item.tag}</ListItemText>
             <AnimalSubText>{categoryName}</AnimalSubText>
             <AnimalSubText>{item.sex || t("common.unknown_sex")}</AnimalSubText>
+            <AnimalStatus>{statusText}</AnimalStatus>
           </AnimalInfo>
         </ListItem>
       );
@@ -230,6 +232,14 @@ const AnimalSubText = styled(Text)({
   fontSize: 14,
   color: "#64748b",
   marginTop: 4,
+});
+
+const AnimalStatus = styled(Text)({
+  fontSize: 20,
+  color: Colors.primary,
+  marginTop: 4,
+  fontWeight: "bold",
+  textAlign: "right",
 });
 
 const PaginationWrapper = styled(View)(({ isRTL }) => ({
