@@ -61,16 +61,14 @@ export default function UpdateBuyersScreen({ route }) {
   const validateField = (field, value) => {
     switch (field) {
       case "fullName":
-        if (!value) return t("validation.fullNameRequired");
-        if (value.length < 4) return t("validation.fullNameMinLength");
-        if (value.length > 50) return t("validation.fullNameMaxLength");
+        if (!value) return t("common.buyerFullNameRequired");
+        if (value.length < 4) return t("common.fullNameMinLength");
+        if (value.length > 50) return t("common.fullNameMaxLength");
         return "";
       case "CIN":
         return "";
       case "phone":
-        return value && !/^\d{10}$/.test(value)
-          ? t("validation.phoneFormat")
-          : "";
+        return value && !/^\d{10}$/.test(value) ? t("common.phoneFormat") : "";
       case "address":
         return "";
       default:
@@ -149,14 +147,14 @@ export default function UpdateBuyersScreen({ route }) {
           padding: 18,
         }}
       >
-        <Header level="h2">{t("buyers.updateBuyer")}</Header>
+        <Header level="h2">{t("common.updateBuyer")}</Header>
 
         <Input
           label={t("common.FullName")}
           value={buyerData.fullName}
           onChangeText={(text) => handleInputChange("fullName", text)}
           errorMessage={errors.fullName}
-          errorStyle={{ color: Colors.danger}}
+          errorStyle={{ color: Colors.danger }}
           required
           leftIcon={
             <Icon
@@ -207,7 +205,7 @@ export default function UpdateBuyersScreen({ route }) {
           onChangeText={(text) => handleInputChange("address", text)}
           multiline
           errorMessage={errors.address}
-          errorStyle={{ color: Colors.danger}}
+          errorStyle={{ color: Colors.danger }}
           leftIcon={
             <Icon
               name="map-outline"

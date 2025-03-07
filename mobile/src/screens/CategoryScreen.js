@@ -31,12 +31,16 @@ const DEFAULT_CATEGORY_NAME = "Livestock";
 const CategoryScreen = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { categories, loading: categoriesLoading, error: categoriesError } = useSelector(
-    (state) => state.categories
-  );
-  const { icons, loading: iconsLoading, error: iconsError } = useSelector(
-    (state) => state.icons
-  );
+  const {
+    categories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useSelector((state) => state.categories);
+  const {
+    icons,
+    loading: iconsLoading,
+    error: iconsError,
+  } = useSelector((state) => state.icons);
 
   const [categoryName, setCategoryName] = useState("");
   const [selectedIconId, setSelectedIconId] = useState(null);
@@ -45,15 +49,12 @@ const CategoryScreen = () => {
   const [isAddOrEditVisible, setAddOrEditVisible] = useState(false);
   const isRTL = t("dir") === "rtl";
 
-  
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchCategoriesIcons());
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log("categoriesLoading:", categoriesLoading, "iconsLoading:", iconsLoading);
-  }, [categoriesLoading, iconsLoading]);
+ 
 
   const handleAddOrUpdateCategory = async () => {
     if (!categoryName.trim()) {
@@ -64,7 +65,9 @@ const CategoryScreen = () => {
       Alert.alert(t("common.error"), t("common.iconRequired"));
       return;
     }
-    if (categoryName.trim().toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase()) {
+    if (
+      categoryName.trim().toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase()
+    ) {
       Alert.alert(t("common.error"), t("common.defaultCategoryNameError"));
       return;
     }
@@ -82,13 +85,16 @@ const CategoryScreen = () => {
       } else {
         await dispatch(addCategory(categoryData)).unwrap();
       }
-      
+
       await dispatch(fetchCategories());
       setCategoryName("");
       setSelectedIconId(null);
       setAddOrEditVisible(false);
     } catch (err) {
-      Alert.alert(t("common.error"), err.message || t("common.operationFailed"));
+      Alert.alert(
+        t("common.error"),
+        err.message || t("common.operationFailed")
+      );
     }
   };
 
@@ -100,7 +106,9 @@ const CategoryScreen = () => {
   };
 
   const handleEditCategory = (category) => {
-    if (category.typeName.toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase()) {
+    if (
+      category.typeName.toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase()
+    ) {
       Alert.alert(t("common.error"), t("common.defaultCategoryEditError"));
       return;
     }
@@ -115,25 +123,24 @@ const CategoryScreen = () => {
       Alert.alert(t("common.error"), t("common.defaultCategoryDeleteError"));
       return;
     }
-    Alert.alert(
-      t("common.deleteCategory"),
-      t("common.confirmDelete"),
-      [
-        { text: t("common.cancel"), style: "cancel" },
-        {
-          text: t("common.delete"),
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await dispatch(deleteCategory(id)).unwrap();
-              await dispatch(fetchCategories());
-            } catch (err) {
-              Alert.alert(t("common.error"), err.message || t("common.operationFailed"));
-            }
-          },
+    Alert.alert(t("common.deleteCategory"), t("common.confirmDelete"), [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("common.delete"),
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await dispatch(deleteCategory(id)).unwrap();
+            await dispatch(fetchCategories());
+          } catch (err) {
+            Alert.alert(
+              t("common.error"),
+              err.message || t("common.operationFailed")
+            );
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleSelectIcon = (iconId) => {
@@ -151,24 +158,32 @@ const CategoryScreen = () => {
   const renderIconItem = ({ item }) => (
     <IconItem onPress={() => handleSelectIcon(item.id)}>
       <IconImage source={{ uri: `${BASE_URL}${item.iconPath}` }} />
-      <IconText isRTL={isRTL}>{item.iconPath.split("/").pop().replace(/\.[^/.]+$/, "")}</IconText>
+      <IconText isRTL={isRTL}>
+        {item.iconPath
+          .split("/")
+          .pop()
+          .replace(/\.[^/.]+$/, "")}
+      </IconText>
     </IconItem>
   );
 
   const renderCategoryItem = ({ item }) => {
     const icon = item.icon?.iconPath
       ? item.icon
-      : icons.find(icon => icon.id === item.icon?.id) || { iconPath: null };
+      : icons.find((icon) => icon.id === item.icon?.id) || { iconPath: null };
 
-    const isDefaultCategory = item.typeName.toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase();
+    const isDefaultCategory =
+      item.typeName.toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase();
 
     return (
       <CategoryItem isRTL={isRTL}>
         {isRTL ? (
           <>
-            <ButtonContainer style={{ justifyContent: 'flex-start' }}>
+            <ButtonContainer style={{ justifyContent: "flex-start" }}>
               {!isDefaultCategory && (
-                <DeleteButton onPress={() => handleDeleteCategory(item.id, item.typeName)}>
+                <DeleteButton
+                  onPress={() => handleDeleteCategory(item.id, item.typeName)}
+                >
                   <ButtonText>{t("common.delete")}</ButtonText>
                 </DeleteButton>
               )}
@@ -178,7 +193,7 @@ const CategoryScreen = () => {
                 </EditButton>
               )}
             </ButtonContainer>
-            <CategoryInfo style={{ justifyContent: 'flex-end' }}>
+            <CategoryInfo style={{ justifyContent: "flex-end" }}>
               <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
               {icon?.iconPath ? (
                 <IconImage source={{ uri: `${BASE_URL}${icon.iconPath}` }} />
@@ -189,7 +204,7 @@ const CategoryScreen = () => {
           </>
         ) : (
           <>
-            <CategoryInfo style={{ justifyContent: 'flex-start' }}>
+            <CategoryInfo style={{ justifyContent: "flex-start" }}>
               {icon?.iconPath ? (
                 <IconImage source={{ uri: `${BASE_URL}${icon.iconPath}` }} />
               ) : (
@@ -197,14 +212,16 @@ const CategoryScreen = () => {
               )}
               <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
             </CategoryInfo>
-            <ButtonContainer style={{ justifyContent: 'flex-end' }}>
+            <ButtonContainer style={{ justifyContent: "flex-end" }}>
               {!isDefaultCategory && (
                 <EditButton onPress={() => handleEditCategory(item)}>
                   <ButtonText>{t("common.edit")}</ButtonText>
                 </EditButton>
               )}
               {!isDefaultCategory && (
-                <DeleteButton onPress={() => handleDeleteCategory(item.id, item.typeName)}>
+                <DeleteButton
+                  onPress={() => handleDeleteCategory(item.id, item.typeName)}
+                >
                   <ButtonText>{t("common.delete")}</ButtonText>
                 </DeleteButton>
               )}
@@ -236,7 +253,9 @@ const CategoryScreen = () => {
           accessibilityLabel={t("common.add_category")}
         >
           <QuickActionIcon name="plus" />
-          <QuickActionText isRTL={isRTL}>{t("common.add_category")}</QuickActionText>
+          <QuickActionText isRTL={isRTL}>
+            {t("common.add_category")}
+          </QuickActionText>
         </QuickActionItem>
       </QuickActionList>
 
@@ -250,15 +269,28 @@ const CategoryScreen = () => {
           />
           <IconSelectButton onPress={() => setIconModalVisible(true)}>
             <ButtonText>
-              {selectedIconId
-                ? (icons.find((icon) => icon.id === selectedIconId)?.iconPath
-                  ? <IconImage source={{ uri: `${BASE_URL}${icons.find((icon) => icon.id === selectedIconId)?.iconPath}` }} />
-                  : t("common.selectIcon"))
-                : t("common.selectIcon")}
+              {selectedIconId ? (
+                icons.find((icon) => icon.id === selectedIconId)?.iconPath ? (
+                  <IconImage
+                    source={{
+                      uri: `${BASE_URL}${
+                        icons.find((icon) => icon.id === selectedIconId)
+                          ?.iconPath
+                      }`,
+                    }}
+                  />
+                ) : (
+                  t("common.selectIcon")
+                )
+              ) : (
+                t("common.selectIcon")
+              )}
             </ButtonText>
           </IconSelectButton>
           <AddButton onPress={handleAddOrUpdateCategory}>
-            <ButtonText>{editingCategoryId ? t("common.update") : t("common.add")}</ButtonText>
+            <ButtonText>
+              {editingCategoryId ? t("common.update") : t("common.add")}
+            </ButtonText>
           </AddButton>
           <CancelButton onPress={handleCancel}>
             <ButtonText>{t("common.cancel")}</ButtonText>
@@ -270,10 +302,19 @@ const CategoryScreen = () => {
         data={categories}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCategoryItem}
-        ListEmptyComponent={<FallBack message={t("common.noCategories")} type={FALLBACK_TYPE.NO_RESULT} />}
+        ListEmptyComponent={
+          <FallBack
+            message={t("common.noCategories")}
+            type={FALLBACK_TYPE.NO_RESULT}
+          />
+        }
       />
 
-      <Modal visible={isIconModalVisible} animationType="slide" transparent={true}>
+      <Modal
+        visible={isIconModalVisible}
+        animationType="slide"
+        transparent={true}
+      >
         <ModalOverlay>
           <ModalContent>
             <ModalTitle isRTL={isRTL}>{t("common.selectIcon")}</ModalTitle>
@@ -281,7 +322,9 @@ const CategoryScreen = () => {
               data={icons}
               keyExtractor={(item) => item.id.toString()}
               renderItem={renderIconItem}
-              ListEmptyComponent={<EmptyText isRTL={isRTL}>{t("common.noIcons")}</EmptyText>}
+              ListEmptyComponent={
+                <EmptyText isRTL={isRTL}>{t("common.noIcons")}</EmptyText>
+              }
             />
             <CloseButton onPress={() => setIconModalVisible(false)}>
               <ButtonText>{t("common.close")}</ButtonText>
@@ -292,7 +335,6 @@ const CategoryScreen = () => {
     </ScreenContainer>
   );
 };
-
 
 const ScreenContainer = styled(View)({
   flex: 1,

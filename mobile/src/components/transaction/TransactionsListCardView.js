@@ -37,7 +37,10 @@ const TransactionListCardView = ({ id, type = "sale" }) => {
   return (
     <View style={{ flex: 1 }}>
       {transactions.length === 0 ? (
-        <FallBack type={FALLBACK_TYPE.NOT_FOUND} message="No Transactions." />
+        <FallBack
+          type={FALLBACK_TYPE.NOT_FOUND}
+          message={t(`common.noTransactions`)}
+        />
       ) : (
         <FlatList
           data={transactions}
@@ -79,7 +82,7 @@ const TransactionListCardView = ({ id, type = "sale" }) => {
         }}
         onPress={() => setIsVisible(true)}
       >
-        Add new transaction
+        {t("common.addTransaction")}
       </Button>
     </View>
   );

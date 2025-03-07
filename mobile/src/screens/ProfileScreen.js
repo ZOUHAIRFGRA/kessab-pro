@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserProfile, updateProfile } from '../features/userSlice';
-import { styled } from 'dripsy';
-import { logout } from '../features/authSlice';
-import { useTranslation } from 'react-i18next';
-import Colors from '../utils/Colors';
+import React, { useEffect, useState } from "react";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserProfile, updateProfile } from "../features/userSlice";
+import { styled } from "dripsy";
+import { logout } from "../features/authSlice";
+import { useTranslation } from "react-i18next";
+import Colors from "../utils/Colors";
 
 const ProfileScreen = () => {
   const { t } = useTranslation();
@@ -19,17 +19,17 @@ const ProfileScreen = () => {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [updatedUsername, setUpdatedUsername] = useState('');
-  const [updatedEmail, setUpdatedEmail] = useState('');
-  const [updatedPhone, setUpdatedPhone] = useState('');
-  const [updatedAddress, setUpdatedAddress] = useState('');
+  const [updatedUsername, setUpdatedUsername] = useState("");
+  const [updatedEmail, setUpdatedEmail] = useState("");
+  const [updatedPhone, setUpdatedPhone] = useState("");
+  const [updatedAddress, setUpdatedAddress] = useState("");
 
   useEffect(() => {
     if (userProfile) {
-      setUpdatedUsername(userProfile.username || '');
-      setUpdatedEmail(userProfile.email || '');
-      setUpdatedPhone(userProfile.phone || '');
-      setUpdatedAddress(userProfile.address || '');
+      setUpdatedUsername(userProfile.username || "");
+      setUpdatedEmail(userProfile.email || "");
+      setUpdatedPhone(userProfile.phone || "");
+      setUpdatedAddress(userProfile.address || "");
     }
   }, [userProfile]);
 
@@ -67,11 +67,11 @@ const ProfileScreen = () => {
 
   return (
     <Container>
-      <Title>{t('common.Profile')}</Title>
+      <Title>{t("common.Profile")}</Title>
       {isEditing ? (
         <>
           <InputContainer isRTL={isRTL}>
-            <Label>{t('common.Username')}</Label>
+            <Label>{t("common.Username")}</Label>
             <Input
               value={updatedUsername}
               onChangeText={setUpdatedUsername}
@@ -79,7 +79,7 @@ const ProfileScreen = () => {
             />
           </InputContainer>
           <InputContainer isRTL={isRTL}>
-            <Label>{t('common.Email')}</Label>
+            <Label>{t("common.Email")}</Label>
             <Input
               value={updatedEmail}
               onChangeText={setUpdatedEmail}
@@ -87,7 +87,7 @@ const ProfileScreen = () => {
             />
           </InputContainer>
           <InputContainer isRTL={isRTL}>
-            <Label>{t('common.Phone')}</Label>
+            <Label>{t("common.Phone")}</Label>
             <Input
               value={updatedPhone}
               onChangeText={setUpdatedPhone}
@@ -95,7 +95,7 @@ const ProfileScreen = () => {
             />
           </InputContainer>
           <InputContainer isRTL={isRTL}>
-            <Label>{t('common.Address')}</Label>
+            <Label>{t("common.Address")}</Label>
             <Input
               value={updatedAddress}
               onChangeText={setUpdatedAddress}
@@ -104,41 +104,41 @@ const ProfileScreen = () => {
           </InputContainer>
           <ButtonContainer>
             <StyledButton onPress={handleProfileUpdate}>
-              <ButtonText>{t('common.SaveProfile')}</ButtonText>
+              <ButtonText>{t("common.SaveProfile")}</ButtonText>
             </StyledButton>
             <StyledButton onPress={() => setIsEditing(false)} secondary>
-              <ButtonText>{t('common.cancel')}</ButtonText>
+              <ButtonText>{t("common.cancel")}</ButtonText>
             </StyledButton>
           </ButtonContainer>
         </>
       ) : (
         <>
           <ProfileItem isRTL={isRTL}>
-            <Label>{t('common.Username')}:</Label>
+            <Label>{t("common.Username")}:</Label>
             <ProfileText>{userProfile?.username}</ProfileText>
           </ProfileItem>
           <ProfileItem isRTL={isRTL}>
-            <Label>{t('common.Email')}:</Label>
+            <Label>{t("common.Email")}:</Label>
             <ProfileText>{userProfile?.email}</ProfileText>
           </ProfileItem>
           <ProfileItem isRTL={isRTL}>
-            <Label>{t('common.Phone')}:</Label>
+            <Label>{t("common.Phone")}:</Label>
             <ProfileText>{userProfile?.phone}</ProfileText>
           </ProfileItem>
           <ProfileItem isRTL={isRTL}>
-            <Label>{t('common.Address')}:</Label>
+            <Label>{t("common.Address")}:</Label>
             <ProfileText>{userProfile?.address}</ProfileText>
           </ProfileItem>
           <ButtonContainer>
             <StyledButton onPress={() => setIsEditing(true)}>
-              <ButtonText>{t('common.Edit_Profile')}</ButtonText>
+              <ButtonText>{t("common.Edit_Profile")}</ButtonText>
             </StyledButton>
           </ButtonContainer>
         </>
       )}
       <ButtonContainer>
         <StyledButton onPress={handleLogout} danger>
-          <ButtonText>{t('common.Logout')}</ButtonText>
+          <ButtonText>{t("common.Logout")}</ButtonText>
         </StyledButton>
       </ButtonContainer>
     </Container>
@@ -147,53 +147,53 @@ const ProfileScreen = () => {
 
 const Container = styled(View)({
   flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
+  justifyContent: "center",
+  alignItems: "center",
   padding: 20,
-  backgroundColor: '#f5f5f5',
+  backgroundColor: "#f5f5f5",
 });
 
 const Title = styled(Text)({
   fontSize: 28,
-  fontWeight: 'bold',
+  fontWeight: "bold",
   marginBottom: 30,
-  color: '#333',
+  color: "#333",
 });
 
 const InputContainer = styled(View)(({ isRTL }) => ({
   marginBottom: 20,
-  width: '100%',
-  flexDirection: 'column',
-  alignItems: isRTL ? 'flex-end' : 'flex-start',
+  width: "100%",
+  flexDirection: "column",
+  alignItems: isRTL ? "flex-end" : "flex-start",
 }));
 
 const Label = styled(Text)({
   fontSize: 18,
   marginBottom: 8,
-  color: '#555',
+  color: "#555",
 });
 
 const Input = styled(TextInput)(({ isRTL }) => ({
-  width: '100%',
+  width: "100%",
   height: 45,
-  borderColor: '#ccc',
+  borderColor: "#ccc",
   borderWidth: 1,
   paddingLeft: isRTL ? 0 : 15,
   paddingRight: isRTL ? 15 : 0,
-  textAlign: isRTL ? 'right' : 'left',
+  textAlign: isRTL ? "right" : "left",
   borderRadius: 8,
-  backgroundColor: '#fff',
+  backgroundColor: "#fff",
 }));
 
 const ProfileItem = styled(View)(({ isRTL }) => ({
-  flexDirection: isRTL ? 'row-reverse' : 'row',
-  justifyContent: 'space-between',
-  width: '100%',
+  flexDirection: isRTL ? "row-reverse" : "row",
+  justifyContent: "space-between",
+  width: "100%",
   marginBottom: 15,
   padding: 10,
-  backgroundColor: '#fff',
+  backgroundColor: "#fff",
   borderRadius: 8,
-  shadowColor: '#000',
+  shadowColor: "#000",
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.1,
   shadowRadius: 4,
@@ -202,13 +202,13 @@ const ProfileItem = styled(View)(({ isRTL }) => ({
 
 const ProfileText = styled(Text)({
   fontSize: 16,
-  color: '#333',
+  color: "#333",
 });
 
 const ButtonContainer = styled(View)({
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  width: '100%',
+  flexDirection: "row",
+  justifyContent: "space-between",
+  width: "100%",
   marginTop: 20,
 });
 
@@ -216,16 +216,20 @@ const StyledButton = styled(TouchableOpacity)(({ secondary, danger }) => ({
   flex: 1,
   paddingVertical: 15,
   paddingHorizontal: 20,
-  backgroundColor: danger ? Colors.danger : secondary ? 'orange' : '#4A90E2',
+  backgroundColor: danger
+    ? Colors.danger
+    : secondary
+    ? "orange"
+    : Colors.primary,
   borderRadius: 8,
-  alignItems: 'center',
+  alignItems: "center",
   marginHorizontal: 5,
 }));
 
 const ButtonText = styled(Text)({
-  color: '#fff',
+  color: "#fff",
   fontSize: 16,
-  fontWeight: 'bold',
+  fontWeight: "bold",
 });
 
 export default ProfileScreen;

@@ -62,7 +62,6 @@ export const useCategorySelector = (
         setShowAddCategory(false);
       })
       .catch(() => showErrorToast(t("common.category_add_failed")));
-    // console.log({ typeName: newCategory.trim(), icon: { id: selectedIcon.id } })
   }
 
   return { categoryPicker, handleAddCategory };

@@ -35,16 +35,14 @@ export default function AddBuyersScreen() {
   const validateField = (field, value) => {
     switch (field) {
       case "fullName":
-        if (!value) return t("validation.fullNameRequired");
-        if (value.length < 4) return t("validation.fullNameMinLength");
-        if (value.length > 50) return t("validation.fullNameMaxLength");
+        if (!value) return t("common.buyerFullNameRequired");
+        if (value.length < 4) return t("common.fullNameMinLength");
+        if (value.length > 50) return t("common.fullNameMaxLength");
         return "";
       case "CIN":
-        return ""; // Optional field, no validation
+        return ""; // Optional field, no common
       case "phone":
-        return value && !/^\d{10}$/.test(value)
-          ? t("validation.phoneFormat")
-          : "";
+        return value && !/^\d{10}$/.test(value) ? t("common.phoneFormat") : "";
       case "address":
         return ""; // Optional field, no validation
       default:
@@ -113,7 +111,7 @@ export default function AddBuyersScreen() {
           padding: 18,
         }}
       >
-        <Header level="h2">{t("buyers.addNewBuyer")}</Header>
+        <Header level="h2">{t("common.addNewBuyer")}</Header>
 
         <Input
           label={t("common.FullName")}
@@ -121,14 +119,31 @@ export default function AddBuyersScreen() {
           onChangeText={(text) => handleInputChange("fullName", text)}
           errorMessage={errors.fullName}
           errorStyle={{ color: Colors.danger }}
+          labelStyle={{
+            textAlign: t("dir") === "rtl" ? "right" : "left",
+          }}
           required
           leftIcon={
-            <Icon
-              name="user"
-              type="antdesign"
-              size={24}
-              color={Colors.secondary}
-            />
+            t("dir") === "rtl" ? null : (
+              <Icon
+                name="user"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
+          }
+          rightIcon={
+            t("dir") === "ltr" ? (
+              "right"
+            ) : (
+              <Icon
+                name="user"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
           }
         />
 
@@ -138,13 +153,30 @@ export default function AddBuyersScreen() {
           onChangeText={(text) => handleInputChange("CIN", text)}
           errorMessage={errors.CIN}
           errorStyle={{ color: Colors.danger }}
+          labelStyle={{
+            textAlign: t("dir") === "rtl" ? "right" : "left",
+          }}
           leftIcon={
-            <Icon
-              name="idcard"
-              type="antdesign"
-              size={24}
-              color={Colors.secondary}
-            />
+            t("dir") === "rtl" ? null : (
+              <Icon
+                name="idcard"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
+          }
+          rightIcon={
+            t("dir") === "ltr" ? (
+              "right"
+            ) : (
+              <Icon
+                name="idcard"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
           }
         />
 
@@ -153,15 +185,32 @@ export default function AddBuyersScreen() {
           value={buyerData.phone}
           onChangeText={(text) => handleInputChange("phone", text)}
           keyboardType="number-pad"
+          labelStyle={{
+            textAlign: t("dir") === "rtl" ? "right" : "left",
+          }}
           errorMessage={errors.phone}
           errorStyle={{ color: Colors.danger }}
           leftIcon={
-            <Icon
-              name="phone"
-              type="antdesign"
-              size={24}
-              color={Colors.secondary}
-            />
+            t("dir") === "rtl" ? null : (
+              <Icon
+                name="phone"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
+          }
+          rightIcon={
+            t("dir") === "ltr" ? (
+              "right"
+            ) : (
+              <Icon
+                name="phone"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
           }
         />
 
@@ -170,15 +219,32 @@ export default function AddBuyersScreen() {
           value={buyerData.address}
           onChangeText={(text) => handleInputChange("address", text)}
           multiline
+          labelStyle={{
+            textAlign: t("dir") === "rtl" ? "right" : "left",
+          }}
           errorMessage={errors.address}
           errorStyle={{ color: Colors.danger }}
           leftIcon={
-            <Icon
-              name="map-outline"
-              type="ionicon"
-              size={24}
-              color={Colors.secondary}
-            />
+            t("dir") === "rtl" ? null : (
+              <Icon
+                name="map-outline"
+                type="ionicon"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
+          }
+          rightIcon={
+            t("dir") === "ltr" ? (
+              "right"
+            ) : (
+              <Icon
+                name="map-outline"
+                type="ionicon"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
           }
         />
 
@@ -203,7 +269,7 @@ export default function AddBuyersScreen() {
             color: Colors.white,
           }}
         >
-          {t("common.Save")}
+          {t("common.save")}
         </Button>
       </Container>
     </ScrollView>

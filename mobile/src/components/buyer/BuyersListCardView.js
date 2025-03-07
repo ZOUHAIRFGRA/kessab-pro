@@ -30,7 +30,7 @@ const BuyersListCardView = ({ searchText: propSearchText, route }) => {
       {buyers.length === 0 ? (
         <FallBack
           type={FALLBACK_TYPE.NO_RESULT}
-          message="No Buyers found for this search."
+          message={t(`common.noBuyersFound`)}
         />
       ) : (
         <FlatList

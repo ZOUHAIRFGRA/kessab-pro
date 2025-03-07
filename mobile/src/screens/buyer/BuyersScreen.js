@@ -4,6 +4,7 @@ import Colors from "../../utils/Colors";
 import React, { useState } from "react";
 import { SearchBar } from "@rneui/themed";
 import { useTranslation } from "react-i18next";
+
 import BuyersListCardView from "../../components/buyer/BuyersListCardView";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
