@@ -33,10 +33,10 @@ public class AnimalSeeder {
     @Autowired
     private UserRepository userRepository;
 
-    @PostConstruct
-    public void init() {
-        seedData();
-    }
+//    @PostConstruct
+//    public void init() {
+//        seedData();
+//    }
 
     public void seedData() {
         // Step 1: Check if the first user is "admin"

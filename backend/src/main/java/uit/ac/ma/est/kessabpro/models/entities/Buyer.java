@@ -5,10 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
-import org.springframework.beans.factory.annotation.Autowired;
 import uit.ac.ma.est.kessabpro.auditing.UserAware;
-import uit.ac.ma.est.kessabpro.services.implementations.AuthService;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAuthService;
 
 import java.util.List;
 import java.util.UUID;

@@ -9,9 +9,9 @@ import uit.ac.ma.est.kessabpro.models.entities.AnimalCategory;
 import uit.ac.ma.est.kessabpro.models.entities.User;
 import uit.ac.ma.est.kessabpro.repositories.AnimalCategoryRepository;
 import uit.ac.ma.est.kessabpro.repositories.AnimalIconRepository;
-import uit.ac.ma.est.kessabpro.repositories.AnimalRepository; // Add this
-import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalCategoryService;
-
+import uit.ac.ma.est.kessabpro.services.contracts.IAnimalCategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

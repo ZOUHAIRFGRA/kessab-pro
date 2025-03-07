@@ -12,12 +12,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import uit.ac.ma.est.kessabpro.mappers.SaleMapper;
-import uit.ac.ma.est.kessabpro.mappers.TransactionMapper;
 import uit.ac.ma.est.kessabpro.models.dto.requests.SaleDTORequest;
 import uit.ac.ma.est.kessabpro.models.dto.responses.SaleDTOResponse;
-import uit.ac.ma.est.kessabpro.models.dto.responses.TransactionDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
-import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
+import uit.ac.ma.est.kessabpro.services.contracts.ISaleService;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;

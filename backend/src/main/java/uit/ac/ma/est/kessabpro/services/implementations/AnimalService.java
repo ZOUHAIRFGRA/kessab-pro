@@ -14,7 +14,7 @@ import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.User;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import uit.ac.ma.est.kessabpro.repositories.UserRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalService;
+import uit.ac.ma.est.kessabpro.services.contracts.IAnimalService;
 
 import java.io.File;
 import java.io.IOException;

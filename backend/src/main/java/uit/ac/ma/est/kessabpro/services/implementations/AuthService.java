@@ -1,16 +1,13 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.models.entities.User;
 import uit.ac.ma.est.kessabpro.repositories.UserRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAuthService;
+import uit.ac.ma.est.kessabpro.services.contracts.IAuthService;
 
 import java.nio.file.AccessDeniedException;
 import java.util.UUID;

@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 public interface BuyerRepository extends UserAwareRepository<Buyer,UUID> {
@@ -20,4 +22,5 @@ public interface BuyerRepository extends UserAwareRepository<Buyer,UUID> {
             @Param("fullName") String fullName,
             @Param("cin") String cin,
             Pageable pageable);
+
 }

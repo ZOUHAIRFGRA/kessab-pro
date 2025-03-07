@@ -2,7 +2,7 @@ package uit.ac.ma.est.kessabpro.services.implementations;
 
 import uit.ac.ma.est.kessabpro.models.entities.AnimalIcon;
 import uit.ac.ma.est.kessabpro.repositories.AnimalIconRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalIconService;
+import uit.ac.ma.est.kessabpro.services.contracts.IAnimalIconService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

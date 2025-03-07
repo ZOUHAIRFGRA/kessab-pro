@@ -11,7 +11,7 @@ import uit.ac.ma.est.kessabpro.models.entities.AnimalActivitiesLog;
 import uit.ac.ma.est.kessabpro.models.entities.User;
 import uit.ac.ma.est.kessabpro.repositories.AnimalActivitiesLogRepository;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalActivitiesLogService;
+import uit.ac.ma.est.kessabpro.services.contracts.IAnimalActivitiesLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

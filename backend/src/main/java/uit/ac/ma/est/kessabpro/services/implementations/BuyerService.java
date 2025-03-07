@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 import uit.ac.ma.est.kessabpro.repositories.BuyerRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IBuyerService;
+import uit.ac.ma.est.kessabpro.services.contracts.IBuyerService;
 
 import java.util.List;
 import java.util.UUID;

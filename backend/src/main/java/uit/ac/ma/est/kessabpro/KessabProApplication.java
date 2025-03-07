@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,9 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import uit.ac.ma.est.kessabpro.helpers.ImageLoader;
 import uit.ac.ma.est.kessabpro.models.entities.User;
+import uit.ac.ma.est.kessabpro.services.contracts.IDatabaseSeederService;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 @SpringBootApplication
@@ -33,7 +36,15 @@ public class KessabProApplication {
         System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
         System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
         System.setProperty("DB_URL", dotenv.get("DB_URL"));
+
+
         SpringApplication.run(KessabProApplication.class, args);
+    }
+
+
+    @Bean
+    ApplicationRunner seedDatabase(IDatabaseSeederService databaseSeeder) {
+        return args -> databaseSeeder.seed();
     }
 
 

@@ -1,24 +1,17 @@
 package uit.ac.ma.est.kessabpro.aspect;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import uit.ac.ma.est.kessabpro.auditing.UserAware;
-import uit.ac.ma.est.kessabpro.auditing.UserSpecification;
-import uit.ac.ma.est.kessabpro.models.entities.User;
 import uit.ac.ma.est.kessabpro.repositories.UserAwareRepository;
 import uit.ac.ma.est.kessabpro.repositories.UserRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAuthService;
+import uit.ac.ma.est.kessabpro.services.contracts.IAuthService;
 
-import java.lang.reflect.Method;
 import java.nio.file.AccessDeniedException;
 import java.util.UUID;
 

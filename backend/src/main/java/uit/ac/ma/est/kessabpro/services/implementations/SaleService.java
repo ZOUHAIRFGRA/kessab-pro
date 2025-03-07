@@ -12,7 +12,6 @@ import uit.ac.ma.est.kessabpro.enums.PaymentStatus;
 import uit.ac.ma.est.kessabpro.events.sale.SaleClosedEvent;
 import uit.ac.ma.est.kessabpro.events.sale.SaleCreatedEvent;
 import uit.ac.ma.est.kessabpro.helpers.DateHelper;
-import uit.ac.ma.est.kessabpro.mappers.AnimalMapper;
 import uit.ac.ma.est.kessabpro.mappers.BuyerMapper;
 import uit.ac.ma.est.kessabpro.mappers.SaleMapper;
 import uit.ac.ma.est.kessabpro.models.dto.requests.SaleDTORequest;
@@ -21,9 +20,11 @@ import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import uit.ac.ma.est.kessabpro.repositories.BuyerRepository;
 import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
 import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAuthService;
-import uit.ac.ma.est.kessabpro.services.interfaces.ISaleService;
+import uit.ac.ma.est.kessabpro.services.contracts.IAuthService;
+import uit.ac.ma.est.kessabpro.services.contracts.ISaleService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -154,8 +155,9 @@ public class SaleService implements ISaleService {
         if (sale.getPaymentStatus() == PaymentStatus.NOT_PAID) {
             return sale.getAgreedAmount();
         }
-
-        return remainingAmount;
+        return  BigDecimal.valueOf(remainingAmount)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 
 
