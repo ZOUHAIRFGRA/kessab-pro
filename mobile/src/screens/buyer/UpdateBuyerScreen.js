@@ -156,7 +156,7 @@ export default function UpdateBuyersScreen({ route }) {
           value={buyerData.fullName}
           onChangeText={(text) => handleInputChange("fullName", text)}
           errorMessage={errors.fullName}
-          errorStyle={{ color: "red" }}
+          errorStyle={{ color: Colors.danger}}
           required
           leftIcon={
             <Icon
@@ -173,7 +173,7 @@ export default function UpdateBuyersScreen({ route }) {
           value={buyerData.CIN}
           onChangeText={(text) => handleInputChange("CIN", text)}
           errorMessage={errors.CIN}
-          errorStyle={{ color: "red" }}
+          errorStyle={{ color: Colors.danger }}
           leftIcon={
             <Icon
               name="idcard"
@@ -190,7 +190,7 @@ export default function UpdateBuyersScreen({ route }) {
           onChangeText={(text) => handleInputChange("phone", text)}
           keyboardType="number-pad"
           errorMessage={errors.phone}
-          errorStyle={{ color: "red" }}
+          errorStyle={{ color: Colors.danger }}
           leftIcon={
             <Icon
               name="phone"
@@ -207,7 +207,7 @@ export default function UpdateBuyersScreen({ route }) {
           onChangeText={(text) => handleInputChange("address", text)}
           multiline
           errorMessage={errors.address}
-          errorStyle={{ color: "red" }}
+          errorStyle={{ color: Colors.danger}}
           leftIcon={
             <Icon
               name="map-outline"

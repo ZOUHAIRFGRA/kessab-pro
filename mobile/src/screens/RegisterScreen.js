@@ -133,7 +133,7 @@ const Input = styled(TextInput)({
 });
 
 const ErrorText = styled(Text)({
-  color: "red",
+  color: Colors.danger,
   marginBottom: 10,
 });
 

@@ -5,6 +5,7 @@ import { fetchUserProfile, updateProfile } from '../features/userSlice';
 import { styled } from 'dripsy';
 import { logout } from '../features/authSlice';
 import { useTranslation } from 'react-i18next';
+import Colors from '../utils/Colors';
 
 const ProfileScreen = () => {
   const { t } = useTranslation();
@@ -215,7 +216,7 @@ const StyledButton = styled(TouchableOpacity)(({ secondary, danger }) => ({
   flex: 1,
   paddingVertical: 15,
   paddingHorizontal: 20,
-  backgroundColor: danger ? 'red' : secondary ? 'orange' : '#4A90E2',
+  backgroundColor: danger ? Colors.danger : secondary ? 'orange' : '#4A90E2',
   borderRadius: 8,
   alignItems: 'center',
   marginHorizontal: 5,

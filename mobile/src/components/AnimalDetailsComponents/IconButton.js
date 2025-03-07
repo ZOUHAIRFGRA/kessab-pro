@@ -1,15 +1,16 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native";
 import { styled } from "dripsy";
+import Colors from "../../utils/Colors";
 
 const IconButton = ({ label, value, selected, onPress }) => {
-  const isSelected = selected === value; 
+  const isSelected = selected === value;
 
   return (
     <ButtonContainer
       onPress={onPress}
       sx={{
-        bg: isSelected ? "green" : "gray",
+        bg: isSelected ? Colors.danger : "gray",
         borderColor: isSelected ? "darkgreen" : "gray",
       }}
     >

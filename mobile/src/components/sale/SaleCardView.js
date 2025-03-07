@@ -47,7 +47,7 @@ const SaleCardView = ({ sale }) => {
               position: "absolute",
               bottom: -5,
               right: 0,
-              backgroundColor: "green",
+              backgroundColor: Colors.primary,
               borderRadius: 10,
               width: 20,
               height: 20,

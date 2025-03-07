@@ -411,7 +411,13 @@ const AddSaleScreen = ({ route, navigation }) => {
   return (
     <ScrollView style={{ padding: 12 }}>
       {err ? (
-        <Text style={{ color: "red", textAlign: "center", marginBottom: 10 }}>
+        <Text
+          style={{
+            color: Colors.danger,
+            textAlign: "center",
+            marginBottom: 10,
+          }}
+        >
           {err}
         </Text>
       ) : null}
