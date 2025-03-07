@@ -119,14 +119,31 @@ export default function AddBuyersScreen() {
           onChangeText={(text) => handleInputChange("fullName", text)}
           errorMessage={errors.fullName}
           errorStyle={{ color: Colors.danger }}
+          labelStyle={{
+            textAlign: t("dir") === "rtl" ? "right" : "left",
+          }}
           required
           leftIcon={
-            <Icon
-              name="user"
-              type="antdesign"
-              size={24}
-              color={Colors.secondary}
-            />
+            t("dir") === "rtl" ? null : (
+              <Icon
+                name="user"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
+          }
+          rightIcon={
+            t("dir") === "ltr" ? (
+              "right"
+            ) : (
+              <Icon
+                name="user"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
           }
         />
 
@@ -136,13 +153,30 @@ export default function AddBuyersScreen() {
           onChangeText={(text) => handleInputChange("CIN", text)}
           errorMessage={errors.CIN}
           errorStyle={{ color: Colors.danger }}
+          labelStyle={{
+            textAlign: t("dir") === "rtl" ? "right" : "left",
+          }}
           leftIcon={
-            <Icon
-              name="idcard"
-              type="antdesign"
-              size={24}
-              color={Colors.secondary}
-            />
+            t("dir") === "rtl" ? null : (
+              <Icon
+                name="idcard"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
+          }
+          rightIcon={
+            t("dir") === "ltr" ? (
+              "right"
+            ) : (
+              <Icon
+                name="idcard"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
           }
         />
 
@@ -151,15 +185,32 @@ export default function AddBuyersScreen() {
           value={buyerData.phone}
           onChangeText={(text) => handleInputChange("phone", text)}
           keyboardType="number-pad"
+          labelStyle={{
+            textAlign: t("dir") === "rtl" ? "right" : "left",
+          }}
           errorMessage={errors.phone}
           errorStyle={{ color: Colors.danger }}
           leftIcon={
-            <Icon
-              name="phone"
-              type="antdesign"
-              size={24}
-              color={Colors.secondary}
-            />
+            t("dir") === "rtl" ? null : (
+              <Icon
+                name="phone"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
+          }
+          rightIcon={
+            t("dir") === "ltr" ? (
+              "right"
+            ) : (
+              <Icon
+                name="phone"
+                type="antdesign"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
           }
         />
 
@@ -168,15 +219,32 @@ export default function AddBuyersScreen() {
           value={buyerData.address}
           onChangeText={(text) => handleInputChange("address", text)}
           multiline
+          labelStyle={{
+            textAlign: t("dir") === "rtl" ? "right" : "left",
+          }}
           errorMessage={errors.address}
           errorStyle={{ color: Colors.danger }}
           leftIcon={
-            <Icon
-              name="map-outline"
-              type="ionicon"
-              size={24}
-              color={Colors.secondary}
-            />
+            t("dir") === "rtl" ? null : (
+              <Icon
+                name="map-outline"
+                type="ionicon"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
+          }
+          rightIcon={
+            t("dir") === "ltr" ? (
+              "right"
+            ) : (
+              <Icon
+                name="map-outline"
+                type="ionicon"
+                size={24}
+                color={Colors.secondary}
+              />
+            )
           }
         />
 
