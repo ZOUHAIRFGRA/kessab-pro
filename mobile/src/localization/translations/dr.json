@@ -7,6 +7,8 @@
     "NOT_PAID": "مازال ماخلصش"
   },
   "common": {
+    "sold" : "تباع",
+    "unsold" : "مازال ما تباعش",
     "uncategorized": "ماكاينينش تصنيف",
     "viewSale": "شوف البيع",
     "Available" : "متوفر",
