@@ -113,7 +113,7 @@ export default function AddBuyersScreen() {
           padding: 18,
         }}
       >
-        <Header level="h2">{t("buyers.addNewBuyer")}</Header>
+        <Header level="h2">{t("common.addNewBuyer")}</Header>
 
         <Input
           label={t("common.FullName")}
@@ -203,7 +203,7 @@ export default function AddBuyersScreen() {
             color: Colors.white,
           }}
         >
-          {t("common.Save")}
+          {t("common.save")}
         </Button>
       </Container>
     </ScrollView>
