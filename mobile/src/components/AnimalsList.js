@@ -105,6 +105,7 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
         ? category.typeName
         : t("common.uncategorized");
       const statusText = item.saleId ? t("common.sold") : t("common.unsold");
+      const statusColor = item.saleId ? Colors.primary : Colors.danger;
 
       return (
         <ListItem onPress={() => handleAnimalClick(item.id)}>
@@ -116,7 +117,7 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
             <ListItemText>{item.tag}</ListItemText>
             <AnimalSubText>{categoryName}</AnimalSubText>
             <AnimalSubText>{item.sex || t("common.unknown_sex")}</AnimalSubText>
-            <AnimalStatus>{statusText}</AnimalStatus>
+            <AnimalStatus style={{ color: statusColor }}>{statusText}</AnimalStatus>
           </AnimalInfo>
         </ListItem>
       );
