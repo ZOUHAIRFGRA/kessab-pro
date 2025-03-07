@@ -11,12 +11,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/authSlice";
 import { styled } from "dripsy";
 import Colors from "../utils/Colors";
+import { useTranslation } from "react-i18next";
 
 const LoginScreen = ({ navigation }) => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
+  const { t } = useTranslation();
+  const isRTL = t("dir") === "rtl";
 
   const handleLogin = () => {
     dispatch(loginUser({ identifier, password }));
@@ -33,39 +36,42 @@ const LoginScreen = ({ navigation }) => {
           marginBottom: 40,
         }}
       />
-      <Title>Welcome</Title>
+      <Title>{t("common.Welcome")}</Title>
 
       <InputContainer>
-        <Label>Username or Phone</Label>
+        <Label isRTL={isRTL}>{t("common.Username or Phone")}</Label>
         <Input
           value={identifier}
           onChangeText={setIdentifier}
-          placeholder="Enter username or phone"
+          placeholder={t("common.Enter username or phone")}
+          textAlign={isRTL ? "right" : "left"}
         />
       </InputContainer>
 
       <InputContainer>
-        <Label>Password</Label>
+        <Label isRTL={isRTL}>{t("common.Password")}</Label>
         <Input
           value={password}
           onChangeText={setPassword}
-          placeholder="Enter password"
+          placeholder={t("common.Enter password")}
           secureTextEntry
+          textAlign={isRTL ? "right" : "left"}
         />
       </InputContainer>
 
-      {error && <ErrorText>{error}</ErrorText>}
+      {error && <ErrorText>{t(error)}</ErrorText>}
 
       <LoginButton onPress={handleLogin} disabled={loading}>
         {loading ? (
           <ActivityIndicator color="white" />
         ) : (
-          <ButtonText>Login</ButtonText>
+          <ButtonText>{t("common.Login")}</ButtonText>
         )}
       </LoginButton>
 
-      <RegisterLink onPress={() => navigation.navigate("Register")}>
-        <RegisterText>Don't have an account? Register</RegisterText>
+      <RegisterLink onPress={() => navigation.navigate("Register")}
+        style={{ flexDirection: isRTL ? "row-reverse" : "row" }}>
+        <RegisterText>{t("common.Don't have an account? Register")}</RegisterText>
       </RegisterLink>
     </Container>
   );
@@ -92,11 +98,12 @@ const InputContainer = styled(View)({
   marginBottom: 15,
 });
 
-const Label = styled(Text)({
+const Label = styled(Text)(({ isRTL }) => ({
   fontSize: 16,
   color: "#555",
   marginBottom: 5,
-});
+  textAlign:isRTL ? "right" : "left"
+}));
 
 const Input = styled(TextInput)({
   width: "100%",

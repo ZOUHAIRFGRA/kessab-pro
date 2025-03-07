@@ -12,6 +12,18 @@
   },
 
   "common": {
+
+    "Register": "S'inscrire",
+    "Enter username": "Entrez le nom d'utilisateur",
+    "Enter email": "Entrez l'email",
+    "Enter username or phone": "Entrez le nom d'utilisateur ou le téléphone",
+    "Login": "S'identifier",
+    "Don't have an account? Register": "Vous n'avez pas de compte? S'inscrire",
+    "Already have an account? Login": "Vous avez déjà un compte? S'identifier",
+    "Enter password": "Entrez le mot de passe",
+    "Username or Phone": "Nom d'utilisateur ou téléphone",
+    "Password": "Mot de passe",
+    "Welcome": "Bienvenue",   
     "defaultCategoryNameError": "Impossible d'ajouter la catégorie par défaut",
     "defaultCategoryName": "Catégorie par défaut",
     "sold": "Vendu",
