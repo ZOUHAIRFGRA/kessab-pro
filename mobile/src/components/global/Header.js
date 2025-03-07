@@ -1,8 +1,9 @@
 import React from "react";
-import { View } from "react-native";
 import Text from "../../components/global/Text";
 import Container from "./Container";
+
 const Header = ({ level, children }) => {
+
   let fontSize;
 
   switch (level) {
