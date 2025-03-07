@@ -26,6 +26,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import FallBack, { FALLBACK_TYPE } from "../components/global/Fallback";
 
 const BASE_URL = getBaseURL();
+const DEFAULT_CATEGORY_NAME = "Livestock";
 
 const CategoryScreen = () => {
   const { t } = useTranslation();
@@ -63,6 +64,10 @@ const CategoryScreen = () => {
       Alert.alert(t("common.error"), t("common.iconRequired"));
       return;
     }
+    if (categoryName.trim().toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase()) {
+      Alert.alert(t("common.error"), t("common.defaultCategoryNameError"));
+      return;
+    }
 
     try {
       const categoryData = {
@@ -95,13 +100,21 @@ const CategoryScreen = () => {
   };
 
   const handleEditCategory = (category) => {
+    if (category.typeName.toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase()) {
+      Alert.alert(t("common.error"), t("common.defaultCategoryEditError"));
+      return;
+    }
     setCategoryName(category.typeName);
     setSelectedIconId(category.icon?.id || null);
     setEditingCategoryId(category.id);
     setAddOrEditVisible(true);
   };
 
-  const handleDeleteCategory = (id) => {
+  const handleDeleteCategory = (id, typeName) => {
+    if (typeName.toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase()) {
+      Alert.alert(t("common.error"), t("common.defaultCategoryDeleteError"));
+      return;
+    }
     Alert.alert(
       t("common.deleteCategory"),
       t("common.confirmDelete"),
@@ -147,17 +160,23 @@ const CategoryScreen = () => {
       ? item.icon
       : icons.find(icon => icon.id === item.icon?.id) || { iconPath: null };
 
+    const isDefaultCategory = item.typeName.toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase();
+
     return (
       <CategoryItem isRTL={isRTL}>
         {isRTL ? (
           <>
             <ButtonContainer style={{ justifyContent: 'flex-start' }}>
-              <DeleteButton onPress={() => handleDeleteCategory(item.id)}>
-                <ButtonText>{t("common.delete")}</ButtonText>
-              </DeleteButton>
-              <EditButton onPress={() => handleEditCategory(item)}>
-                <ButtonText>{t("common.edit")}</ButtonText>
-              </EditButton>
+              {!isDefaultCategory && (
+                <DeleteButton onPress={() => handleDeleteCategory(item.id, item.typeName)}>
+                  <ButtonText>{t("common.delete")}</ButtonText>
+                </DeleteButton>
+              )}
+              {!isDefaultCategory && (
+                <EditButton onPress={() => handleEditCategory(item)}>
+                  <ButtonText>{t("common.edit")}</ButtonText>
+                </EditButton>
+              )}
             </ButtonContainer>
             <CategoryInfo style={{ justifyContent: 'flex-end' }}>
               <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
@@ -179,12 +198,16 @@ const CategoryScreen = () => {
               <CategoryText isRTL={isRTL}>{item.typeName}</CategoryText>
             </CategoryInfo>
             <ButtonContainer style={{ justifyContent: 'flex-end' }}>
-              <EditButton onPress={() => handleEditCategory(item)}>
-                <ButtonText>{t("common.edit")}</ButtonText>
-              </EditButton>
-              <DeleteButton onPress={() => handleDeleteCategory(item.id)}>
-                <ButtonText>{t("common.delete")}</ButtonText>
-              </DeleteButton>
+              {!isDefaultCategory && (
+                <EditButton onPress={() => handleEditCategory(item)}>
+                  <ButtonText>{t("common.edit")}</ButtonText>
+                </EditButton>
+              )}
+              {!isDefaultCategory && (
+                <DeleteButton onPress={() => handleDeleteCategory(item.id, item.typeName)}>
+                  <ButtonText>{t("common.delete")}</ButtonText>
+                </DeleteButton>
+              )}
             </ButtonContainer>
           </>
         )}

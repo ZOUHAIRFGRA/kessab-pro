@@ -11,8 +11,7 @@ import uit.ac.ma.est.kessabpro.repositories.AnimalCategoryRepository;
 import uit.ac.ma.est.kessabpro.repositories.AnimalIconRepository;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import uit.ac.ma.est.kessabpro.services.contracts.IAnimalCategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +26,7 @@ public class AnimalCategoryService implements IAnimalCategoryService {
     private AnimalIconRepository animalIconRepository;
 
     @Autowired
-    private AnimalRepository animalRepository; // Inject AnimalRepository
+    private AnimalRepository animalRepository;
 
     private UUID getLoggedInUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -71,6 +70,9 @@ public class AnimalCategoryService implements IAnimalCategoryService {
         UUID userId = getLoggedInUserId();
         Optional<AnimalCategory> existingCategory = animalCategoryRepository.findByIdAndUserId(id, userId);
         if (existingCategory.isPresent()) {
+            if ("Livestock".equalsIgnoreCase(existingCategory.get().getTypeName())) {
+                throw new RuntimeException("Cannot edit the Livestock category");
+            }
             category.setId(id);
             category.setUser(existingCategory.get().getUser());
             return animalCategoryRepository.save(category);
@@ -79,14 +81,19 @@ public class AnimalCategoryService implements IAnimalCategoryService {
     }
 
     @Override
-    @Transactional // Ensure atomicity
+    @Transactional
     public boolean deleteCategory(UUID id) {
         UUID userId = getLoggedInUserId();
         Optional<AnimalCategory> category = animalCategoryRepository.findByIdAndUserId(id, userId);
         if (category.isPresent()) {
-            // Set category_id to null for all related animals
-            animalRepository.setCategoryToNullForAnimals(id);
-            // Now safe to delete the category
+            if ("Livestock".equalsIgnoreCase(category.get().getTypeName())) {
+                throw new RuntimeException("Cannot delete the Livestock category");
+            }
+            Optional<AnimalCategory> livestockCategory = animalCategoryRepository.findByUser_IdAndTypeName(userId, "Livestock");
+            if (livestockCategory.isEmpty()) {
+                throw new RuntimeException("User's Livestock category not found; cannot reassign animals");
+            }
+            animalRepository.reassignCategoryToLivestock(id, livestockCategory.get().getId());
             animalCategoryRepository.deleteById(id);
             return true;
         }

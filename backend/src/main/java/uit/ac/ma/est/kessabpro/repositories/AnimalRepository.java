@@ -26,4 +26,8 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
     @Modifying
     @Query("UPDATE Animal a SET a.category = null WHERE a.category.id = :categoryId")
     void setCategoryToNullForAnimals(UUID categoryId);
+
+    @Modifying
+    @Query("UPDATE Animal a SET a.category.id = :newCategoryId WHERE a.category.id = :oldCategoryId")
+    void reassignCategoryToLivestock(UUID oldCategoryId, UUID newCategoryId);
 }
