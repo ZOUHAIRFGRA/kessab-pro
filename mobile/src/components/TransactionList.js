@@ -1,14 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Alert, Modal, TextInput, Button } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Modal,
+  TextInput,
+  Button,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { getTransactions, removeTransaction, editTransaction } from "../features/transactionSlice";
-
+import {
+  getTransactions,
+  removeTransaction,
+  editTransaction,
+} from "../features/transactionSlice";
+import Colors from "../utils/Colors";
 
 export default function TransactionList() {
   const dispatch = useDispatch();
-  const { transactions, loading, error } = useSelector((state) => state.transactions);
+  const { transactions, loading, error } = useSelector(
+    (state) => state.transactions
+  );
   const [modalVisible, setModalVisible] = useState(false);
   const [editedTransaction, setEditedTransaction] = useState(null);
   const [newAmount, setNewAmount] = useState("");
@@ -18,10 +33,18 @@ export default function TransactionList() {
   }, [dispatch]);
 
   const handleDelete = (id) => {
-    Alert.alert("Confirm", "Are you sure you want to delete this transaction?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: () => dispatch(removeTransaction(id)) },
-    ]);
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to delete this transaction?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => dispatch(removeTransaction(id)),
+        },
+      ]
+    );
   };
 
   const handleEdit = (transaction) => {
@@ -31,24 +54,34 @@ export default function TransactionList() {
   };
 
   const handleSave = () => {
-    if (!newAmount.trim()) return Alert.alert("Error", "Amount cannot be empty.");
-  
-    dispatch(editTransaction({ 
-      id: editedTransaction.id, 
-      updatedTransaction: { ...editedTransaction, amount: parseFloat(newAmount) } 
-    }));
+    if (!newAmount.trim())
+      return Alert.alert("Error", "Amount cannot be empty.");
+
+    dispatch(
+      editTransaction({
+        id: editedTransaction.id,
+        updatedTransaction: {
+          ...editedTransaction,
+          amount: parseFloat(newAmount),
+        },
+      })
+    );
   };
-  
+
   useEffect(() => {
-    if (!modalVisible) return; 
-  
-    const updatedTransaction = transactions.find(t => t.id === editedTransaction?.id);
-    if (updatedTransaction && updatedTransaction.amount === parseFloat(newAmount)) {
+    if (!modalVisible) return;
+
+    const updatedTransaction = transactions.find(
+      (t) => t.id === editedTransaction?.id
+    );
+    if (
+      updatedTransaction &&
+      updatedTransaction.amount === parseFloat(newAmount)
+    ) {
       setModalVisible(false);
       setEditedTransaction(null);
     }
   }, [transactions]);
-  
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error}</Text>;
@@ -60,7 +93,9 @@ export default function TransactionList() {
           transactions.map((transaction) => (
             <TransactionItem key={transaction.id}>
               <TransactionDetails>
-                <TransactionText>Amount: {transaction.amount} MAD</TransactionText>
+                <TransactionText>
+                  Amount: {transaction.amount} MAD
+                </TransactionText>
                 <Text>Method: {transaction.method}</Text>
                 <Text>Payment Status: {transaction.sale.paymentStatus}</Text>
                 <Text>Transaction Date: {transaction.transactionDate}</Text>
@@ -70,7 +105,7 @@ export default function TransactionList() {
                   <Icon name="pencil" size={24} color="#4A90E2" />
                 </ActionButton>
                 <ActionButton onPress={() => handleDelete(transaction.id)}>
-                  <Icon name="trash-can" size={24} color="red" />
+                  <Icon name="trash-can" size={24} color={Colors.danger} />
                 </ActionButton>
               </View>
             </TransactionItem>
@@ -98,7 +133,9 @@ export default function TransactionList() {
               borderRadius: 10,
             }}
           >
-            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
+            <Text
+              style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
+            >
               Edit Transaction
             </Text>
             <TextInput
@@ -113,9 +150,19 @@ export default function TransactionList() {
               value={newAmount}
               onChangeText={setNewAmount}
             />
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <Button title="Cancel" onPress={() => setModalVisible(false)} color="gray" />
-              <Button title="Save" onPress={handleSave} color="green" />
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Button
+                title="Cancel"
+                onPress={() => setModalVisible(false)}
+                color="gray"
+              />
+              <Button
+                title="Save"
+                onPress={handleSave}
+                color={Colors.primary}
+              />
             </View>
           </View>
         </View>

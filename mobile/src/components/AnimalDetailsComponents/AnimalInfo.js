@@ -2,6 +2,7 @@ import { Card, InfoRow, InfoText, EditButton } from "./sharedStyles";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Text, TouchableOpacity } from "react-native";
 import { View } from 'dripsy';
+import Colors from "../../utils/Colors";
 
 export const AnimalInfo = ({ animal, setEditing, onDelete, isRTL, t }) => {
   const animalStatus = animal?.saleId ? t("common.Sold") : t("common.Available");
@@ -36,7 +37,7 @@ export const AnimalInfo = ({ animal, setEditing, onDelete, isRTL, t }) => {
         <TouchableOpacity
           onPress={onDelete}
           style={{
-            backgroundColor: "red",
+            backgroundColor: Colors.danger,
             padding: 10,
             borderRadius: 5,
             flexDirection: "row",

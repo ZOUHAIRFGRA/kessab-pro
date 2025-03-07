@@ -156,7 +156,7 @@ const TransactionCardView = ({ transaction, id, type = "sale" }) => {
           >
             <Icon
               name="wallet-plus-outline"
-              color={"green"}
+              color={Colors.primary}
               raised
               reverse
               type="material-community"
