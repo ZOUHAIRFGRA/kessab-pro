@@ -27,6 +27,7 @@ const AppWrapper = () => {
 
   useEffect(() => {
     const loadToken = async () => {
+      // AsyncStorage.clear();
       const token = await AsyncStorage.getItem("authToken");
       if (token) {
         dispatch(setToken(token));
