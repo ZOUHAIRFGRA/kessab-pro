@@ -135,7 +135,6 @@ const animalSlice = createSlice({
         state.loading = false;
         state.unsoldAnimals = action.payload;
         state.totalUnsoldAnimals = action.payload.length;
-        console.log({ animals: state.unsoldAnimals });
       })
       .addCase(getUnsoldAnimals.rejected, (state, action) => {
         state.loading = false;

@@ -261,8 +261,6 @@ const AddSaleScreen = ({ route, navigation }) => {
 
     setErr("");
     setSubmitData(finalData);
-    console.log({ finalData });
-    console.log({ animals: finalData.animals });
 
     saleApi
       .createSale(finalData)
@@ -273,7 +271,6 @@ const AddSaleScreen = ({ route, navigation }) => {
       })
       .catch((e) => {
         showErrorToast();
-        console.log({ e });
       })
       .finally(() => {
         setIsSubmitting(false);
