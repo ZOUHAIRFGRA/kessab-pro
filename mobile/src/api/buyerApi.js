@@ -11,6 +11,10 @@ class BuyersService {
     return axiosInstance.get(`/buyers/${id}`).then((res) => res.data);
   }
 
+  fetchBuyerOverview(id) {
+    return axiosInstance.get(`/buyers/${id}/overview`).then((res) => res.data);
+  }
+
   createBuyer(payload) {
     return axiosInstance.post("/buyers", payload).then((res) => res.data);
   }

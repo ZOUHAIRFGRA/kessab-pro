@@ -171,33 +171,56 @@ const AddSaleScreen = ({ route, navigation }) => {
       for (let i = 0; i < animalFormData.length; i++) {
         const animal = animalFormData[i] || {};
         if (animalExisting[i] && !animal.id) {
-          return `Animal ${i + 1} must be selected`;
+          return (
+            t("common.Livestock") +
+            " " +
+            i +
+            1 +
+            " " +
+            t("common.mustBeSelected")
+          );
         }
         if (!animalExisting[i] && !animal.tag) {
-          return `Animal ${i + 1} tag must be filled`;
+          return (
+            t("common.Livestock") + " " + i + 1 + " " + t("common.tagRequired")
+          );
         }
         if (!animalExisting[i] && !animal.category) {
-          return `Animal ${i + 1} category must be filled`;
+          return (
+            t("common.Livestock") +
+            " " +
+            i +
+            1 +
+            " " +
+            t("common.categoryRequired")
+          );
         }
         if (!animal.price) {
-          return `Animal ${i + 1} price must be filled`;
+          return (
+            t("common.Livestock") +
+            " " +
+            i +
+            1 +
+            " " +
+            t("common.priceRequired")
+          );
         }
       }
 
       if (!buyerExisting && !buyerFormData.fullName) {
-        return "Buyer full name must be filled";
+        return t("common.buyerFullNameRequired");
       }
       if (buyerExisting && !buyerFormData.id) {
-        return "Buyer must be chosen";
+        return t("common.buyerRequired");
       }
       if (!summaryFormData.agreedAmount) {
-        return "Agreed amount must be filled";
+        return t("common.agreedAmountRequired");
       }
       if (!summaryFormData.paidAmount) {
         return "Paid amount must be filled";
       }
       if (!summaryFormData.method) {
-        return "Method is required";
+        return t("common.methodRequired");
       }
       return null;
     };
@@ -425,7 +448,7 @@ const AddSaleScreen = ({ route, navigation }) => {
         {/* Buyer Section */}
         <Card sx={{ flexDirection: "column", padding: 0 }}>
           <Container sx={{ padding: 16 }}>
-            <Text onPress={toggleBuyerCollapsed}>Buyer</Text>
+            <Text onPress={toggleBuyerCollapsed}>{t("common.buyer")}</Text>
           </Container>
           <Collapsible collapsed={buyerCollapsed}>
             <Container>
@@ -442,7 +465,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                   checkedIcon="checkbox-marked"
                   uncheckedIcon="checkbox-blank-outline"
                   checkedColor={Colors.secondary}
-                  title="already exists?"
+                  title={t("common.alreadyRegistered")}
                 />
               </Container>
               {!buyerExisting && (
@@ -456,7 +479,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                         type="ionicon"
                       />
                     }
-                    placeholder="CIN"
+                    placeholder={t("common.CIN")}
                     value={buyerFormData.cin}
                     onChangeText={(value) => handleBuyerChange("cin", value)}
                     {...inputStyles}
@@ -470,7 +493,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                         type="ionicon"
                       />
                     }
-                    placeholder="Full Name"
+                    placeholder={t("common.FullName")}
                     value={buyerFormData.fullName}
                     onChangeText={(value) =>
                       handleBuyerChange("fullName", value)
@@ -486,8 +509,11 @@ const AddSaleScreen = ({ route, navigation }) => {
                         type="ionicon"
                       />
                     }
-                    placeholder="Phone"
+                    placeholder={t("common.Phone")}
                     keyboardType="phone-pad"
+                    style={{
+                      textAlign: "right",
+                    }}
                     value={buyerFormData.phone}
                     onChangeText={(value) => handleBuyerChange("phone", value)}
                     {...inputStyles}
@@ -501,7 +527,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                         type="ionicon"
                       />
                     }
-                    placeholder="Address"
+                    placeholder={t("common.Address")}
                     value={buyerFormData.address}
                     onChangeText={(value) =>
                       handleBuyerChange("address", value)
@@ -530,8 +556,8 @@ const AddSaleScreen = ({ route, navigation }) => {
                   ) : (
                     <Text>
                       {buyersLoading
-                        ? "Loading buyers..."
-                        : "No buyers available"}
+                        ? t("common.loadingBuyers")
+                        : t("common.noBuyersAvailable")}
                     </Text>
                   )}
                 </Container>
@@ -546,7 +572,7 @@ const AddSaleScreen = ({ route, navigation }) => {
             <Card key={index} sx={{ flexDirection: "column", padding: 0 }}>
               <Container sx={{ padding: 16 }}>
                 <Text onPress={() => toggleAnimalCollapsed(index)}>
-                  Animal {index + 1}
+                  {t(`common.Livestock`)} {index + 1}
                 </Text>
               </Container>
               <Collapsible collapsed={animalCollapsed[index]}>
@@ -564,7 +590,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                       checkedIcon="checkbox-marked"
                       uncheckedIcon="checkbox-blank-outline"
                       checkedColor={Colors.secondary}
-                      title="already exists?"
+                      title={t("common.alreadyRegistered")}
                     />
 
                     <CheckBox
@@ -574,7 +600,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                       checkedIcon="checkbox-marked"
                       uncheckedIcon="checkbox-blank-outline"
                       checkedColor={Colors.secondary}
-                      title="pickedUp"
+                      title={t("common.PickedUp") + "?"}
                     />
                   </Container>
 
@@ -600,8 +626,8 @@ const AddSaleScreen = ({ route, navigation }) => {
                       ) : (
                         <Text>
                           {animalsLoading
-                            ? "Loading animals..."
-                            : "No animals available"}
+                            ? t("common.loadingAnimals")
+                            : t("common.noAnimalsAvailable")}
                         </Text>
                       )}
 
@@ -614,7 +640,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                             color={Colors.secondary}
                           />
                         }
-                        placeholder="Price..."
+                        placeholder={t("common.price")}
                         keyboardType="numeric"
                         value={animalFormData[index]?.price || ""}
                         onChangeText={(value) =>
@@ -634,7 +660,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                             type="ionicon"
                           />
                         }
-                        placeholder="Tag..."
+                        placeholder={t("common.tag")}
                         value={animalFormData[index]?.tag || ""}
                         onChangeText={(value) =>
                           handleAnimalChange(index, "tag", value)
@@ -650,7 +676,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                             color={Colors.secondary}
                           />
                         }
-                        placeholder="Price..."
+                        placeholder={t("common.price")}
                         keyboardType="numeric"
                         value={animalFormData[index]?.price || ""}
                         onChangeText={(value) =>
@@ -661,7 +687,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                       <Container sx={{ paddingX: 10, marginVertical: 15 }}>
                         <BaseDropdown
                           values={categories?.map((category) => ({
-                            label: category.typeName,
+                            label: t(`common.${category.typeName}`),
                             value: category.id,
                           }))}
                           label={t("common.category")}
@@ -695,7 +721,7 @@ const AddSaleScreen = ({ route, navigation }) => {
             />
           )}
           <Container sx={{ padding: 16 }}>
-            <Text onPress={toggleSummaryCollapsed}>Summary</Text>
+            <Text onPress={toggleSummaryCollapsed}>{t("common.payment")}</Text>
           </Container>
           <Collapsible collapsed={summaryCollapsed}>
             <Container sx={{ marginHorizontal: 10 }}>
@@ -722,7 +748,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                     color={Colors.secondary}
                   />
                 }
-                placeholder="Agreed Amount"
+                placeholder={t("common.agreedAmount")}
                 keyboardType="numeric"
                 value={summaryFormData.agreedAmount}
                 onChangeText={(value) =>
@@ -739,7 +765,7 @@ const AddSaleScreen = ({ route, navigation }) => {
                     color={Colors.secondary}
                   />
                 }
-                placeholder="Paid Amount"
+                placeholder={t("common.paidAmount")}
                 keyboardType="numeric"
                 value={summaryFormData.paidAmount}
                 onChangeText={(value) =>
@@ -749,9 +775,12 @@ const AddSaleScreen = ({ route, navigation }) => {
               />
               <BaseDropdown
                 search={false}
-                notFocusLabel={"payment method"}
+                notFocusLabel={t("common.paymentMethod")}
                 disable={loadingPaymentMethods}
-                values={paymentMethods.map((pm) => ({ label: pm, value: pm }))}
+                values={paymentMethods.map((pm) => ({
+                  label: t(`common.${pm}`),
+                  value: pm,
+                }))}
                 onValueChange={(value) => handleSummaryChange("method", value)}
                 focusLabel={"a"}
                 containerStyle={{ marginBottom: 15 }}
@@ -775,11 +804,11 @@ const AddSaleScreen = ({ route, navigation }) => {
             type: "material",
             color: "white",
           }}
-          title={isSubmitting ? "Submitting..." : "Submit Sale"}
+          title={isSubmitting ? t("common.submitting") : t("common.submitSale")}
           onPress={onSubmit}
           disabled={isSubmitting}
         >
-          Ok
+          {t(`common.continue`)}
         </Button>
       </Container>
     </ScrollView>

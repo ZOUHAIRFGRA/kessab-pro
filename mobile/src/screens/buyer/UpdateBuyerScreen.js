@@ -149,7 +149,7 @@ export default function UpdateBuyersScreen({ route }) {
           padding: 18,
         }}
       >
-        <Header level="h2">{t("buyers.updateBuyer")}</Header>
+        <Header level="h2">{t("common.updateBuyer")}</Header>
 
         <Input
           label={t("common.FullName")}

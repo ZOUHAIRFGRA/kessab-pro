@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, Modal, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Modal,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { getSales } from "../features/saleSlice"; 
+import { getSales } from "../features/saleSlice";
 import { addTransaction } from "../features/transactionSlice";
 import { styled } from "dripsy";
-
-
+import { useTranslation } from "react-i18next";
 //   flexDirection: "row",
 //   justifyContent: "space-between",
 //   marginTop: 12,
@@ -16,18 +23,18 @@ import { styled } from "dripsy";
 export default function AddTransaction({ onClose }) {
   const dispatch = useDispatch();
   const { sales } = useSelector((state) => state.sales);
-
+  const { t } = useTranslation();
   const [selectedSale, setSelectedSale] = useState(null);
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState("CASH");
-  const [transactionDate, setTransactionDate] = useState(new Date().toISOString().split("T")[0]);
+  const [transactionDate, setTransactionDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [salesModalVisible, setSalesModalVisible] = useState(false);
 
   useEffect(() => {
     dispatch(getSales());
   }, [dispatch]);
-
-  
 
   const handleSubmit = () => {
     if (!selectedSale || !amount.trim()) {
@@ -48,12 +55,25 @@ export default function AddTransaction({ onClose }) {
 
   return (
     <Modal visible={true} animationType="slide" transparent={true}>
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.5)",
+        }}
+      >
         <Container style={{ width: 350, borderRadius: 10 }}>
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>Add Transaction</Text>
+          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
+            {t("common.addTransaction")}
+          </Text>
 
           <Dropdown onPress={() => setSalesModalVisible(true)}>
-            <Text>{selectedSale ? `Sale: ${selectedSale.id} - ${selectedSale.agreedAmount} MAD` : "Select a Sale"}</Text>
+            <Text>
+              {selectedSale
+                ? `Sale: ${selectedSale.id} - ${selectedSale.agreedAmount} MAD`
+                : "Select a Sale"}
+            </Text>
           </Dropdown>
 
           <Input
@@ -63,8 +83,16 @@ export default function AddTransaction({ onClose }) {
             onChangeText={setAmount}
           />
 
-          <Dropdown onPress={() => setMethod(method === "CASH" ? "CARD" : method === "CARD" ? "BANK" : "CASH")}>
-            <Text>Payment Method: {method}</Text>
+          <Dropdown
+            onPress={() =>
+              setMethod(
+                method === "CASH" ? "CARD" : method === "CARD" ? "BANK" : "CASH"
+              )
+            }
+          >
+            <Text>
+              {t("common.paymentMethod")}: {method}
+            </Text>
           </Dropdown>
 
           <Input
@@ -73,20 +101,45 @@ export default function AddTransaction({ onClose }) {
             onChangeText={setTransactionDate}
           />
 
-          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 10,
+            }}
+          >
             <Button title="Cancel" onPress={onClose} color="gray" />
-            <Button title="Add" onPress={handleSubmit} color="green" />
+            <Button
+              title={t("common.add")}
+              onPress={handleSubmit}
+              color="green"
+            />
           </View>
         </Container>
       </View>
 
       <Modal visible={salesModalVisible} animationType="slide">
         <View style={{ flex: 1, padding: 16 }}>
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>Select a Sale</Text>
+          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
+            Select a Sale
+          </Text>
           <ScrollView>
             {sales.map((sale) => (
-              <TouchableOpacity key={sale.id} onPress={() => { setSelectedSale(sale); setSalesModalVisible(false); }} style={{ padding: 10, borderBottomWidth: 1, borderColor: "#ccc" }}>
-                <Text>ID: {sale.id} - Amount: {sale.agreedAmount} MAD</Text>
+              <TouchableOpacity
+                key={sale.id}
+                onPress={() => {
+                  setSelectedSale(sale);
+                  setSalesModalVisible(false);
+                }}
+                style={{
+                  padding: 10,
+                  borderBottomWidth: 1,
+                  borderColor: "#ccc",
+                }}
+              >
+                <Text>
+                  ID: {sale.id} - Amount: {sale.agreedAmount} MAD
+                </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
