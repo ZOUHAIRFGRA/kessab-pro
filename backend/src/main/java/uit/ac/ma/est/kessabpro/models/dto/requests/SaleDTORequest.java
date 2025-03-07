@@ -29,7 +29,6 @@ public record SaleDTORequest(
 
         @NotNull(message = "must be provided")
         @PositiveOrZero(message = "must be zero or positive")
-        @DecimalMin("0.01")
         Double agreedAmount,
 
         @NotNull(message = "Paid amount must be provided")

@@ -29,7 +29,7 @@ public class AnimalSeederFactory implements SeederFactory<Animal> {
                     .sex(rnd.nextBoolean() ? "Male" : "Female")
                     .birthDate(LocalDate.now().minusDays(rnd.nextInt(1000)))
                     .price(BigDecimal.valueOf(1000 + rnd.nextInt(5000)))
-                    .weight(BigDecimal.valueOf(50 + rnd.nextInt(300)))
+                    .weight(BigDecimal.valueOf(50 + rnd.nextInt(70)))
                     .pickUpDate(null)
                     .category(category)
                     .sale(null)

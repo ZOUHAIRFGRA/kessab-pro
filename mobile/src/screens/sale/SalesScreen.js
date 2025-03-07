@@ -218,12 +218,10 @@ export default function SalesScreen() {
           saleDate={saleDate}
         />
       </Container>
-      {totalPages > 0 && (
-        <Pagination
-          pages={totalPages}
-          onPageChange={(page) => getNextPage(page)}
-        />
-      )}
+      <Pagination
+        pages={totalPages}
+        onPageChange={(page) => getNextPage(page)}
+      />
       <Button
         type="primary"
         style={{

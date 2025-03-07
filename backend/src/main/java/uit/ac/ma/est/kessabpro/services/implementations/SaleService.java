@@ -23,6 +23,8 @@ import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
 import uit.ac.ma.est.kessabpro.services.contracts.IAuthService;
 import uit.ac.ma.est.kessabpro.services.contracts.ISaleService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -153,8 +155,9 @@ public class SaleService implements ISaleService {
         if (sale.getPaymentStatus() == PaymentStatus.NOT_PAID) {
             return sale.getAgreedAmount();
         }
-
-        return remainingAmount;
+        return  BigDecimal.valueOf(remainingAmount)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 
 

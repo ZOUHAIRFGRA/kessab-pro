@@ -22,30 +22,46 @@ public class DatabaseSeederService implements IDatabaseSeederService {
     private final AnimalIconRepository animalIconRepository;
     private final SaleRepository saleRepository;
     private final AnimalRepository animalRepository;
+    private final AnimalActivitiesLogRepository animalActivitiesLogRepository;
+    private final AnimalMedicalLogRepository animalMedicalLogRepository;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public DatabaseSeederService(UserRepository userRepository, BuyerRepository buyerRepository, AnimalCategoryRepository animalCategoryRepository, AnimalIconRepository animalIconRepository, SaleRepository saleRepository, AnimalRepository animalRepository) {
+    public DatabaseSeederService(UserRepository userRepository, BuyerRepository buyerRepository, AnimalCategoryRepository animalCategoryRepository, AnimalIconRepository animalIconRepository, SaleRepository saleRepository, AnimalRepository animalRepository, AnimalActivitiesLogRepository animalActivitiesLogRepository, AnimalMedicalLogRepository animalMedicalLogRepository, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
         this.buyerRepository = buyerRepository;
         this.animalCategoryRepository = animalCategoryRepository;
         this.animalIconRepository = animalIconRepository;
         this.saleRepository = saleRepository;
         this.animalRepository = animalRepository;
+        this.animalActivitiesLogRepository = animalActivitiesLogRepository;
+        this.animalMedicalLogRepository = animalMedicalLogRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
     @Transactional
     public void seed() {
         if (userRepository.count() == 0) {
-            int buyerCountPerUser = 25; // Number of buyers per user
+            int userCount = 3;
+            int salePerBuyer = 3;
+            int transactionPerSale = 2;
+            int buyerCountPerUser = 12;
+            int animalCountPerUser = 11; //max is 11, add more images for more!
+            int medicalLogsCountPerAnimal = 5;
+            int activitiesLogsCountPerAnimal = 4;
 
             UserSeederFactory userFactory = new UserSeederFactory();
             BuyerSeederFactory buyerFactory = new BuyerSeederFactory();
             AnimalIconSeederFactory animalIconSeederFactory = new AnimalIconSeederFactory();
             AnimalCategorySeederFactory animalCategorySeederFactory = new AnimalCategorySeederFactory();
             AnimalSeederFactory animalSeederFactory = new AnimalSeederFactory();
+            AnimalMedicalLogSeederFactory animalMedicalLogSeederFactory = new AnimalMedicalLogSeederFactory();
+            AnimalActivitiesLogSeederFactory animalActivitiesLogSeederFactory = new AnimalActivitiesLogSeederFactory();
+            SaleSeederFactory saleSeederFactory = new SaleSeederFactory(animalRepository);
+            TransactionSeederFactory transactionSeederFactory = new TransactionSeederFactory();
 
-            List<User> users = userFactory.create(10);
+            List<User> users = userFactory.create(userCount);
             List<Buyer> buyers = new ArrayList<>();
             List<AnimalIcon> animalIcons = animalIconSeederFactory.create();
 
@@ -60,21 +76,33 @@ public class DatabaseSeederService implements IDatabaseSeederService {
                     for (AnimalCategory animalCategory : animalCategories) {
                         animalCategory.setUser(user);
                         AnimalCategory savedCategory =  animalCategoryRepository.save(animalCategory);
-                        List<Animal> animals = animalSeederFactory.create(savedCategory, user, 11);
-                        //for each animal create 7 medical logs
-                        //for each animal create 7 activites logs
+                        List<Animal> animals = animalSeederFactory.create(savedCategory, user, animalCountPerUser);
+                       for (Animal animal : animals) {
+                           List<AnimalMedicalLog> animalMedicalLogs = animalMedicalLogSeederFactory.create(animal,medicalLogsCountPerAnimal);
+                           List<AnimalActivitiesLog> animalActivitiesLogs = animalActivitiesLogSeederFactory.create(animal,activitiesLogsCountPerAnimal);
+                           animalActivitiesLogRepository.saveAll(animalActivitiesLogs);
+                           animalMedicalLogRepository.saveAll(animalMedicalLogs);
+                       }
                         animalRepository.saveAll(animals);
                     }
                     buyers.addAll(buyerFactory.create(user, buyerCountPerUser));
+                    for (Buyer buyer : buyers) {
+                        buyerRepository.save(buyer);
+                        List<Sale> sales = saleSeederFactory.createSales(buyer,user,salePerBuyer);
+                        saleRepository.saveAll(sales);
+                        for (Sale sale : sales) {
+                            List<Transaction> transactions = transactionSeederFactory.create(sale,transactionPerSale,user);
+                            transactionRepository.saveAll(transactions);
+                        }
+                    }
                 }
 
             } catch (Exception e) {
-                throw new RuntimeException("error while seeding database", e);
+                throw new RuntimeException(e.getMessage(), e);
             }
 
 
             userRepository.saveAll(usersEntities);
-            buyerRepository.saveAll(buyers);
         }
     }
 }
