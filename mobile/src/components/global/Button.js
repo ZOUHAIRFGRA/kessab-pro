@@ -10,14 +10,17 @@ const Button = ({
   textStyle,
   icon = null,
   onPress,
+  disabled,
 }) => {
   const { t } = useTranslation();
   return (
     <TouchableOpacity
+      disabled={disabled}
       style={{
         backgroundColor: Colors[type],
         padding: 8,
         borderRadius: 8,
+        opacity: disabled ? 0.7 : 1,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

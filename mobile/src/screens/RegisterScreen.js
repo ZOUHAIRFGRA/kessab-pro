@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "../api/axiosInstance";
 import { registerSuccess } from "../features/authSlice";
 import { styled } from "dripsy";
+import Colors from "../utils/Colors";
 
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -23,21 +31,20 @@ export default function RegisterScreen({ navigation }) {
       // Check if registration was successful
       if (response.data.message === "User registered successfully") {
         // Show success message
-        Alert.alert(
-          "Success",
-          "Registration successful! Please login.",
-          [
-            {
-              text: "OK",
-              onPress: () => navigation.navigate("Login")
-            }
-          ]
-        );
+        Alert.alert("Success", "Registration successful! Please login.", [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("Login"),
+          },
+        ]);
       } else {
         dispatch(registerSuccess(response.data));
       }
     } catch (error) {
-      Alert.alert("Registration Failed", error.response?.data?.message || "Try again");
+      Alert.alert(
+        "Registration Failed",
+        error.response?.data?.message || "Try again"
+      );
     }
   };
 
@@ -76,7 +83,11 @@ export default function RegisterScreen({ navigation }) {
       {error && <ErrorText>{error}</ErrorText>}
 
       <RegisterButton onPress={handleRegister} disabled={loading}>
-        {loading ? <ActivityIndicator color="white" /> : <ButtonText>Register</ButtonText>}
+        {loading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <ButtonText>Register</ButtonText>
+        )}
       </RegisterButton>
 
       <LoginLink onPress={() => navigation.navigate("Login")}>
@@ -84,7 +95,7 @@ export default function RegisterScreen({ navigation }) {
       </LoginLink>
     </Container>
   );
-};
+}
 
 const Container = styled(View)({
   flex: 1,
@@ -122,14 +133,14 @@ const Input = styled(TextInput)({
 });
 
 const ErrorText = styled(Text)({
-  color: "red",
+  color: Colors.danger,
   marginBottom: 10,
 });
 
 const RegisterButton = styled(TouchableOpacity)({
   width: "100%",
   padding: 15,
-  backgroundColor: "#007BFF",
+  backgroundColor: Colors.primary,
   borderRadius: 8,
   alignItems: "center",
   marginTop: 10,
@@ -146,6 +157,6 @@ const LoginLink = styled(TouchableOpacity)({
 });
 
 const LoginText = styled(Text)({
-  color: "#007BFF",
+  color: Colors.secondary,
   fontSize: 16,
 });

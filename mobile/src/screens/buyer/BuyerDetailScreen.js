@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Colors from "../../utils/Colors";
 import SaleInfoView from "../../components/sale/SaleInfoView";
@@ -7,17 +7,16 @@ import TransactionsListCardView from "../../components/transaction/TransactionsL
 import AnimalsListCardView from "../../components/Animal/AnimalsListCardView";
 import Container from "../../components/global/Container";
 import { Ionicons } from "@expo/vector-icons";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import FallBack from "../../components/global/Fallback";
 import { useTranslation } from "react-i18next";
 import SalesListCardView from "../../components/sale/SalesListCardView";
+import Button from "../../components/global/Button";
+import { useNavigation } from "@react-navigation/native";
 
 const BuyerDetailScreen = ({ route }) => {
   const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
-  const buyer = route.params?.buyer;
-
-  if (!buyer) return <FallBack />;
+  const navigator = useNavigation();
+  const buyerId = route.params?.buyerId;
 
   return (
     <Container sx={{ flex: 1 }}>
@@ -45,7 +44,42 @@ const BuyerDetailScreen = ({ route }) => {
             ),
           }}
         >
-          {() => <BuyerInfoView id={buyer?.id} hideLinkButton />}
+          {() => (
+            <>
+              <BuyerInfoView id={buyerId} hideLinkButton />
+              <Container
+                sx={{
+                  padding: 8,
+                }}
+              >
+                <Button
+                  type="primary"
+                  onPress={() => {
+                    navigator.navigate("updateBuyerScreen", { buyerId });
+                  }}
+                  style={{
+                    padding: 12,
+                    marginTop: 20,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  textStyle={{
+                    color: Colors.white,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    fontSize: 16,
+                  }}
+                  icon={{
+                    name: "edit",
+                    color: Colors.white,
+                  }}
+                >
+                  {t("common.Update")}
+                </Button>
+              </Container>
+            </>
+          )}
         </Tab.Screen>
 
         <Tab.Screen
@@ -59,7 +93,7 @@ const BuyerDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16 }}>
-              <AnimalsListCardView id={buyer.id} type={"buyer"} />
+              <AnimalsListCardView id={buyerId} type={"buyer"} />
             </Container>
           )}
         </Tab.Screen>
@@ -75,7 +109,7 @@ const BuyerDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <SalesListCardView id={buyer.id} type={"buyer"} />
+              <SalesListCardView id={buyerId} type={"buyer"} />
             </Container>
           )}
         </Tab.Screen>
@@ -90,7 +124,7 @@ const BuyerDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <TransactionsListCardView id={buyer.id} type={"buyer"} />
+              <TransactionsListCardView id={buyerId} type={"buyer"} />
             </Container>
           )}
         </Tab.Screen>

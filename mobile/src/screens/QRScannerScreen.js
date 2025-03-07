@@ -1,40 +1,60 @@
-import { useState } from 'react';
-import { Button, Image, View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Button,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  AppState,
+} from "react-native";
+import { parseQrResult } from "../helpers/gloablHelpers";
 
-export default function QRScannerScreen() {
-  const [image, setImage] = useState(null);
+export default QRScannerScreen = () => {
+  const qrLock = useRef(false);
+  const appState = useRef(AppState.currentState);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images', 'videos'],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        qrLock.current = false;
+      }
+      appState.current = nextAppState;
     });
 
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
+  const navigator = useNavigation();
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        qrLock.current = null;
+      };
+    }, [])
+  );
 
   return (
-    <View style={styles.container}>
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {image && <Image source={{ uri: image }} style={styles.image} />}
-    </View>
+    <>
+      <CameraView
+        style={StyleSheet.absoluteFillObject}
+        facing="back"
+        onBarcodeScanned={({ data }) => {
+          if (data && !qrLock.current) {
+            qrLock.current = true;
+            const parsedData = parseQrResult(data);
+            navigator.navigate(parsedData.to, parsedData.param);
+          }
+        }}
+      />
+    </>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: 200,
-    height: 200,
-  },
-});
+};

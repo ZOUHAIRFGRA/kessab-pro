@@ -11,7 +11,7 @@ import Text from "../../components/global/Text";
 const SaleCardView = ({ sale }) => {
   const navigator = useNavigation();
   const handleSaleClick = () => {
-    navigator.navigate("SellDetail", { sale });
+    navigator.navigate("SellDetail", { saleId: sale.id });
   };
 
   return (
@@ -32,7 +32,7 @@ const SaleCardView = ({ sale }) => {
         >
           <Image
             source={{
-              uri: getBaseURL() + sale.animals[0].gallery[0],
+              uri: getBaseURL() + sale?.animals[0]?.gallery[0],
             }}
             style={{
               width: "100%",
@@ -47,7 +47,7 @@ const SaleCardView = ({ sale }) => {
               position: "absolute",
               bottom: -5,
               right: 0,
-              backgroundColor: "green",
+              backgroundColor: Colors.primary,
               borderRadius: 10,
               width: 20,
               height: 20,

@@ -7,8 +7,10 @@ import {
   fetchAnimalById,
   fetchAnimalsBySale,
   fetchAnimalsByBuyer,
+  fetchUnsoldAnimals,
+  fetchAnimalsCount,
 } from "../api/animalApi";
-
+// to check
 export const getAnimalsBySale = createAsyncThunk(
   "animals/fetchAll/bySale",
   async (saleId) => {
@@ -16,6 +18,7 @@ export const getAnimalsBySale = createAsyncThunk(
     return response.data;
   }
 );
+//! to rectify
 export const getAnimalsByBuyer = createAsyncThunk(
   "animals/fetchAll/byBuyer",
   async (buyerId) => {
@@ -26,8 +29,20 @@ export const getAnimalsByBuyer = createAsyncThunk(
 
 export const getAnimals = createAsyncThunk(
   "animals/fetchAll",
-  async ({ page = 0, size = 2, search = "", filterType = "tag" }) => {
+  async ({ page = 0, size = 10, search = "", filterType = "tag" }) => {
     const response = await fetchAnimals(page, size, search, filterType);
+    return response;
+  }
+);
+
+export const getAnimalsCount = createAsyncThunk("animals/count", async () => {
+  const response = await fetchAnimalsCount();
+  return response;
+});
+export const getUnsoldAnimals = createAsyncThunk(
+  "animals/fetchUnsold",
+  async () => {
+    const response = await fetchUnsoldAnimals();
     return response;
   }
 );
@@ -62,20 +77,26 @@ const animalSlice = createSlice({
   name: "animals",
   initialState: {
     animals: [],
+    unsoldAnimals: [],
     animal: null,
     loading: false,
     error: null,
     page: 0,
     totalPages: 0,
+    totalAnimals: 0,
+    totalUnsoldAnimals: 0,
   },
   reducers: {
     resetAnimals: (state) => {
       state.animals = [];
+      state.unsoldAnimals = [];
       state.animal = null;
       state.loading = false;
       state.error = null;
       state.page = 0;
       state.totalPages = 0;
+      state.totalAnimals = 0;
+      state.totalUnsoldAnimals = 0;
     },
   },
   extraReducers: (builder) => {
@@ -88,10 +109,37 @@ const animalSlice = createSlice({
         state.animals = action.payload.content;
         state.page = action.payload.page.number;
         state.totalPages = action.payload.page.totalPages;
+        state.totalAnimals = action.payload.page.totalElements;
       })
       .addCase(getAnimals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch animals.";
+      })
+
+      .addCase(getAnimalsCount.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAnimalsCount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.totalAnimals = action.payload;
+      })
+      .addCase(getAnimalsCount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch animals count.";
+      })
+
+      .addCase(getUnsoldAnimals.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUnsoldAnimals.fulfilled, (state, action) => {
+        state.loading = false;
+        state.unsoldAnimals = action.payload;
+        state.totalUnsoldAnimals = action.payload.length;
+        console.log({ animals: state.unsoldAnimals });
+      })
+      .addCase(getUnsoldAnimals.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch unsold animals.";
       })
 
       .addCase(getAnimalById.pending, (state) => {
@@ -109,13 +157,24 @@ const animalSlice = createSlice({
       .addCase(addAnimal.fulfilled, (state, action) => {
         state.animals.push(action.payload);
       })
+      .addCase(addAnimal.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to add animal.";
+      })
+
       .addCase(editAnimal.fulfilled, (state, action) => {
         state.animals = state.animals.map((a) =>
           a.id === action.payload.id ? action.payload : a
         );
       })
+      .addCase(editAnimal.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to update animal.";
+      })
+
       .addCase(removeAnimal.fulfilled, (state, action) => {
         state.animals = state.animals.filter((a) => a.id !== action.payload);
+      })
+      .addCase(removeAnimal.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to delete animal.";
       })
 
       .addCase(getAnimalsBySale.pending, (state) => {
@@ -123,6 +182,7 @@ const animalSlice = createSlice({
       })
       .addCase(getAnimalsBySale.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.animals = action.payload;
       })
       .addCase(getAnimalsBySale.rejected, (state, action) => {
@@ -137,7 +197,6 @@ const animalSlice = createSlice({
       .addCase(getAnimalsByBuyer.fulfilled, (state, action) => {
         state.loading = false;
         state.animals = action.payload;
-        console.log({ action });
       })
       .addCase(getAnimalsByBuyer.rejected, (state, action) => {
         state.loading = false;

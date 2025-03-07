@@ -1,15 +1,22 @@
-import React, { useEffect } from "react";
-import { View, Text, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, Share } from "react-native";
 import { styled } from "dripsy";
 import { useDispatch, useSelector } from "react-redux";
-import NotFound from "../EmptyState/NotFound";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-import { getSale } from "../../features/saleSlice";
+import { getSale, exportSaleInvoice } from "../../features/saleSlice";
 import CardIcon from "../global/CardIcon";
 import { getPickedUpRatio } from "../../helpers/AnimalHelpers";
 import { useTranslation } from "react-i18next";
+import Button from "../global/Button";
+import Colors from "../../utils/Colors";
+import ConfirmationModal from "../global/ConfirmationModal";
+import saleApi from "../../api/saleApi";
+import { useToast } from "../../hooks/useToast";
 
+// import * as Permissions from "expo-permissions";
+
+// import Share from "react-native-share";
 
 const Container = styled(View)({
   flex: 1,
@@ -20,25 +27,49 @@ const Container = styled(View)({
 export default function SaleInfoView({ id }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getSale(id));
-  }, [dispatch, id]);
+  const [isCloseConfirmationModalOpen, setIsCloseConfirmationModalOpen] =
+    useState(false);
+  const { showSuccessToast, showErrorToast } = useToast();
+  const onCloseConfirmation = () => {
 
-  useEffect(() => {
-    console.log("mounted");
-    return () => {
-      console.log("unmount");
-    };
-  }, []);
-
-  const { sale, loading, error } = useSelector(({ sales }) => sales);
-  console.log({ animals: sale?.animals });
+    saleApi
+      .closeSale(id)
+      .then(() => {
+        showSuccessToast();
+        dispatch(getSale(id));
+      })
+      .catch((e) => {
+        showErrorToast();
+      });
+  };
+  const {
+    sale,
+    saleLoading: loading,
+    error,
+  } = useSelector((states) => states.sales);
 
   if (loading || !sale) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
 
   return (
     <ScrollView>
+      {isCloseConfirmationModalOpen && (
+        <ConfirmationModal
+          visible={isCloseConfirmationModalOpen}
+          toggleVisible={setIsCloseConfirmationModalOpen}
+          action={onCloseConfirmation}
+          title={"confirmation modal"}
+          closable
+          btnParams={{
+            type: "secondary",
+            icon: {
+              name: "trash",
+            },
+            btnText: "confirm",
+          }}
+          bodyText={"are you sure you want to close this sale?"}
+        />
+      )}
       <Container
         sx={{
           gap: 12,
@@ -100,6 +131,61 @@ export default function SaleInfoView({ id }) {
           text={t("common.picked_up_ratio")}
           subText={getPickedUpRatio(sale.animals)}
         />
+      </Container>
+      <Container sx={{ padding: 16 }}>
+        <Button
+          type="primary"
+          style={{
+            padding: 12,
+            marginRight: 12,
+            marginLeft: 12,
+            marginBottom: 8,
+            justifyContent: "center",
+            alignItems: "center",
+
+            width: "100%",
+          }}
+          textStyle={{
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "center",
+            fontSize: 16,
+          }}
+          icon={{
+            name: "handshake-o",
+            color: Colors.white,
+          }}
+          onPress={() => setIsCloseConfirmationModalOpen(true)}
+          disabled={sale?.paymentStatus === "FULLY_PAID"}
+        >
+          Close Sale
+        </Button>
+        <Button
+          type="secondary"
+          style={{
+            padding: 12,
+            marginRight: 12,
+            marginLeft: 12,
+            marginBottom: 8,
+            justifyContent: "center",
+            alignItems: "center",
+
+            width: "100%",
+          }}
+          textStyle={{
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "center",
+            fontSize: 16,
+          }}
+          icon={{
+            name: "share-alt",
+            color: Colors.white,
+          }}
+          onPress={() => exportSaleInvoice(id)}
+        >
+          Share / Print
+        </Button>
       </Container>
     </ScrollView>
   );

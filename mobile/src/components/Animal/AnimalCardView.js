@@ -8,6 +8,7 @@ import Colors from "../../utils/Colors";
 import { getPickedUpDate } from "../../helpers/AnimalHelpers";
 import Text from "../../components/global/Text";
 import { useTranslation } from "react-i18next";
+import { getValue } from "../../helpers/gloablHelpers";
 
 const AnimalCardView = ({ animal }) => {
   const { t } = useTranslation();
@@ -15,7 +16,6 @@ const AnimalCardView = ({ animal }) => {
   const handleAnimalClick = () => {
     navigator.navigate("AnimalDetails", { animalId: animal.id });
   };
-  console.log({ animalfromCard: animal });
 
   return (
     <TouchableOpacity onPress={() => handleAnimalClick()}>
@@ -35,7 +35,11 @@ const AnimalCardView = ({ animal }) => {
         >
           <Image
             source={{
-              uri: getBaseURL() + animal.imagePaths[0],
+              uri:
+                getBaseURL() +
+                (animal?.imagePaths.length > 0
+                  ? animal?.imagePaths[0]
+                  : "/icons/live_stock.png"),
             }}
             style={{
               width: "100%",
@@ -68,13 +72,13 @@ const AnimalCardView = ({ animal }) => {
             <IconTag
               tagName="venus-mars"
               color="grey"
-              content={t(`common.Gender.${animal.sex}`)}
+              content={t(`common.Gender.${getValue(animal.sex)}`)}
               style={{ flex: 1 }}
             />
             <IconTag
               tagName="money"
               color="grey"
-              content={animal.price}
+              content={animal.price + " DH"}
               style={{ flex: 1 }}
             />
           </View>
