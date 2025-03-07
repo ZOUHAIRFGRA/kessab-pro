@@ -14,8 +14,6 @@ import { getSale, resetSale } from "../../features/saleSlice";
 import Loading from "../../components/global/Loading";
 
 const SaleDetailScreen = ({ route }) => {
-
-
   const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
 
@@ -39,7 +37,7 @@ const SaleDetailScreen = ({ route }) => {
           headerShown: false,
 
           tabBarStyle: {
-            height: 65,
+            height: 63,
             backgroundColor: Colors.secondaryLight,
           },
           tabBarActiveTintColor: Colors.secondary,
