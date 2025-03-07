@@ -66,7 +66,7 @@ export default function HomeScreen() {
       onPress: handleAddSheepPress,
     },
     { key: "Category", name: t("common.categories"), icon: "layers" },
-    { key: "MySellsScreen", name: t("common.view_sales"), icon: "chart-line" },
+    { key: "Sales", name: t("common.view_sales"), icon: "chart-line" },
   ];
 
   return (
