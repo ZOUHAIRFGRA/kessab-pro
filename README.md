@@ -1,28 +1,31 @@
 # 🐑 KessabPro Mobile App
 
-KessabPro is a React Native app designed to help farmers efficiently manage livestock transactions. This app enables farmers to list their animals, track sales, and provide quick access to animal details using QR codes.
+KessabPro is a React Native app designed to help farmers efficiently manage livestock transactions. This app enables farmers to list their animals, track sales, and monitor transactions with a user-friendly interface.
 
-**Note:** This is a beta version of the app with some features still under development.
+**Note:** This is the first stable version of the app, released as a beta with core features implemented.
 
 ## 📱 Features
 
 - **Farmer Interface**:
-  - Login access for farmers.
-  - Add, update, and manage animals with CRUD operations (including image uploads).
-  - Track sales and payment statuses, viewing the buyer and animal status.
-  - Add logs for medical and activity tracking.
-  - Create sales by selecting animals, choosing or adding buyers, specifying quantities, and entering amounts (supports multiple transactions).
-  - View all sales and associated transactions.
-  - Search for animals and sales efficiently.
-  - **QR Scanner**: Scan QR codes for quick access to animal and sale details.
-  - **Weather Widget**: Display current weather conditions.
-  - **Marketplace Button**: A placeholder for future marketplace functionality (not yet implemented).
-  - **Inventory & Food Management**: Features planned for future versions.
-
-- **Offline Mode**:
-  - Manage data offline and sync when reconnected.
-
----
+  - **Manage Animals**:
+    - Full CRUD operations (Create, Read, Update, Delete) for animals.
+    - Edit animal details, including image uploads.
+  - **Activity & Medical Logs**:
+    - Add and manage activity logs and medical logs for each animal to track health and events.
+  - **Category Management**:
+    - Create custom categories by selecting icons from the database with CRUD operations.
+    - Default "Livestock" category provided on first login (read-only, cannot be edited or deleted) to kickstart the farmer’s journey.
+  - **Sales Management**:
+    - Create a sale by selecting an existing buyer or adding a new one, choosing pre-existing animals or adding new ones.
+    - Sale summary includes agreed amount and paid amount, followed by transaction creation.
+  - **Transactions**:
+    - View transaction history for a specific sale or buyer.
+    - Add transactions tied to a specific sale or evenly split across all sales for a buyer if no sale is specified.
+    - Export sales as PDFs with a summary and QR codes for buyers, animals, and sales (scannable to redirect to corresponding screens).
+  - **Dashboard**:
+    - Displays farmer stats (e.g., total animals, sales, transactions) for quick insights.
+  - **Profile**:
+    - Manage farmer profile details.
 
 ## 🛠 Tech Stack
 
@@ -30,8 +33,8 @@ KessabPro is a React Native app designed to help farmers efficiently manage live
 - **Backend**: Spring Boot with JPA
 - **Database**: MySQL
 - **Styling**: Dripsy
-
----
+- **PDF Generation**: TBD (e.g., backend-generated or `react-native-pdf-lib`)
+- **QR Code Generation**: TBD (e.g., `react-native-qrcode-svg`)
 
 ## 🚀 Getting Started
 
@@ -92,12 +95,10 @@ KessabPro is a React Native app designed to help farmers efficiently manage live
      ./mvnw spring-boot:run
      ```
 
----
-
 ### Notes
 
 - Ensure you have **Node.js**, **npm**, **Expo CLI**, **Java (17+)**, and **Maven** installed on your machine.
-- Update the environment variables for the backend and frontend as needed.
+- Update environment variables for the backend and frontend as needed (e.g., API endpoints, QR code redirect URLs).
 
 ## 📚 Project Structure
 
@@ -105,11 +106,9 @@ KessabPro is a React Native app designed to help farmers efficiently manage live
 kessab-pro/
 ├── mobile/           # React Native (Expo) app
 ├── backend/          # Spring Boot backend
-├── web/           # React web app 
+├── web/              # React web app 
 └── README.md         # Project overview
 ```
-
----
 
 ## 🌟 Contributing
 
@@ -120,13 +119,9 @@ Contributions are welcome! Follow these steps:
 4. Push to the branch: `git push origin feature-name`.
 5. Open a pull request.
 
----
-
 ## 📝 License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
 
 ## 📧 Contact
 
@@ -138,17 +133,14 @@ For questions or collaboration:
     - [zouhairfgra](https://github.com/zouhairfgra)
     - [lahbouch](https://github.com/lahbouch)
 
----
-
 ## 🌐 Landing Page
 
 In addition to the mobile app, we have created a landing page in the `web` folder that showcases the features of KessabPro and provides potential users with information about the app. This landing page serves as a promotional tool to encourage farmers to download and use the app.
 
----
-
-### 📦 Dependencies
+## 📦 Dependencies
 
 - **Expo CLI**: Development environment for React Native.
 - **React Navigation**: Navigation between screens.
-- **AsyncStorage**: Offline storage for data.
 - **Expo Camera**: QR code scanning.
+- **QR Code Libraries**: For generating QR codes (e.g., `react-native-qrcode-svg`).
+- **PDF Libraries**: For exporting sales as PDFs (e.g., backend-generated or `react-native-pdf-lib`).
