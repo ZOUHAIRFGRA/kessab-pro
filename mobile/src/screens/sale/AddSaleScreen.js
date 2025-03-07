@@ -472,12 +472,22 @@ const AddSaleScreen = ({ route, navigation }) => {
                 <Container sx={{ marginHorizontal: 10 }}>
                   <Input
                     leftIcon={
-                      <Icon
-                        name="id-card"
-                        size={24}
-                        color={Colors.secondary}
-                        type="ionicon"
-                      />
+                      t('dir') === 'rtl' ? null
+                       : <Icon
+                       name="id-card"
+                       size={24}
+                       color={Colors.secondary}
+                       type="ionicon"
+                     />
+                    }
+                    rightIcon={
+                      t('dir') === 'rtl' ?  <Icon
+                      name="id-card"
+                      size={24}
+                      color={Colors.secondary}
+                      type="ionicon"
+                    /> : null
+                      
                     }
                     placeholder={t("common.CIN")}
                     value={buyerFormData.cin}
@@ -485,13 +495,23 @@ const AddSaleScreen = ({ route, navigation }) => {
                     {...inputStyles}
                   />
                   <Input
-                    leftIcon={
-                      <Icon
-                        name="person"
-                        size={24}
-                        color={Colors.secondary}
-                        type="ionicon"
-                      />
+                     leftIcon={
+                      t('dir') === 'rtl' ? null
+                       : <Icon
+                       name="location"
+                       size={24}
+                       color={Colors.secondary}
+                       type="ionicon"
+                     />
+                    }
+                    rightIcon={
+                      t('dir') === 'rtl' ?  <Icon
+                      name="person"
+                      size={24}
+                      color={Colors.secondary}
+                      type="ionicon"
+                    /> : null
+                      
                     }
                     placeholder={t("common.FullName")}
                     value={buyerFormData.fullName}
@@ -501,18 +521,27 @@ const AddSaleScreen = ({ route, navigation }) => {
                     {...inputStyles}
                   />
                   <Input
-                    leftIcon={
-                      <Icon
-                        name="call"
-                        size={24}
-                        color={Colors.secondary}
-                        type="ionicon"
-                      />
+                     leftIcon={
+                      t('dir') === 'rtl' ? null
+                       : <Icon
+                       name="call"
+                       size={24}
+                       color={Colors.secondary}
+                       type="ionicon"
+                     />
+                    }
+                    rightIcon={
+                      t('dir') === 'rtl' ? <Icon
+                      name="call"
+                      size={24}
+                      color={Colors.secondary}
+                      type="ionicon"/> : null
+                      
                     }
                     placeholder={t("common.Phone")}
                     keyboardType="phone-pad"
                     style={{
-                      textAlign: "right",
+                      textAlign: t('dir') === 'rtl' ? 'right' : 'left',
                     }}
                     value={buyerFormData.phone}
                     onChangeText={(value) => handleBuyerChange("phone", value)}
@@ -520,12 +549,21 @@ const AddSaleScreen = ({ route, navigation }) => {
                   />
                   <Input
                     leftIcon={
-                      <Icon
-                        name="location"
-                        size={24}
-                        color={Colors.secondary}
-                        type="ionicon"
-                      />
+                      t('dir') === 'rtl' ? null
+                       : <Icon
+                       name="phone"
+                       size={24}
+                       color={Colors.secondary}
+                       type="ionicon"
+                     />
+                    }
+                    rightIcon={
+                      t('dir') === 'rtl' ? <Icon
+                      name="location"
+                      size={24}
+                      color={Colors.secondary}
+                      type="ionicon"/> : null
+                      
                     }
                     placeholder={t("common.Address")}
                     value={buyerFormData.address}
@@ -633,6 +671,14 @@ const AddSaleScreen = ({ route, navigation }) => {
 
                       <Input
                         leftIcon={
+                          t('dir') === 'rtl' ? null
+                           : <Icon
+                          name="cash-outline"
+                          type="ionicon"
+                          size={24}
+                          color={Colors.secondary}/>
+                        }
+                        rightIcon={
                           <Icon
                             name="cash-outline"
                             type="ionicon"
@@ -653,6 +699,15 @@ const AddSaleScreen = ({ route, navigation }) => {
                     <Container>
                       <Input
                         leftIcon={
+                          t('dir') === 'rtl' ? null
+                           : <Icon
+                           name="pricetag"
+                           size={24}
+                           color={Colors.secondary}
+                           type="ionicon"
+                         />
+                        }
+                        rightIcon={
                           <Icon
                             name="pricetag"
                             size={24}
@@ -669,6 +724,14 @@ const AddSaleScreen = ({ route, navigation }) => {
                       />
                       <Input
                         leftIcon={
+                          t('dir') === 'rtl' ? null
+                           : <Icon
+                          name="cash-outline"
+                          type="ionicon"
+                          size={24}
+                          color={Colors.secondary}/>
+                        }
+                        rightIcon={
                           <Icon
                             name="cash-outline"
                             type="ionicon"
@@ -744,13 +807,14 @@ const AddSaleScreen = ({ route, navigation }) => {
               />
               <Input
                 leftIcon={
-                  <Icon
-                    name="cash-outline"
-                    type="ionicon"
-                    size={24}
-                    color={Colors.secondary}
-                  />
+                  
+                    <Icon
+                  name="cash-outline"
+                  type="ionicon"
+                  size={24}
+                  color={Colors.secondary}/>
                 }
+                
                 placeholder={t("common.agreedAmount")}
                 keyboardType="numeric"
                 value={summaryFormData.agreedAmount}
