@@ -17,7 +17,6 @@ const AppWrapper = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("Server IP from env:", SERVER_IP);
     Toast.show({
       type: "info",
       text1: "Server IP",

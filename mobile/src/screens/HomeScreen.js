@@ -54,7 +54,11 @@ export default function HomeScreen() {
   ];
 
   const actions = [
-    { key: "AddBuyer", name: t("common.add_buyer"), icon: "account-plus" },
+    {
+      key: "addBuyerScreen",
+      name: t("common.add_buyer"),
+      icon: "account-plus",
+    },
     {
       key: "AddSheep",
       name: t("common.add_sheep"),

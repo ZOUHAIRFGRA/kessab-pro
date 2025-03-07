@@ -35,16 +35,14 @@ export default function AddBuyersScreen() {
   const validateField = (field, value) => {
     switch (field) {
       case "fullName":
-        if (!value) return t("validation.fullNameRequired");
-        if (value.length < 4) return t("validation.fullNameMinLength");
-        if (value.length > 50) return t("validation.fullNameMaxLength");
+        if (!value) return t("common.buyerFullNameRequired");
+        if (value.length < 4) return t("common.fullNameMinLength");
+        if (value.length > 50) return t("common.fullNameMaxLength");
         return "";
       case "CIN":
-        return ""; // Optional field, no validation
+        return ""; // Optional field, no common
       case "phone":
-        return value && !/^\d{10}$/.test(value)
-          ? t("validation.phoneFormat")
-          : "";
+        return value && !/^\d{10}$/.test(value) ? t("common.phoneFormat") : "";
       case "address":
         return ""; // Optional field, no validation
       default:
@@ -113,7 +111,7 @@ export default function AddBuyersScreen() {
           padding: 18,
         }}
       >
-        <Header level="h2">{t("buyers.addNewBuyer")}</Header>
+        <Header level="h2">{t("common.addNewBuyer")}</Header>
 
         <Input
           label={t("common.FullName")}
@@ -203,7 +201,7 @@ export default function AddBuyersScreen() {
             color: Colors.white,
           }}
         >
-          {t("common.Save")}
+          {t("common.save")}
         </Button>
       </Container>
     </ScrollView>

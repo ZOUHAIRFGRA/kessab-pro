@@ -3,7 +3,7 @@ import BuyersService from "../api/buyerApi";
 
 export const getBuyers = createAsyncThunk(
   "buyers/fetchAll",
-  async ({ q = "", page = 0 }) => {
+  async ({ q, page } = { q: "", page: 0 }) => {
     const response = await BuyersService.fetchBuyers({
       fullName: q,
       cin: q,
@@ -88,6 +88,7 @@ const buyerSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.buyers = action.payload.content;
+
         state.page = action.payload.page.number;
         state.totalPages = action.payload.page.totalPages;
       })
@@ -128,12 +129,8 @@ const buyerSlice = createSlice({
         state.buyers.push(action.payload);
       })
       .addCase(updateBuyer.rejected, (state, action) => {
-        console.log(action.error);
       })
       .addCase(updateBuyer.fulfilled, (state, action) => {
-        console.log("fully");
-        console.log({ action: action.payload });
-
         state.buyers = state.buyers.map((s) =>
           s.id === action.payload.id ? action.payload : s
         );

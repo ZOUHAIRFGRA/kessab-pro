@@ -219,6 +219,9 @@ const AddSaleScreen = ({ route, navigation }) => {
       if (!summaryFormData.paidAmount) {
         return "Paid amount must be filled";
       }
+      if (!summaryFormData.paidAmount > !summaryFormData.agreedAmount) {
+        return "ahya";
+      }
       if (!summaryFormData.method) {
         return t("common.methodRequired");
       }
@@ -258,8 +261,6 @@ const AddSaleScreen = ({ route, navigation }) => {
 
     setErr("");
     setSubmitData(finalData);
-    console.log({ finalData });
-    console.log({ animals: finalData.animals });
 
     saleApi
       .createSale(finalData)
@@ -270,7 +271,6 @@ const AddSaleScreen = ({ route, navigation }) => {
       })
       .catch((e) => {
         showErrorToast();
-        console.log({ e });
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -544,9 +544,9 @@ const AddSaleScreen = ({ route, navigation }) => {
                         label: buyer.fullName,
                         value: buyer.id,
                       }))}
-                      label={t("common.select_buyer")}
+                      label={t("common.selectBuyer")}
                       focusLabel="..."
-                      notFocusLabel={t("common.select_buyer")}
+                      notFocusLabel={t("common.selectBuyer")}
                       searchLabel={t("common.buyer_placeholder")}
                       containerStyle={inputStyles}
                       selectedValue={buyerFormData.id}

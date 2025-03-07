@@ -54,14 +54,7 @@ const CategoryScreen = () => {
     dispatch(fetchCategoriesIcons());
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log(
-      "categoriesLoading:",
-      categoriesLoading,
-      "iconsLoading:",
-      iconsLoading
-    );
-  }, [categoriesLoading, iconsLoading]);
+ 
 
   const handleAddOrUpdateCategory = async () => {
     if (!categoryName.trim()) {

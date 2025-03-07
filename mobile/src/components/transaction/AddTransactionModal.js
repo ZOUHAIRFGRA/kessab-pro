@@ -136,7 +136,7 @@ const AddTransactionModal = ({
         />
       )}
       <Dialogs
-        title={"add new sale"}
+        title={t(`common.addTransaction`)}
         visible={visible}
         toggleDialog={toggleDialog}
       >
@@ -196,6 +196,7 @@ const AddTransactionModal = ({
 
           <BaseDropdown
             search={false}
+            focusLabel={t("common.paymentMethod")}
             notFocusLabel={t("common.paymentMethod")}
             disable={loadingPaymentMethods}
             values={paymentMethods.map((pm) => ({

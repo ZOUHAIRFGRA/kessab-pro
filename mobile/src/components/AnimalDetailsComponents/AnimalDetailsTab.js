@@ -64,14 +64,12 @@ export const AnimalDetailsTab = ({ animalId }) => {
 
       if (editedAnimal.imagePaths && editedAnimal.imagePaths.length > 0) {
         const imagePathsJson = JSON.stringify(editedAnimal.imagePaths);
-        console.log("Sending imagePaths:", imagePathsJson);
         formData.append("imagePaths", imagePathsJson);
       }
 
       newImages.forEach((uri, index) => {
         const uriParts = uri.split("/");
         const fileName = uriParts[uriParts.length - 1];
-        console.log(`Appending new image[${index}]: ${uri}`);
         formData.append("images", {
           uri,
           name: fileName,
@@ -81,20 +79,16 @@ export const AnimalDetailsTab = ({ animalId }) => {
 
       if (imagesToDelete.length > 0) {
         imagesToDelete.forEach((path, index) => {
-          console.log(`Appending imagesToDelete[${index}]: ${path}`);
           formData.append("imagesToDelete", path);
         });
       } else {
-        console.log("No images to delete.");
       }
 
       for (let pair of formData._parts) {
-        console.log(`FormData entry: ${pair[0]} = ${pair[1]}`);
       }
 
       dispatch(editAnimal({ id: editedAnimal.id, updatedAnimal: formData }))
         .then((response) => {
-          console.log("Save response:", response);
           showSuccessToast(t("common.Animal updated successfully"));
           setEditing(false);
           setEditedAnimal(response.payload);
