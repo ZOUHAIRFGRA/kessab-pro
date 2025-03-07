@@ -67,8 +67,6 @@ export default function SalesScreen() {
   }, [dispatch]);
 
   const onAddSaleClick = () => {
-    console.log({ qte: parseInt(qte) });
-
     if (qte <= 0 || isNaN(qte)) {
       alert("quantity must be positive");
       return;

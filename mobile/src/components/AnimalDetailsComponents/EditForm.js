@@ -37,11 +37,6 @@ export const EditForm = ({
     const totalImages = editedAnimal.imagePaths.length + newImages.length;
     const totalImagesAfterDeletion = totalImages - (imagesToDelete.length + 1);
 
-    console.log("Current imagePaths (original):", editedAnimal.imagePaths);
-    console.log("Images to delete (before):", imagesToDelete);
-    console.log("New images:", newImages);
-    console.log("Total images:", totalImages);
-    console.log("Total images after deletion:", totalImagesAfterDeletion);
 
     if (totalImagesAfterDeletion < 1) {
       alert(t("Cannot delete all images. At least one image must remain."));

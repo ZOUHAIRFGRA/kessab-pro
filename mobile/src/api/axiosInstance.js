@@ -9,7 +9,6 @@ import store from '../store/store';
 
 export const getBaseURL = () => {
   const serverIp = SERVER_IP || "192.168.1.8";
-  console.log("SERVER_IP from @env:", SERVER_IP);
 
   if (Platform.OS === "android") {
     return Constants.executionEnvironment === "expo"

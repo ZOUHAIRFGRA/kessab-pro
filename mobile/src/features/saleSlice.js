@@ -5,9 +5,7 @@ import saleApi, { createSale, updateSale, deleteSale } from "../api/saleApi";
 import SaleService from "../api/saleApi";
 
 export const getSales = createAsyncThunk("sales/fetchAll", async (params) => {
-  console.log({
-    params,
-  });
+
 
   const response = await SaleService.fetchSales(params);
   return response;
