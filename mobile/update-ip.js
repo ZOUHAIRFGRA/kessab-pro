@@ -40,4 +40,3 @@ const newEnvContent = Object.entries(envData)
 
 fs.writeFileSync(envPath, newEnvContent);
 
-console.log(`✅ Updated .env with SERVER_IP: ${localIP}`);

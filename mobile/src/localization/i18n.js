@@ -14,7 +14,6 @@ const languageDetectorPlugin = {
       const language = await AsyncStorage.getItem(STORE_LANGUAGE_KEY);
       callback(language || "fr"); // Fallback to "fr" if no language found
     } catch (error) {
-      console.log("Error reading language", error);
       callback("fr"); // Fallback in case of an error
     }
   },
@@ -22,7 +21,6 @@ const languageDetectorPlugin = {
     try {
       await AsyncStorage.setItem(STORE_LANGUAGE_KEY, language);
     } catch (error) {
-      console.log("Error caching language", error);
     }
   },
 };

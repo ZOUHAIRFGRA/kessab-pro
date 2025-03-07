@@ -54,7 +54,11 @@ export default function HomeScreen() {
   ];
 
   const actions = [
-    { key: "AddBuyer", name: t("common.add_buyer"), icon: "account-plus" },
+    {
+      key: "addBuyerScreen",
+      name: t("common.add_buyer"),
+      icon: "account-plus",
+    },
     {
       key: "AddSheep",
       name: t("common.add_sheep"),
@@ -62,7 +66,7 @@ export default function HomeScreen() {
       onPress: handleAddSheepPress,
     },
     { key: "Category", name: t("common.categories"), icon: "layers" },
-    { key: "MySellsScreen", name: t("common.view_sales"), icon: "chart-line" },
+    { key: "Sales", name: t("common.view_sales"), icon: "chart-line" },
   ];
 
   return (

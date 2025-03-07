@@ -24,7 +24,6 @@ export const getAllAnimalActivitiesLogs = createAsyncThunk(
   }
 );
 
-// Add new activity log
 export const createAnimalActivityLog = createAsyncThunk(
   "animalActivitiesLogs/add",
   async (logData) => {

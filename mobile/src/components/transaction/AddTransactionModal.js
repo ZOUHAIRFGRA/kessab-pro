@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPaymentMethods } from "../../features/enumSlice";
 import Button from "../global/Button";
 import Container from "../global/Container";
+import { useTranslation } from "react-i18next";
 import { isEmpty, isValidDDMMYYYY } from "../../helpers/gloablHelpers";
 import Text from "../global/Text";
 import Colors from "../../utils/Colors";
@@ -29,7 +30,7 @@ const AddTransactionModal = ({
   totalAmount = null,
 }) => {
   const dispatch = useDispatch();
-
+  const { t } = useTranslation();
   const { loading: loadingPaymentMethods, paymentMethods } = useSelector(
     (states) => states.enums
   );
@@ -71,20 +72,20 @@ const AddTransactionModal = ({
     let isValid = true;
 
     if (!isValidDDMMYYYY(formData.transactionDate)) {
-      newErrors.transactionDate = "Date is not valid";
+      newErrors.transactionDate = t("common.dateInvalid");
       isValid = false;
     }
 
     if (isEmpty(formData.amount)) {
-      newErrors.amount = "Amount is required";
+      newErrors.amount = t("common.amountRequired");
       isValid = false;
     } else if (totalAmount !== null && formData.amount > totalAmount) {
-      newErrors.amount = "Amount should not exceed total";
+      newErrors.amount = t("common.amountExceedsTotal");
       isValid = false;
     }
 
     if (!paymentMethods.includes(formData.method)) {
-      newErrors.method = "Payment method is not valid";
+      newErrors.method = t("common.paymentMethodInvalid");
       isValid = false;
     }
 
@@ -95,7 +96,7 @@ const AddTransactionModal = ({
 
     if (isValid) {
       const commonActions = async (dispatchFn) => {
-        showSuccessToast("Transaction added successfully");
+        showSuccessToast(t("common.transactionAdded"));
         await dispatch(dispatchFn(id));
         dispatch(getSale(id));
       };
@@ -135,7 +136,7 @@ const AddTransactionModal = ({
         />
       )}
       <Dialogs
-        title={"add new sale"}
+        title={t(`common.addTransaction`)}
         visible={visible}
         toggleDialog={toggleDialog}
       >
@@ -176,7 +177,7 @@ const AddTransactionModal = ({
               })
             }
             keyboardType="numeric"
-            placeholder="paid amount"
+            placeholder={t(`common.paidAmount`)}
             value={formData.amount}
             style={{
               paddingBottom: 0,
@@ -195,9 +196,13 @@ const AddTransactionModal = ({
 
           <BaseDropdown
             search={false}
-            notFocusLabel={"payment method"}
+            focusLabel={t("common.paymentMethod")}
+            notFocusLabel={t("common.paymentMethod")}
             disable={loadingPaymentMethods}
-            values={paymentMethods.map((pm) => ({ label: pm, value: pm }))}
+            values={paymentMethods.map((pm) => ({
+              label: t(`common.${pm}`),
+              value: pm,
+            }))}
             onValueChange={(value) =>
               setFormData({
                 ...formData,
@@ -226,7 +231,7 @@ const AddTransactionModal = ({
             }}
             onPress={onSubmit}
           >
-            Add
+            {t("common.add")}
           </Button>
         </Container>
       </Dialogs>

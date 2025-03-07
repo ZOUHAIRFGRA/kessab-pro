@@ -65,7 +65,7 @@ const SalesListCardView = ({
       {sales.length === 0 ? (
         <FallBack
           type={FALLBACK_TYPE.NO_RESULT}
-          message="No sales found for this search."
+          message={t(`common.noSalesFound`)}
         />
       ) : (
         <FlatList

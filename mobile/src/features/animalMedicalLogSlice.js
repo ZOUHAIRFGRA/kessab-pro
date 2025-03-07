@@ -15,7 +15,6 @@ export const getAnimalMedicalLogs = createAsyncThunk(
   }
 );
 
-// Add new medical log
 export const createAnimalMedicalLog = createAsyncThunk(
   "animalMedicalLogs/add",
   async ( logData ) => {

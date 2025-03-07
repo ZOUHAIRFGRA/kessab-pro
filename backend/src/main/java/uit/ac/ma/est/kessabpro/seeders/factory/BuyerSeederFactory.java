@@ -13,22 +13,23 @@ import java.util.UUID;
 public class BuyerSeederFactory implements SeederFactory<Buyer> {
 
     private static final String[] NAMES = {
-            "Ahmed", "Mohamed", "Fatima", "Khalid", "Amina", "Youssef", "Saida",
-            "Hassan", "Nadia", "Omar", "Karim", "Laila", "Rachid", "Zineb",
-            "Tariq", "Salma", "Imane", "Samir", "Soukaina", "Mounir", "Yasmina",
-            "Mustapha", "Samira", "Rachida", "Reda", "Latifa", "Yassine", "Meryem",
-            "Sofia", "Amine", "Kenza", "Said", "Leila", "Anas", "Wissal", "Zahra",
-            "Mouna", "Adil", "Sanae", "Nabil", "Farah", "Azzedine", "Badr", "Hind"
+            "أحمد", "محمد", "فاطمة", "خالد", "أمينة", "يوسف", "سعيدة", "حسن",
+            "نادية", "عمر", "كريم", "ليلى", "رشيد", "زينب", "طارق", "سلمى",
+            "إيمان", "سمير", "سكينة", "منير", "ياسمين", "مصطفى", "سميرة",
+            "هشام", "بلال", "ياسين", "مريم", "أنس", "إلياس", "حليمة", "عبد الله",
+            "حمزة", "سارة", "أسماء", "هاجر", "زكرياء", "إكرام", "عثمان", "غزلان",
+            "مراد", "نور", "رانيا", "جواد", "صفاء", "عادل", "نعيمة", "وليد"
     };
 
     private static final String[] LAST_NAMES = {
-            "El Idrissi", "Benkirane", "El Fassi", "Ouazzani", "Amrani", "Tazi",
-            "Bennis", "Chakib", "Alaoui", "Berrada", "Hajji", "Zouiten", "Mahjoubi",
-            "El Moussaoui", "Guessous", "Mernissi", "Oukili", "Tahiri", "Moutawakil",
-            "Boussaid", "Hajoui", "Oulad", "Rhani", "Zahidi", "Skalli", "Jabri",
-            "Filali", "Bourkadi", "Chraibi", "Mourabit", "Naciri", "Rhani", "Sefrioui",
-            "Touhami", "El Khatib", "Fadili", "Kadiri", "El Yazidi", "Hammani",
-            "El Hassani", "Bouchikhi", "El Amrani", "Aouad", "Benjelloun", "El Haddaoui"
+            "الإدريسي", "بنكيران", "الفاسي", "الوزاني", "العمراني", "التازي",
+            "بنيس", "الشاكيب", "العلوي", "برادة", "الحجي", "زويتن", "المهجوبي",
+            "الموساوي", "كسوس", "المرنيسي", "أوكيلي", "الطاهري", "المتوكل",
+            "بوسعيد", "الحجوي", "اولاد", "الرهاني", "الزاهيدي", "السقالي", "الجابري",
+            "الفيلالي", "بوركادي", "الشرايبي", "المرابط", "الناصري", "السفريوي",
+            "التوهامي", "الخطيب", "الفضيلي", "القادري", "اليزيدي", "الحماني",
+            "الحسني", "بوشيخي", "عواد", "بنجلون", "الحدادي", "الشرقاوي",
+            "البقالي", "الفهري", "الزموري", "الصنهاجي", "المزواري", "الحمداوي"
     };
 
     private static final String[] CITIES = {

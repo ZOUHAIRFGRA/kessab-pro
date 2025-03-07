@@ -6,7 +6,7 @@ export function getAnimalCategoryCounts(sale) {
   const categories = sale.animals.map((animal) => animal.category.type);
 
   if (categories.length === 1) {
-    return categories[0];
+    return t(`common.${categories[0]}`, categories[0]);
   }
 
   const categoryCounts = categories.reduce((acc, category) => {

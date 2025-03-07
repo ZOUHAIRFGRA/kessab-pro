@@ -6,6 +6,7 @@ import Loading from "../global/Loading";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Container from "../global/Container";
 import AnimalCardView from "./AnimalCardView";
+import { useTranslation } from "react-i18next";
 import {
   getAnimalsByBuyer,
   getAnimalsBySale,
@@ -14,6 +15,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 
 export default function AnimalsListCardView({ id, type = "sale" }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   useEffect(() => {
     if (type === "sale") {
@@ -26,11 +28,7 @@ export default function AnimalsListCardView({ id, type = "sale" }) {
   }, [dispatch, id]);
 
   const { animals, loading, error } = useSelector(({ animals }) => animals);
-  console.log({
-    animals,
-    loading,
-    error,
-  });
+
 
   if (loading || !animals) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
@@ -38,7 +36,10 @@ export default function AnimalsListCardView({ id, type = "sale" }) {
   return (
     <Container style={{ flex: 1, padding: 18 }}>
       {animals.length === 0 ? (
-        <FallBack type={FALLBACK_TYPE.NOT_FOUND} message="No Animals found ." />
+        <FallBack
+          type={FALLBACK_TYPE.NOT_FOUND}
+          message={t(`common.noAnimalsFound`)}
+        />
       ) : (
         <FlatList
           data={animals}
