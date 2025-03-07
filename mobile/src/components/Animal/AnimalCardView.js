@@ -78,7 +78,7 @@ const AnimalCardView = ({ animal }) => {
             <IconTag
               tagName="money"
               color="grey"
-              content={animal.price}
+              content={animal.price + " DH"}
               style={{ flex: 1 }}
             />
           </View>
