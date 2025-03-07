@@ -12,6 +12,7 @@ import axiosInstance from "../api/axiosInstance";
 import { registerSuccess } from "../features/authSlice";
 import { styled } from "dripsy";
 import Colors from "../utils/Colors";
+import { useTranslation } from "react-i18next";
 
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -19,6 +20,8 @@ export default function RegisterScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
+  const { t } = useTranslation();
+  const isRTL = t("dir") === "rtl";
 
   const handleRegister = async () => {
     try {
@@ -50,48 +53,52 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <Container>
-      <Title>Register</Title>
+      <Title>{t("common.Register")}</Title>
 
       <InputContainer>
-        <Label>Username</Label>
+        <Label isRTL={isRTL}>{t("common.Username")}</Label>
         <Input
           value={username}
           onChangeText={setUsername}
-          placeholder="Enter username"
+          placeholder={t("common.Enter username")}
+          textAlign={isRTL ? "right" : "left"}
         />
       </InputContainer>
 
       <InputContainer>
-        <Label>Email</Label>
+        <Label isRTL={isRTL}>{t("common.Email")}</Label>
         <Input
           value={email}
           onChangeText={setEmail}
-          placeholder="Enter email"
+          placeholder={t("common.Enter email")}
+          textAlign={isRTL ? "right" : "left"}
         />
       </InputContainer>
 
       <InputContainer>
-        <Label>Password</Label>
+        <Label isRTL={isRTL}>{t("common.Password")}</Label>
         <Input
           value={password}
           onChangeText={setPassword}
-          placeholder="Enter password"
+          placeholder={t("common.Enter password")}
           secureTextEntry
+          textAlign={isRTL ? "right" : "left"}
         />
       </InputContainer>
 
-      {error && <ErrorText>{error}</ErrorText>}
+      {error && <ErrorText>{t(error)}</ErrorText>}
 
       <RegisterButton onPress={handleRegister} disabled={loading}>
         {loading ? (
           <ActivityIndicator color="white" />
         ) : (
-          <ButtonText>Register</ButtonText>
+          <ButtonText>{t("common.Register")}</ButtonText>
         )}
       </RegisterButton>
 
-      <LoginLink onPress={() => navigation.navigate("Login")}>
-        <LoginText>Already have an account? Login</LoginText>
+      <LoginLink onPress={() => navigation.navigate("Login")}
+        style={{ flexDirection: isRTL ? "row-reverse" : "row" }}>
+        <LoginText>{t("common.Already have an account? Login")}</LoginText>
       </LoginLink>
     </Container>
   );
@@ -117,11 +124,12 @@ const InputContainer = styled(View)({
   marginBottom: 15,
 });
 
-const Label = styled(Text)({
+const Label = styled(Text)(({ isRTL }) => ({
   fontSize: 16,
   color: "#555",
   marginBottom: 5,
-});
+  textAlign:isRTL ? "right" : "left"
+}));
 
 const Input = styled(TextInput)({
   width: "100%",
