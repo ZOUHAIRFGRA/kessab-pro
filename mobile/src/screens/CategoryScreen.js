@@ -138,7 +138,7 @@ const CategoryScreen = () => {
   const renderIconItem = ({ item }) => (
     <IconItem onPress={() => handleSelectIcon(item.id)}>
       <IconImage source={{ uri: `${BASE_URL}${item.iconPath}` }} />
-      <IconText isRTL={isRTL}>{item.iconPath.split("/").pop()}</IconText>
+      <IconText isRTL={isRTL}>{item.iconPath.split("/").pop().replace(/\.[^/.]+$/, "")}</IconText>
     </IconItem>
   );
 
