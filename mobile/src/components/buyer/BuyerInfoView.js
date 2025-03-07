@@ -6,6 +6,7 @@ import Loading from "../global/Loading";
 import { getBuyer } from "../../features/buyerSlice";
 import Colors from "../../utils/Colors";
 import Header from "../global/Header";
+
 import Container from "../global/Container";
 import Card from "../global/Card";
 import Button from "../global/Button";
@@ -58,20 +59,20 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.FullName")}</Text>
-            <Header level={"h3"}>{getValue(buyer.fullName)}</Header>
+            <Header level={"h3"}>{getValue(buyer?.fullName)}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.CIN")}</Text>
-            <Header level={"h3"}>{getValue(buyer.CIN)}</Header>
+            <Header level={"h3"}>{getValue(buyer?.CIN)}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.Address")}</Text>
-            <Header level={"h3"}>{getValue(buyer.address)}</Header>
+            <Header level={"h3"}>{getValue(buyer?.address)}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Pressable onPress={() => Linking.openURL(`tel:${buyer.phone}`)}>
               <Text>{t("common.Phone")}</Text>
-              <Header level={"h3"}>{getValue(buyer.phone)}</Header>
+              <Header level={"h3"}>{getValue(buyer?.phone)}</Header>
             </Pressable>
           </Container>
         </Card>

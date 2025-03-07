@@ -99,7 +99,7 @@ export default function SalesScreen() {
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>
         <Dialogs
-          title={"How many to sold?"}
+          title={t("common.quantity")}
           visible={isDialogVisible}
           toggleDialog={() => setDialogVisible(!isDialogVisible)}
         >
@@ -127,7 +127,7 @@ export default function SalesScreen() {
             }}
             onPress={() => onAddSaleClick()}
           >
-            Continue
+            {t("common.continue")}
           </Button>
         </Dialogs>
         <Container sx={{ display: "flex", flexDirection: "row" }}>
@@ -182,7 +182,7 @@ export default function SalesScreen() {
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
               values={categories?.map((category) => ({
-                label: category.typeName,
+                label: t(`common.${category.typeName}`),
                 value: category.id,
               }))}
               disable={categoriesLoading}
@@ -196,7 +196,10 @@ export default function SalesScreen() {
           </Container>
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
-              values={paymentStatus.map((pm) => ({ label: pm, value: pm }))}
+              values={paymentStatus.map((pm) => ({
+                label: t(`payment_type.${pm}`),
+                value: pm,
+              }))}
               label={t("common.payment")}
               focusLabel={"..."}
               notFocusLabel={t("common.payment")}

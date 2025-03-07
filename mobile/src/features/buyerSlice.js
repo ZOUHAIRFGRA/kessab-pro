@@ -17,6 +17,13 @@ export const getBuyer = createAsyncThunk("buyers/get", async (id) => {
   const response = await BuyersService.fetchBuyerById(id);
   return response;
 });
+export const getBuyerOverview = createAsyncThunk(
+  "buyers/getOverview",
+  async (id) => {
+    const response = await BuyersService.fetchBuyerOverview(id);
+    return response;
+  }
+);
 
 export const addBuyer = createAsyncThunk("buyers/add", async (buyer) => {
   const response = await BuyersService.createBuyer(buyer);
@@ -46,7 +53,11 @@ const buyerSlice = createSlice({
     error: null,
     page: 0,
     totalPages: 0,
-    trigger: 0,
+    totalPaid: 0,
+    totalToPay: 0,
+    totalAnimals: 0,
+    animalsNotPickedUp: 0,
+    animalsPickedUp: 0,
   },
   reducers: {
     resetBuyers: (state) => {
@@ -61,6 +72,11 @@ const buyerSlice = createSlice({
       state.error = null;
       state.buyer = null;
       state.buyerLoading = false;
+      totalPaid = 0;
+      totalToPay = 0;
+      totalAnimals = 0;
+      animalsNotPickedUp = 0;
+      animalsPickedUp = 0;
     },
   },
   extraReducers: (builder) => {
@@ -90,6 +106,23 @@ const buyerSlice = createSlice({
         state.buyerLoading = false;
         state.error = null;
         state.buyer = action.payload;
+      })
+      .addCase(getBuyerOverview.pending, (state, action) => {
+        state.buyerLoading = true;
+      })
+      .addCase(getBuyerOverview.rejected, (state, action) => {
+        state.buyerLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(getBuyerOverview.fulfilled, (state, action) => {
+        state.buyerLoading = false;
+        state.error = null;
+        state.buyer = action.payload.buyer;
+        state.totalPaid = action.payload.totalPaid;
+        state.totalToPay = action.payload.totalToPay;
+        state.totalAnimals = action.payload.totalAnimals;
+        state.animalsNotPickedUp = action.payload.animalsNotPickedUp;
+        state.animalsPickedUp = action.payload.animalsPickedUp;
       })
       .addCase(addBuyer.fulfilled, (state, action) => {
         state.buyers.push(action.payload);

@@ -31,7 +31,6 @@ export default function SaleInfoView({ id }) {
     useState(false);
   const { showSuccessToast, showErrorToast } = useToast();
   const onCloseConfirmation = () => {
-
     saleApi
       .closeSale(id)
       .then(() => {
@@ -58,16 +57,16 @@ export default function SaleInfoView({ id }) {
           visible={isCloseConfirmationModalOpen}
           toggleVisible={setIsCloseConfirmationModalOpen}
           action={onCloseConfirmation}
-          title={"confirmation modal"}
+          title={t("modal.confirmation")}
           closable
           btnParams={{
             type: "secondary",
             icon: {
               name: "trash",
             },
-            btnText: "confirm",
+            btnText: t("common.confirm"),
           }}
-          bodyText={"are you sure you want to close this sale?"}
+          bodyText={t("modal.close_sale_confirmation")}
         />
       )}
       <Container
@@ -158,7 +157,7 @@ export default function SaleInfoView({ id }) {
           onPress={() => setIsCloseConfirmationModalOpen(true)}
           disabled={sale?.paymentStatus === "FULLY_PAID"}
         >
-          Close Sale
+          {t("common.close_sale")}
         </Button>
         <Button
           type="secondary"
@@ -184,7 +183,7 @@ export default function SaleInfoView({ id }) {
           }}
           onPress={() => exportSaleInvoice(id)}
         >
-          Share / Print
+          {t("common.share_print")}
         </Button>
       </Container>
     </ScrollView>

@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import SalesListCardView from "../../components/sale/SalesListCardView";
 import Button from "../../components/global/Button";
 import { useNavigation } from "@react-navigation/native";
+import BuyerOverviewView from "../../components/buyer/BuyerOverviewView";
 
 const BuyerDetailScreen = ({ route }) => {
   const { t } = useTranslation();
@@ -35,6 +36,21 @@ const BuyerDetailScreen = ({ route }) => {
           animation: "shift",
         }}
       >
+        <Tab.Screen
+          name="buyerOverview"
+          options={{
+            tabBarLabel: t("common.stats"),
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="analytics-outline" size={22} color={color} />
+            ),
+          }}
+        >
+          {() => (
+            <>
+              <BuyerOverviewView id={buyerId} />
+            </>
+          )}
+        </Tab.Screen>
         <Tab.Screen
           name="buyerInfo"
           options={{
