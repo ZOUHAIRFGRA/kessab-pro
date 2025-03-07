@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,8 @@ public class AnimalService implements IAnimalService {
 
     @Override
     public Page<Animal> getAllAnimals(int page, int size, String search, String filterType) {
-        Pageable pageable = PageRequest.of(page, size);
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, size, sort);
         UUID userId = getLoggedInUserId();
 
         if (search != null && search.length() > 3) {
