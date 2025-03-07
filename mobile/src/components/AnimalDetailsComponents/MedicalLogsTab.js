@@ -16,7 +16,6 @@ import {
   deleteAnimalMedicalLog,
 } from "../../features/animalMedicalLogSlice";
 import { MaterialIcons, Feather, Fontisto } from "@expo/vector-icons";
-
 import {
   EmptyState,
   InputField,
@@ -31,11 +30,13 @@ import {
 } from "./sharedStyles";
 import { useToast } from "../../hooks/useToast";
 import { useTranslation } from "react-i18next";
+import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
+import Loading from "../global/Loading";
 
 export const MedicalLogsTab = ({ animalId }) => {
-  // const { animalId } = route.params;
   const { t } = useTranslation();
-  const { medicalLogs } = useSelector((state) => state.animalMedicalLogs);
+  const isRTL = t("dir") === "rtl";
+  const { medicalLogs ,loading,error} = useSelector((state) => state.animalMedicalLogs);
   const dispatch = useDispatch();
   const [editing, setEditing] = useState(null);
   const [editedLog, setEditedLog] = useState({});
@@ -78,59 +79,63 @@ export const MedicalLogsTab = ({ animalId }) => {
         );
         setNewLogDescription("");
         setAdding(false);
-        showSuccessToast("Medical Log added successfully!");
+        showSuccessToast(t("common.Medical Log added successfully!"));
       }
     } catch (error) {
       console.error(`Error adding medical log for animal ${animalId}:`, error);
-      showErrorToast("Error adding medical log!");
+      showErrorToast(t("common.Error adding medical log!"));
     }
   };
 
   const handleDelete = (logId) => {
     Alert.alert(
-      "Confirm Deletion",
-      "Are you sure you want to delete this medical log?",
+      t("common.confirmDelete"),
+      t("common.Are you sure you want to delete this medical log?"),
       [
         {
-          text: "Cancel",
+          text: t("common.cancel"),
           style: "cancel",
         },
         {
-          text: "Delete",
+          text: t("common.delete"),
           onPress: () => {
             try {
               dispatch(deleteAnimalMedicalLog(logId));
-              showSuccessToast("Medical Log deleted successfully!");
+              showSuccessToast(t("common.Medical Log deleted successfully!"));
             } catch (error) {
               console.error(`Error deleting medical log with id ${logId}:`, error);
-              showErrorToast("Error deleting medical log!");
+              showErrorToast(t("common.Error deleting medical log!"));
             }
           },
-          style: "destructive", 
+          style: "destructive",
         },
       ]
     );
   };
 
+  if (loading) return <Loading />;
+  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
   return (
     <Container>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         {adding ? (
-          <View style={{ marginBottom: 16}}>
+          <View style={{ marginBottom: 16 }}>
             <InputField
               value={newLogDescription}
               onChangeText={setNewLogDescription}
               placeholder={t("common.enter_new_activity")}
+              style={isRTL ? { textAlign: "right" } : { textAlign: "left" }}
             />
             <InputField
               value={newVetName}
               onChangeText={setNewVetName}
               placeholder={t("common.enter_vet_name")}
+              style={isRTL ? { textAlign: "right" } : { textAlign: "left" }}
             />
             <TouchableOpacity
               onPress={() => setShowDatePicker(true)}
               style={{
-                flexDirection: "row",
+                flexDirection: isRTL ? "row-reverse" : "row",
                 alignItems: "center",
                 padding: 10,
                 backgroundColor: "#f0f0f0",
@@ -139,7 +144,9 @@ export const MedicalLogsTab = ({ animalId }) => {
               }}
             >
               <MaterialIcons name="event" size={24} color="gray" />
-              <Text style={{ marginLeft: 8 }}>{logDate.toDateString()}</Text>
+              <Text style={{ marginLeft: isRTL ? 0 : 8, marginRight: isRTL ? 8 : 0 }}>
+                {logDate.toDateString()}
+              </Text>
             </TouchableOpacity>
 
             {showDatePicker && (
@@ -154,7 +161,7 @@ export const MedicalLogsTab = ({ animalId }) => {
               />
             )}
 
-            <ActionButtons>
+            <ActionButtons style={isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }}>
               <SaveButton onPress={handleAddLog}>
                 <MaterialIcons name="check-circle" size={30} color="white" />
               </SaveButton>
@@ -164,83 +171,102 @@ export const MedicalLogsTab = ({ animalId }) => {
             </ActionButtons>
           </View>
         ) : (
-          <AddButton onPress={() => setAdding(true)}>
+          <AddButton onPress={() => setAdding(true)} style={isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }}>
             <MaterialIcons name="add-circle-outline" size={24} color="white" />
-            <AddButtonText>{t("common.add")}</AddButtonText>
+            <AddButtonText style={isRTL ? { marginRight: 8, marginLeft: 0 } : { marginLeft: 8 }}>
+              {t("common.add")}
+            </AddButtonText>
           </AddButton>
         )}
 
         {medicalLogs.length > 0 ? (
           medicalLogs.map((log) => (
-            <LogCard key={log.id}>
-              {editing === log.id ? (
-                <>
-                  <InputField
-                    value={editedLog.description}
-                    onChangeText={(text) =>
-                      setEditedLog({ ...editedLog, description: text })
-                    }
-                  />
-                  <InputField
-                    value={editedLog.vetName}
-                    onChangeText={(text) =>
-                      setEditedLog({ ...editedLog, vetName: text })
-                    }
-                  />
-                  <ActionButtons>
-                    <SaveButton onPress={handleSave}>
-                      <MaterialIcons name="save" size={20} color="white" />
-                    </SaveButton>
-                    <CancelButton onPress={() => setEditing(null)}>
-                      <MaterialIcons name="cancel" size={20} color="white" />
-                    </CancelButton>
-                  </ActionButtons>
-                </>
-              ) : (
-                <>
-                  <LogText>
-                    <MaterialIcons name="event" size={16} color="gray" />{" "}
-                    {log.logDate}
-                  </LogText>
-                  <LogText>
-                    <Feather
-                      name="activity"
-                      size={16}
-                      color="gray"
-                    />{" "}
-                    {log.description}
-                  </LogText>
-                  <LogText>
-                    <Fontisto
-                      name="doctor"
-                      size={16}
-                      color="gray"
-                    />{" "}
-                    {log.vetName}
-                  </LogText>
-
-                  <ActionButtons>
-                    <SaveButton
-                      style={{ marginRight: 0 }}
-                      onPress={() => handleEdit(log)}
-                    >
-                      <MaterialIcons name="edit" size={20} color="white" />
-                    </SaveButton>
-                    <CancelButton onPress={() => handleDelete(log.id)}>
-                      <MaterialIcons name="delete" size={20} color="white" />
-                    </CancelButton>
-                  </ActionButtons>
-                </>
-              )}
-            </LogCard>
+            <LogCard key={log.id} style={isRTL ? { direction: "rtl" } : { direction: "ltr" }}>
+            {editing === log.id ? (
+              <>
+                <InputField
+                  value={editedLog.description}
+                  onChangeText={(text) => setEditedLog({ ...editedLog, description: text })}
+                  style={isRTL ? { textAlign: "right" } : { textAlign: "left" }}
+                />
+                <InputField
+                  value={editedLog.vetName}
+                  onChangeText={(text) => setEditedLog({ ...editedLog, vetName: text })}
+                  style={isRTL ? { textAlign: "right" } : { textAlign: "left" }}
+                />
+                <ActionButtons style={isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }}>
+                  <SaveButton onPress={handleSave}>
+                    <MaterialIcons name="save" size={20} color="white" />
+                  </SaveButton>
+                  <CancelButton onPress={() => setEditing(null)}>
+                    <MaterialIcons name="cancel" size={20} color="white" />
+                  </CancelButton>
+                </ActionButtons>
+              </>
+            ) : (
+              <>
+                <LogText style={isRTL ? { textAlign: "right" } : {}}>
+                  {isRTL ? (
+                    <>
+                      {log.logDate}{" "}
+                      <MaterialIcons name="event" size={16} color="gray" />
+                    </>
+                  ) : (
+                    <>
+                      <MaterialIcons name="event" size={16} color="gray" />{" "}
+                      {log.logDate}
+                    </>
+                  )}
+                </LogText>
+                <LogText style={isRTL ? { textAlign: "right" } : {}}>
+                  {isRTL ? (
+                    <>
+                      {log.description}{" "}
+                      <Feather name="activity" size={16} color="gray" />
+                    </>
+                  ) : (
+                    <>
+                      <Feather name="activity" size={16} color="gray" />{" "}
+                      {log.description}
+                    </>
+                  )}
+                </LogText>
+                <LogText style={isRTL ? { textAlign: "right" } : {}}>
+                  {isRTL ? (
+                    <>
+                      {log.vetName}{" "}
+                      <Fontisto name="doctor" size={16} color="gray" />
+                    </>
+                  ) : (
+                    <>
+                      <Fontisto name="doctor" size={16} color="gray" />{" "}
+                      {log.vetName}
+                    </>
+                  )}
+                </LogText>
+                <ActionButtons style={isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }}>
+                  <SaveButton
+                    style={{ marginRight: 0 }}
+                    onPress={() => handleEdit(log)}
+                  >
+                    <MaterialIcons name="edit" size={20} color="white" />
+                  </SaveButton>
+                  <CancelButton onPress={() => handleDelete(log.id)}>
+                    <MaterialIcons name="delete" size={20} color="white" />
+                  </CancelButton>
+                </ActionButtons>
+              </>
+            )}
+          </LogCard>
           ))
         ) : (
           <EmptyState>
-            <MaterialIcons name="error-outline" size={50} color="gray" />
-            <Text>No medical logs found.</Text>
+            <FallBack type={FALLBACK_TYPE.NO_RESULT} message={t("common.No_medical_logs_found")} />
           </EmptyState>
         )}
       </ScrollView>
     </Container>
   );
 };
+
+export default MedicalLogsTab;

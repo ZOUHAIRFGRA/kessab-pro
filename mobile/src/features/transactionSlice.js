@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import TransactionService from "../api/transactionApi";
-
+import transactionApi from "../api/transactionApi";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
 // Async thunks
 export const getTransactions = createAsyncThunk(
   "transactions/fetchAll",
@@ -23,6 +25,20 @@ export const getTransactionsByBuyer = createAsyncThunk(
     return await TransactionService.fetchTransactionsByBuyer(buyerId);
   }
 );
+
+export const exportTransactionInvoice = async (id) => {
+  try {
+    const response = await transactionApi.fetchTransactionInvoice(id);
+    const { filename, pdfBase64 } = response;
+    let filepath = `${FileSystem.documentDirectory}/${filename}`;
+    await FileSystem.writeAsStringAsync(filepath, pdfBase64, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    await Sharing.shareAsync(filepath, { mimeType: "application/pdf" });
+  } catch (e) {
+    alert(e.message);
+  }
+};
 
 export const addTransaction = createAsyncThunk(
   "transactions/add",
@@ -69,6 +85,7 @@ const transactionSlice = createSlice({
       })
       .addCase(getTransactions.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.transactions = action.payload;
       })
       .addCase(getTransactions.rejected, (state, action) => {
@@ -80,6 +97,7 @@ const transactionSlice = createSlice({
       })
       .addCase(getTransactionsBySale.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.transactions = action.payload;
       })
       .addCase(getTransactionsBySale.rejected, (state, action) => {
@@ -91,15 +109,14 @@ const transactionSlice = createSlice({
       })
       .addCase(getTransactionsByBuyer.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.transactions = action.payload;
       })
       .addCase(getTransactionsByBuyer.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(addTransaction.fulfilled, (state, action) => {
-        state.transactions.push(action.payload);
-      })
+
       .addCase(editTransaction.fulfilled, (state, action) => {
         state.transactions = state.transactions.map((t) =>
           t.id === action.payload.id ? action.payload : t

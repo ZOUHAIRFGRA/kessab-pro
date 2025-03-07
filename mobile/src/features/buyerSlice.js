@@ -1,45 +1,67 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import  BuyersService  from "../api/buyerApi";
+import BuyersService from "../api/buyerApi";
 
-
-export const getBuyers = createAsyncThunk("buyers/fetchAll", async () => {
-  const response = await BuyersService.fetchBuyers();
-  return response;
-});
-
+export const getBuyers = createAsyncThunk(
+  "buyers/fetchAll",
+  async ({ q = "", page = 0 }) => {
+    const response = await BuyersService.fetchBuyers({
+      fullName: q,
+      cin: q,
+      page,
+    });
+    return response;
+  }
+);
 
 export const getBuyer = createAsyncThunk("buyers/get", async (id) => {
   const response = await BuyersService.fetchBuyerById(id);
   return response;
 });
 
-
 export const addBuyer = createAsyncThunk("buyers/add", async (buyer) => {
   const response = await BuyersService.createBuyer(buyer);
   return response;
 });
 
-
-export const editBuyer = createAsyncThunk("buyers/update", async ({ id, updateBuyer }) => {
-  const response = await BuyersService.updateBuyer(id, updateBuyer);
-  return response;
-});
-
+export const updateBuyer = createAsyncThunk(
+  "buyers/update",
+  async ({ id, buyer }) => {
+    const response = await BuyersService.updateBuyer(id, buyer);
+    return response;
+  }
+);
 
 export const removeBuyer = createAsyncThunk("buyers/delete", async (id) => {
   await BuyersService.deleteBuyer(id);
-  return id; 
+  return id;
 });
 
 const buyerSlice = createSlice({
   name: "buyers",
   initialState: {
     buyers: [],
-    buyer: null,  
+    buyer: null,
+    buyerLoading: null,
     loading: false,
     error: null,
     page: 0,
     totalPages: 0,
+    trigger: 0,
+  },
+  reducers: {
+    resetBuyers: (state) => {
+      state.error = null;
+      state.buyers = null;
+      state.loading = false;
+      state.page = 0;
+      state.totalPages = 0;
+    },
+
+    resetBuyer: (state) => {
+      state.error = null;
+      state.buyer = null;
+      state.buyerLoading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -48,25 +70,37 @@ const buyerSlice = createSlice({
       })
       .addCase(getBuyers.fulfilled, (state, action) => {
         state.loading = false;
-        state.buyers = action.payload;
+        state.error = null;
+        state.buyers = action.payload.content;
+        state.page = action.payload.page.number;
+        state.totalPages = action.payload.page.totalPages;
       })
       .addCase(getBuyers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
+      .addCase(getBuyer.pending, (state, action) => {
+        state.buyerLoading = true;
+      })
       .addCase(getBuyer.rejected, (state, action) => {
-        state.loading = false;
+        state.buyerLoading = false;
         state.error = action.error.message;
       })
       .addCase(getBuyer.fulfilled, (state, action) => {
-        state.loading = false;
+        state.buyerLoading = false;
+        state.error = null;
         state.buyer = action.payload;
-        
       })
       .addCase(addBuyer.fulfilled, (state, action) => {
         state.buyers.push(action.payload);
       })
-      .addCase(editBuyer.fulfilled, (state, action) => {
+      .addCase(updateBuyer.rejected, (state, action) => {
+        console.log(action.error);
+      })
+      .addCase(updateBuyer.fulfilled, (state, action) => {
+        console.log("fully");
+        console.log({ action: action.payload });
+
         state.buyers = state.buyers.map((s) =>
           s.id === action.payload.id ? action.payload : s
         );
@@ -76,5 +110,7 @@ const buyerSlice = createSlice({
       });
   },
 });
+
+export const { resetBuyer, resetBuyers } = buyerSlice.actions;
 
 export default buyerSlice.reducer;

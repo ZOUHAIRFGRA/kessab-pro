@@ -1,12 +1,25 @@
 package uit.ac.ma.est.kessabpro.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uit.ac.ma.est.kessabpro.mappers.BuyerMapper;
+import uit.ac.ma.est.kessabpro.models.dto.requests.BuyerDTORequest;
+import uit.ac.ma.est.kessabpro.models.dto.responses.BuyerDTOResponse;
+import uit.ac.ma.est.kessabpro.models.dto.responses.BuyerSummaryDTOResponse;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
+import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
+import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
 import uit.ac.ma.est.kessabpro.services.implementations.BuyerService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -15,30 +28,60 @@ public class BuyerController {
 
     @Autowired
     private BuyerService buyerService;
+    @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
+    private SaleRepository saleRepository;
 
     @PostMapping
-    public ResponseEntity<Buyer> createBuyer(@RequestBody Buyer buyer) {
-        return ResponseEntity.ok(buyerService.createBuyer(buyer));
+    public ResponseEntity<BuyerDTOResponse> createBuyer(@Valid @RequestBody BuyerDTORequest buyerDTO) {
+        Buyer buyerEntity = BuyerMapper.toBuyerEntity(buyerDTO);
+        Buyer buyer = buyerService.createBuyer(buyerEntity);
+        return ResponseEntity.ok(BuyerMapper.toBuyerDTO(buyer));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Map<String, Long>> getAllCount() {
+        Map<String, Long> response = new HashMap<>();
+        response.put("count", buyerService.getAllCount());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/overview")
+    public ResponseEntity<BuyerSummaryDTOResponse> getOverview(@PathVariable UUID id) {
+        Buyer buyer = buyerService.getBuyerById(id);
+        return ResponseEntity.ok((new BuyerMapper(transactionRepository,saleRepository)).toBuyerSummaryDTO(buyer));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Buyer> getBuyerById(@PathVariable UUID id) {
-        return ResponseEntity.ok(buyerService.getBuyerById(id));
+    public ResponseEntity<BuyerDTOResponse> getBuyerById(@PathVariable UUID id) {
+        Buyer buyer = buyerService.getBuyerById(id);
+        return ResponseEntity.ok(BuyerMapper.toBuyerDTO(buyer));
     }
 
     @GetMapping
-    public ResponseEntity<List<Buyer>> getAllBuyers() {
-        return ResponseEntity.ok(buyerService.getAllBuyers());
+    public ResponseEntity<Page<BuyerDTOResponse>> getBuyers(
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String cin,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "fullName") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Buyer> buyers = buyerService.findByFullNameOrCin(fullName, cin, pageable);
+        Page<BuyerDTOResponse> buyersDTOs = buyers.map(BuyerMapper::toBuyerDTO);
+        return ResponseEntity.ok(buyersDTOs);
     }
+
 
     @PutMapping("/{id}")
-    public ResponseEntity<Buyer> updateBuyer(@PathVariable UUID id, @RequestBody Buyer buyer) {
-        return ResponseEntity.ok(buyerService.updateBuyer(id, buyer));
+    public ResponseEntity<BuyerDTOResponse> updateBuyer(@PathVariable UUID id, @RequestBody BuyerDTORequest buyerDTO) {
+        Buyer buyerEntity = BuyerMapper.toBuyerEntity(buyerDTO);
+        Buyer buyerUpdated = buyerService.updateBuyer(id, buyerEntity);
+        return ResponseEntity.ok(BuyerMapper.toBuyerDTO(buyerUpdated));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBuyer(@PathVariable UUID id) {
-        buyerService.deleteBuyer(id);
-        return ResponseEntity.ok("Buyer deleted successfully.");
-    }
 }

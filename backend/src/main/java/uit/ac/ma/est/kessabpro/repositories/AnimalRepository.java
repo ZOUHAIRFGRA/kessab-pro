@@ -3,6 +3,8 @@ package uit.ac.ma.est.kessabpro.repositories;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import uit.ac.ma.est.kessabpro.models.entities.Animal;
 
 import java.math.BigDecimal;
@@ -19,4 +21,13 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
     Optional<Animal> findByIdAndUser_Id(UUID id, UUID userId);
     List<Animal> findByUser_IdAndSale_Id(UUID userId, UUID saleId);
     List<Animal> findByUser_IdAndSale_Buyer_Id(UUID userId, UUID buyerId);
+    List<Animal> findByUser_IdAndSaleNull(UUID userId);
+    Long countByUser_Id(UUID userId);
+    @Modifying
+    @Query("UPDATE Animal a SET a.category = null WHERE a.category.id = :categoryId")
+    void setCategoryToNullForAnimals(UUID categoryId);
+
+    @Modifying
+    @Query("UPDATE Animal a SET a.category.id = :newCategoryId WHERE a.category.id = :oldCategoryId")
+    void reassignCategoryToLivestock(UUID oldCategoryId, UUID newCategoryId);
 }

@@ -1,12 +1,14 @@
 package uit.ac.ma.est.kessabpro.models.entities;
 
+import lombok.*;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import uit.ac.ma.est.kessabpro.auditing.UserAware;
 import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import uit.ac.ma.est.kessabpro.listeners.transaction.TransactionCreatedEventListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,11 +16,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Transaction extends BaseEntity {
+@Filter(name = "userFilter", condition = "user_id = :userId")
+public class Transaction extends BaseEntity implements UserAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

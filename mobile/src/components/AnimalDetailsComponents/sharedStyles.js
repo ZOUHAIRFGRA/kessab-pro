@@ -1,5 +1,6 @@
 import { Image, styled, Text, TextInput, View } from "dripsy";
 import { Dimensions, TouchableOpacity } from "react-native";
+import Colors from "../../utils/Colors";
 const { width } = Dimensions.get("window");
 
 
@@ -11,6 +12,7 @@ export const AnimalImage = styled(Image)({
   borderRadius: 10,
   marginBottom: 16,
   alignSelf: "center",
+  backgroundColor: "white",
   
 });
 
@@ -80,7 +82,7 @@ export const AddButton = styled(TouchableOpacity)({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: "#007bff",
+  backgroundColor: Colors.secondary,
   paddingVertical: 12,
   borderRadius: 10,
   marginBottom: 16,
@@ -94,7 +96,7 @@ export const CnclButton = styled(TouchableOpacity)({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: "red",
+  backgroundColor: Colors.danger,
   paddingVertical: 12,
   borderRadius: 10,
   marginBottom: 16,
@@ -128,7 +130,7 @@ export const SaveButton = styled(TouchableOpacity)({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: "green",
+  backgroundColor: Colors.primary,
   paddingVertical: 12,
   borderRadius: 10,
   marginBottom: 16,
@@ -144,7 +146,7 @@ export const CancelButton = styled(TouchableOpacity)({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: "red",
+  backgroundColor: Colors.danger,
   paddingVertical: 12,
   borderRadius: 10,
   marginBottom: 16,

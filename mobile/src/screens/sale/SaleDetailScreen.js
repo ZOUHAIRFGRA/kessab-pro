@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Colors from "../../utils/Colors";
 import SaleInfoView from "../../components/sale/SaleInfoView";
@@ -7,16 +7,30 @@ import TransactionsListCardView from "../../components/transaction/TransactionsL
 import AnimalsListCardView from "../../components/Animal/AnimalsListCardView";
 import Container from "../../components/global/Container";
 import { Ionicons } from "@expo/vector-icons";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FallBack from "../../components/global/Fallback";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { getSale, resetSale } from "../../features/saleSlice";
+import Loading from "../../components/global/Loading";
 
 const SaleDetailScreen = ({ route }) => {
+
+
   const { t } = useTranslation();
   const Tab = createBottomTabNavigator();
-  const sale = route.params?.sale;
 
-  if (!sale) return <FallBack />;
+  const saleId = route.params?.saleId;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getSale(saleId));
+  }, [dispatch]);
+
+  const { sale, loading, error } = useSelector((states) => states.sales);
+
+  if (loading) return <Loading />;
+  if (error || !saleId) return <FallBack />;
 
   return (
     <Container sx={{ flex: 1 }}>
@@ -26,10 +40,10 @@ const SaleDetailScreen = ({ route }) => {
 
           tabBarStyle: {
             height: 65,
-            backgroundColor: Colors.secondary,
+            backgroundColor: Colors.secondaryLight,
           },
-          tabBarActiveTintColor: Colors.white,
-          tabBarInactiveTintColor: Colors.primaryLight,
+          tabBarActiveTintColor: Colors.secondary,
+          tabBarInactiveTintColor: Colors.primary,
           tabBarLabelStyle: { fontSize: 13, fontWeight: "bold" },
           tabBarPosition: "top",
           animation: "shift",
@@ -44,7 +58,7 @@ const SaleDetailScreen = ({ route }) => {
             ),
           }}
         >
-          {() => <SaleInfoView id={sale.id} />}
+          {() => <SaleInfoView id={sale?.id} />}
         </Tab.Screen>
 
         <Tab.Screen
@@ -56,7 +70,7 @@ const SaleDetailScreen = ({ route }) => {
             ),
           }}
         >
-          {() => <BuyerInfoView id={sale.buyer?.id} />}
+          {() => <BuyerInfoView id={sale?.buyer?.id} />}
         </Tab.Screen>
 
         <Tab.Screen
@@ -70,7 +84,7 @@ const SaleDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16 }}>
-              <AnimalsListCardView id={sale.id} type={"sale"} />
+              <AnimalsListCardView id={sale?.id} type={"sale"} />
             </Container>
           )}
         </Tab.Screen>
@@ -86,7 +100,7 @@ const SaleDetailScreen = ({ route }) => {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <TransactionsListCardView id={sale.id} type={"sale"} />
+              <TransactionsListCardView id={sale?.id} type="sale" />
             </Container>
           )}
         </Tab.Screen>

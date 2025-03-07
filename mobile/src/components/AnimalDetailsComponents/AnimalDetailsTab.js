@@ -1,57 +1,35 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-  ActivityIndicator,
-  Image,
-} from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { View, Dimensions, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { getBaseURL } from "../../api/axiosInstance";
-import { editAnimal, getAnimalById } from "../../features/animalSlice";
-import {
-  AnimalImage,
-  EditButton,
-  FieldContainer,
-  InfoRow,
-  Card,
-  InfoText,
-  InputField,
-  Container,
-  SaveButton,
-  EditContainer,
-  CancelButton,
-  ActionButtons,
-  LabelText,
-} from "./sharedStyles";
-import { Dimensions } from "react-native";
-import Colors from "../../utils/Colors";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import IconButton from "./IconButton";
-import { useToast } from "../../hooks/useToast";
+import { getAnimalById, editAnimal, removeAnimal } from "../../features/animalSlice";
 import { useTranslation } from "react-i18next";
+import { useToast } from "../../hooks/useToast";
+import { ImageCarousel } from "./ImageCarousel";
+import { AnimalInfo } from "./AnimalInfo";
+import { EditForm } from "./EditForm";
+import { Container } from "./sharedStyles";
+import { useNavigation } from "@react-navigation/native";
+import Loading from "../global/Loading";
+import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
+import ConfirmationModal from "../global/ConfirmationModal";
+import Button from "../global/Button";
+
 export const AnimalDetailsTab = ({ animalId }) => {
   const { t } = useTranslation();
   const { showSuccessToast, showErrorToast } = useToast();
-  const isRTL = t("dir") === "rtl";
-  const screenWidth = Dimensions.get("window").width;
   const dispatch = useDispatch();
-  const animal = useSelector((state) =>
-    state.animals.animals.find((a) => a.id === animalId)
-  );
+  const animal = useSelector((state) => state.animals.animals.find((a) => a.id === animalId));
   const loading = useSelector((state) => state.animals.loading);
   const error = useSelector((state) => state.animals.error);
 
   const [editing, setEditing] = useState(false);
   const [editedAnimal, setEditedAnimal] = useState({});
+  const [newImages, setNewImages] = useState([]);
+  const [imagesToDelete, setImagesToDelete] = useState([]);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const flatListRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [imageLoading, setImageLoading] = useState(true);
-  const [showBirthDatePicker, setShowBirthDatePicker] = useState(false);
-  const [showPickUpDatePicker, setShowPickUpDatePicker] = useState(false);
+  const navigation = useNavigation();
+
   useEffect(() => {
     if (animalId) {
       dispatch(getAnimalById(animalId));
@@ -61,302 +39,156 @@ export const AnimalDetailsTab = ({ animalId }) => {
   useEffect(() => {
     if (animal) {
       setEditedAnimal(animal);
+      setNewImages([]);
+      setImagesToDelete([]);
     }
   }, [animal]);
 
   const handleSave = () => {
     try {
-      dispatch(
-        editAnimal({ id: editedAnimal.id, updatedAnimal: editedAnimal })
-      );
-      showSuccessToast("Animal updated successfully");
-      setEditing(false);
+      const formData = new FormData();
+      formData.append("tag", editedAnimal.tag || "");
+      formData.append("price", editedAnimal.price?.toString() || "");
+      formData.append("weight", editedAnimal.weight?.toString() || "");
+      formData.append("sex", editedAnimal.sex || "");
+      formData.append("birthDate", editedAnimal.birthDate || "");
+      if (editedAnimal.pickUpDate) {
+        formData.append("pickUpDate", editedAnimal.pickUpDate);
+      }
+      if (editedAnimal.category) {
+        formData.append("category", editedAnimal.category);
+      }
+      if (editedAnimal.saleId) {
+        formData.append("saleId", editedAnimal.saleId);
+      }
+
+      if (editedAnimal.imagePaths && editedAnimal.imagePaths.length > 0) {
+        const imagePathsJson = JSON.stringify(editedAnimal.imagePaths);
+        console.log("Sending imagePaths:", imagePathsJson);
+        formData.append("imagePaths", imagePathsJson);
+      }
+
+      newImages.forEach((uri, index) => {
+        const uriParts = uri.split("/");
+        const fileName = uriParts[uriParts.length - 1];
+        console.log(`Appending new image[${index}]: ${uri}`);
+        formData.append("images", {
+          uri,
+          name: fileName,
+          type: "image/jpeg",
+        });
+      });
+
+      if (imagesToDelete.length > 0) {
+        imagesToDelete.forEach((path, index) => {
+          console.log(`Appending imagesToDelete[${index}]: ${path}`);
+          formData.append("imagesToDelete", path);
+        });
+      } else {
+        console.log("No images to delete.");
+      }
+
+      for (let pair of formData._parts) {
+        console.log(`FormData entry: ${pair[0]} = ${pair[1]}`);
+      }
+
+      dispatch(editAnimal({ id: editedAnimal.id, updatedAnimal: formData }))
+        .then((response) => {
+          console.log("Save response:", response);
+          showSuccessToast(t("common.Animal updated successfully"));
+          setEditing(false);
+          setEditedAnimal(response.payload);
+          setNewImages([]);
+          setImagesToDelete([]);
+        })
+        .catch((err) => {
+          console.error("Save error:", err);
+          showErrorToast(t("common.Failed to update animal"));
+        });
     } catch (error) {
-      showErrorToast("Failed to update animal");
+      console.error("HandleSave error:", error);
+      showErrorToast(t("common.Failed to update animal"));
     }
   };
 
-  const handleNext = () => {
-    if (currentIndex < editedAnimal.imagePaths.length - 1) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-      flatListRef.current.scrollToIndex({
-        index: currentIndex + 1,
-        animated: true,
+  const handleDeleteAnimal = () => {
+    if (animal.saleId) {
+      showErrorToast(t("common.Cannot delete an animal that is part of a sale"));
+      return;
+    }
+    setShowDeleteConfirmation(true);
+  };
+
+  const confirmDeleteAnimal = () => {
+    dispatch(removeAnimal(animalId))
+      .then(() => {
+        showSuccessToast(t("common.Animal deleted successfully"));
+        navigation.goBack();
+      })
+      .catch((err) => {
+        console.error("Delete error:", err);
+        showErrorToast(t("common.Failed to delete animal"));
       });
-    }
   };
 
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prevIndex) => prevIndex - 1);
-      flatListRef.current.scrollToIndex({
-        index: currentIndex - 1,
-        animated: true,
-      });
-    }
+  const startEditing = () => {
+    setEditing(true);
+    setImagesToDelete([]);
   };
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error}</Text>;
+  if (loading) return <Loading />;
+  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (
     <Container>
       <ScrollView style={{ padding: 10 }}>
-        {editedAnimal.imagePaths && editedAnimal.imagePaths.length > 0 && (
-          <View style={{ alignItems: "center", width: screenWidth }}>
-            <FlatList
-              ref={flatListRef}
-              data={editedAnimal.imagePaths}
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item, index) => index.toString()}
-              onMomentumScrollEnd={(event) => {
-                const newIndex = Math.floor(
-                  event.nativeEvent.contentOffset.x / screenWidth
-                );
-                setCurrentIndex(newIndex);
-              }}
-              renderItem={({ item }) => (
-                <View
-                  style={{
-                    width: screenWidth,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {imageLoading && (
-                    <ActivityIndicator
-                      size="large"
-                      color={Colors.primary}
-                      style={{ position: "absolute" }}
-                    />
-                  )}
-                  <AnimalImage
-                    source={{ uri: `${getBaseURL()}${item}` }}
-                    onLoad={() => setImageLoading(false)}
-                    onError={() => setImageLoading(false)}
-                  />
-                </View>
-              )}
-            />
-            <View style={{ flexDirection: "row", marginTop: 10 }}>
-              <TouchableOpacity
-                onPress={handlePrev}
-                disabled={currentIndex === 0}
-                style={{ marginRight: 10 }}
-              >
-                <MaterialIcons
-                  name="chevron-left"
-                  size={50}
-                  color={currentIndex === 0 ? "gray" : "black"}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleNext}
-                disabled={currentIndex === editedAnimal.imagePaths.length - 1}
-              >
-                <MaterialIcons
-                  name="chevron-right"
-                  size={50}
-                  color={
-                    currentIndex === editedAnimal.imagePaths.length - 1
-                      ? "gray"
-                      : "black"
-                  }
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
+        <ImageCarousel
+          imagePaths={editedAnimal.imagePaths}
+          flatListRef={flatListRef}
+          screenWidth={Dimensions.get("window").width}
+          isRTL={t("dir") === "rtl"}
+          t={t}
+        />
+        {animal.saleId && (
+          <Button
+            type="primary"
+            onPress={() => navigation.navigate("SellDetail", { saleId: animal.saleId })}
+            children={t("common.viewSale")}
+            textStyle={{ fontSize: 16 , color: "white" , fontWeight: "bold" }}
+          />
         )}
-
         {editing ? (
-          <EditContainer style={{ direction: isRTL ? "rtl" : "ltr" }}>
-            <FieldContainer>
-              <LabelText>{t("common.tag")}</LabelText>
-              <InputField
-                value={editedAnimal.tag}
-                onChangeText={(text) =>
-                  setEditedAnimal({ ...editedAnimal, tag: text })
-                }
-                placeholder={t("common.tag")}
-                textAlign={isRTL ? "right" : "left"} 
-              />
-            </FieldContainer>
-
-            <FieldContainer>
-              <LabelText>{t("common.price")}</LabelText>
-              <InputField
-                value={editedAnimal.price?.toString()}
-                onChangeText={(text) =>
-                  setEditedAnimal({ ...editedAnimal, price: parseFloat(text) })
-                }
-                keyboardType="numeric"
-                placeholder={t("common.price")}
-                textAlign={isRTL ? "right" : "left"} 
-              />
-            </FieldContainer>
-
-            <FieldContainer>
-              <LabelText>{t("common.weight")}</LabelText>
-              <InputField
-                value={editedAnimal.weight?.toString()}
-                onChangeText={(text) =>
-                  setEditedAnimal({ ...editedAnimal, weight: parseFloat(text) })
-                }
-                keyboardType="numeric"
-                placeholder={t("common.weight")}
-                textAlign={isRTL ? "right" : "left"} 
-              />
-            </FieldContainer>
-
-            <FieldContainer>
-              <LabelText>{t("common.sex")}</LabelText>
-              <View
-                style={{
-                  flexDirection: isRTL ? "row-reverse" : "row",
-                  marginTop: 5,
-                }}
-              >
-                <IconButton
-                  label={t("common.male")}
-                  selected={editedAnimal.sex} 
-                  onPress={() =>
-                    setEditedAnimal({ ...editedAnimal, sex: "Male" })
-                  }
-                  value="Male"
-                />
-                <IconButton
-                  label={t("common.female")}
-                  selected={editedAnimal.sex}
-                  onPress={() =>
-                    setEditedAnimal({ ...editedAnimal, sex: "Female" })
-                  }
-                  value="Female"
-                />
-              </View>
-            </FieldContainer>
-
-            <FieldContainer>
-              <LabelText>{t("common.birthDate")}</LabelText>
-              <TouchableOpacity onPress={() => setShowBirthDatePicker(true)}>
-                <InputField
-                  value={editedAnimal.birthDate}
-                  editable={false}
-                  placeholder={t("common.birthDate")}
-                  textAlign={isRTL ? "right" : "left"} 
-                />
-              </TouchableOpacity>
-              {showBirthDatePicker && (
-                <DateTimePicker
-                  value={
-                    editedAnimal.birthDate
-                      ? new Date(editedAnimal.birthDate)
-                      : new Date()
-                  }
-                  mode="date"
-                  display="default"
-                  onChange={(event, selectedDate) => {
-                    setShowBirthDatePicker(false);
-                    if (selectedDate) {
-                      setEditedAnimal({
-                        ...editedAnimal,
-                        birthDate: selectedDate.toISOString().split("T")[0],
-                      });
-                    }
-                  }}
-                />
-              )}
-            </FieldContainer>
-
-            <FieldContainer>
-              <LabelText>{t("common.pickup_date")}</LabelText>
-              <TouchableOpacity onPress={() => setShowPickUpDatePicker(true)}>
-                <InputField
-                  value={editedAnimal.pickUpDate}
-                  editable={false}
-                  placeholder={t("common.pickup_date")}
-                  textAlign={isRTL ? "right" : "left"}
-                />
-              </TouchableOpacity>
-              {showPickUpDatePicker && (
-                <DateTimePicker
-                  value={
-                    editedAnimal.pickUpDate
-                      ? new Date(editedAnimal.pickUpDate)
-                      : new Date()
-                  }
-                  mode="date"
-                  display="default"
-                  onChange={(event, selectedDate) => {
-                    setShowPickUpDatePicker(false);
-                    if (selectedDate) {
-                      setEditedAnimal({
-                        ...editedAnimal,
-                        pickUpDate: selectedDate.toISOString().split("T")[0],
-                      });
-                    }
-                  }}
-                />
-              )}
-            </FieldContainer>
-
-            <ActionButtons
-              style={{ flexDirection: isRTL ? "row-reverse" : "row" }}
-            >
-              <SaveButton onPress={handleSave}>
-                <Text style={{ color: "white" }}>💾 {t("common.save")}</Text>
-              </SaveButton>
-              <CancelButton onPress={() => setEditing(false)}>
-                <Text style={{ color: "white" }}>❌ {t("common.cancel")}</Text>
-              </CancelButton>
-            </ActionButtons>
-          </EditContainer>
+          <EditForm
+            editedAnimal={editedAnimal}
+            setEditedAnimal={setEditedAnimal}
+            newImages={newImages}
+            setNewImages={setNewImages}
+            imagesToDelete={imagesToDelete}
+            setImagesToDelete={setImagesToDelete}
+            setEditing={setEditing}
+            onSave={handleSave}
+            isRTL={t("dir") === "rtl"}
+            t={t}
+          />
         ) : (
-          <>
-            <Card style={{ direction: isRTL ? "rtl" : "ltr" }}>
-              <InfoRow>
-                <InfoText>
-                  🔖 {t("common.tag")}: {editedAnimal.tag}
-                </InfoText>
-              </InfoRow>
-              <InfoRow>
-                <InfoText>
-                  💰 {t("common.price")}: {editedAnimal.price} DH
-                </InfoText>
-              </InfoRow>
-              <InfoRow>
-                <InfoText>
-                  ⚖️ {t("common.weight")}: {editedAnimal.weight} kg
-                </InfoText>
-              </InfoRow>
-              <InfoRow>
-                <InfoText>
-                  🚻 {t("common.sex")}: {editedAnimal.sex}
-                </InfoText>
-              </InfoRow>
-
-              <InfoRow>
-                <InfoText>
-                  📅 {t("common.birthDate")}: {editedAnimal.birthDate}
-                </InfoText>
-              </InfoRow>
-              <InfoRow>
-                <InfoText>
-                  📅 {t("common.pickup_date")}:{" "}
-                  {editedAnimal.pickUpDate
-                    ? editedAnimal.pickUpDate
-                    : "Not Available"}
-                </InfoText>
-              </InfoRow>
-
-              <EditButton onPress={() => setEditing(true)}>
-                <MaterialIcons name="edit" size={20} color="blue" />
-              </EditButton>
-            </Card>
-          </>
+          <AnimalInfo
+            animal={editedAnimal}
+            setEditing={startEditing}
+            onDelete={handleDeleteAnimal}
+            isRTL={t("dir") === "rtl"}
+            t={t}
+          />
         )}
       </ScrollView>
+      <ConfirmationModal
+        visible={showDeleteConfirmation}
+        toggleVisible={() => setShowDeleteConfirmation(false)}
+        action={confirmDeleteAnimal}
+        closable={true}
+        btnParams={{ type: "danger", icon: { name: "check" }, btnText: t("common.delete") }}
+        title={t("common.confirmDelete")}
+        bodyText={t("common.Are you sure you want to delete this animal?")}
+      />
     </Container>
   );
 };

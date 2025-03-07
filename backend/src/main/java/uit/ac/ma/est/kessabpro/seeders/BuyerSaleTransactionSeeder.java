@@ -63,10 +63,11 @@ public class BuyerSaleTransactionSeeder {
 
         if (buyerRepository.count() == 0) {
             Buyer buyer = Buyer.builder()
-                    .user(firstUser)
                     .fullName("John Doe")
                     .CIN("AB123456")
+                    .user(firstUser)
                     .phone("0654321987")
+                    .user(firstUser)
                     .address("789 Buyer Street")
                     .build();
 
@@ -82,6 +83,7 @@ public class BuyerSaleTransactionSeeder {
             Sale sale = Sale.builder()
                     .buyer(buyer)
                     .saleDate(LocalDate.now())
+                    .user(firstUser)
                     .agreedAmount(1500.00)
                     .paymentStatus(PaymentStatus.PARTIALLY_PAID)
                     .build();
@@ -98,6 +100,7 @@ public class BuyerSaleTransactionSeeder {
             Transaction transaction = Transaction.builder()
                     .sale(sale)
                     .transactionDate(LocalDate.now())
+                    .user(firstUser)
                     .amount(500.00)
                     .method(PaymentMethod.CASH)
                     .build();

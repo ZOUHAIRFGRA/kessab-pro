@@ -36,4 +36,8 @@ public class AnimalDTO {
         return images != null && !images.isEmpty();
     }
 
+    private List<String> imagesToDelete;
+
+
+
 }

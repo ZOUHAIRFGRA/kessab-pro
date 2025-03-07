@@ -1,10 +1,13 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uit.ac.ma.est.kessabpro.models.entities.Buyer;
 import uit.ac.ma.est.kessabpro.repositories.BuyerRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IBuyerService;
+import uit.ac.ma.est.kessabpro.services.contracts.IBuyerService;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +26,7 @@ public class BuyerService implements IBuyerService {
     @Override
     public Buyer getBuyerById(UUID id) {
         return buyerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Buyer not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
     }
 
     @Override
@@ -34,10 +37,19 @@ public class BuyerService implements IBuyerService {
     @Override
     public Buyer updateBuyer(UUID id, Buyer buyer) {
         Buyer existingBuyer = getBuyerById(id);
-        existingBuyer.setFullName(buyer.getFullName());
-        existingBuyer.setCIN(buyer.getCIN());
-        existingBuyer.setPhone(buyer.getPhone());
-        existingBuyer.setAddress(buyer.getAddress());
+        if (buyer.getFullName() != null) {
+            existingBuyer.setFullName(buyer.getFullName());
+        }
+        if (buyer.getCIN() != null) {
+            existingBuyer.setCIN(buyer.getCIN());
+        }
+        if (buyer.getPhone() != null) {
+            existingBuyer.setPhone(buyer.getPhone());
+        }
+        if (buyer.getAddress() != null) {
+            existingBuyer.setAddress(buyer.getAddress());
+        }
+
         return buyerRepository.save(existingBuyer);
     }
 
@@ -45,5 +57,15 @@ public class BuyerService implements IBuyerService {
     public void deleteBuyer(UUID id) {
         Buyer existingBuyer = getBuyerById(id);
         buyerRepository.delete(existingBuyer);
+    }
+
+    @Override
+    public Page<Buyer> findByFullNameOrCin(String fullName, String cin, Pageable pageable) {
+        return buyerRepository.findByFullNameOrCin(fullName, cin, pageable);
+    }
+
+    @Override
+    public Long getAllCount() {
+        return buyerRepository.count();
     }
 }

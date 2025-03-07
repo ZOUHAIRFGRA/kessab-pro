@@ -18,8 +18,27 @@ export const fetchAnimals = async (
   }
 };
 
+export const fetchAnimalsCount = async () => {
+  try {
+    const response = await axiosInstance.get("/animals/count");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching animals count:", error);
+    throw error;
+  }
+}
+
 export const fetchAnimalsBySale = (saleId) => {
   return axiosInstance.get(`/animals/by-sale/${saleId}`);
+};
+export const fetchUnsoldAnimals = async () => {
+ try {
+   const response = await axiosInstance.get("/animals/unsold");
+   return response.data;
+ } catch (error) {
+    console.error("Error fetching unsold animals:", error);
+    throw error;
+  }
 };
 
 export const fetchAnimalsByBuyer = (buyerId) => {
@@ -51,7 +70,11 @@ export const createAnimal = async (animalData) => {
 
 export const updateAnimal = async (id, animalData) => {
   try {
-    const response = await axiosInstance.put(`/animals/${id}`, animalData);
+    console.log("Request payload:", animalData._parts);
+    const response = await axiosInstance.put(`/animals/${id}`, animalData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      transformRequest: (data) => data, // Prevent Axios from converting FormData
+    });
     return response.data;
   } catch (error) {
     console.error(`Error updating animal with id ${id}:`, error);
@@ -92,6 +115,16 @@ export const fetchAnimalActivitiesLogs = async (animalId) => {
       `Error fetching activities logs for animal ${animalId}:`,
       error
     );
+    throw error;
+  }
+};
+
+export const fetchAllAnimalActivitiesLogs = async () => {
+  try {
+    const response = await axiosInstance.get(`/animal-activities-logs`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all activities logs:", error);
     throw error;
   }
 };

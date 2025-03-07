@@ -1,163 +1,316 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Animated,
+  ActivityIndicator,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAnimals, resetAnimals } from "../features/animalSlice";
+import { fetchCategoryById } from "../features/categorySlice";
 import { getBaseURL } from "../api/axiosInstance";
 import { styled } from "dripsy";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-
-const AnimalsList = ({ searchText: propSearchText, route }) => {
+import Colors from "../utils/Colors";
+const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { animals, loading, error, totalPages } = useSelector(
-    (state) => state.animals
-  );
+  const {
+    animals,
+    error: animalsError,
+    totalPages,
+  } = useSelector((state) => state.animals);
+  const { categories } = useSelector((state) => state.categories);
   const [currentPage, setCurrentPage] = useState(0);
+  const [fetchedCategoryIds, setFetchedCategoryIds] = useState(new Set());
+  const fadeAnim = new Animated.Value(1);
 
   const searchText = route?.params?.searchText ?? propSearchText ?? "";
+  const isRTL = t("dir") === "rtl";
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setCurrentPage(0);
-      dispatch(resetAnimals());
-
-      dispatch(getAnimals({ page: 0, search: searchText, filterType: "tag" }));
-    }, [dispatch, searchText])
+  const fetchAnimals = useCallback(
+    (page) => {
+      dispatch(getAnimals({ page, search: searchText, filterType: "tag" }));
+    },
+    [dispatch, searchText]
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      setCurrentPage(0);
+      dispatch(resetAnimals());
+      fetchAnimals(0);
+    }, [dispatch, fetchAnimals])
+  );
+
+  useEffect(() => {
+    const newCategoryIds = animals
+      .map((animal) =>
+        typeof animal.category === "string"
+          ? animal.category
+          : animal.category?.id
+      )
+      .filter((id) => id && !fetchedCategoryIds.has(id) && !categories[id]);
+
+    newCategoryIds.forEach((categoryId) => {
+      dispatch(fetchCategoryById(categoryId));
+      setFetchedCategoryIds((prev) => new Set(prev).add(categoryId));
+    });
+  }, [animals, dispatch]);
+
   const handlePagination = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) {
+    if (newPage >= 0 && newPage < totalPages && !isLoading) {
       setCurrentPage(newPage);
-      dispatch(
-        getAnimals({ page: newPage, search: searchText, filterType: "tag" })
-      );
+      fetchAnimals(newPage);
     }
   };
+
   const handleAnimalClick = (id) => {
     navigation.navigate("AnimalDetails", { animalId: id });
   };
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error}</Text>;
+  React.useEffect(() => {
+    if (isLoading) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(fadeAnim, {
+            toValue: 0.4,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    }
+  }, [isLoading, fadeAnim]);
+
+  const renderItem = useCallback(
+    ({ item }) => {
+      const categoryId =
+        typeof item.category === "string" ? item.category : item.category?.id;
+      const category = categories.find(
+        (category) => category.id === categoryId
+      );
+      const categoryName = category
+        ? category.typeName
+        : t("common.uncategorized");
+      const statusText = item.saleId ? t("common.sold") : t("common.unsold");
+      const statusColor = item.saleId ? Colors.primary : Colors.danger;
+
+      return (
+        <ListItem onPress={() => handleAnimalClick(item.id)}>
+          <AnimalImage
+            source={{ uri: `${getBaseURL()}${item.imagePaths[0]}` }}
+            defaultSource={{ uri: "https://placehold.co/50x50" }}
+          />
+          <AnimalInfo>
+            <ListItemText>{item.tag}</ListItemText>
+            <AnimalSubText>{categoryName}</AnimalSubText>
+            <AnimalSubText>{item.sex || t("common.unknown_sex")}</AnimalSubText>
+            <AnimalStatus style={{ color: statusColor }}>{statusText}</AnimalStatus>
+          </AnimalInfo>
+        </ListItem>
+      );
+    },
+    [categories, handleAnimalClick, t]
+  );
 
   return (
-    <View>
-      <SectionTitle>{t("common.animals")}</SectionTitle>
-
-      {animals.length === 0 ? (
+    <Container>
+      {isLoading ? (
+        <LoadingOverlay>
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <ActivityIndicator size="large" color={Colors.primary} />
+          </Animated.View>
+        </LoadingOverlay>
+      ) : animalsError ? (
+        <ErrorText>
+          {t("common.error")}: {animalsError}
+        </ErrorText>
+      ) : animals.length === 0 ? (
         <NoAnimalsWrapper>
-          <Icon name="emoticon-sad" size={40} color="#D3D3D3" />
-          <NoAnimalsText>No animals found for this search.</NoAnimalsText>
+          <Icon name="emoticon-sad" size={40} color={Colors.warning} />
+          <NoAnimalsText>{t("common.no_animals_found")}</NoAnimalsText>
+          <AddAnimalPrompt
+            onPress={() => navigation.navigate("ManagementScreen")}
+          >
+            <PromptText>{t("common.add_animal_prompt")}</PromptText>
+          </AddAnimalPrompt>
         </NoAnimalsWrapper>
       ) : (
-        <ItemList>
-          {animals.map((animal) => (
-            <ListItem
-              key={animal.id}
-              onPress={() => handleAnimalClick(animal.id)}
-            >
-              <Image
-                source={{ uri: `${getBaseURL()}${animal.imagePaths[0]}` }}
-                style={{ width: 50, height: 50, borderRadius: 8 }}
-              />
-              <View style={{ flex: 1, marginLeft: 10 }}>
-                <ListItemText>{animal.tag}</ListItemText>
-                <Text>
-                  {animal.category ? animal.category.typeName : "Uncategorized"}
-                </Text>
-                <Text>{animal.sex ? animal.sex : "Unknown Sex"}</Text>
-              </View>
-            </ListItem>
-          ))}
-        </ItemList>
+        <FlatList
+          data={animals}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ padding: 8, paddingBottom: 16 }}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <SectionTitle isRTL={isRTL}>{t("common.animals")}</SectionTitle>
+          }
+          ListFooterComponent={
+            <PaginationWrapper isRTL={isRTL}>
+              <PaginationButton
+                onPress={() => handlePagination(currentPage - 1)}
+                disabled={currentPage <= 0 || isLoading}
+              >
+                <Icon name="chevron-left" size={20} color="#fff" />
+              </PaginationButton>
+              <CurrentPageText>{`${
+                currentPage + 1
+              } / ${totalPages}`}</CurrentPageText>
+              <PaginationButton
+                onPress={() => handlePagination(currentPage + 1)}
+                disabled={currentPage >= totalPages - 1 || isLoading}
+              >
+                <Icon name="chevron-right" size={20} color="#fff" />
+              </PaginationButton>
+            </PaginationWrapper>
+          }
+        />
       )}
-
-      <PaginationWrapper>
-        <PaginationButton
-          onPress={() => handlePagination(currentPage - 1)}
-          disabled={currentPage <= 0}
-        >
-          <Icon name="skip-previous" size={20} color="white" />
-        </PaginationButton>
-
-        <CurrentPageText>{`Page ${
-          currentPage + 1
-        } of ${totalPages}`}</CurrentPageText>
-
-        <PaginationButton
-          onPress={() => handlePagination(currentPage + 1)}
-          disabled={currentPage >= totalPages - 1}
-        >
-          <Icon name="skip-next" size={20} color="white" />
-        </PaginationButton>
-      </PaginationWrapper>
-    </View>
+    </Container>
   );
 };
 
-const SectionTitle = styled(Text)({
-  fontSize: 18,
-  fontWeight: "bold",
+const Container = styled(View)({
+  flex: 1,
+});
+
+const SectionTitle = styled(Text)(({ isRTL }) => ({
+  fontSize: 22,
+  fontWeight: "700",
+  color: "#1e293b",
   marginBottom: 12,
-});
+  textAlign: isRTL ? "right" : "left",
+  letterSpacing: 0.5,
+}));
 
-const ItemList = styled(ScrollView)({
-  marginBottom: 16,
-});
-
-const ListItem = styled(TouchableOpacity)({
+const ListItem = styled(TouchableOpacity)(({ pressed }) => ({
   flexDirection: "row",
   padding: 16,
+  borderRadius: 12,
+  marginBottom: 12,
+  backgroundColor: pressed ? "#f1f5f9" : "#fff",
   borderWidth: 1,
-  borderRadius: 8,
-  marginBottom: 8,
-  backgroundColor: "white",
+  borderColor: "#e5e7eb",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.1,
+  shadowRadius: 6,
+  elevation: 3,
+}));
+
+const AnimalImage = styled(Image)({
+  width: 60,
+  height: 60,
+  borderRadius: 10,
+  backgroundColor: "#e5e7eb",
+});
+
+const AnimalInfo = styled(View)({
+  flex: 1,
+  marginLeft: 12,
+  justifyContent: "center",
 });
 
 const ListItemText = styled(Text)({
-  fontSize: 16,
-  fontWeight: "500",
+  fontSize: 18,
+  fontWeight: "600",
+  color: "#1e293b",
 });
 
-const PaginationWrapper = styled(View)({
+const AnimalSubText = styled(Text)({
+  fontSize: 14,
+  color: "#64748b",
+  marginTop: 4,
+});
+
+const AnimalStatus = styled(Text)({
+  fontSize: 20,
+  color: Colors.primary,
+  marginTop: 4,
+  fontWeight: "bold",
+  textAlign: "right",
+});
+
+const PaginationWrapper = styled(View)(({ isRTL }) => ({
   flexDirection: "row",
   justifyContent: "center",
   alignItems: "center",
-  marginTop: 16,
-});
+  paddingVertical: 12,
+  gap: 16,
+}));
 
-const PaginationButton = styled(TouchableOpacity)({
-  paddingHorizontal: 12,
-  paddingVertical: 6,
-  marginHorizontal: 8,
+const PaginationButton = styled(TouchableOpacity)(({ disabled }) => ({
+  paddingHorizontal: 14,
+  paddingVertical: 10,
   borderRadius: 8,
-  backgroundColor: "#007BFF",
+  backgroundColor: disabled ? "#d1d5db" : Colors.primary,
   justifyContent: "center",
   alignItems: "center",
-});
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: disabled ? 0 : 0.1,
+  shadowRadius: 4,
+  elevation: disabled ? 0 : 2,
+}));
 
 const CurrentPageText = styled(Text)({
   fontSize: 16,
   fontWeight: "600",
-  marginHorizontal: 8,
-  color: "#007BFF",
+  color: Colors.primary,
 });
 
 const NoAnimalsWrapper = styled(View)({
+  flex: 1,
   justifyContent: "center",
   alignItems: "center",
   padding: 20,
-  flex: 1,
 });
 
 const NoAnimalsText = styled(Text)({
   fontSize: 16,
   fontWeight: "500",
-  color: "#D3D3D3",
-  marginTop: 10,
+  color: "#b0b0b0",
+  marginTop: 12,
+});
+
+const AddAnimalPrompt = styled(TouchableOpacity)({
+  marginTop: 16,
+  paddingVertical: 8,
+  paddingHorizontal: 16,
+  borderRadius: 8,
+  backgroundColor: "#e6f0fa",
+});
+
+const PromptText = styled(Text)({
+  fontSize: 14,
+  color: "#4A90E2",
+  fontWeight: "600",
+});
+
+const ErrorText = styled(Text)({
+  fontSize: 16,
+  color: "#dc3545",
+  textAlign: "center",
+  padding: 20,
+});
+
+const LoadingOverlay = styled(View)({
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(255, 255, 255, 0.8)",
 });
 
 export default AnimalsList;

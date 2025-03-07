@@ -1,20 +1,23 @@
 package uit.ac.ma.est.kessabpro.models.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.*;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import uit.ac.ma.est.kessabpro.auditing.UserAware;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Buyer extends BaseEntity {
+@FilterDef(name = "userFilter", parameters = @ParamDef(name = "userId", type = UUID.class))
+@Filter(name = "userFilter", condition = "user_id = :userId")
+public class Buyer extends BaseEntity implements UserAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,11 +27,16 @@ public class Buyer extends BaseEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @OneToMany(mappedBy = "buyer")
+    List<Sale> sales;
+
+
 
     private String fullName;
     private String CIN;
     private String phone;
     private String address;
+   
 
 
 }

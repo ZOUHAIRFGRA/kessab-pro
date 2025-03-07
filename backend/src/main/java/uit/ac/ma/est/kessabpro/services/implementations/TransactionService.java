@@ -1,35 +1,35 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uit.ac.ma.est.kessabpro.enums.PaymentMethod;
-import uit.ac.ma.est.kessabpro.events.TransactionCreatedEvent;
+import uit.ac.ma.est.kessabpro.events.transaction.TransactionCreatedEvent;
+import uit.ac.ma.est.kessabpro.events.transaction.TransactionDeletedEvent;
 import uit.ac.ma.est.kessabpro.models.entities.Sale;
 import uit.ac.ma.est.kessabpro.models.entities.Transaction;
-import uit.ac.ma.est.kessabpro.repositories.SaleRepository;
 import uit.ac.ma.est.kessabpro.repositories.TransactionRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.ITransactionService;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import uit.ac.ma.est.kessabpro.services.contracts.ITransactionService;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final SaleRepository saleRepository;
+
     private final ApplicationEventPublisher eventPublisher;
+    private final SaleService saleService;
 
     @Autowired
-    public TransactionService(TransactionRepository transactionRepository, SaleRepository saleRepository, ApplicationEventPublisher eventPublisher) {
+    public TransactionService(TransactionRepository transactionRepository,  ApplicationEventPublisher eventPublisher, @Lazy SaleService saleService) {
         this.transactionRepository = transactionRepository;
-        this.saleRepository = saleRepository;
         this.eventPublisher = eventPublisher;
+        this.saleService = saleService;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TransactionService implements ITransactionService {
     @Override
     public Transaction getTransactionById(UUID id) {
         return transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
     }
 
     @Override
@@ -56,41 +56,48 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public Transaction createTransaction(Transaction transaction) {
-        Sale sale = saleRepository.findById(transaction.getSale().getId())
-                .orElseThrow(() -> new RuntimeException("Sale not found"));
-
+        Sale sale = saleService.getSaleById(transaction.getSale().getId());
+        System.out.println(saleService.getRemainingAmount(sale));
+        if (saleService.getRemainingAmount(sale) < transaction.getAmount()){
+            throw new IllegalArgumentException("Amount exceeds maximum amount of transaction");
+        }
         transaction.setSale(sale);
-        transaction.setTransactionDate(LocalDate.now());
         Transaction savedTransaction = transactionRepository.save(transaction);
-        publishTransactionCreatedEvent(savedTransaction);
+        eventPublisher.publishEvent(new TransactionCreatedEvent(this,savedTransaction));
         return savedTransaction;
     }
 
+//    @Override
+//    @Transactional
+//    public Transaction updateTransaction(UUID id, Transaction updatedTransaction) {
+//        Transaction transaction = transactionRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+//
+//        transaction.setAmount(updatedTransaction.getAmount());
+//        transaction.setMethod(updatedTransaction.getMethod());
+//        transaction.setTransactionDate(updatedTransaction.getTransactionDate());
+//
+//        return transactionRepository.save(transaction);
+//    }
+
     @Override
     @Transactional
-    public Transaction updateTransaction(UUID id, Transaction updatedTransaction) {
-        Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
-
-        transaction.setAmount(updatedTransaction.getAmount());
-        transaction.setMethod(updatedTransaction.getMethod());
-        transaction.setTransactionDate(updatedTransaction.getTransactionDate());
-
-        return transactionRepository.save(transaction);
-    }
-
-    @Override
     public void deleteTransaction(UUID id) {
+        System.out.println("deleted + " + id);
+        Transaction transaction = getTransactionById(id);
+        eventPublisher.publishEvent(new TransactionDeletedEvent(this,transaction.getSale().getId(),transaction.getAmount()));
         transactionRepository.deleteById(id);
     }
 
-    @Override
-    public List<Double> testFindAmountsBySaleId(UUID saleId) {
-        return transactionRepository.findAmountsBySaleId(saleId);
+
+
+    public Page<Transaction> getAllTransactions(Pageable pageable) {
+        return transactionRepository.findAll(pageable);
     }
 
+
     @Override
-    public void publishTransactionCreatedEvent(Transaction transaction) {
-        eventPublisher.publishEvent(new TransactionCreatedEvent(this, transaction));
+    public Long getAllCount() {
+        return transactionRepository.count();
     }
 }

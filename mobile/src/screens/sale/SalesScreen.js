@@ -1,62 +1,133 @@
-import { View, Text, ScrollView, TextInput } from "react-native";
+import { Text } from "react-native";
 import Container from "../../components/global/Container";
 import Button from "../../components/global/Button";
 import Colors from "../../utils/Colors";
 import DropdownComponent from "../../components/global/BaseDropdown";
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SearchBar } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import SalesListCardView from "../../components/sale/SalesListCardView";
 import { useTranslation } from "react-i18next";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Dialogs from "../../components/global/Dialog";
-import { color } from "@rneui/base";
+import { Input } from "@rneui/base";
+import { useDispatch, useSelector } from "react-redux";
+import { getSales } from "../../features/saleSlice";
+import { Pagination } from "../../components/global/Pagination";
+import { fetchPaymentStatus } from "../../features/enumSlice";
+import { fetchCategories } from "../../features/categorySlice";
+import { formatDateToLocalDate } from "../../utils/Global";
+
 export default function SalesScreen() {
+  const [fullNameFilter, setFullNameFilter] = useState("");
+  const [categoryIdFilter, setCategoryIdFilter] = useState("");
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState("");
+  const [saleDate, setSaleDate] = useState("");
+  const dispatch = useDispatch();
   const navigator = useNavigation();
   const [isDialogVisible, setDialogVisible] = useState(false);
-  const [counter, setCounter] = useState(1);
+  const [qte, setQte] = useState("1");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
+
   const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(null);
+    if (event.type === "dismissed") {
+      setSaleDate("");
+    } else {
+      setSaleDate(formatDateToLocalDate(selectedDate));
+      setDate(selectedDate);
+    }
+    setShowDatePicker(false);
   };
 
-  const onAddSaleClick = (counter) => {
-    setDialogVisible(false);
-    console.log(counter);
-    setCounter(1);
-    navigator.navigate("AddSale", { qte: counter });
+  const { totalPages } = useSelector((states) => states.sales);
+
+  const getNextPage = (page) => {
+    dispatch(
+      getSales({
+        page: page,
+      })
+    );
   };
+  const { loading: loadingPaymentStatus, paymentStatus } = useSelector(
+    (states) => states.enums
+  );
+  const { loading: categoriesLoading, categories } = useSelector(
+    (states) => states.categories
+  );
+
+  useEffect(() => {
+    if (categories.length < 1) {
+      dispatch(fetchCategories());
+    }
+    if (paymentStatus.length < 1) {
+      dispatch(fetchPaymentStatus());
+    }
+  }, [dispatch]);
+
+  const onAddSaleClick = () => {
+    console.log({ qte: parseInt(qte) });
+
+    if (qte <= 0 || isNaN(qte)) {
+      alert("quantity must be positive");
+      return;
+    }
+    setDialogVisible(false);
+    navigator.navigate("AddSale", { qte });
+  };
+
+  useEffect(() => {
+    return () => {
+      setQte("1");
+    };
+  }, [isDialogVisible]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setPaymentStatusFilter("");
+        setCategoryIdFilter("");
+        setFullNameFilter("");
+        setSaleDate("");
+      };
+    }, [])
+  );
 
   const { t } = useTranslation();
-
   return (
     <>
       <Container sx={{ paddingX: 12, paddingY: 8 }}>
         <Dialogs
-          title={"qte"}
+          title={"How many to sold?"}
           visible={isDialogVisible}
           toggleDialog={() => setDialogVisible(!isDialogVisible)}
         >
-          <Text>{counter}</Text>
-          <Container
-            sx={{
-              flexDirection: "row",
-              gap: 5,
-              justifyContent: "space-between",
-            }}
-          >
-            <Button onPress={() => setCounter(counter + 1)}>+</Button>
-            <Button onPress={() => setCounter(counter - 1)}>-</Button>
-          </Container>
+          <Input value={qte} onChangeText={setQte} keyboardType="number-pad" />
 
           <Button
             type={"primary"}
-            textStyle={{ color: Colors.white }}
-            onPress={() => onAddSaleClick(counter)}
+            style={{
+              padding: 12,
+              marginRight: 12,
+              marginLeft: 12,
+              marginBottom: 8,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            textStyle={{
+              color: "white",
+              fontWeight: "bold",
+              textAlign: "center",
+              fontSize: 16,
+            }}
+            icon={{
+              name: "forward",
+              color: Colors.white,
+            }}
+            onPress={() => onAddSaleClick()}
           >
-            salam
+            Continue
           </Button>
         </Dialogs>
         <Container sx={{ display: "flex", flexDirection: "row" }}>
@@ -70,7 +141,9 @@ export default function SalesScreen() {
               inputContainerStyle={{ padding: 0 }}
               round
               lightTheme
+              onChangeText={(v) => setFullNameFilter(v)}
               placeholder={t("common.SearchByBuyerNameOrCIN")}
+              value={fullNameFilter}
             />
           </Container>
           <Text
@@ -108,36 +181,47 @@ export default function SalesScreen() {
         >
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
-              values={[{ label: "Item 1", value: "1" }]}
+              values={categories?.map((category) => ({
+                label: category.typeName,
+                value: category.id,
+              }))}
+              disable={categoriesLoading}
               label={t("common.category")}
               focusLabel={"..."}
               notFocusLabel={t("common.category")}
               searchLabel={t("common.category_placeholder")}
               iconName="appstore-o"
+              onValueChange={(v) => setCategoryIdFilter(v)}
             />
           </Container>
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
-              values={[
-                { label: t(`payment_type.FULLY_PAID`), value: "FULLY_PAID" },
-                {
-                  label: t(`payment_type.PARTIALLY_PAID`),
-                  value: "PARTIALLY_PAID",
-                },
-                { label: t(`payment_type.NOT_PAID`), value: "NOT_PAID" },
-              ]}
+              values={paymentStatus.map((pm) => ({ label: pm, value: pm }))}
               label={t("common.payment")}
               focusLabel={"..."}
               notFocusLabel={t("common.payment")}
               searchLabel={t("common.payment_placeholder")}
               iconName="wallet"
+              disable={loadingPaymentStatus}
+              onValueChange={(v) => {
+                setPaymentStatusFilter(v);
+              }}
             />
           </Container>
         </Container>
       </Container>
       <Container sx={{ padding: 12, flex: 1 }}>
-        <SalesListCardView />
+        <SalesListCardView
+          fullNameFilter={fullNameFilter}
+          categoryIdFilter={categoryIdFilter}
+          paymentStatusFilter={paymentStatusFilter}
+          saleDate={saleDate}
+        />
       </Container>
+      <Pagination
+        pages={totalPages}
+        onPageChange={(page) => getNextPage(page)}
+      />
       <Button
         type="primary"
         style={{

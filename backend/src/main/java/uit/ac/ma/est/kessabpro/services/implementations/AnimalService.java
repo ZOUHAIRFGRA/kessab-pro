@@ -1,8 +1,11 @@
 package uit.ac.ma.est.kessabpro.services.implementations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -12,7 +15,7 @@ import uit.ac.ma.est.kessabpro.models.entities.Animal;
 import uit.ac.ma.est.kessabpro.models.entities.User;
 import uit.ac.ma.est.kessabpro.repositories.AnimalRepository;
 import uit.ac.ma.est.kessabpro.repositories.UserRepository;
-import uit.ac.ma.est.kessabpro.services.interfaces.IAnimalService;
+import uit.ac.ma.est.kessabpro.services.contracts.IAnimalService;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +30,7 @@ public class AnimalService implements IAnimalService {
 
     private final UserRepository userRepository;
     private final AnimalRepository animalRepository;
+    private static final String UPLOADS_DIR = UploadHelper.ANIMAL_IMAGES_UPLOAD_DIR;
 
 
     public AnimalService(UserRepository userRepository, AnimalRepository animalRepository) {
@@ -42,7 +46,8 @@ public class AnimalService implements IAnimalService {
 
     @Override
     public Page<Animal> getAllAnimals(int page, int size, String search, String filterType) {
-        Pageable pageable = PageRequest.of(page, size);
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, size, sort);
         UUID userId = getLoggedInUserId();
 
         if (search != null && search.length() > 3) {
@@ -66,6 +71,11 @@ public class AnimalService implements IAnimalService {
     }
 
     @Override
+    public Long getAnimalsCount() {
+        UUID userId = getLoggedInUserId();
+        return Long.valueOf(animalRepository.countByUser_Id(userId));
+    }
+    @Override
     public Optional<Animal> getAnimalById(UUID id) {
         UUID userId = getLoggedInUserId();
         return animalRepository.findById(id).filter(animal -> animal.getUser().getId().equals(userId));
@@ -87,24 +97,99 @@ public class AnimalService implements IAnimalService {
         return animalRepository.findById(id)
                 .filter(existingAnimal -> existingAnimal.getUser().getId().equals(userId))
                 .map(existingAnimal -> {
-                    animal.setId(id);
-                    animal.setUser(existingAnimal.getUser());
-                    return animalRepository.save(animal);
+                    existingAnimal.setTag(animal.getTag());
+                    existingAnimal.setSex(animal.getSex());
+                    existingAnimal.setBirthDate(animal.getBirthDate());
+                    existingAnimal.setPrice(animal.getPrice());
+                    existingAnimal.setWeight(animal.getWeight());
+                    existingAnimal.setCategory(animal.getCategory());
+                    existingAnimal.setPickUpDate(animal.getPickUpDate());
+
+                    if (animal.getImagePaths() != null) {
+                        try {
+                            existingAnimal.setImagePaths(new ArrayList<>(animal.getImagePaths()));
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                        System.out.println("Service: Setting imagePaths to: " + animal.getImagePaths());
+                    } else {
+                        System.out.println("Service: No new imagePaths provided, keeping existing: " + existingAnimal.getImagePaths());
+                    }
+
+                    return animalRepository.save(existingAnimal);
                 })
                 .orElse(null);
     }
 
     @Override
+    @Transactional
     public boolean deleteAnimal(UUID id) {
         UUID userId = getLoggedInUserId();
 
-        return animalRepository.findById(id)
-                .filter(animal -> animal.getUser().getId().equals(userId))
-                .map(animal -> {
-                    animalRepository.deleteById(id);
-                    return true;
-                })
-                .orElse(false);
+        Optional<Animal> animalOpt = animalRepository.findById(id)
+                .filter(animal -> animal.getUser().getId().equals(userId));
+
+        if (!animalOpt.isPresent()) {
+            System.out.println("Animal with ID " + id + " not found or does not belong to user " + userId);
+            return false;
+        }
+
+        Animal animal = animalOpt.get();
+
+        List<String> imagePaths = animal.getImagePaths();
+        if (imagePaths != null && !imagePaths.isEmpty()) {
+            System.out.println("Processing images for animal: " + id);
+            List<String> imagesToDelete = imagePaths.stream()
+                    .filter(path -> path.startsWith("/uploads/animals/"))
+                    .toList();
+            if (!imagesToDelete.isEmpty()) {
+                System.out.println("Deleting uploaded images: " + imagesToDelete);
+                deleteAnimalImages(imagesToDelete);
+            } else {
+                System.out.println("No uploaded images to delete (only seeded images present).");
+            }
+        } else {
+            System.out.println("No images to process for animal: " + id);
+        }
+
+        // Delete the animal (JPA cascade will handle AnimalActivitiesLog and AnimalMedicalLog)
+        animalRepository.delete(animal);
+        System.out.println("Successfully deleted animal with ID " + id + " and its associated logs");
+        return true;
+    }
+
+    @Override
+    public void deleteAnimalImages(List<String> imagesToDelete) {
+        if (imagesToDelete == null || imagesToDelete.isEmpty()) {
+            System.out.println("No images to delete provided.");
+            return;
+        }
+
+        for (String imagePath : imagesToDelete) {
+            // skip imgs used in seeding or not uploaded
+            if (imagePath == null || !imagePath.startsWith("/uploads/animals/")) {
+                System.err.println("❌ Skipping invalid or non-uploaded image path: " + imagePath);
+                continue;
+            }
+
+            String fileName = imagePath.split("/uploads/animals/")[1];
+            String fullPath = UPLOADS_DIR + File.separator + fileName;
+            File file = new File(fullPath);
+
+            System.out.println("Attempting to delete file: " + fullPath);
+            System.out.println("Upload dir: " + UPLOADS_DIR);
+            System.out.println("File name: " + fileName);
+
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println("✅ Successfully deleted image: " + imagePath);
+                } else {
+                    System.err.println("❌ Failed to delete image (delete failed): " + imagePath);
+                }
+            } else {
+                System.err.println("❌ File does not exist: " + fullPath);
+            }
+        }
     }
 
     @Override
@@ -133,4 +218,14 @@ public class AnimalService implements IAnimalService {
         UUID userId = getLoggedInUserId();
         return animalRepository.findByUser_IdAndSale_Buyer_Id(userId, buyerId);
     }
+
+
+    @Override
+    public List<Animal> getUnsoldAnimals() {
+        UUID userId = getLoggedInUserId();
+        return animalRepository.findByUser_IdAndSaleNull(userId);
+    }
+
+
+
 }

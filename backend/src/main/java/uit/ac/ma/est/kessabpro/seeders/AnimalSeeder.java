@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class AnimalSeeder {
@@ -34,36 +33,87 @@ public class AnimalSeeder {
     @Autowired
     private UserRepository userRepository;
 
+//    @PostConstruct
+//    public void init() {
+//        seedData();
+//    }
+
     public void seedData() {
+        // Step 1: Check if the first user is "admin"
+        Optional<User> optionalUser = userRepository.findAll().stream().findFirst();
+        if (optionalUser.isEmpty()) {
+            System.out.println("No users found. Please seed users first.");
+            return;
+        }
+        User firstUser = optionalUser.get();
+        if (!"admin".equalsIgnoreCase(firstUser.getUsername())) {
+            System.out.println("First user is not 'admin'. Skipping seeding.");
+            return;
+        }
+
+        // Step 2: Seed icons if they don’t exist
+        long iconCount = animalIconRepository.count();
+        if (iconCount >= 4) {
+            System.out.println("Icons already seeded (Cow, Sheep, Livestock, Goat). Skipping icon seeding.");
+        } else {
+            AnimalIcon cowIcon = animalIconRepository.findByIconPath("/icons/cow.png")
+                    .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/cow.png").build()));
+
+            AnimalIcon sheepIcon = animalIconRepository.findByIconPath("/icons/sheep.png")
+                    .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/sheep.png").build()));
+
+            AnimalIcon liveStockIcon = animalIconRepository.findByIconPath("/icons/live_stock.png")
+                    .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/live_stock.png").build()));
+
+            AnimalIcon goatIcon = animalIconRepository.findByIconPath("/icons/goat.png")
+                    .orElseGet(() -> animalIconRepository.save(AnimalIcon.builder().iconPath("/icons/goat.png").build()));
+
+            // Step 3: Seed categories for admin if they don’t exist
+            if (animalCategoryRepository.count() == 0) {
+                AnimalCategory cowCategory = AnimalCategory.builder()
+                        .typeName("Cow")
+                        .icon(cowIcon)
+                        .user(firstUser) // Admin-specific category
+                        .build();
+
+                AnimalCategory sheepCategory = AnimalCategory.builder()
+                        .typeName("Sheep")
+                        .icon(sheepIcon)
+                        .user(firstUser) // Admin-specific category
+                        .build();
+
+                AnimalCategory livestockCategory = AnimalCategory.builder()
+                        .typeName("Livestock")
+                        .icon(liveStockIcon)
+                        .user(firstUser) // Admin-specific category, not global
+                        .build();
+
+                AnimalCategory goatCategory = AnimalCategory.builder()
+                        .typeName("Goat")
+                        .icon(goatIcon)
+                        .user(firstUser) // Admin-specific category
+                        .build();
+
+                animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory, livestockCategory, goatCategory));
+                System.out.println("Categories seeded for admin: Cow, Sheep, Livestock, Goat.");
+            } else {
+                System.out.println("Categories already exist. Skipping category seeding.");
+            }
+        }
+
+        // Step 4: Seed animals, logs, etc., only if animals table is empty
         if (animalRepository.count() == 0) {
-            Optional<User> optionalUser = userRepository.findAll().stream().findFirst();
-            if (optionalUser.isEmpty()) {
-                System.out.println("No users found. Please seed users first.");
+            // Fetch categories after ensuring they exist for admin
+            Optional<AnimalCategory> cowCategoryOpt = animalCategoryRepository.findByUser_IdAndTypeName(firstUser.getId(), "Cow");
+            Optional<AnimalCategory> sheepCategoryOpt = animalCategoryRepository.findByUser_IdAndTypeName(firstUser.getId(), "Sheep");
+
+            if (cowCategoryOpt.isEmpty() || sheepCategoryOpt.isEmpty()) {
+                System.out.println("Required categories not found for admin. Ensure categories are seeded.");
                 return;
             }
-            User user = optionalUser.get();
 
-            AnimalIcon cowIcon = AnimalIcon.builder()
-                    .iconPath("/icons/cow.png")
-                    .build();
-
-            AnimalIcon sheepIcon = AnimalIcon.builder()
-                    .iconPath("/icons/sheep.png")
-                    .build();
-
-            animalIconRepository.saveAll(Arrays.asList(cowIcon, sheepIcon));
-
-            AnimalCategory cowCategory = AnimalCategory.builder()
-                    .typeName("Cow")
-                    .icon(cowIcon)
-                    .build();
-
-            AnimalCategory sheepCategory = AnimalCategory.builder()
-                    .typeName("Sheep")
-                    .icon(sheepIcon)
-                    .build();
-
-            animalCategoryRepository.saveAll(Arrays.asList(cowCategory, sheepCategory));
+            AnimalCategory cowCategory = cowCategoryOpt.get();
+            AnimalCategory sheepCategory = sheepCategoryOpt.get();
 
             Animal animal1 = Animal.builder()
                     .tag("COW-001")
@@ -73,7 +123,7 @@ public class AnimalSeeder {
                     .weight(new BigDecimal("500.0"))
                     .category(cowCategory)
                     .pickUpDate(null)
-                    .user(user) // Assign the first user
+                    .user(firstUser)
                     .build();
 
             try {
@@ -91,7 +141,7 @@ public class AnimalSeeder {
                     .weight(new BigDecimal("60.0"))
                     .category(sheepCategory)
                     .pickUpDate(LocalDate.of(2025, 2, 15))
-                    .user(user) // Assign the first user
+                    .user(firstUser)
                     .build();
 
             try {
@@ -133,9 +183,9 @@ public class AnimalSeeder {
 
             animalMedicalLogRepository.saveAll(Arrays.asList(medicalLog1, medicalLog2));
 
-            System.out.println("Seeding for animal completed!");
+            System.out.println("Seeding for admin completed!");
         } else {
-            System.out.println("Database already seeded. No new data added.");
+            System.out.println("Animals already seeded. No new data added.");
         }
     }
 }

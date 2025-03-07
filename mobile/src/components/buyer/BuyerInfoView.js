@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { ScrollView } from "react-native";
+import React, { useCallback, useEffect } from "react";
+import { Linking, Pressable, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
@@ -12,21 +12,24 @@ import Button from "../global/Button";
 import { Icon } from "@rneui/base";
 import Text from "../../components/global/Text";
 import { useTranslation } from "react-i18next";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { getValue } from "../../helpers/gloablHelpers";
 
 export default function BuyerInfoView({ id, hideLinkButton = false }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const {
+    error,
+    buyerLoading: loading,
+    buyer,
+  } = useSelector(({ buyers }) => buyers);
   useEffect(() => {
     dispatch(getBuyer(id));
-  }, [dispatch, id]);
-
-  const { error, loading, buyer } = useSelector(({ buyers }) => buyers);
+  }, [dispatch]);
   const navigator = useNavigation();
-
   const handleBuyerLinkClick = () => {
-    navigator.navigate("buyerDetail", { buyer });
-    console.log("navigate", buyer);
+    navigator.navigate("buyerDetail", { buyerId: buyer.id });
   };
 
   if (loading || !buyer) return <Loading />;
@@ -55,19 +58,21 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.FullName")}</Text>
-            <Header level={"h3"}>{buyer.fullName}</Header>
+            <Header level={"h3"}>{getValue(buyer.fullName)}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.CIN")}</Text>
-            <Header level={"h3"}>{buyer.cin}</Header>
+            <Header level={"h3"}>{getValue(buyer.CIN)}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
             <Text>{t("common.Address")}</Text>
-            <Header level={"h3"}>{buyer.address}</Header>
+            <Header level={"h3"}>{getValue(buyer.address)}</Header>
           </Container>
           <Container style={{ flex: 1, justifyContent: "end" }}>
-            <Text>{t("common.Phone")}</Text>
-            <Header level={"h3"}>{buyer.phone}</Header>
+            <Pressable onPress={() => Linking.openURL(`tel:${buyer.phone}`)}>
+              <Text>{t("common.Phone")}</Text>
+              <Header level={"h3"}>{getValue(buyer.phone)}</Header>
+            </Pressable>
           </Container>
         </Card>
         {!hideLinkButton && (
@@ -92,7 +97,7 @@ export default function BuyerInfoView({ id, hideLinkButton = false }) {
               name: "reply-all",
               color: Colors.white,
             }}
-            onclick={handleBuyerLinkClick}
+            onPress={handleBuyerLinkClick}
           >
             {t("common.SeeAllBuyerDetails")}
           </Button>
