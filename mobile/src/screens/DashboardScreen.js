@@ -46,22 +46,17 @@ const DashboardScreen = () => {
   } = useSelector((state) => state.transactions);
 
   useEffect(() => {
-    console.log("Dispatching getAnimalsCount...");
     dispatch(getAnimalsCount()).catch((err) =>
       console.error("getAnimalsCount failed:", err)
     );
-    console.log("Dispatching getUnsoldAnimals...");
     dispatch(getUnsoldAnimals()).catch((err) =>
       console.error("getUnsoldAnimals failed:", err)
     );
-    console.log("Dispatching getSales...");
     dispatch(getSales()).catch((err) => console.error("getSales failed:", err));
-    console.log("Dispatching getTransactions...");
     dispatch(getTransactions()).catch((err) =>
       console.error("getTransactions failed:", err)
     );
 
-    console.log("Dispatching getAllAnimalActivitiesLogs...");
     dispatch(getAllAnimalActivitiesLogs()).catch((err) =>
       console.error("getAllAnimalActivitiesLogs failed:", err)
     );
@@ -99,12 +94,7 @@ const DashboardScreen = () => {
     );
   }
 
-  // console.log("totalAnimals", totalAnimals);
-  // console.log("totalUnsoldAnimals", totalUnsoldAnimals);
-  // console.log("sales", sales);
-  // console.log("transactions", transactions);
-  // console.log("buyers", buyers);
-  // console.log("activitiesLogs", activitiesLogs);
+
 
   const totalAnimalsCount = totalAnimals || 0;
   const totalUnsoldCount = totalUnsoldAnimals || 0;
@@ -154,7 +144,6 @@ const DashboardScreen = () => {
     : 0;
 
   const lastSoldAnimals = sales.flatMap((sale) => sale.animals).slice(0, 3);
-  console.log("lastSoldAnimals", lastSoldAnimals);
 
   const recentTransactions = transactions.content
     ? transactions.content.slice(0, 3)

@@ -37,21 +37,6 @@ const BuyerDetailScreen = ({ route }) => {
         }}
       >
         <Tab.Screen
-          name="buyerOverview"
-          options={{
-            tabBarLabel: t("common.stats"),
-            tabBarIcon: ({ color }) => (
-              <Ionicons name="analytics-outline" size={22} color={color} />
-            ),
-          }}
-        >
-          {() => (
-            <>
-              <BuyerOverviewView id={buyerId} />
-            </>
-          )}
-        </Tab.Screen>
-        <Tab.Screen
           name="buyerInfo"
           options={{
             tabBarLabel: t("common.Info"),
@@ -94,6 +79,21 @@ const BuyerDetailScreen = ({ route }) => {
                   {t("common.Update")}
                 </Button>
               </Container>
+            </>
+          )}
+        </Tab.Screen>
+        <Tab.Screen
+          name="buyerOverview"
+          options={{
+            tabBarLabel: t("common.stats"),
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="analytics-outline" size={22} color={color} />
+            ),
+          }}
+        >
+          {() => (
+            <>
+              <BuyerOverviewView id={buyerId} />
             </>
           )}
         </Tab.Screen>
