@@ -687,7 +687,10 @@ const AddSaleScreen = ({ route, navigation }) => {
                       <Container sx={{ paddingX: 10, marginVertical: 15 }}>
                         <BaseDropdown
                           values={categories?.map((category) => ({
-                            label: t(`common.${category.typeName}`),
+                            label: t(
+                              `common.${category.typeName}`,
+                              category.typeName
+                            ),
                             value: category.id,
                           }))}
                           label={t("common.category")}

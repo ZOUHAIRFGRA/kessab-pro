@@ -180,7 +180,7 @@ export default function SalesScreen() {
           <Container sx={{ flex: 1 }}>
             <DropdownComponent
               values={categories?.map((category) => ({
-                label: t(`common.${category.typeName}`),
+                label: t(`common.${category.typeName}`, category.typeName),
                 value: category.id,
               }))}
               disable={categoriesLoading}
