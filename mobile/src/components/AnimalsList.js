@@ -104,7 +104,7 @@ const AnimalsList = ({ searchText: propSearchText, route, isLoading }) => {
       const categoryName = category
         ? category.typeName
         : t("common.uncategorized");
-      const statusText = item.saleId ? t("common.sold") : t("common.available");
+      const statusText = item.saleId ? t("common.sold") : t("common.unsold");
 
       return (
         <ListItem onPress={() => handleAnimalClick(item.id)}>
