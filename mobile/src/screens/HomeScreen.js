@@ -72,6 +72,7 @@ export default function HomeScreen() {
   return (
     <Container>
       <ContentContainer>
+        <WeatherWidget />
         <SearchInputContainer>
           <SearchInput
             ref={searchInputRef}
