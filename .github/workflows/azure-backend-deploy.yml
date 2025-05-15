@@ -1,0 +1,46 @@
+name: Deploy Backend to Azure
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/azure-backend-deploy.yml'
+  workflow_dispatch: # Allow manual triggering of the workflow
+    
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: maven
+          
+      - name: Build with Maven
+        run: |
+          cd backend
+          ./mvnw clean package -DskipTests
+        
+      - name: Setup Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'kessab-pro-app'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: 'backend/target/*.jar'
+
+      - name: Run Azure CLI script (Post-deployment steps)
+        run: |
+          az webapp restart --name kessab-pro-app --resource-group kessab-pro-rg
