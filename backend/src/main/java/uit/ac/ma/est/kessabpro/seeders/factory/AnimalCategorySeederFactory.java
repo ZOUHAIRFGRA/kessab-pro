@@ -15,7 +15,7 @@ public class AnimalCategorySeederFactory implements SeederFactory<AnimalCategory
     public List<AnimalCategory> create(List<AnimalIcon> icons) {
         AnimalCategory cowCategory = AnimalCategory.builder()
                 .typeName("Cow")
-                .icon(icons.getFirst())
+                .icon(icons.get(1))
                 .build();
 
         AnimalCategory sheepCategory = AnimalCategory.builder()
