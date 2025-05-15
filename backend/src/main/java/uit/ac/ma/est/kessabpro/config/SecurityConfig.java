@@ -28,10 +28,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
+        http                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 🔥 Ensure stateless session
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/").permitAll() // Allow root path
+                        .requestMatchers("/api/health").permitAll() // Allow health check
                         .requestMatchers("/api/auth/**").permitAll() // Allow all auth-related endpoints
                         .requestMatchers("/images/**", "/icons/**","/uploads/**").permitAll()
                         .anyRequest().authenticated()
