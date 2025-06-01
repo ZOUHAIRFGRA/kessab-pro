@@ -41,8 +41,8 @@ public class KessabProApplication {
         }
     }
 
-    @Bean
-    ApplicationRunner seedDatabase(IDatabaseSeederService databaseSeeder) {
-        return args -> databaseSeeder.seed();
-    }
+    // @Bean
+    // ApplicationRunner seedDatabase(IDatabaseSeederService databaseSeeder) {
+    //     return args -> databaseSeeder.seed();
+    // }
 }
