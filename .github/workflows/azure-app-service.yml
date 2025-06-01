@@ -1,0 +1,52 @@
+name: Deploy Spring Boot Backend to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+      - azure
+    paths: # Optional: Only run workflow if changes are in 'backend/' or this workflow file
+      - 'backend/**'
+      - '.github/workflows/azure-app-service.yml' # Adjust if your workflow file has a different name
+
+env:
+  AZURE_WEBAPP_NAME: 'kessabpro-app' # Replace with your App Service name
+  JAVA_VERSION: '21' # Replace with your Java version
+  BACKEND_DIRECTORY: 'backend' # Define the path to your backend code
+  # ARTIFACT_PATH is relative to the repository root
+  ARTIFACT_PATH: 'backend/target/kessabPro-0.0.1-SNAPSHOT.jar' # Adjust if your artifact name/path is different
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'microsoft' # Or 'temurin', 'adopt', etc.
+          cache: 'maven'
+          # Point cache to the pom.xml in the backend directory
+          cache-dependency-path: '${{ env.BACKEND_DIRECTORY }}/pom.xml'
+
+      - name: Build with Maven
+        # Set the working directory for the Maven command
+        working-directory: ${{ env.BACKEND_DIRECTORY }}
+        run: mvn clean package -DskipTests
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: 'production' # Or a staging slot if you set one up
+          # The package path is relative to the repository root
+          package: ${{ env.ARTIFACT_PATH }}
