@@ -8,21 +8,31 @@ import {
   Image,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../features/authSlice";
+import { loginUser, logout } from "../features/authSlice";
 import { styled } from "dripsy";
 import Colors from "../utils/Colors";
 import { useTranslation } from "react-i18next";
+import { useToast } from "../hooks/useToast";
 
 const LoginScreen = ({ navigation }) => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
   const { t } = useTranslation();
   const isRTL = t("dir") === "rtl";
+  const { showErrorToast } = useToast();
 
-  const handleLogin = () => {
-    dispatch(loginUser({ identifier, password }));
+  const handleLogin = async () => {
+    const resultAction = await dispatch(loginUser({ identifier, password }));
+    if (loginUser.rejected.match(resultAction)) {
+      if (resultAction.payload) {
+        showErrorToast(resultAction.payload);
+        if (resultAction.payload.includes('401') || resultAction.payload.includes('403')) {
+          dispatch(logout());
+        }
+      }
+    }
   };
 
   return (
@@ -58,8 +68,6 @@ const LoginScreen = ({ navigation }) => {
           textAlign={isRTL ? "right" : "left"}
         />
       </InputContainer>
-
-      {error && <ErrorText>{t(error)}</ErrorText>}
 
       <LoginButton onPress={handleLogin} disabled={loading}>
         {loading ? (
@@ -112,11 +120,6 @@ const Input = styled(TextInput)({
   borderColor: "#ccc",
   borderRadius: 8,
   backgroundColor: "#fff",
-});
-
-const ErrorText = styled(Text)({
-  color: Colors.danger,
-  marginBottom: 10,
 });
 
 const LoginButton = styled(TouchableOpacity)({

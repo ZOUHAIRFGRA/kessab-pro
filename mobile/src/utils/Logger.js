@@ -1,5 +1,7 @@
-import { logger } from "react-native-logs";
+import { logger, consoleTransport } from "react-native-logs";
 
-var log = logger.createLogger();
+var log = logger.createLogger({
+  transport: consoleTransport,
+});
 
 export default log;

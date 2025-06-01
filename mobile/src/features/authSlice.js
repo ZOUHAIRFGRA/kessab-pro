@@ -15,6 +15,11 @@ export const loginUser = createAsyncThunk(
   
         return { token }; 
       } catch (error) {
+        // Add logout logic here
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          await AsyncStorage.clear();
+          // The logout action will be dispatched by the component handling the rejected state
+        }
         return rejectWithValue(error.response?.data?.message || "Login failed");
       }
     }
@@ -79,6 +84,7 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        // The component handling the rejected state will dispatch the logout action if needed
       })
       .addCase(registerUser.pending, (state) => {
         state.loading = true;

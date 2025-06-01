@@ -4,23 +4,21 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { SERVER_IP } from "@env";
-import { logout } from "../features/authSlice";
-import store from '../store/store';
 
 export const getBaseURL = () => {
-  const serverIp = SERVER_IP || "192.168.1.8";
+  // const serverIp = SERVER_IP || "192.168.1.8";
 
-  if (Platform.OS === "android") {
-    return Constants.executionEnvironment === "expo"
-      ? "http://10.0.2.2:8080"
-      : `http://${serverIp}:8080`;
-  } else if (Platform.OS === "ios") {
-    return Constants.executionEnvironment === "expo"
-      ? `http://${serverIp}:8080`
-      : `http://${serverIp}:8080`;
-  }
+  // if (Platform.OS === "android") {
+  //   return Constants.executionEnvironment === "expo"
+  //     ? "http://10.0.2.2:8080"
+  //     : `http://${serverIp}:8080`;
+  // } else if (Platform.OS === "ios") {
+  //   return Constants.executionEnvironment === "expo"
+  //     ? `http://${serverIp}:8080`
+  //     : `http://${serverIp}:8080`;
+  // }
 
-  return `http://localhost:8080`;
+  return `https://kessabpro-app-a9f0dxbebvecgvaa.canadacentral-01.azurewebsites.net`;
 };
 
 const axiosInstance = axios.create({
@@ -39,17 +37,9 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-const handleLogout = async () => {
-  await AsyncStorage.clear();
-  store.dispatch(logout());
-};
-
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      await handleLogout();
-    }
     return Promise.reject(error);
   }
 );
