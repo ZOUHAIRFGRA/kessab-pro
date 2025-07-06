@@ -1,12 +1,13 @@
-import { motion } from "framer-motion";
-import { FaUserPlus, FaTractor, FaShoppingCart, FaChartLine, FaStethoscope, FaCog } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaUserPlus, FaTractor, FaShoppingCart, FaChartLine, FaStethoscope, FaCog, FaTimes, FaExpand } from "react-icons/fa";
+import { useState } from "react";
 
 const steps = [
   {
     title: "Sign Up & Configure",
     icon: <FaUserPlus className="text-4xl text-white" />,
     description: "Create your account and set up your farm profile with our intuitive onboarding process.",
-    image: "/src/assets/images/Login.PNG",
+    image: "/images/Login.PNG",
     color: "from-blue-500 to-cyan-500",
     delay: 0,
     features: ["Quick Setup", "Secure Login", "User Management"]
@@ -15,7 +16,7 @@ const steps = [
     title: "Add & Manage Animals",
     icon: <FaTractor className="text-4xl text-white" />,
     description: "Easily register your livestock with comprehensive tracking and category management.",
-    image: "/src/assets/images/add-animal-modal.png",
+    image: "/images/add-animal-modal.png",
     color: "from-green-500 to-emerald-500",
     delay: 0.2,
     features: ["Bulk Import", "QR Codes", "Categories"]
@@ -24,7 +25,7 @@ const steps = [
     title: "Track Health & Records",
     icon: <FaStethoscope className="text-4xl text-white" />,
     description: "Monitor animal health with detailed medical logs and vaccination schedules.",
-    image: "/src/assets/images/animal-medical-logs.png",
+    image: "/images/animal-medical-logs.png",
     color: "from-teal-500 to-cyan-500",
     delay: 0.4,
     features: ["Medical History", "Vaccinations", "Health Alerts"]
@@ -33,7 +34,7 @@ const steps = [
     title: "Manage Sales & Payments",
     icon: <FaShoppingCart className="text-4xl text-white" />,
     description: "Process sales transactions and track payments with detailed financial records.",
-    image: "/src/assets/images/sale-details.png",
+    image: "/images/sale-details.png",
     color: "from-orange-500 to-red-500",
     delay: 0.6,
     features: ["Transaction History", "Payment Tracking", "Financial Reports"]
@@ -42,7 +43,7 @@ const steps = [
     title: "View Animal Details",
     icon: <FaCog className="text-4xl text-white" />,
     description: "Access comprehensive animal profiles with breeding history and performance data.",
-    image: "/src/assets/images/animal-details.png",
+    image: "/images/animal-details.png",
     color: "from-indigo-500 to-purple-500",
     delay: 0.8,
     features: ["Complete Profiles", "Breeding History", "Performance Metrics"]
@@ -51,7 +52,7 @@ const steps = [
     title: "Analyze & Optimize",
     icon: <FaChartLine className="text-4xl text-white" />,
     description: "Get powerful insights and analytics to optimize your farm operations.",
-    image: "/src/assets/images/dashboard.PNG",
+    image: "/images/dashboard.PNG",
     color: "from-purple-500 to-pink-500",
     delay: 1.0,
     features: ["Real-time Analytics", "Performance Reports", "Predictive Insights"]
@@ -59,6 +60,16 @@ const steps = [
 ];
 
 const HowItWorks = () => {
+  const [selectedImage, setSelectedImage] = useState<{src: string, alt: string, title: string} | null>(null);
+
+  const openModal = (src: string, alt: string, title: string) => {
+    setSelectedImage({ src, alt, title });
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
+
   return (
     <section className="relative py-32 bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 overflow-hidden">
       {/* Enhanced Background Elements */}
@@ -117,8 +128,11 @@ const HowItWorks = () => {
                 {/* Gradient Overlay */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-8 transition-opacity duration-700`}></div>
                 
-                {/* Image Section with Enhanced Overlay - Fixed for Mobile Screenshots */}
-                <div className="relative overflow-hidden rounded-t-3xl bg-gray-100 dark:bg-gray-800">
+                {/* Image Section with Enhanced Overlay - Clickable for Modal */}
+                <div 
+                  className="relative overflow-hidden rounded-t-3xl bg-gray-100 dark:bg-gray-800 cursor-pointer group/image"
+                  onClick={() => openModal(step.image, step.title, step.title)}
+                >
                   <div className="flex justify-center items-center py-4">
                     <motion.img 
                       src={step.image}
@@ -128,6 +142,13 @@ const HowItWorks = () => {
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                  
+                  {/* Expand Icon Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 bg-black/20">
+                    <div className="bg-white/90 dark:bg-gray-800/90 p-3 rounded-full">
+                      <FaExpand className="text-lg text-gray-700 dark:text-gray-300" />
+                    </div>
+                  </div>
                   
                   {/* Step Indicator Overlay */}
                   <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md rounded-lg px-3 py-1">
@@ -214,6 +235,56 @@ const HowItWorks = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Image Modal */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeModal}
+          >
+            <motion.div
+              className="relative max-w-4xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {selectedImage.title}
+                </h3>
+                <button
+                  onClick={closeModal}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                >
+                  <FaTimes className="text-gray-500 dark:text-gray-400" />
+                </button>
+              </div>
+              
+              {/* Modal Content */}
+              <div className="p-6 flex justify-center">
+                <img
+                  src={selectedImage.src}
+                  alt={selectedImage.alt}
+                  className="max-w-full max-h-[60vh] object-contain rounded-lg shadow-lg"
+                />
+              </div>
+              
+              {/* Modal Footer */}
+              <div className="p-6 border-t border-gray-200 dark:border-gray-700 text-center">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Click outside or press the X to close
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
