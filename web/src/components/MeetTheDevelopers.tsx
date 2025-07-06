@@ -9,8 +9,8 @@ const developers = [
     github: "https://github.com/ZOUHAIRFGRA",
     linkedin: "https://linkedin.com/in/zouhair-fouiguira",
     avatar: "https://github.com/ZOUHAIRFGRA.png",
-    skills: ["React", "Node.js", "TypeScript", "Mobile Dev"],
-    experience: "5+ Years",
+    skills: ["React", "Node.js", "JavaScript", "Mobile Dev"],
+    experience: "3+ Years",
     specialty: "Frontend Architecture"
   },
   {
@@ -20,7 +20,7 @@ const developers = [
     github: "https://github.com/lahbouch",
     linkedin: "https://linkedin.com/in/lahbouchdev",
     avatar: "https://github.com/lahbouch.png",
-    skills: ["Python", "Django", "PostgreSQL", "AWS"],
+    skills: ["Laravel", "PHP", "MySQL", "AWS"],
     experience: "4+ Years", 
     specialty: "Backend Systems"
   },
