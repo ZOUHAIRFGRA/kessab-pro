@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import { FaUserPlus, FaTractor, FaShoppingCart, FaChartLine, FaStethoscope, FaCog } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaUserPlus, FaTractor, FaShoppingCart, FaChartLine, FaStethoscope, FaCog, FaTimes, FaExpand } from "react-icons/fa";
+import { useState } from "react";
 
 const steps = [
   {
@@ -59,6 +60,16 @@ const steps = [
 ];
 
 const HowItWorks = () => {
+  const [selectedImage, setSelectedImage] = useState<{src: string, alt: string, title: string} | null>(null);
+
+  const openModal = (src: string, alt: string, title: string) => {
+    setSelectedImage({ src, alt, title });
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
+
   return (
     <section className="relative py-32 bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 overflow-hidden">
       {/* Enhanced Background Elements */}
@@ -117,8 +128,11 @@ const HowItWorks = () => {
                 {/* Gradient Overlay */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-8 transition-opacity duration-700`}></div>
                 
-                {/* Image Section with Enhanced Overlay - Fixed for Mobile Screenshots */}
-                <div className="relative overflow-hidden rounded-t-3xl bg-gray-100 dark:bg-gray-800">
+                {/* Image Section with Enhanced Overlay - Clickable for Modal */}
+                <div 
+                  className="relative overflow-hidden rounded-t-3xl bg-gray-100 dark:bg-gray-800 cursor-pointer group/image"
+                  onClick={() => openModal(step.image, step.title, step.title)}
+                >
                   <div className="flex justify-center items-center py-4">
                     <motion.img 
                       src={step.image}
@@ -128,6 +142,13 @@ const HowItWorks = () => {
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                  
+                  {/* Expand Icon Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 bg-black/20">
+                    <div className="bg-white/90 dark:bg-gray-800/90 p-3 rounded-full">
+                      <FaExpand className="text-lg text-gray-700 dark:text-gray-300" />
+                    </div>
+                  </div>
                   
                   {/* Step Indicator Overlay */}
                   <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md rounded-lg px-3 py-1">
@@ -214,6 +235,56 @@ const HowItWorks = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Image Modal */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeModal}
+          >
+            <motion.div
+              className="relative max-w-4xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {selectedImage.title}
+                </h3>
+                <button
+                  onClick={closeModal}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                >
+                  <FaTimes className="text-gray-500 dark:text-gray-400" />
+                </button>
+              </div>
+              
+              {/* Modal Content */}
+              <div className="p-6 flex justify-center">
+                <img
+                  src={selectedImage.src}
+                  alt={selectedImage.alt}
+                  className="max-w-full max-h-[60vh] object-contain rounded-lg shadow-lg"
+                />
+              </div>
+              
+              {/* Modal Footer */}
+              <div className="p-6 border-t border-gray-200 dark:border-gray-700 text-center">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Click outside or press the X to close
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
