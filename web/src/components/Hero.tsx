@@ -158,7 +158,7 @@ const Hero = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-2xl rounded-[2.5rem] scale-105"></div>
               <img
-                src="/src/assets/images/homepage.png"
+                src="/images/homepage.png"
                 alt="KessabPro Mobile App Homepage"
                 loading="eager"
                 className="relative w-[220px] lg:w-[260px] mx-auto rounded-[2.5rem] shadow-2xl border-6 border-gray-900 dark:border-gray-100 transition-all duration-500"
@@ -179,7 +179,7 @@ const Hero = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/15 to-blue-500/15 blur-lg rounded-[2rem] scale-105"></div>
               <img
-                src="/src/assets/images/dashboard.PNG"
+                src="/images/dashboard.PNG"
                 alt="KessabPro Dashboard"
                 className="relative w-[160px] lg:w-[180px] rounded-[2rem] shadow-xl border-4 border-white dark:border-gray-800"
               />
@@ -199,7 +199,7 @@ const Hero = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/15 to-pink-500/15 blur-lg rounded-[2rem] scale-105"></div>
               <img
-                src="/src/assets/images/animals-list.png"
+                src="/images/animals-list.png"
                 alt="Animals Management"
                 className="relative w-[160px] lg:w-[180px] rounded-[2rem] shadow-xl border-4 border-white dark:border-gray-800"
               />
@@ -220,7 +220,7 @@ const Hero = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-orange-500/15 to-red-500/15 blur-lg rounded-xl scale-110"></div>
             <img
-              src="/src/assets/images/Login.PNG"
+              src="/images/Login.PNG"
               alt="KessabPro Login"
               className="relative w-[130px] lg:w-[150px] rounded-xl shadow-xl border-3 border-white dark:border-gray-800"
             />

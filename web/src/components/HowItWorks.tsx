@@ -7,7 +7,7 @@ const steps = [
     title: "Sign Up & Configure",
     icon: <FaUserPlus className="text-4xl text-white" />,
     description: "Create your account and set up your farm profile with our intuitive onboarding process.",
-    image: "/src/assets/images/Login.PNG",
+    image: "/images/Login.PNG",
     color: "from-blue-500 to-cyan-500",
     delay: 0,
     features: ["Quick Setup", "Secure Login", "User Management"]
@@ -16,7 +16,7 @@ const steps = [
     title: "Add & Manage Animals",
     icon: <FaTractor className="text-4xl text-white" />,
     description: "Easily register your livestock with comprehensive tracking and category management.",
-    image: "/src/assets/images/add-animal-modal.png",
+    image: "/images/add-animal-modal.png",
     color: "from-green-500 to-emerald-500",
     delay: 0.2,
     features: ["Bulk Import", "QR Codes", "Categories"]
@@ -25,7 +25,7 @@ const steps = [
     title: "Track Health & Records",
     icon: <FaStethoscope className="text-4xl text-white" />,
     description: "Monitor animal health with detailed medical logs and vaccination schedules.",
-    image: "/src/assets/images/animal-medical-logs.png",
+    image: "/images/animal-medical-logs.png",
     color: "from-teal-500 to-cyan-500",
     delay: 0.4,
     features: ["Medical History", "Vaccinations", "Health Alerts"]
@@ -34,7 +34,7 @@ const steps = [
     title: "Manage Sales & Payments",
     icon: <FaShoppingCart className="text-4xl text-white" />,
     description: "Process sales transactions and track payments with detailed financial records.",
-    image: "/src/assets/images/sale-details.png",
+    image: "/images/sale-details.png",
     color: "from-orange-500 to-red-500",
     delay: 0.6,
     features: ["Transaction History", "Payment Tracking", "Financial Reports"]
@@ -43,7 +43,7 @@ const steps = [
     title: "View Animal Details",
     icon: <FaCog className="text-4xl text-white" />,
     description: "Access comprehensive animal profiles with breeding history and performance data.",
-    image: "/src/assets/images/animal-details.png",
+    image: "/images/animal-details.png",
     color: "from-indigo-500 to-purple-500",
     delay: 0.8,
     features: ["Complete Profiles", "Breeding History", "Performance Metrics"]
@@ -52,7 +52,7 @@ const steps = [
     title: "Analyze & Optimize",
     icon: <FaChartLine className="text-4xl text-white" />,
     description: "Get powerful insights and analytics to optimize your farm operations.",
-    image: "/src/assets/images/dashboard.PNG",
+    image: "/images/dashboard.PNG",
     color: "from-purple-500 to-pink-500",
     delay: 1.0,
     features: ["Real-time Analytics", "Performance Reports", "Predictive Insights"]

@@ -51,7 +51,7 @@ const FarmerShowcase = () => {
           >
             <div className="relative overflow-hidden rounded-3xl shadow-2xl">
               <img
-                src="/src/assets/images/farmer_feeding_cattle.png"
+                src="/images/farmer_feeding_cattle.png"
                 alt="Farmer feeding cattle"
                 className="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -73,7 +73,7 @@ const FarmerShowcase = () => {
           >
             <div className="relative overflow-hidden rounded-3xl shadow-2xl">
               <img
-                src="/src/assets/images/farmer_standing_sheep.png"
+                src="/images/farmer_standing_sheep.png"
                 alt="Farmer with sheep"
                 className="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -95,7 +95,7 @@ const FarmerShowcase = () => {
           >
             <div className="relative overflow-hidden rounded-3xl shadow-2xl">
               <img
-                src="/src/assets/images/farmer_holding_pucket.png"
+                src="/images/farmer_holding_pucket.png"
                 alt="Farmer holding bucket"
                 className="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110"
               />
