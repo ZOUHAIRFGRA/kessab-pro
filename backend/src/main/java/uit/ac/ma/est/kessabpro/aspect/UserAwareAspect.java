@@ -34,7 +34,6 @@ public class UserAwareAspect {
     @Before("execution(* org.springframework.data.repository.CrudRepository+.save(..))")
     public void setCreatedBy(JoinPoint joinPoint) throws AccessDeniedException {
         Object entity = joinPoint.getArgs()[0];
-        //TODO:remove the second condition
         if (entity instanceof UserAware && ((UserAware) entity).getUser() == null) {
             ((UserAware) entity).setUser(authService.getLoggedUser());
         }

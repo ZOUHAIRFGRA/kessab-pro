@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
+import FarmerShowcase from "@/components/FarmerShowcase";
 import CTA from "@/components/CTA";
 import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
@@ -14,6 +15,7 @@ const Home = () => {
       <Navbar />
       <Hero />
       <Features />
+      <FarmerShowcase />
       <HowItWorks   />
       <Testimonials />
       <FAQ />
