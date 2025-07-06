@@ -8,7 +8,7 @@ const features = [
     title: "Animal Management",
     icon: <FaTractor className="text-4xl text-white drop-shadow-lg" />,
     description: "Comprehensive livestock tracking with real-time monitoring and advanced filtering capabilities.",
-    image: "/src/assets/images/animals-list.png",
+    image: "/images/animals-list.png",
     color: "from-blue-500 to-cyan-500",
     stats: "500K+ Animals Tracked",
     highlight: "Real-time Monitoring"
@@ -17,7 +17,7 @@ const features = [
     title: "Sales & Transactions", 
     icon: <FaShoppingCart className="text-4xl text-white drop-shadow-lg" />,
     description: "Complete sales pipeline management with payment tracking and financial analytics.",
-    image: "/src/assets/images/sales-list.png",
+    image: "/images/sales-list.png",
     color: "from-green-500 to-emerald-500",
     stats: "$2M+ Sales Tracked",
     highlight: "Payment Integration"
@@ -26,7 +26,7 @@ const features = [
     title: "Farm Analytics",
     icon: <FaChartLine className="text-4xl text-white drop-shadow-lg" />,
     description: "Data-driven insights with customizable dashboards and predictive analytics.",
-    image: "/src/assets/images/dashboard.PNG",
+    image: "/images/dashboard.PNG",
     color: "from-purple-500 to-pink-500",
     stats: "Real-time Reports",
     highlight: "AI-Powered Insights"
@@ -35,7 +35,7 @@ const features = [
     title: "Quick Add Animals",
     icon: <FaPlus className="text-4xl text-white drop-shadow-lg" />,
     description: "Streamlined animal registration with bulk import and QR code generation.",
-    image: "/src/assets/images/add-animal-modal.png",
+    image: "/images/add-animal-modal.png",
     color: "from-orange-500 to-red-500",
     stats: "30% Faster Registration",
     highlight: "Bulk Import Support"
@@ -44,7 +44,7 @@ const features = [
     title: "Detailed Profiles",
     icon: <FaClipboardList className="text-4xl text-white drop-shadow-lg" />,
     description: "Complete animal profiles with breeding history and performance metrics.",
-    image: "/src/assets/images/animal-details.png",
+    image: "/images/animal-details.png",
     color: "from-indigo-500 to-purple-500",
     stats: "Complete History",
     highlight: "Breeding Tracker"
@@ -53,7 +53,7 @@ const features = [
     title: "Health Records",
     icon: <FaStethoscope className="text-4xl text-white drop-shadow-lg" />,
     description: "Comprehensive medical tracking with vaccination schedules and health alerts.",
-    image: "/src/assets/images/animal-medical-logs.png",
+    image: "/images/animal-medical-logs.png",
     color: "from-teal-500 to-cyan-500",
     stats: "Health Monitoring",
     highlight: "Smart Alerts"
