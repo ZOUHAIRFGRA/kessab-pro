@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 🔥 Ensure stateless session
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Allow all auth-related endpoints
+                        .requestMatchers("/api/auth/**", "/api/health/**").permitAll() // Allow all auth-related and health endpoints
                         .requestMatchers("/images/**", "/icons/**","/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
