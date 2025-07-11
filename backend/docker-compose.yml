@@ -1,9 +1,9 @@
 services:
   app:
     build: .
+    restart: always
     ports:
       - "8080:8080"
-    restart: unless-stopped
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/kessab?createDatabaseIfNotExist=true&autoReconnect=true
       - SPRING_DATASOURCE_USERNAME=root
