@@ -7,7 +7,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: "jdbc:mysql://db:3306/kessab?createDatabaseIfNotExist=true&autoReconnect=true"
       SPRING_DATASOURCE_USERNAME: "root"
-      SPRING_DATASOURCE_PASSWORD: "${DB_PASSWORD:-kessab123}"
+      SPRING_DATASOURCE_PASSWORD: "${DB_PASSWORD}"
       JWT_SECRET: "${JWT_SECRET}"
       ADMIN_USERNAME: "${ADMIN_USERNAME}"
       ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
@@ -22,7 +22,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password --innodb-buffer-pool-size=128M --innodb-log-file-size=64M --skip-host-cache --skip-name-resolve
     environment:
       MYSQL_DATABASE: "kessab"
-      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD:-kessab123}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
     ports:
       - "3306:3306"
     volumes:
