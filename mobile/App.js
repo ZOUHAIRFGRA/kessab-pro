@@ -23,6 +23,7 @@ const AppWrapper = () => {
       text2: `Loaded from env: ${SERVER_IP}`,
     });
   }, []);
+  
 
   useEffect(() => {
     const loadToken = async () => {

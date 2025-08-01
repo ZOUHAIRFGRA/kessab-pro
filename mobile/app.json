@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "kessabPro",
+    "slug": "kessabpro",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -51,7 +51,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "6fe48446-6e6d-4e81-a584-34a3b80b9bab"
+        "projectId": "bb9b71f6-116b-4ab0-bfe3-950bb64aa682"
       }
     }
   }
