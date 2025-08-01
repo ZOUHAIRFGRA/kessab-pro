@@ -69,6 +69,31 @@ mkdir -p uploads
 chmod 777 uploads
 ```
 
+## ngrok Tunnel Setup (Alternative to Cloudflare)
+
+1. Install ngrok:
+```bash
+curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+sudo apt update && sudo apt install ngrok
+```
+
+2. Configure ngrok:
+```bash
+ngrok config add-authtoken YOUR_AUTHTOKEN_HERE
+mkdir -p ~/.ngrok2
+nano ~/.ngrok2/ngrok.yml
+```
+
+Add your configuration with your fixed domain.
+
+3. Create auto-start services:
+```bash
+# Create services for both Docker and ngrok
+sudo systemctl enable kessab-pro
+sudo systemctl enable ngrok-tunnel
+```
+
 ## Cloudflare Tunnel Setup
 
 1. Install Cloudflared:

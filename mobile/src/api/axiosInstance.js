@@ -10,17 +10,17 @@ import store from '../store/store';
 export const getBaseURL = () => {
   const serverIp = SERVER_IP || "192.168.1.8";
 
-  if (Platform.OS === "android") {
-    return Constants.executionEnvironment === "expo"
-      ? "http://10.0.2.2:8080"
-      : `http://${serverIp}:8080`;
-  } else if (Platform.OS === "ios") {
-    return Constants.executionEnvironment === "expo"
-      ? `http://${serverIp}:8080`
-      : `http://${serverIp}:8080`;
-  }
+  // if (Platform.OS === "android") {
+  //   return Constants.executionEnvironment === "expo"
+  //     ? "http://10.0.2.2:8080"
+  //     : `http://${serverIp}:8080`;
+  // } else if (Platform.OS === "ios") {
+  //   return Constants.executionEnvironment === "expo"
+  //     ? `http://${serverIp}:8080`
+  //     : `http://${serverIp}:8080`;
+  // }
 
-  return `http://localhost:8080`;
+  return serverIp;
 };
 
 const axiosInstance = axios.create({

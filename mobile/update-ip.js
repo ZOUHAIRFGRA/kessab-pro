@@ -5,21 +5,21 @@ const path = require("path");
 const envPath = path.join(__dirname, ".env");
 
 const nets = networkInterfaces();
-let localIP = "localhost";
+let localIP = "https://trusted-frank-mudfish.ngrok-free.app";
 
-for (const name of Object.keys(nets)) {
-  for (const net of nets[name]) {
-    if (
-      net.family === "IPv4" &&
-      !net.internal &&
-      !net.address.startsWith("172.") && 
-      !net.address.startsWith("192.168.122.") 
-    ) {
-      localIP = net.address;
-      break; 
-    }
-  }
-}
+// for (const name of Object.keys(nets)) {
+//   for (const net of nets[name]) {
+//     if (
+//       net.family === "IPv4" &&
+//       !net.internal &&
+//       !net.address.startsWith("172.") && 
+//       !net.address.startsWith("192.168.122.") 
+//     ) {
+//       localIP = net.address;
+//       break; 
+//     }
+//   }
+// }
 
 let envData = {};
 if (fs.existsSync(envPath)) {
