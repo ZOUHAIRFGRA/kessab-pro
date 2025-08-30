@@ -24,10 +24,10 @@ public class KessabProApplication {
         SpringApplication.run(KessabProApplication.class, args);
     }
 
-    // @Bean
-    // ApplicationRunner seedDatabase(IDatabaseSeederService databaseSeeder) {
-    //     return args -> databaseSeeder.seed();
-    // }
+     @Bean
+     ApplicationRunner seedDatabase(IDatabaseSeederService databaseSeeder) {
+         return args -> databaseSeeder.seed();
+     }
 
 
 }
