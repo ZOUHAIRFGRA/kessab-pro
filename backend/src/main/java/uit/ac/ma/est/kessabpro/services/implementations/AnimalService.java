@@ -226,6 +226,25 @@ public class AnimalService implements IAnimalService {
         return animalRepository.findByUser_IdAndSaleNull(userId);
     }
 
-
+    @Override
+    @Transactional
+    public void transferAnimalOwnership(UUID animalId, UUID newUserId) {
+        UUID currentUserId = getLoggedInUserId();
+        
+        // Verify the current user owns the animal
+        Animal animal = animalRepository.findByIdAndUser_Id(animalId, currentUserId)
+                .orElseThrow(() -> new RuntimeException("Animal not found or you don't own this animal"));
+        
+        // Verify the new user exists
+        User newUser = userRepository.findById(newUserId)
+                .orElseThrow(() -> new RuntimeException("New owner not found"));
+        
+        // Transfer ownership
+        animalRepository.transferAnimalOwnership(animalId, newUserId);
+        
+        // Update the animal's user reference
+        animal.setUser(newUser);
+        animalRepository.save(animal);
+    }
 
 }
