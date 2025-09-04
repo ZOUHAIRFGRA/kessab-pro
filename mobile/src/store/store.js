@@ -10,6 +10,7 @@ import authReducer from "../features/authSlice";
 import userReducer from "../features/userSlice";
 import buyerReducer from "../features/buyerSlice";
 import enumReduces from "../features/enumSlice";
+import marketplaceReducer from "../features/marketplaceSlice";
 export const store = configureStore({
   reducer: {
     animals: animalReducer,
@@ -23,5 +24,6 @@ export const store = configureStore({
     animalActivitiesLogs: animalActivitiesLogReducer,
     icons: iconsReducer,
     auth: authReducer,
+    marketplace: marketplaceReducer,
   },
 });
