@@ -1,0 +1,60 @@
+{
+  "cli": {
+    "version": ">= 5.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_OPENAI_API_KEY": "from-eas-secrets",
+        "EXPO_PUBLIC_IS_PROD": "false",
+        "EXPO_PUBLIC_USING_NGROK": "false"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_OPENAI_API_KEY": "from-eas-secrets",
+        "EXPO_PUBLIC_IS_PROD": "true",
+        "EXPO_PUBLIC_USING_NGROK": "false"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "env": {
+        "EXPO_PUBLIC_OPENAI_API_KEY": "from-eas-secrets",
+        "EXPO_PUBLIC_IS_PROD": "true",
+        "EXPO_PUBLIC_USING_NGROK": "false"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "${APPLE_ID}",
+        "ascAppId": "${ASC_APP_ID}",
+        "appleTeamId": "${APPLE_TEAM_ID}"
+      },
+      "android": {
+        "serviceAccountKeyPath": "path/to/api-key.json",
+        "track": "production"
+      }
+    }
+  }
+}
