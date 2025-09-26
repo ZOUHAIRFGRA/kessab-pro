@@ -1,0 +1,4 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/ZOUHAIRFGRA/kessab-pro-backend.git
+	branch = main
