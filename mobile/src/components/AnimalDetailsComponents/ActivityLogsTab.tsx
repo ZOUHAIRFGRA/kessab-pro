@@ -21,6 +21,7 @@ import { useToast } from "../../hooks/useToast";
 import { useTranslation } from "react-i18next";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
+import { TextInput } from "react-native";
 
 // TypeScript Interfaces
 interface ActivityLog {
@@ -139,13 +140,15 @@ export const ActivityLogsTab = ({ animalId }: ActivityLogsTabProps) => {
               {t("common.add_activity")}
             </Text>
             <View className="bg-slate-50 rounded-xl p-3 mb-3 border border-slate-200">
-              <Text
+              <TextInput
                 className={`text-slate-800 ${isRTL ? "text-right" : "text-left"}`}
                 style={{ fontSize: 15 }}
+                value={newLog}
                 onChangeText={(text: string) => setNewLog(text)}
-              >
-                {newLog || t("common.enter_new_activity")}
-              </Text>
+                placeholder={t("common.enter_new_activity")}
+                placeholderTextColor="#94a3b8"
+                multiline
+              />
             </View>
             <TouchableOpacity
               onPress={() => setShowDatePicker(true)}
@@ -219,15 +222,17 @@ export const ActivityLogsTab = ({ animalId }: ActivityLogsTabProps) => {
               {editing === log.id ? (
                 <>
                   <View className="bg-slate-50 rounded-xl p-3 mb-3 border border-slate-200">
-                    <Text
+                    <TextInput
                       className={`text-slate-800 ${isRTL ? "text-right" : "text-left"}`}
                       style={{ fontSize: 15 }}
+                      value={editedLog.activity}
                       onChangeText={(text: string) =>
                         setEditedLog({ ...editedLog, activity: text })
                       }
-                    >
-                      {editedLog.activity}
-                    </Text>
+                      placeholder={t("common.enter_activity")}
+                      placeholderTextColor="#94a3b8"
+                      multiline
+                    />
                   </View>
                   <TouchableOpacity
                     onPress={() => setShowDatePicker(true)}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,8 @@ import {
   Alert,
   Modal,
   Image,
+  StyleSheet,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
@@ -25,15 +25,15 @@ import {
   Layers,
 } from "lucide-react-native";
 import {
-  fetchCategories,
-  addCategory,
-  modifyCategory as updateCategory,
-  removeCategory as deleteCategory,
-} from "../features/categorySlice";
-import { fetchCategoriesIcons } from "../features/iconsSlice";
-import { getBaseURL } from "../api/axiosInstance";
+  useGetCategoriesQuery,
+  useGetCategoryIconsQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+} from "../services";
+import { getBaseURL } from "../services";
 import FallBack, { FALLBACK_TYPE } from "../components/global/Fallback";
-import type { RootState, AppDispatch } from "../store/store";
+import type { Category, CategoryIcon } from "../types/api";
 import "../../global.css";
 
 const BASE_URL = getBaseURL();
@@ -41,27 +41,23 @@ const DEFAULT_CATEGORY_NAME = "Livestock";
 
 export default function CategoryScreen() {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<any>();
   const isRTL = t("dir") === "rtl";
 
-  const { categories, loading: categoriesLoading } = useSelector(
-    (state: RootState) => state.categories
-  );
-  const { icons, loading: iconsLoading } = useSelector(
-    (state: RootState) => state.icons
-  );
+  // RTK Query hooks
+  const { data: categories = [], isLoading: categoriesLoading, refetch: refetchCategories } = useGetCategoriesQuery();
+  const { data: icons = [], isLoading: iconsLoading } = useGetCategoryIconsQuery();
+
+  // Mutations
+  const [createCategory] = useCreateCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
+  const [deleteCategory] = useDeleteCategoryMutation();
 
   const [categoryName, setCategoryName] = useState("");
   const [selectedIconId, setSelectedIconId] = useState<number | null>(null);
   const [editingCategoryId, setEditingCategoryId] = useState<number | null>(null);
   const [isIconModalVisible, setIconModalVisible] = useState(false);
   const [isAddOrEditVisible, setAddOrEditVisible] = useState(false);
-
-  useEffect(() => {
-    dispatch(fetchCategories());
-    dispatch(fetchCategoriesIcons());
-  }, [dispatch]);
 
   const handleAddOrUpdateCategory = async () => {
     if (!categoryName.trim()) {
@@ -80,18 +76,17 @@ export default function CategoryScreen() {
     try {
       const categoryData = { typeName: categoryName, iconId: selectedIconId };
       if (editingCategoryId) {
-        await dispatch(updateCategory({ id: editingCategoryId, categoryData })).unwrap();
+        await updateCategory({ id: editingCategoryId, data: categoryData }).unwrap();
       } else {
-        await dispatch(addCategory(categoryData)).unwrap();
+        await createCategory(categoryData).unwrap();
       }
-      await dispatch(fetchCategories());
       handleCancel();
     } catch (err: any) {
       Alert.alert(t("common.error"), err.message || t("common.operationFailed"));
     }
   };
 
-  const handleEditCategory = (category: any) => {
+  const handleEditCategory = (category: Category) => {
     if (category.typeName.toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase()) {
       Alert.alert(t("common.error"), t("common.defaultCategoryEditError"));
       return;
@@ -114,8 +109,7 @@ export default function CategoryScreen() {
         style: "destructive",
         onPress: async () => {
           try {
-            await dispatch(deleteCategory(id)).unwrap();
-            await dispatch(fetchCategories());
+            await deleteCategory(id).unwrap();
           } catch (err: any) {
             Alert.alert(t("common.error"), err.message || t("common.operationFailed"));
           }
@@ -131,18 +125,18 @@ export default function CategoryScreen() {
     setSelectedIconId(null);
   };
 
-  const renderCategoryItem = ({ item }: { item: any }) => {
+  const renderCategoryItem = ({ item }: { item: Category }) => {
     const icon = item.icon?.iconPath
       ? item.icon
-      : icons.find((i: any) => i.id === item.icon?.id) || { iconPath: null };
+      : icons.find((i: CategoryIcon) => i.id === item.icon?.id) || { iconPath: null };
     const isDefault = item.typeName.toLowerCase() === DEFAULT_CATEGORY_NAME.toLowerCase();
 
     return (
       <View className="bg-white rounded-2xl p-4 mb-3 shadow-sm flex-row items-center">
         <View className="w-12 h-12 bg-surface-100 rounded-xl items-center justify-center">
-          {icon?.iconPath ? (
+          {(icon as any)?.iconPath ? (
             <Image
-              source={{ uri: `${BASE_URL}${icon.iconPath}` }}
+              source={{ uri: `${BASE_URL}${(icon as any).iconPath}` }}
               className="w-8 h-8"
               resizeMode="contain"
             />
@@ -173,7 +167,7 @@ export default function CategoryScreen() {
     );
   };
 
-  const renderIconItem = ({ item }: { item: any }) => (
+  const renderIconItem = ({ item }: { item: CategoryIcon }) => (
     <TouchableOpacity
       onPress={() => {
         setSelectedIconId(item.id);
@@ -185,7 +179,7 @@ export default function CategoryScreen() {
       style={{ width: 80, height: 80 }}
     >
       <Image
-        source={{ uri: `${BASE_URL}${item.iconPath}` }}
+        source={{ uri: `${BASE_URL}${(item as any).iconPath}` }}
         className="w-10 h-10"
         resizeMode="contain"
       />
@@ -195,7 +189,7 @@ export default function CategoryScreen() {
   return (
     <View className="flex-1 bg-surface-50">
       {/* Header */}
-      <LinearGradient colors={["#334e68", "#243b53"]} className="pt-12 pb-6 px-5">
+      <LinearGradient colors={["#334e68", "#243b53"]} style={styles.header}>
         <View className="flex-row items-center justify-between">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -220,7 +214,7 @@ export default function CategoryScreen() {
           >
             <LinearGradient
               colors={["#f59e0b", "#d97706"]}
-              className="rounded-2xl p-4 flex-row items-center justify-center"
+              style={styles.addButton}
             >
               <Plus size={20} color="white" />
               <Text className="text-white font-semibold ml-2">
@@ -253,7 +247,7 @@ export default function CategoryScreen() {
                 {selectedIconId ? (
                   <Image
                     source={{
-                      uri: `${BASE_URL}${icons.find((i: any) => i.id === selectedIconId)?.iconPath}`,
+                      uri: `${BASE_URL}${(icons.find((i: CategoryIcon) => i.id === selectedIconId) as any)?.iconPath}`,
                     }}
                     className="w-8 h-8 mr-3"
                     resizeMode="contain"
@@ -273,7 +267,7 @@ export default function CategoryScreen() {
               >
                 <LinearGradient
                   colors={["#14b8a6", "#0d9488"]}
-                  className="rounded-xl py-3 flex-row items-center justify-center"
+                  style={styles.saveButton}
                 >
                   <Check size={18} color="white" />
                   <Text className="text-white font-semibold ml-2">
@@ -342,3 +336,25 @@ export default function CategoryScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+  },
+  addButton: {
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  saveButton: {
+    borderRadius: 12,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

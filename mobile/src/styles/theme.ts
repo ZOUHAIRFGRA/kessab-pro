@@ -1,67 +1,80 @@
-import { makeTheme } from "dripsy";
-import { Colors } from "../utils/colors";
+// Theme configuration for the app
+// Note: Migrated from dripsy to NativeWind
+// Color tokens are now defined in tailwind.config.js and used via NativeWind className
 
-const theme = makeTheme({
+export const theme = {
   colors: {
-    primary: Colors.primary, 
-    secondary: Colors.secondary, 
-    background: '#F0F4C3', 
-    text: '#3E4E50', 
-    muted: '#6B8E23', 
-    border: '#A2D9CE', 
-    white: '#FFFFFF', 
-    inputBackground: '#FFFFFF', 
-    placeholder: '#9E9E9E', 
-    navBackground: '#FFFFFF', 
-  },
-  text: {
-    default: {
-      fontSize: 16,
-      fontWeight: '400',
-      color: '$colors.text',
-    },
-    heading: {
-      fontSize: 30,
-      fontWeight: '700',
-      color: '$colors.text',
-      lineHeight: 32,
-    },
-    subheading: {
-      fontSize: 20,
-      fontWeight: '600',
-      color: '$colors.text',
-      lineHeight: 28,
-    },
-    secondary: {
-      fontSize: 14,
-      fontWeight: '400',
-      color: '$colors.muted',
-    },
-  },
-  buttons: {
+    // Primary - Deep Slate Blue
     primary: {
-      backgroundColor: '$colors.primary',
-      paddingVertical: 12,
-      paddingHorizontal: 24,
-      borderRadius: 8,
-      alignItems: 'center',
-      shadowColor: '$colors.text',
-      shadowOpacity: 0.1,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
+      50: '#f8fafc',
+      100: '#f1f5f9',
+      200: '#e2e8f0',
+      300: '#cbd5e1',
+      400: '#94a3b8',
+      500: '#64748b',
+      600: '#475569',
+      700: '#334e68',
+      800: '#243b53',
+      900: '#102a43',
     },
-    secondary: {
-      backgroundColor: '$colors.secondary',
-      paddingVertical: 12,
-      paddingHorizontal: 24,
-      borderRadius: 8,
-      alignItems: 'center',
-      shadowColor: '$colors.text',
-      shadowOpacity: 0.1,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
+    // Accent - Warm Amber
+    accent: {
+      50: '#fffbeb',
+      100: '#fef3c7',
+      200: '#fde68a',
+      300: '#fcd34d',
+      400: '#fbbf24',
+      500: '#f59e0b',
+      600: '#d97706',
+      700: '#b45309',
+      800: '#92400e',
+      900: '#78350f',
     },
+    // Surface colors
+    surface: {
+      50: '#f8fafc',
+      100: '#f1f5f9',
+      200: '#e2e8f0',
+      300: '#cbd5e1',
+      400: '#94a3b8',
+      500: '#64748b',
+      600: '#475569',
+      700: '#334155',
+      800: '#1e293b',
+      900: '#0f172a',
+    },
+    // Semantic colors
+    success: '#22c55e',
+    warning: '#f59e0b',
+    error: '#ef4444',
+    info: '#3b82f6',
   },
-});
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    xxl: 48,
+  },
+  borderRadius: {
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 24,
+    full: 9999,
+  },
+  fontSize: {
+    xs: 12,
+    sm: 14,
+    base: 16,
+    lg: 18,
+    xl: 20,
+    '2xl': 24,
+    '3xl': 30,
+  },
+} as const;
+
+export type Theme = typeof theme;
 
 export default theme;

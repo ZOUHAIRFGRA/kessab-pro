@@ -11,8 +11,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAnimals, resetAnimals } from "../features/animalSlice";
-import { fetchCategoryById } from "../features/categorySlice";
-import { getBaseURL } from "../api/axiosInstance";
+import { getBaseURL, useGetCategoriesQuery } from "../services";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, FrownIcon, Plus } from "lucide-react-native";
@@ -26,6 +25,7 @@ interface AnimalsListProps {
     };
   };
   isLoading?: boolean;
+  animals?: Animal[]; // Accept animals as prop
 }
 
 interface Animal {
@@ -46,21 +46,26 @@ const AnimalsList: React.FC<AnimalsListProps> = ({
   searchText: propSearchText,
   route,
   isLoading = false,
+  animals: propAnimals,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   
+  // Use prop animals if provided, otherwise fall back to Redux state
   const {
-    animals,
+    animals: stateAnimals,
     error: animalsError,
     totalPages,
   } = useSelector((state: RootState) => state.animals);
   
-  const { categories } = useSelector((state: RootState) => state.categories);
+  const animals = propAnimals || stateAnimals;
+  
+  // Fetch categories using RTK Query
+  const { data: categoriesData } = useGetCategoriesQuery();
+  const categories = categoriesData || [];
   
   const [currentPage, setCurrentPage] = useState(0);
-  const [fetchedCategoryIds, setFetchedCategoryIds] = useState(new Set<string>());
   const fadeAnim = new Animated.Value(1);
 
   const searchText = route?.params?.searchText ?? propSearchText ?? "";
@@ -75,26 +80,16 @@ const AnimalsList: React.FC<AnimalsListProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      setCurrentPage(0);
-      dispatch(resetAnimals() as any);
-      fetchAnimals(0);
-    }, [dispatch, fetchAnimals])
+      // Only fetch if animals not provided via props
+      if (!propAnimals) {
+        setCurrentPage(0);
+        dispatch(resetAnimals() as any);
+        fetchAnimals(0);
+      }
+    }, [dispatch, fetchAnimals, propAnimals])
   );
 
-  useEffect(() => {
-    const newCategoryIds = animals
-      .map((animal: Animal) =>
-        typeof animal.category === "string"
-          ? animal.category
-          : animal.category?.id
-      )
-      .filter((id) => id && !fetchedCategoryIds.has(id) && !categories[id]);
-
-    newCategoryIds.forEach((categoryId: string) => {
-      dispatch(fetchCategoryById(categoryId) as any);
-      setFetchedCategoryIds((prev) => new Set(prev).add(categoryId));
-    });
-  }, [animals, dispatch, categories, fetchedCategoryIds]);
+  // Remove old category fetching logic - now using RTK Query
 
   const handlePagination = (newPage: number) => {
     if (newPage >= 0 && newPage < totalPages && !isLoading) {
@@ -104,7 +99,7 @@ const AnimalsList: React.FC<AnimalsListProps> = ({
   };
 
   const handleAnimalClick = (id: string) => {
-    navigation.navigate("AnimalDetails" as never, { animalId: id } as never);
+    navigation.navigate("AnimalDetails", { animalId: id });
   };
 
   useEffect(() => {
@@ -133,6 +128,7 @@ const AnimalsList: React.FC<AnimalsListProps> = ({
       const category = categories.find(
         (cat: Category) => cat.id === categoryId
       );
+
       const categoryName = category
         ? category.typeName
         : t("common.uncategorized");

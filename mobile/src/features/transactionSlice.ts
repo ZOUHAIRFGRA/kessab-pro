@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import TransactionService, {
+import type {
   Transaction,
   TransactionCreateRequest,
   TransactionUpdateRequest,
-} from "../api/transactionApi";
+} from "../types/api";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 
@@ -25,22 +25,21 @@ interface EditTransactionParams {
 export const getTransactions = createAsyncThunk<Transaction[], void>(
   "transactions/fetchAll",
   async () => {
-    const response = await TransactionService.fetchTransactions();
-    return response;
+    throw new Error("Deprecated: Use RTK Query transactionsApi.useFetchTransactionsQuery instead");
   }
 );
 
 export const getTransactionsBySale = createAsyncThunk<Transaction[], number>(
   "transactions/fetchBySale",
   async (saleId) => {
-    return await TransactionService.fetchTransactionsBySale(saleId);
+    throw new Error("Deprecated: Use RTK Query transactionsApi.useFetchTransactionsBySaleQuery instead");
   }
 );
 
 export const getTransactionsByBuyer = createAsyncThunk<Transaction[], number>(
   "transactions/fetchByBuyer",
   async (buyerId) => {
-    return await TransactionService.fetchTransactionsByBuyer(buyerId);
+    throw new Error("Deprecated: Use RTK Query transactionsApi.useFetchTransactionsByBuyerQuery instead");
   }
 );
 
@@ -61,27 +60,21 @@ export const exportTransactionInvoice = async (id: number): Promise<void> => {
 export const addTransaction = createAsyncThunk<Transaction, TransactionCreateRequest>(
   "transactions/add",
   async (transaction) => {
-    const response = await TransactionService.createTransaction(transaction);
-    return response;
+    throw new Error("Deprecated: Use RTK Query transactionsApi.useCreateTransactionMutation instead");
   }
 );
 
 export const editTransaction = createAsyncThunk<Transaction, EditTransactionParams>(
   "transactions/update",
   async ({ id, updatedTransaction }) => {
-    const response = await TransactionService.updateTransaction(
-      id,
-      updatedTransaction
-    );
-    return response;
+    throw new Error("Deprecated: Use RTK Query transactionsApi.useUpdateTransactionMutation instead");
   }
 );
 
 export const removeTransaction = createAsyncThunk<number, number>(
   "transactions/delete",
   async (id) => {
-    await TransactionService.deleteTransaction(id);
-    return id;
+    throw new Error("Deprecated: Use RTK Query transactionsApi.useDeleteTransactionMutation instead");
   }
 );
 

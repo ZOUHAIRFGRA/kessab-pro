@@ -1,32 +1,19 @@
 import "../../../global.css";
-import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Platform } from "react-native";
-import { Input } from "@rneui/base";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Calendar, DollarSign, CreditCard } from "lucide-react-native";
 import { formatDate } from "../../utils/Global";
 import { isEmpty, isValidDDMMYYYY } from "../../helpers/gloablHelpers";
-import { fetchPaymentMethods } from "../../features/enumSlice";
 import {
-  getTransactionsByBuyer,
-  getTransactionsBySale,
-} from "../../features/transactionSlice";
-import { getSale } from "../../features/saleSlice";
+  useGetPaymentMethodsQuery,
+  useCreateTransactionMutation,
+  useConsumeTransactionMutation,
+} from "../../services";
 import { useToast } from "../../hooks/useToast";
-import transactionApi from "../../api/transactionApi";
 import Dialogs from "../global/Dialog";
 import BaseDropdown from "../global/BaseDropdown";
-
-interface EnumState {
-  loading: boolean;
-  paymentMethods: string[];
-}
-
-interface RootState {
-  enums: EnumState;
-}
 
 interface FormData {
   transactionDate: string;
@@ -41,33 +28,33 @@ interface FormError {
 }
 
 interface AddTransactionModalProps {
-  id: number;
-  type: "sale" | "buyer";
+  id?: number;
+  buyerId?: number;
+  saleId?: number;
+  type?: "sale" | "buyer";
   visible: boolean;
-  toggleDialog: (value: boolean) => void;
+  toggleDialog?: (value: boolean) => void;
+  onClose?: () => void;
   totalAmount?: number | null;
 }
 
 const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   id,
-  type,
+  buyerId,
+  saleId,
+  type = "sale",
   visible,
   toggleDialog,
+  onClose,
   totalAmount = null,
 }) => {
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const { showSuccessToast, showErrorToast } = useToast();
 
-  const { loading: loadingPaymentMethods, paymentMethods } = useSelector(
-    (state: RootState) => state.enums
-  );
-
-  useEffect(() => {
-    if (paymentMethods.length < 1) {
-      dispatch(fetchPaymentMethods() as any);
-    }
-  }, [dispatch, paymentMethods.length]);
+  // RTK Query hooks
+  const { data: paymentMethods = [], isLoading: loadingPaymentMethods } = useGetPaymentMethodsQuery();
+  const [createTransaction] = useCreateTransactionMutation();
+  const [consumeTransaction] = useConsumeTransactionMutation();
 
   const [formData, setFormData] = useState<FormData>({
     transactionDate: formatDate(new Date()),
@@ -83,6 +70,11 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
 
   const [dateObj, setDateObj] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleClose = () => {
+    if (toggleDialog) toggleDialog(false);
+    if (onClose) onClose();
+  };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
     setShowDatePicker(false);
@@ -113,7 +105,8 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
       isValid = false;
     }
 
-    if (!paymentMethods.includes(formData.method)) {
+    const methodKeys = paymentMethods.map((pm: any) => pm.key || pm);
+    if (!methodKeys.includes(formData.method)) {
       newErrors.method = t("common.paymentMethodInvalid");
       isValid = false;
     }
@@ -124,43 +117,36 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     }));
 
     if (isValid) {
-      const commonActions = async (dispatchFn: any) => {
+      try {
+        const effectiveId = id || saleId || buyerId;
+
+        if (type === "sale" && (saleId || id)) {
+          await createTransaction({
+            saleId: saleId || id,
+            amount: parseFloat(formData.amount),
+            transactionDate: formData.transactionDate,
+            paymentMethod: formData.method,
+            paymentStatus: "COMPLETED",
+          }).unwrap();
+        } else if (type === "buyer" && (buyerId || id)) {
+          await consumeTransaction({
+            buyerId: buyerId || id!,
+            data: {
+              amount: parseFloat(formData.amount),
+              transactionDate: formData.transactionDate,
+              paymentMethod: formData.method,
+            },
+          }).unwrap();
+        }
+
         showSuccessToast(t("common.transactionAdded"));
-        await dispatch(dispatchFn(id));
-        dispatch(getSale(id) as any);
-      };
-
-      const handleTransaction =
-        type === "sale"
-          ? () => transactionApi.createTransaction({ ...formData, sale_id: id })
-          : () => transactionApi.consumeTransaction(id, formData);
-
-      handleTransaction()
-        .then(() =>
-          commonActions(
-            type === "sale" ? getTransactionsBySale : getTransactionsByBuyer
-          )
-        )
-        .catch(showErrorToast)
-        .finally(() => toggleDialog(false));
-
-      setFormError({
-        transactionDate: "",
-        amount: "",
-        method: "",
-      });
+        handleClose();
+        setFormError({ transactionDate: "", amount: "", method: "" });
+      } catch (error) {
+        showErrorToast();
+      }
     }
   };
-
-  useEffect(() => {
-    return () => {
-      setFormError({
-        transactionDate: "",
-        amount: "",
-        method: "",
-      });
-    };
-  }, [visible]);
 
   return (
     <>
@@ -175,7 +161,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
       <Dialogs
         title={t(`common.addTransaction`)}
         visible={visible}
-        toggleDialog={toggleDialog}
+        toggleDialog={handleClose}
       >
         <View className="flex-col gap-4 p-2">
           {/* Date Input */}
@@ -214,7 +200,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                 {formError.amount}
               </Text>
             ) : null}
-            <Input
+            <TextInput
               onChangeText={(value) =>
                 setFormData({
                   ...formData,
@@ -224,18 +210,8 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
               keyboardType="numeric"
               placeholder={t(`common.paidAmount`)}
               value={formData.amount}
-              containerStyle={{ paddingHorizontal: 0 }}
-              inputContainerStyle={{
-                backgroundColor: "#ffffff",
-                borderRadius: 12,
-                borderWidth: 1,
-                borderColor: "#e2e8f0",
-                paddingHorizontal: 12,
-              }}
-              inputStyle={{
-                fontSize: 16,
-                color: "#243b53",
-              }}
+              className="bg-white rounded-xl p-3 border border-surface-300 text-base text-primary-800"
+              placeholderTextColor="#94a3b8"
             />
           </View>
 
@@ -253,18 +229,19 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
               </Text>
             ) : null}
             <BaseDropdown
+              label={t("common.paymentMethod")}
               search={false}
               focusLabel={t("common.paymentMethod")}
               notFocusLabel={t("common.paymentMethod")}
               disable={loadingPaymentMethods}
-              values={paymentMethods.map((pm) => ({
-                label: t(`common.${pm}`),
-                value: pm,
+              values={paymentMethods.map((pm: any) => ({
+                label: t(`common.${pm.key || pm}`),
+                value: pm.key || pm,
               }))}
               onValueChange={(value) =>
                 setFormData({
                   ...formData,
-                  method: value,
+                  method: String(value),
                 })
               }
             />

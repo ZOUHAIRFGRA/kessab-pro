@@ -1,14 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import {
-  createCategory,
-  getCategories,
-  getCategoryById,
-  updateCategory,
-  deleteCategory,
+import type {
   Category,
   CategoryCreateRequest,
   CategoryUpdateRequest,
-} from "../api/categoryApi";
+} from "../types/api";
 
 interface CategoryState {
   categories: Category[];
@@ -25,40 +20,35 @@ interface ModifyCategoryParams {
 export const fetchCategories = createAsyncThunk<Category[], void>(
   "categories/fetch",
   async () => {
-    const response = await getCategories();
-    return response;
+    throw new Error("Deprecated: Use RTK Query categoriesApi.useFetchCategoriesQuery instead");
   }
 );
 
 export const fetchCategoryById = createAsyncThunk<Category, number>(
   "categories/fetchById",
   async (id) => {
-    const response = await getCategoryById(id);
-    return response;
+    throw new Error("Deprecated: Use RTK Query categoriesApi.useFetchCategoryByIdQuery instead");
   }
 );
 
 export const addCategory = createAsyncThunk<Category, CategoryCreateRequest>(
   "categories/add",
   async (categoryData) => {
-    const response = await createCategory(categoryData);
-    return response;
+    throw new Error("Deprecated: Use RTK Query categoriesApi.useCreateCategoryMutation instead");
   }
 );
 
 export const modifyCategory = createAsyncThunk<Category, ModifyCategoryParams>(
   "categories/update",
   async ({ id, categoryData }) => {
-    const response = await updateCategory(id, categoryData);
-    return response;
+    throw new Error("Deprecated: Use RTK Query categoriesApi.useUpdateCategoryMutation instead");
   }
 );
 
 export const removeCategory = createAsyncThunk<number, number>(
   "categories/delete",
   async (id) => {
-    await deleteCategory(id);
-    return id;
+    throw new Error("Deprecated: Use RTK Query categoriesApi.useDeleteCategoryMutation instead");
   }
 );
 

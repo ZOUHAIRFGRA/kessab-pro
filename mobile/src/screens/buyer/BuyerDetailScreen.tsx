@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,7 @@ import {
   Tag,
   Receipt,
   Edit2,
+  ArrowLeft,
 } from "lucide-react-native";
 import BuyerInfoView from "../../components/buyer/BuyerInfoView";
 import BuyerOverviewView from "../../components/buyer/BuyerOverviewView";
@@ -42,20 +43,24 @@ export default function BuyerDetailScreen({ route }: BuyerDetailScreenProps) {
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            height: 75,
-            paddingTop: 6,
-            paddingBottom: 16,
+            height: 80,
+            paddingTop: 8,
+            paddingBottom: 20,
             backgroundColor: "#ffffff",
-            borderTopWidth: 1,
-            borderTopColor: "#e4e4e7",
+            borderTopWidth: 0,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 8,
+            elevation: 10,
             flexDirection: isRTL ? "row-reverse" : "row",
           },
           tabBarActiveTintColor: "#f59e0b",
-          tabBarInactiveTintColor: "#627d98",
+          tabBarInactiveTintColor: "#9ca3af",
           tabBarLabelStyle: {
-            fontSize: 10,
+            fontSize: 11,
             fontWeight: "600",
-            marginTop: 2,
+            marginTop: 4,
           },
           animation: "shift",
         }}
@@ -68,26 +73,46 @@ export default function BuyerDetailScreen({ route }: BuyerDetailScreenProps) {
           }}
         >
           {() => (
-            <View className="flex-1">
-              <BuyerInfoView id={buyerId} hideLinkButton />
-              <View className="px-4 pb-4">
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("updateBuyerScreen", { buyerId })
-                  }
-                  activeOpacity={0.8}
-                >
-                  <LinearGradient
-                    colors={["#f59e0b", "#d97706"]}
-                    className="rounded-xl py-3 flex-row items-center justify-center"
+            <View className="flex-1 bg-surface-50">
+              <LinearGradient
+                colors={["#334e68", "#243b53"]}
+                style={styles.header}
+              >
+                <View className="flex-row items-center justify-between">
+                  <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    className="w-10 h-10 bg-white/10 rounded-full items-center justify-center"
                   >
-                    <Edit2 size={18} color="white" />
-                    <Text className="text-white font-semibold ml-2">
-                      {t("common.Update")}
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
+                    <ArrowLeft size={22} color="white" />
+                  </TouchableOpacity>
+                  <Text className="text-white text-xl font-bold">
+                    {t("common.Info")}
+                  </Text>
+                  <View className="w-10" />
+                </View>
+              </LinearGradient>
+              
+              <ScrollView className="flex-1">
+                <BuyerInfoView id={buyerId} hideLinkButton />
+                <View className="px-5 pb-6 pt-4">
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("updateBuyerScreen", { buyerId })
+                    }
+                    activeOpacity={0.8}
+                  >
+                    <LinearGradient
+                      colors={["#f59e0b", "#d97706"]}
+                      style={styles.updateButton}
+                    >
+                      <Edit2 size={20} color="white" />
+                      <Text className="text-white font-semibold text-base ml-2">
+                        {t("common.Update")}
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             </View>
           )}
         </Tab.Screen>
@@ -101,7 +126,28 @@ export default function BuyerDetailScreen({ route }: BuyerDetailScreenProps) {
             ),
           }}
         >
-          {() => <BuyerOverviewView id={buyerId} />}
+          {() => (
+            <View className="flex-1 bg-surface-50">
+              <LinearGradient
+                colors={["#334e68", "#243b53"]}
+                style={styles.header}
+              >
+                <View className="flex-row items-center justify-between">
+                  <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    className="w-10 h-10 bg-white/10 rounded-full items-center justify-center"
+                  >
+                    <ArrowLeft size={22} color="white" />
+                  </TouchableOpacity>
+                  <Text className="text-white text-xl font-bold">
+                    {t("common.stats")}
+                  </Text>
+                  <View className="w-10" />
+                </View>
+              </LinearGradient>
+              <BuyerOverviewView id={buyerId} />
+            </View>
+          )}
         </Tab.Screen>
 
         <Tab.Screen
@@ -114,9 +160,28 @@ export default function BuyerDetailScreen({ route }: BuyerDetailScreenProps) {
           }}
         >
           {() => (
-            <Container sx={{ flex: 1, gap: 16 }}>
-              <AnimalsListCardView id={buyerId} type="buyer" />
-            </Container>
+            <View className="flex-1 bg-surface-50">
+              <LinearGradient
+                colors={["#334e68", "#243b53"]}
+                style={styles.header}
+              >
+                <View className="flex-row items-center justify-between">
+                  <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    className="w-10 h-10 bg-white/10 rounded-full items-center justify-center"
+                  >
+                    <ArrowLeft size={22} color="white" />
+                  </TouchableOpacity>
+                  <Text className="text-white text-xl font-bold">
+                    {t("common.Purchases")}
+                  </Text>
+                  <View className="w-10" />
+                </View>
+              </LinearGradient>
+              <Container sx={{ flex: 1, gap: 16 }}>
+                <AnimalsListCardView id={buyerId} type="buyer" />
+              </Container>
+            </View>
           )}
         </Tab.Screen>
 
@@ -128,9 +193,28 @@ export default function BuyerDetailScreen({ route }: BuyerDetailScreenProps) {
           }}
         >
           {() => (
-            <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <SalesListCardView id={buyerId} type="buyer" />
-            </Container>
+            <View className="flex-1 bg-surface-50">
+              <LinearGradient
+                colors={["#334e68", "#243b53"]}
+                style={styles.header}
+              >
+                <View className="flex-row items-center justify-between">
+                  <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    className="w-10 h-10 bg-white/10 rounded-full items-center justify-center"
+                  >
+                    <ArrowLeft size={22} color="white" />
+                  </TouchableOpacity>
+                  <Text className="text-white text-xl font-bold">
+                    {t("common.sales")}
+                  </Text>
+                  <View className="w-10" />
+                </View>
+              </LinearGradient>
+              <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
+                <SalesListCardView id={buyerId} type="buyer" />
+              </Container>
+            </View>
           )}
         </Tab.Screen>
 
@@ -144,12 +228,51 @@ export default function BuyerDetailScreen({ route }: BuyerDetailScreenProps) {
           }}
         >
           {() => (
-            <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <TransactionsListCardView id={buyerId} type="buyer" />
-            </Container>
+            <View className="flex-1 bg-surface-50">
+              <LinearGradient
+                colors={["#334e68", "#243b53"]}
+                style={styles.header}
+              >
+                <View className="flex-row items-center justify-between">
+                  <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    className="w-10 h-10 bg-white/10 rounded-full items-center justify-center"
+                  >
+                    <ArrowLeft size={22} color="white" />
+                  </TouchableOpacity>
+                  <Text className="text-white text-xl font-bold">
+                    {t("common.Transactions")}
+                  </Text>
+                  <View className="w-10" />
+                </View>
+              </LinearGradient>
+              <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
+                <TransactionsListCardView id={buyerId} type="buyer" />
+              </Container>
+            </View>
           )}
         </Tab.Screen>
       </Tab.Navigator>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+  },
+  updateButton: {
+    borderRadius: 16,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#f59e0b',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+});

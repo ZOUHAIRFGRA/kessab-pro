@@ -8,8 +8,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  StyleSheet,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,10 +22,8 @@ import {
   Edit3,
   Save,
 } from "lucide-react-native";
-import { getBuyer } from "../../features/buyerSlice";
-import buyerApi from "../../api/buyerApi";
+import { useGetBuyerByIdQuery, useUpdateBuyerMutation } from "../../services";
 import { useToast } from "../../hooks/useToast";
-import type { RootState, AppDispatch } from "../../store/store";
 import "../../../global.css";
 
 type UpdateBuyerScreenProps = {
@@ -38,13 +36,15 @@ type UpdateBuyerScreenProps = {
 
 export default function UpdateBuyerScreen({ route }: UpdateBuyerScreenProps) {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<any>();
   const { showSuccessToast, showErrorToast } = useToast();
   const isRTL = t("dir") === "rtl";
 
   const { buyerId } = route.params;
-  const { buyer, buyerLoading } = useSelector((state: RootState) => state.buyers);
+
+  // RTK Query hooks
+  const { data: buyer, isLoading: buyerLoading } = useGetBuyerByIdQuery(buyerId);
+  const [updateBuyer, { isLoading: isSubmitting }] = useUpdateBuyerMutation();
 
   const [buyerData, setBuyerData] = useState({
     fullName: "",
@@ -61,17 +61,12 @@ export default function UpdateBuyerScreen({ route }: UpdateBuyerScreenProps) {
   });
 
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    dispatch(getBuyer(buyerId));
-  }, [buyerId, dispatch]);
 
   useEffect(() => {
     if (buyer) {
       setBuyerData({
-        fullName: buyer.fullName || "",
-        CIN: buyer.CIN || "",
+        fullName: (buyer as any).fullName || buyer.name || "",
+        CIN: (buyer as any).CIN || "",
         phone: buyer.phone || "",
         address: buyer.address || "",
       });
@@ -111,22 +106,19 @@ export default function UpdateBuyerScreen({ route }: UpdateBuyerScreenProps) {
 
   const handleSubmit = async () => {
     if (validateForm()) {
-      setIsSubmitting(true);
-      const payload = {
-        ...buyer,
-        ...buyerData,
-        cin: buyerData.CIN,
-      };
-
       try {
-        await buyerApi.updateBuyer(buyerId, payload);
-        dispatch(getBuyer(buyerId));
+        await updateBuyer({
+          id: buyerId,
+          data: {
+            name: buyerData.fullName,
+            phone: buyerData.phone,
+            address: buyerData.address,
+          },
+        }).unwrap();
         showSuccessToast();
         navigation.goBack();
       } catch (error) {
         showErrorToast();
-      } finally {
-        setIsSubmitting(false);
       }
     }
   };
@@ -211,7 +203,7 @@ export default function UpdateBuyerScreen({ route }: UpdateBuyerScreenProps) {
       {/* Header */}
       <LinearGradient
         colors={["#334e68", "#243b53"]}
-        className="pt-12 pb-8 px-5 items-center"
+        style={styles.header}
       >
         <View className="flex-row items-center justify-between w-full mb-4">
           <TouchableOpacity
@@ -285,7 +277,7 @@ export default function UpdateBuyerScreen({ route }: UpdateBuyerScreenProps) {
               >
                 <LinearGradient
                   colors={isSubmitting ? ["#a1a1aa", "#71717a"] : ["#f59e0b", "#d97706"]}
-                  className="rounded-2xl py-4 flex-row items-center justify-center"
+                  style={styles.updateButton}
                 >
                   {isSubmitting ? (
                     <ActivityIndicator color="white" />
@@ -306,3 +298,19 @@ export default function UpdateBuyerScreen({ route }: UpdateBuyerScreenProps) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 32,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  updateButton: {
+    borderRadius: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

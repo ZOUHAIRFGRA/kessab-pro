@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getCategoriesIcons } from "../api/categoryIconsApi"; 
+
+export interface CategoryIcon {
+  id: number;
+  name: string;
+  icon: string;
+} 
 
 interface Icon {
   [key: string]: any;
@@ -13,8 +18,7 @@ interface IconState {
 export const fetchCategoriesIcons = createAsyncThunk<Icon[], void>(
   "icons/fetch",
   async () => {
-    const response = await getCategoriesIcons();
-    return response;
+    throw new Error("Deprecated: Use RTK Query iconsApi.useFetchCategoriesIconsQuery instead");
   }
 );
 

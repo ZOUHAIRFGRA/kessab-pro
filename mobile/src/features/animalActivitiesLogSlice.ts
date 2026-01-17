@@ -1,13 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { 
-  fetchAnimalActivitiesLogs, 
-  addAnimalActivitiesLog, 
-  updateAnimalActivitiesLog,
-  removeAnimalActivityLog,
-  fetchAllAnimalActivitiesLogs,
+import type { 
   ActivityLog,
   ActivityLogRequest,
-} from "../api/animalApi";
+} from "../types/api";
 
 interface ActivityLogState {
   activitiesLogs: ActivityLog[];
@@ -24,24 +19,21 @@ interface ModifyActivityLogParams {
 export const getAnimalActivitiesLogs = createAsyncThunk<ActivityLog[], number>(
   "animalActivitiesLogs/fetch",
   async (animalId: number) => {
-    const response = await fetchAnimalActivitiesLogs(animalId);
-    return response;
+    throw new Error("Deprecated: Use RTK Query animalActivitiesLogsApi.useFetchAnimalActivitiesLogsQuery instead");
   }
 );
 
 export const getAllAnimalActivitiesLogs = createAsyncThunk<ActivityLog[], void>(
   "animalActivitiesLogs/fetchAll",
   async () => {
-    const response = await fetchAllAnimalActivitiesLogs();
-    return response;
+    throw new Error("Deprecated: Use RTK Query animalActivitiesLogsApi.useFetchAllAnimalActivitiesLogsQuery instead");
   }
 );
 
 export const createAnimalActivityLog = createAsyncThunk<ActivityLog, ActivityLogRequest>(
   "animalActivitiesLogs/add",
   async (logData) => {
-    const response = await addAnimalActivitiesLog(logData);
-    return response;
+    throw new Error("Deprecated: Use RTK Query animalActivitiesLogsApi.useCreateAnimalActivityLogMutation instead");
   }
 );
 
@@ -49,16 +41,14 @@ export const createAnimalActivityLog = createAsyncThunk<ActivityLog, ActivityLog
 export const modifyAnimalActivityLog = createAsyncThunk<ActivityLog, ModifyActivityLogParams>(
   "animalActivitiesLogs/update",
   async ({ logId, logData }) => {
-    const response = await updateAnimalActivitiesLog(logId, logData);
-    return response;
+    throw new Error("Deprecated: Use RTK Query animalActivitiesLogsApi.useUpdateAnimalActivityLogMutation instead");
   }
 );
 
 export const deleteAnimalActivityLog = createAsyncThunk<number, number>(
   "animalActivitiesLogs/delete",
   async (logId) => {
-    await removeAnimalActivityLog(logId);
-    return logId;
+    throw new Error("Deprecated: Use RTK Query animalActivitiesLogsApi.useDeleteAnimalActivityLogMutation instead");
   }
 );
 

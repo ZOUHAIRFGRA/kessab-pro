@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import enumApi, { EnumValue } from "../api/enumApi";
+
+export interface EnumValue {
+  value: string;
+  label: string;
+}
 
 interface EnumState {
   paymentStatus: EnumValue[];
@@ -10,16 +14,14 @@ interface EnumState {
 export const fetchPaymentStatus = createAsyncThunk<EnumValue[], void>(
   "enum/paymentStatus",
   async () => {
-    const response = await enumApi.getPaymentStatus();
-    return response.data;
+    throw new Error("Deprecated: Use RTK Query enumsApi.useFetchPaymentStatusQuery instead");
   }
 );
 
 export const fetchPaymentMethods = createAsyncThunk<EnumValue[], void>(
   "enum/paymentMethods",
   async () => {
-    const response = await enumApi.getPaymentMethods();
-    return response.data;
+    throw new Error("Deprecated: Use RTK Query enumsApi.useFetchPaymentMethodsQuery instead");
   }
 );
 

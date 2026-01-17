@@ -1,52 +1,33 @@
 import "../../../global.css";
-import React, { useState, useCallback } from "react";
+import React from "react";
 import { View, FlatList } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
 import BuyerCardView from "./BuyerCardView";
-import { getBuyers } from "../../features/buyerSlice";
-import { useFocusEffect } from "@react-navigation/native";
-
-interface Buyer {
-  id: number;
-  fullName: string;
-  CIN: string;
-  phone: string;
-}
+import { useGetBuyersQuery } from "../../services";
+import type { Buyer } from "../../types/api";
 
 interface BuyersListCardViewProps {
   searchText?: string;
   route?: any;
 }
 
-interface RootState {
-  buyers: {
-    buyers: Buyer[];
-    loading: boolean;
-    error: any;
-  };
-}
-
-const BuyersListCardView: React.FC<BuyersListCardViewProps> = ({ 
-  searchText: propSearchText, 
-  route 
+const BuyersListCardView: React.FC<BuyersListCardViewProps> = ({
+  searchText: propSearchText,
+  route
 }) => {
   const { t } = useTranslation();
-  const { buyers, loading, error } = useSelector((state: RootState) => state.buyers);
-  const [currentPage, setCurrentPage] = useState(0);
 
-  const dispatch = useDispatch();
-
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(getBuyers({ q: propSearchText }) as any);
-      return () => {};
-    }, [propSearchText, dispatch])
+  // RTK Query hook with automatic refetch on focus
+  const { data, isLoading, error } = useGetBuyersQuery(
+    { search: propSearchText },
+    { refetchOnFocus: true }
   );
 
-  if (loading || !buyers) return <Loading />;
+  const buyers = data?.content || [];
+
+  if (isLoading || !data) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (
@@ -59,7 +40,7 @@ const BuyersListCardView: React.FC<BuyersListCardViewProps> = ({
       ) : (
         <FlatList
           data={buyers}
-          keyExtractor={(buyer) => buyer.id.toString()}
+          keyExtractor={(buyer: Buyer) => buyer.id.toString()}
           renderItem={({ item }) => <BuyerCardView buyer={item} />}
           ItemSeparatorComponent={() => <View className="h-3" />}
           contentContainerClassName="py-2"

@@ -5,8 +5,8 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   Dimensions,
+  StyleSheet,
 } from "react-native";
 import { useDebounce } from "use-debounce";
 import { useDispatch } from "react-redux";
@@ -153,7 +153,7 @@ export default function HomeScreen() {
       {/* Header */}
       <LinearGradient
         colors={["#334e68", "#243b53"]}
-        className="pt-12 pb-6 px-5"
+        style={styles.header}
       >
         <View className="flex-row items-center justify-between mb-4">
           <TouchableOpacity
@@ -191,7 +191,7 @@ export default function HomeScreen() {
       </LinearGradient>
 
       <ScrollView
-        className="flex-1"
+        className="flex-1 pt-4"
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
@@ -218,7 +218,7 @@ export default function HomeScreen() {
                   colors={item.gradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                  className="h-28 rounded-2xl p-4 justify-between"
+                  style={styles.gridItem}
                 >
                   <View className="w-12 h-12 bg-white/20 rounded-xl items-center justify-center">
                     {item.icon}
@@ -351,3 +351,17 @@ export default function HomeScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+  },
+  gridItem: {
+    height: 112,
+    borderRadius: 16,
+    padding: 16,
+    justifyContent: 'space-between',
+  },
+});

@@ -1,10 +1,9 @@
 import "../../../global.css";
-import React, { useEffect } from "react";
+import React from "react";
 import { Linking, Pressable, ScrollView, View, Text } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-import { getBuyer } from "../../features/buyerSlice";
+import { useGetBuyerByIdQuery } from "../../services";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import { getValue } from "../../helpers/gloablHelpers";
@@ -15,37 +14,13 @@ interface BuyerInfoViewProps {
   hideLinkButton?: boolean;
 }
 
-interface Buyer {
-  id: number;
-  fullName: string;
-  CIN: string;
-  address: string;
-  phone: string;
-}
-
-interface RootState {
-  buyers: {
-    error: any;
-    buyerLoading: boolean;
-    buyer: Buyer | null;
-  };
-}
-
 const BuyerInfoView: React.FC<BuyerInfoViewProps> = ({ id, hideLinkButton = false }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-
-  const {
-    error,
-    buyerLoading: loading,
-    buyer,
-  } = useSelector((state: RootState) => state.buyers);
-  
-  useEffect(() => {
-    dispatch(getBuyer(id) as any);
-  }, [dispatch, id]);
-  
   const navigator = useNavigation();
+
+  const { data: buyer, isLoading, isError } = useGetBuyerByIdQuery(id, {
+    skip: !id,
+  });
   
   const handleBuyerLinkClick = () => {
     if (buyer) {
@@ -53,8 +28,8 @@ const BuyerInfoView: React.FC<BuyerInfoViewProps> = ({ id, hideLinkButton = fals
     }
   };
 
-  if (loading || !buyer) return <Loading />;
-  if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
+  if (isLoading || !buyer) return <Loading />;
+  if (isError) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
 
   return (
     <ScrollView className="flex-1 bg-surface-50">

@@ -5,6 +5,14 @@ import { Text } from './Text';
 import { Button } from './Button';
 import '../../../global.css';
 
+export enum FALLBACK_TYPE {
+  ERROR = 'error',
+  EMPTY = 'empty',
+  NOT_FOUND = 'empty',
+  NO_RESULT = 'empty',
+  OFFLINE = 'offline',
+}
+
 interface FallbackProps extends ViewProps {
   type?: 'error' | 'empty' | 'offline';
   title?: string;

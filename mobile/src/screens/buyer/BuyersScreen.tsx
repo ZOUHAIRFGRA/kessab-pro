@@ -1,27 +1,28 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
 import { Search, Plus, X, ArrowLeft } from "lucide-react-native";
 import BuyersListCardView from "../../components/buyer/BuyersListCardView";
-import { getBuyers } from "../../features/buyerSlice";
+import { useGetBuyersQuery } from "../../services";
 import { Pagination } from "../../components/global/Pagination";
-import type { RootState, AppDispatch } from "../../store/store";
 import "../../../global.css";
 
 export default function BuyersScreen() {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<any>();
   const isRTL = t("dir") === "rtl";
 
   const [searchText, setSearchText] = useState("");
-  const { totalPages } = useSelector((state: RootState) => state.buyers);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  // RTK Query hook for pagination tracking
+  const { data } = useGetBuyersQuery({ page: currentPage, search: searchText });
+  const totalPages = data?.totalPages || 0;
 
   const getNextPage = (page: number) => {
-    dispatch(getBuyers({ page }));
+    setCurrentPage(page);
   };
 
   return (
@@ -29,7 +30,7 @@ export default function BuyersScreen() {
       {/* Header */}
       <LinearGradient
         colors={["#334e68", "#243b53"]}
-        className="pt-12 pb-6 px-5"
+        style={styles.header}
       >
         <View className="flex-row items-center justify-between mb-4">
           <TouchableOpacity
@@ -77,12 +78,12 @@ export default function BuyersScreen() {
       {/* Add Buyer FAB */}
       <TouchableOpacity
         onPress={() => navigation.navigate("addBuyerScreen")}
-        className="absolute bottom-24 right-5"
+        style={styles.fabContainer}
         activeOpacity={0.8}
       >
         <LinearGradient
           colors={["#f59e0b", "#d97706"]}
-          className="w-14 h-14 rounded-full items-center justify-center shadow-lg"
+          style={styles.fab}
         >
           <Plus size={28} color="white" />
         </LinearGradient>
@@ -90,3 +91,28 @@ export default function BuyersScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+  },
+  fabContainer: {
+    position: 'absolute',
+    bottom: 96,
+    right: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  fab: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

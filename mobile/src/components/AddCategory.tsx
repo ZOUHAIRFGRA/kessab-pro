@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { getBaseURL } from "../api/axiosInstance";
+import { getBaseURL } from "../services";
 import Input from "./Input";
 import { Plus, ImageIcon } from "lucide-react-native";
 

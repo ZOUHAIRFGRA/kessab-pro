@@ -4,7 +4,7 @@ import { View, Image, TouchableOpacity, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { User, Calendar, DollarSign } from "lucide-react-native";
 import { getAnimalCategoryCounts } from "../../helpers/SaleHelpers";
-import { getBaseURL } from "../../api/axiosInstance";
+import { getBaseURL } from "../../services";
 import { getValue } from "../../helpers/gloablHelpers";
 
 interface Animal {

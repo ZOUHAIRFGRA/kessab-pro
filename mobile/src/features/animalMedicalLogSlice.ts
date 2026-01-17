@@ -1,12 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { 
-  fetchAnimalMedicalLogs, 
-  addAnimalMedicalLog, 
-  updateAnimalMedicalLog,
-  removeAnimalMedicalLog,
+import type { 
   MedicalLog,
   MedicalLogRequest,
-} from "../api/animalApi";
+} from "../types/api";
 
 interface MedicalLogState {
   medicalLogs: MedicalLog[];
@@ -23,16 +19,14 @@ interface ModifyMedicalLogParams {
 export const getAnimalMedicalLogs = createAsyncThunk<MedicalLog[], number>(
   "animalMedicalLogs/fetch",
   async (animalId: number) => {
-    const response = await fetchAnimalMedicalLogs(animalId);
-    return response;
+    throw new Error("Deprecated: Use RTK Query animalMedicalLogsApi.useFetchAnimalMedicalLogsQuery instead");
   }
 );
 
 export const createAnimalMedicalLog = createAsyncThunk<MedicalLog, MedicalLogRequest>(
   "animalMedicalLogs/add",
   async (logData) => {
-    const response = await addAnimalMedicalLog(logData);
-    return response;
+    throw new Error("Deprecated: Use RTK Query animalMedicalLogsApi.useCreateAnimalMedicalLogMutation instead");
   }
 );
 
@@ -40,16 +34,14 @@ export const createAnimalMedicalLog = createAsyncThunk<MedicalLog, MedicalLogReq
 export const modifyAnimalMedicalLog = createAsyncThunk<MedicalLog, ModifyMedicalLogParams>(
   "animalMedicalLogs/update",
   async ({ logId, logData }) => {
-    const response = await updateAnimalMedicalLog(logId, logData);
-    return response;
+    throw new Error("Deprecated: Use RTK Query animalMedicalLogsApi.useUpdateAnimalMedicalLogMutation instead");
   }
 );
 
 export const deleteAnimalMedicalLog = createAsyncThunk<number, number>(
   "animalMedicalLogs/delete",
   async (logId) => {
-    await removeAnimalMedicalLog(logId);
-    return logId;
+    throw new Error("Deprecated: Use RTK Query animalMedicalLogsApi.useDeleteAnimalMedicalLogMutation instead");
   }
 );
 

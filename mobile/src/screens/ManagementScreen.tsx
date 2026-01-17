@@ -1,15 +1,14 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  StyleSheet,
 } from "react-native";
 import { useDebounce } from "use-debounce";
-import { getAnimals, resetAnimals } from "../features/animalSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
 import { Search, X, Plus, Menu } from "lucide-react-native";
@@ -17,38 +16,29 @@ import AnimalsList from "../components/AnimalsList";
 import AddAnimalModal from "../components/AddAnimalModal";
 import { useToast } from "../hooks/useToast";
 import FallBack, { FALLBACK_TYPE } from "../components/global/Fallback";
-import type { RootState, AppDispatch } from "../store/store";
+import { useGetAnimalsQuery } from "../services";
 import "../../global.css";
 
 export default function ManagementScreen() {
   const { t } = useTranslation();
   const { showErrorToast } = useToast();
-  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<any>();
   const isRTL = t("dir") === "rtl";
-  const { animals } = useSelector((state: RootState) => state.animals);
 
   const [addAnimalModalVisible, setAddAnimalModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText] = useDebounce(searchText, 300);
-  const [isLoading, setIsLoading] = useState(false);
+  const [submittedSearch, setSubmittedSearch] = useState("");
 
-  const fetchAnimals = useCallback(
-    (search = "") => {
-      setIsLoading(true);
-      dispatch(resetAnimals());
-      dispatch(getAnimals({ page: 0, search, filterType: "tag" })).finally(() =>
-        setIsLoading(false)
-      );
-    },
-    [dispatch]
+  // RTK Query hook
+  const { data, isLoading, isFetching, refetch } = useGetAnimalsQuery(
+    { page: 0, search: submittedSearch, filterType: "tag" },
+    { refetchOnFocus: true }
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchAnimals("");
-    }, [fetchAnimals])
-  );
+  const animals = data?.content || [];
+  
+  // console.log("Animals data:", animals);
 
   const handleSearchChange = (text: string) => setSearchText(text);
 
@@ -57,12 +47,12 @@ export default function ManagementScreen() {
       showErrorToast(t("common.search_too_short"));
       return;
     }
-    fetchAnimals(debouncedSearchText);
+    setSubmittedSearch(debouncedSearchText);
   };
 
   const resetSearchText = () => {
     setSearchText("");
-    fetchAnimals("");
+    setSubmittedSearch("");
   };
 
   return (
@@ -70,7 +60,7 @@ export default function ManagementScreen() {
       {/* Header */}
       <LinearGradient
         colors={["#334e68", "#243b53"]}
-        className="pt-12 pb-6 px-5"
+        style={styles.header}
       >
         <View className="flex-row items-center justify-between mb-4">
           <TouchableOpacity
@@ -104,14 +94,14 @@ export default function ManagementScreen() {
               <X size={18} color="rgba(255,255,255,0.7)" />
             </TouchableOpacity>
           )}
-          {isLoading && <ActivityIndicator color="white" size="small" />}
+          {isFetching && <ActivityIndicator color="white" size="small" />}
         </View>
       </LinearGradient>
 
       {/* Quick Actions */}
       <View className="px-5 py-4">
         <Text className="text-primary-800 text-lg font-bold mb-3">
-          {t("common.quick_actions")}
+          {t("common.Quick Actions")}
         </Text>
         <TouchableOpacity
           onPress={() => setAddAnimalModalVisible(true)}
@@ -121,7 +111,7 @@ export default function ManagementScreen() {
             colors={["#f59e0b", "#d97706"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            className="rounded-2xl p-4 flex-row items-center"
+            style={styles.addButton}
           >
             <View className="w-12 h-12 bg-white/20 rounded-xl items-center justify-center">
               <Plus size={24} color="white" />
@@ -131,7 +121,7 @@ export default function ManagementScreen() {
                 {t("common.add_animal")}
               </Text>
               <Text className="text-white/70 text-sm">
-                Add a new animal to your inventory
+                {t("common.Add a new animal to your inventory")}
               </Text>
             </View>
           </LinearGradient>
@@ -150,7 +140,11 @@ export default function ManagementScreen() {
               message={t("common.no_animals_found")}
             />
           ) : (
-            <AnimalsList searchText={debouncedSearchText} isLoading={isLoading} />
+            <AnimalsList 
+              searchText={submittedSearch} 
+              isLoading={isLoading} 
+              animals={animals}
+            />
           )}
         </View>
       </View>
@@ -168,3 +162,17 @@ export default function ManagementScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+  },
+  addButton: {
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});

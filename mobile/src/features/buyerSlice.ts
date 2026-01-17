@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import BuyersService, {
+import type {
   Buyer,
   BuyerListResponse,
   BuyerOverview,
   BuyerCreateRequest,
   BuyerUpdateRequest,
   BuyerQuery,
-} from "../api/buyerApi";
+} from "../types/api";
 
 interface BuyerState {
   buyers: Buyer[];
@@ -36,54 +36,42 @@ interface UpdateBuyerParams {
 export const getBuyers = createAsyncThunk<BuyerListResponse, GetBuyersParams | undefined>(
   "buyers/fetchAll",
   async (params) => {
-    const q = params?.q || "";
-    const page = params?.page || 0;
-    const query: BuyerQuery = {
-      search: q,
-      page,
-    };
-    const response = await BuyersService.fetchBuyers(query);
-    return response;
+    throw new Error("Deprecated: Use RTK Query buyersApi.useFetchBuyersQuery instead");
   }
 );
 
 export const getBuyer = createAsyncThunk<Buyer, number>(
   "buyers/get",
   async (id) => {
-    const response = await BuyersService.fetchBuyerById(id);
-    return response;
+    throw new Error("Deprecated: Use RTK Query buyersApi.useFetchBuyerByIdQuery instead");
   }
 );
 
 export const getBuyerOverview = createAsyncThunk<BuyerOverview, number>(
   "buyers/getOverview",
   async (id) => {
-    const response = await BuyersService.fetchBuyerOverview(id);
-    return response;
+    throw new Error("Deprecated: Use RTK Query buyersApi.useFetchBuyerOverviewQuery instead");
   }
 );
 
 export const addBuyer = createAsyncThunk<Buyer, BuyerCreateRequest>(
   "buyers/add",
   async (buyer) => {
-    const response = await BuyersService.createBuyer(buyer);
-    return response;
+    throw new Error("Deprecated: Use RTK Query buyersApi.useCreateBuyerMutation instead");
   }
 );
 
 export const updateBuyer = createAsyncThunk<Buyer, UpdateBuyerParams>(
   "buyers/update",
   async ({ id, buyer }) => {
-    const response = await BuyersService.updateBuyer(id, buyer);
-    return response;
+    throw new Error("Deprecated: Use RTK Query buyersApi.useUpdateBuyerMutation instead");
   }
 );
 
 export const removeBuyer = createAsyncThunk<number, number>(
   "buyers/delete",
   async (id) => {
-    await BuyersService.deleteBuyer(id);
-    return id;
+    throw new Error("Deprecated: Use RTK Query buyersApi.useDeleteBuyerMutation instead");
   }
 );
 

@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   Switch,
   ActivityIndicator,
+  StyleSheet,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,18 +27,18 @@ import {
   ChevronUp,
   Check,
   Send,
-  Package,
 } from "lucide-react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { fetchCategories } from "../../features/categorySlice";
-import { getBuyers } from "../../features/buyerSlice";
-import { getUnsoldAnimals } from "../../features/animalSlice";
-import { fetchPaymentMethods } from "../../features/enumSlice";
+import {
+  useGetCategoriesQuery,
+  useGetBuyersQuery,
+  useGetUnsoldAnimalsQuery,
+  useGetPaymentMethodsQuery,
+  useCreateSaleMutation,
+} from "../../services";
 import { formatDate, generateIndexArray } from "../../utils/Global";
-import saleApi from "../../api/saleApi";
 import { useToast } from "../../hooks/useToast";
-import type { RootState, AppDispatch } from "../../store/store";
 import "../../../global.css";
 
 type AddSaleScreenProps = {
@@ -53,7 +53,6 @@ type AddSaleScreenProps = {
 export default function AddSaleScreen({ route }: AddSaleScreenProps) {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
   const isRTL = t("dir") === "rtl";
 
   const { showErrorToast, showSuccessToast } = useToast();
@@ -61,22 +60,16 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
   const qte = route.params?.qte || (route.params?.animalId ? 1 : 1);
   const initialAnimalId = route.params?.animalId;
 
-  // Redux state
-  const { paymentMethods, loading: loadingPaymentMethods } = useSelector(
-    (state: RootState) => state.enums
-  );
-  const { categories, loading: categoriesLoading } = useSelector(
-    (state: RootState) => state.categories
-  );
-  const { buyers, loading: buyersLoading } = useSelector(
-    (state: RootState) => state.buyers
-  );
-  const { unsoldAnimals: animals, loading: animalsLoading } = useSelector(
-    (state: RootState) => state.animals
-  );
+  // RTK Query hooks
+  const { data: paymentMethods = [], isLoading: loadingPaymentMethods } = useGetPaymentMethodsQuery();
+  const { data: categories = [], isLoading: categoriesLoading } = useGetCategoriesQuery();
+  const { data: buyersData, isLoading: buyersLoading } = useGetBuyersQuery({}, { skip: false });
+  const { data: animals = [], isLoading: animalsLoading } = useGetUnsoldAnimalsQuery();
+  const [createSale, { isLoading: isSubmitting }] = useCreateSaleMutation();
+
+  const buyers = buyersData?.content || [];
 
   // Local state
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [err, setErr] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateObj, setDateObj] = useState(new Date());
@@ -110,11 +103,6 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
 
   // Initialize
   useEffect(() => {
-    if (paymentMethods.length < 1) dispatch(fetchPaymentMethods());
-    dispatch(fetchCategories());
-  }, [dispatch]);
-
-  useEffect(() => {
     if (initialAnimalId) {
       setAnimalExisting([true]);
       setAnimalFormData([{ id: initialAnimalId, price: "", isPickedUp: false }]);
@@ -135,17 +123,6 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
       setAnimalExisting(Array(qte).fill(false));
     }
   }, [qte, initialAnimalId]);
-
-  useEffect(() => {
-    if (buyerExisting) dispatch(getBuyers({}));
-  }, [buyerExisting, dispatch]);
-
-  useEffect(() => {
-    const shouldFetchAnimals = animalExisting.some((exists) => exists);
-    if (shouldFetchAnimals || initialAnimalId) {
-      dispatch(getUnsoldAnimals());
-    }
-  }, [animalExisting, dispatch, initialAnimalId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -186,9 +163,9 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
           ...newData[index],
           id: animalId,
           tag: selectedAnimal.tag || "",
-          category: selectedAnimal.category?.id || "",
+          category: (selectedAnimal as any).category?.id || "",
           price: newData[index]?.price || selectedAnimal.price?.toString() || "",
-          isPickedUp: newData[index]?.isPickedUp ?? selectedAnimal.isPickedUp ?? false,
+          isPickedUp: newData[index]?.isPickedUp ?? (selectedAnimal as any).isPickedUp ?? false,
         };
         return newData;
       });
@@ -211,7 +188,6 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
     setAnimalExisting((prev) => {
       const newExisting = [...prev];
       newExisting[index] = !newExisting[index];
-      if (newExisting[index]) dispatch(getUnsoldAnimals());
       return newExisting;
     });
     setAnimalFormData((prev) => {
@@ -246,12 +222,10 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
     return null;
   };
 
-  const onSubmit = () => {
-    setIsSubmitting(true);
+  const onSubmit = async () => {
     const error = validateForm();
     if (error) {
       setErr(error);
-      setIsSubmitting(false);
       return;
     }
 
@@ -270,14 +244,13 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
     };
 
     setErr("");
-    saleApi
-      .createSale(finalData)
-      .then(() => {
-        showSuccessToast();
-        navigation.goBack();
-      })
-      .catch(() => showErrorToast())
-      .finally(() => setIsSubmitting(false));
+    try {
+      await createSale(finalData as any).unwrap();
+      showSuccessToast();
+      navigation.goBack();
+    } catch (error) {
+      showErrorToast();
+    }
   };
 
   const SectionHeader = ({
@@ -305,7 +278,7 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
   return (
     <View className="flex-1 bg-surface-50">
       {/* Header */}
-      <LinearGradient colors={["#334e68", "#243b53"]} className="pt-12 pb-6 px-5">
+      <LinearGradient colors={["#334e68", "#243b53"]} style={styles.header}>
         <View className="flex-row items-center justify-between">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -371,7 +344,7 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
                               <Check size={12} color="white" />
                             )}
                           </View>
-                          <Text className="text-primary-800 flex-1">{buyer.fullName}</Text>
+                          <Text className="text-primary-800 flex-1">{buyer.fullName || buyer.name}</Text>
                         </TouchableOpacity>
                       ))}
                     </View>
@@ -632,24 +605,24 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
                 {t("common.paymentMethod")}
               </Text>
               <View className="flex-row flex-wrap">
-                {paymentMethods?.map((method: string) => (
+                {paymentMethods?.map((method: any) => (
                   <TouchableOpacity
-                    key={method}
-                    onPress={() => handleSummaryChange("method", method)}
+                    key={method.key || method}
+                    onPress={() => handleSummaryChange("method", method.key || method)}
                     className={`px-4 py-3 rounded-xl mr-2 mb-2 ${
-                      summaryFormData.method === method
+                      summaryFormData.method === (method.key || method)
                         ? "bg-accent-500"
                         : "bg-surface-50 border border-surface-200"
                     }`}
                   >
                     <Text
                       className={
-                        summaryFormData.method === method
+                        summaryFormData.method === (method.key || method)
                           ? "text-white font-medium"
                           : "text-primary-700"
                       }
                     >
-                      {t(`common.${method}`, method)}
+                      {t(`common.${method.key || method}`, method.value || method)}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -664,7 +637,7 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
         <TouchableOpacity onPress={onSubmit} disabled={isSubmitting} activeOpacity={0.8}>
           <LinearGradient
             colors={isSubmitting ? ["#a1a1aa", "#71717a"] : ["#f59e0b", "#d97706"]}
-            className="rounded-2xl py-4 flex-row items-center justify-center"
+            style={styles.submitButton}
           >
             {isSubmitting ? (
               <ActivityIndicator color="white" />
@@ -682,3 +655,18 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+  },
+  submitButton: {
+    borderRadius: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

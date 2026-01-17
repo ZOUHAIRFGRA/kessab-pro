@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, ScrollView, Image, Alert } from "react-na
 import { X, Camera, ImagePlus, Save, XCircle } from "lucide-react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useImagePicker } from "../../hooks/useImagePicker";
-import { getBaseURL } from "../../api/axiosInstance";
+import { getBaseURL } from "../../services";
 
 // TypeScript Interfaces
 interface Animal {

@@ -180,9 +180,8 @@ export const AnimalDetailsTab = ({ animalId }: AnimalDetailsTabProps) => {
         {animal?.saleId && (
           <View className="mb-3">
             <Button
-              type="primary"
               onPress={() =>
-                navigation.navigate("SellDetail" as never, { saleId: animal.saleId } as never)
+                navigation.navigate("SellDetail", { saleId: animal.saleId })
               }
               children={t("common.viewSale")}
               textStyle={{ fontSize: 16, color: "white", fontWeight: "bold" }}

@@ -1,19 +1,21 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import {
-  fetchAnimals,
-  createAnimal,
-  updateAnimal,
-  deleteAnimal,
-  fetchAnimalById,
-  fetchAnimalsBySale,
-  fetchAnimalsByBuyer,
-  fetchUnsoldAnimals,
-  fetchAnimalsCount,
+import type {
   Animal,
   AnimalListResponse,
   AnimalCreateRequest,
   AnimalUpdateRequest,
-} from "../api/animalApi";
+} from "../types/api";
+
+// Stub functions for deprecated thunks - these should not be used, migrate to RTK Query
+const fetchAnimalsBySale = async (id: number) => ({ data: [] as Animal[] });
+const fetchAnimalsByBuyer = async (id: number) => ({ data: [] as Animal[] });
+const fetchAnimals = async (page: number, size: number, search: string, filterType: string) => ({ content: [], totalPages: 0, totalElements: 0 } as AnimalListResponse);
+const fetchAnimalsCount = async () => 0;
+const fetchUnsoldAnimals = async () => [] as Animal[];
+const createAnimal = async (data: FormData) => ({} as Animal);
+const updateAnimal = async (id: number, data: FormData) => ({} as Animal);
+const deleteAnimal = async (id: number) => {};
+const fetchAnimalById = async (id: number) => ({} as Animal);
 
 interface AnimalState {
   animals: Animal[];

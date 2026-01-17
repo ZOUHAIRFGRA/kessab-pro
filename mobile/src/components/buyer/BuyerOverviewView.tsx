@@ -1,68 +1,34 @@
 import "../../../global.css";
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import { ScrollView, View, Text } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { getBuyerOverview, resetBuyer } from "../../features/buyerSlice";
+import { useGetBuyerOverviewQuery } from "../../services";
 import { useTranslation } from "react-i18next";
 import Loading from "../global/Loading";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
-import { useFocusEffect } from "@react-navigation/native";
 import { User, PawPrint, CheckCircle, Clock, DollarSign, CreditCard, Wallet } from "lucide-react-native";
 
 interface BuyerOverviewViewProps {
   id: number;
 }
 
-interface Buyer {
-  id: number;
-  fullName: string;
-  CIN: string;
-  address: string;
-  phone: string;
-}
-
-interface RootState {
-  buyers: {
-    error: any;
-    buyerLoading: boolean;
-    buyer: Buyer | null;
-    animalsPickedUp: number;
-    animalsNotPickedUp: number;
-    totalAnimals: number;
-    totalToPay: number;
-    totalPaid: number;
-  };
-}
-
 const BuyerOverviewView: React.FC<BuyerOverviewViewProps> = ({ id }) => {
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        dispatch(resetBuyer());
-      };
-    }, [])
-  );
-
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   
-  useEffect(() => {
-    dispatch(getBuyerOverview(id) as any);
-  }, [dispatch, id]);
-  
+  const { data, isLoading, isError } = useGetBuyerOverviewQuery(id, {
+    skip: !id,
+  });
+
+  if (isLoading || !data) return <Loading />;
+  if (isError) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
+
   const {
-    error,
-    buyerLoading: loading,
     buyer,
     animalsPickedUp,
     animalsNotPickedUp,
     totalAnimals,
     totalToPay,
     totalPaid,
-  } = useSelector((state: RootState) => state.buyers);
-
-  if (loading || !buyer) return <Loading />;
-  if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
+  } = data;
 
   const formatCurrency = (value: number) => {
     return value.toFixed(2) + " MAD";

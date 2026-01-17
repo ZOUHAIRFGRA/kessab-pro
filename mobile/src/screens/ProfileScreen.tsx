@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,9 +7,9 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  StyleSheet,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUserProfile, updateProfile } from "../features/userSlice";
+import { useDispatch } from "react-redux";
 import { logout } from "../features/authSlice";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,26 +27,24 @@ import {
   Bell,
   Shield,
 } from "lucide-react-native";
-import type { RootState, AppDispatch } from "../store/store";
+import { useGetUserProfileQuery, useUpdateUserProfileMutation } from "../services";
+import type { AppDispatch } from "../store/store";
 import "../../global.css";
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
-  const { userProfile, loading, error } = useSelector(
-    (state: RootState) => state.user
-  );
   const isRTL = t("dir") === "rtl";
+
+  // RTK Query hooks
+  const { data: userProfile, isLoading: loading, error } = useGetUserProfileQuery();
+  const [updateUserProfile] = useUpdateUserProfileMutation();
 
   const [isEditing, setIsEditing] = useState(false);
   const [updatedUsername, setUpdatedUsername] = useState("");
   const [updatedEmail, setUpdatedEmail] = useState("");
   const [updatedPhone, setUpdatedPhone] = useState("");
   const [updatedAddress, setUpdatedAddress] = useState("");
-
-  useEffect(() => {
-    dispatch(fetchUserProfile());
-  }, [dispatch]);
 
   useEffect(() => {
     if (userProfile) {
@@ -57,16 +55,18 @@ export default function ProfileScreen() {
     }
   }, [userProfile]);
 
-  const handleProfileUpdate = () => {
-    const updatedUser = {
-      ...userProfile,
-      username: updatedUsername,
-      email: updatedEmail,
-      phone: updatedPhone,
-      address: updatedAddress,
-    };
-    dispatch(updateProfile(updatedUser));
-    setIsEditing(false);
+  const handleProfileUpdate = async () => {
+    try {
+      await updateUserProfile({
+        username: updatedUsername,
+        email: updatedEmail,
+        phone: updatedPhone,
+        address: updatedAddress,
+      }).unwrap();
+      setIsEditing(false);
+    } catch (err) {
+      Alert.alert(t("common.error"), t("common.updateFailed"));
+    }
   };
 
   const handleLogout = () => {
@@ -179,7 +179,7 @@ export default function ProfileScreen() {
       {/* Header */}
       <LinearGradient
         colors={["#334e68", "#243b53"]}
-        className="pt-12 pb-16 px-5 items-center"
+        style={styles.header}
       >
         <Text className="text-white/70 text-sm">{t("common.Account")}</Text>
         <Text className="text-white text-2xl font-bold mt-1">
@@ -214,7 +214,7 @@ export default function ProfileScreen() {
               >
                 <LinearGradient
                   colors={["#14b8a6", "#0d9488"]}
-                  className="rounded-xl py-3 flex-row items-center justify-center"
+                  style={styles.saveButton}
                 >
                   <Save size={18} color="white" />
                   <Text className="text-white font-semibold ml-2">
@@ -239,7 +239,7 @@ export default function ProfileScreen() {
             >
               <LinearGradient
                 colors={["#f59e0b", "#d97706"]}
-                className="rounded-xl py-3 flex-row items-center justify-center"
+                style={styles.editButton}
               >
                 <Edit3 size={18} color="white" />
                 <Text className="text-white font-semibold ml-2">
@@ -323,3 +323,26 @@ export default function ProfileScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 64,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  saveButton: {
+    borderRadius: 12,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editButton: {
+    borderRadius: 12,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

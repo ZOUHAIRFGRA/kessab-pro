@@ -9,18 +9,19 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/authSlice";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
 import { Eye, EyeOff, User, Lock, ArrowRight } from "lucide-react-native";
-import type { NativeStackNavigationProp } from "@react-navigation/stack";
+import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RootState, AppDispatch } from "../store/store";
 import "../../global.css";
 
 type LoginScreenProps = {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: StackNavigationProp<any>;
 };
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
@@ -40,12 +41,13 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
   return (
     <View className="flex-1 bg-surface-50">
+ 
       {/* Gradient Header */}
       <LinearGradient
         colors={["#334e68", "#243b53", "#102a43"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        className="h-[35%] rounded-b-[40px] items-center justify-center"
+        style={styles.header}
       >
         {/* Decorative circles */}
         <View className="absolute top-10 left-10 w-20 h-20 rounded-full bg-white/5" />
@@ -75,13 +77,13 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
           keyboardShouldPersistTaps="handled"
         >
           {/* Login Form Card */}
-          <View className="flex-1 px-6 -mt-10">
+          <View className="flex-1 px-6 mt-10">
             <View className="bg-white rounded-3xl p-6 shadow-lg shadow-black/10">
               <Text className="text-primary-800 text-2xl font-bold mb-1">
                 {t("common.Login")}
               </Text>
               <Text className="text-surface-500 text-sm mb-6">
-                Sign in to continue managing your livestock
+                {t("common.Already have an account? Login")}
               </Text>
 
               {/* Username/Phone Input */}
@@ -188,7 +190,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
                   }
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
-                  className="rounded-2xl py-4 flex-row items-center justify-center"
+                  style={styles.loginButton}
                 >
                   {loading ? (
                     <ActivityIndicator color="white" />
@@ -224,3 +226,20 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    height: '28%',
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loginButton: {
+    borderRadius: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

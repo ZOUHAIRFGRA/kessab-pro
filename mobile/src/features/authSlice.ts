@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { login, register, LoginRequest, RegisterRequest, AuthResponse } from "../api/authApi"; 
+import type { LoginRequest, RegisterRequest, AuthResponse } from "../services/endpoints/authApi"; 
+import { getBaseURL } from "../services/api";
 
 interface User {
   id: number | string;
@@ -26,15 +27,26 @@ export const loginUser = createAsyncThunk<
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await login(userData);
-      const token = response.token; 
+      const response = await fetch(`${getBaseURL()}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Login failed');
+      }
+      
+      const data: AuthResponse = await response.json();
+      const token = data.token; 
       if (!token) throw new Error("No token received"); 
 
       await AsyncStorage.setItem("authToken", token); 
 
-      return response; 
+      return data; 
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      return rejectWithValue(error.message || "Login failed");
     }
   }
 );
@@ -47,13 +59,24 @@ export const registerUser = createAsyncThunk<
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await register(userData);
-      const { token, user } = response;
+      const response = await fetch(`${getBaseURL()}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Registration failed');
+      }
+      
+      const data: AuthResponse = await response.json();
+      const { token, user } = data;
 
       await AsyncStorage.setItem("authToken", token); 
       return { token, user };
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Registration failed");
+      return rejectWithValue(error.message || "Registration failed");
     }
   }
 );

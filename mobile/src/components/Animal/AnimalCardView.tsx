@@ -2,21 +2,15 @@ import React from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { getBaseURL } from "../../api/axiosInstance";
-import { getPickedUpDate } from "../../helpers/AnimalHelpers";
+import { getBaseURL } from "../../services";
+import { Animal, getPickedUpDate } from "../../helpers/AnimalHelpers";
 import { getValue } from "../../helpers/gloablHelpers";
 import Text from "../global/Text";
 import { Truck, DollarSign } from "lucide-react-native";
-import type { NativeStackNavigationProp } from "@react-navigation/stack";
+import type {StackNavigationProp}  from "@react-navigation/stack";
 import "../../../global.css";
 
-interface Animal {
-  id: number;
-  tag: string;
-  sex: string;
-  price: number;
-  imagePaths: string[];
-}
+
 
 interface AnimalCardViewProps {
   animal: Animal;
@@ -24,7 +18,7 @@ interface AnimalCardViewProps {
 
 export default function AnimalCardView({ animal }: AnimalCardViewProps) {
   const { t } = useTranslation();
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
   const handleAnimalClick = () => {
     navigation.navigate("AnimalDetails", { animalId: animal.id });

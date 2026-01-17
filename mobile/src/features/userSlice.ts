@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getUserProfile, updateUserProfile } from "../api/userApi";
+import type { User, UpdateUserRequest } from "../types/api";
 
 interface UserProfile {
   [key: string]: any;
@@ -14,16 +14,14 @@ interface UserState {
 export const fetchUserProfile = createAsyncThunk<UserProfile, void>(
   "user/fetchProfile",
   async () => {
-    const response = await getUserProfile();
-    return response;
+    throw new Error("Deprecated: Use RTK Query userApi.useFetchUserProfileQuery instead");
   }
 );
 
 export const updateProfile = createAsyncThunk<UserProfile, Partial<UserProfile>>(
   "user/updateProfile",
   async (updatedUser) => {
-    const response = await updateUserProfile(updatedUser);
-    return response;
+    throw new Error("Deprecated: Use RTK Query userApi.useUpdateUserProfileMutation instead");
   }
 );
 

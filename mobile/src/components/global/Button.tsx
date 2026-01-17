@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, TouchableOpacityProps, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps, ActivityIndicator, View } from 'react-native';
 import { Text } from './Text';
 import '../../../global.css';
 

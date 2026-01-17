@@ -19,7 +19,7 @@ const AppWrapper = () => {
     if (__DEV__) {
       Toast.show({
         type: "info",
-        text1: "Server IP",
+        text1: "Server API",
         text2: `Loaded from env: ${SERVER_IP}`,
       });
     }

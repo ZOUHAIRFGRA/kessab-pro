@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, ActivityIndicator } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Info, User, ShoppingCart, Receipt } from "lucide-react-native";
 import SaleInfoView from "../../components/sale/SaleInfoView";
@@ -10,8 +9,7 @@ import TransactionsListCardView from "../../components/transaction/TransactionsL
 import AnimalsListCardView from "../../components/Animal/AnimalsListCardView";
 import Container from "../../components/global/Container";
 import FallBack from "../../components/global/Fallback";
-import { getSale } from "../../features/saleSlice";
-import type { RootState, AppDispatch } from "../../store/store";
+import { useGetSaleByIdQuery } from "../../services";
 import "../../../global.css";
 
 const Tab = createBottomTabNavigator();
@@ -26,19 +24,14 @@ type SaleDetailScreenProps = {
 
 export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
   const isRTL = t("dir") === "rtl";
   const saleId = route.params?.saleId;
 
-  const { sale, loading, error } = useSelector((state: RootState) => state.sales);
+  const { data: sale, isLoading, isError } = useGetSaleByIdQuery(saleId, {
+    skip: !saleId,
+  });
 
-  useEffect(() => {
-    if (saleId) {
-      dispatch(getSale(saleId));
-    }
-  }, [dispatch, saleId]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <View className="flex-1 bg-surface-50 items-center justify-center">
         <ActivityIndicator size="large" color="#334e68" />
@@ -46,7 +39,7 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
     );
   }
 
-  if (error || !saleId) {
+  if (isError || !saleId || !sale) {
     return <FallBack />;
   }
 
@@ -81,7 +74,7 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
             tabBarIcon: ({ color, size }) => <Info size={size} color={color} />,
           }}
         >
-          {() => <SaleInfoView id={sale?.id} />}
+          {() => <SaleInfoView id={sale.id} />}
         </Tab.Screen>
 
         <Tab.Screen
@@ -91,7 +84,7 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
             tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
           }}
         >
-          {() => <BuyerInfoView id={sale?.buyer?.id} />}
+          {() => <BuyerInfoView id={sale.buyer?.id} />}
         </Tab.Screen>
 
         <Tab.Screen
@@ -105,7 +98,7 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16 }}>
-              <AnimalsListCardView id={sale?.id} type="sale" />
+              <AnimalsListCardView id={sale.id} type="sale" />
             </Container>
           )}
         </Tab.Screen>
@@ -121,7 +114,7 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
         >
           {() => (
             <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <TransactionsListCardView id={sale?.id} type="sale" />
+              <TransactionsListCardView id={sale.id} type="sale" />
             </Container>
           )}
         </Tab.Screen>

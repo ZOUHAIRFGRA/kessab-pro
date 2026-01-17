@@ -19,8 +19,9 @@ import IconButton from "./AnimalDetailsComponents/IconButton";
 import Input from "./Input";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
-import { fetchCategoriesIcons } from "../features/iconsSlice";
 import { Calendar, Camera, Image as ImageIcon, X } from "lucide-react-native";
+import { useGetCategoriesQuery, useGetCategoryIconsQuery } from "@/services";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 interface AddAnimalModalProps {
   visible: boolean;
@@ -39,12 +40,11 @@ interface RootState {
 const AddAnimalModal: React.FC<AddAnimalModalProps> = ({ visible, onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { categories } = useSelector((state: RootState) => state.categories);
-  const { icons } = useSelector((state: RootState) => state.icons);
-
-  useEffect(() => {
-    dispatch(fetchCategoriesIcons() as any);
-  }, [dispatch]);
+  const { data: categoriesData } = useGetCategoriesQuery();
+  const categories = categoriesData || [];
+  const { data: icons } = useGetCategoryIconsQuery();
+  console.log("Icons data in AddAnimalModal:", icons);
+  const iconsData = icons || [];
 
   const {
     tag,
@@ -79,7 +79,7 @@ const AddAnimalModal: React.FC<AddAnimalModalProps> = ({ visible, onClose }) => 
     () => {},
     null,
     () => {},
-    icons,
+    iconsData,
     handleSubmit,
     t
   );

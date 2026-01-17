@@ -4,17 +4,9 @@ import { View, TouchableOpacity, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Wallet, Trash2, Share2, Plus } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
 import { useToast } from "../../hooks/useToast";
-import {
-  exportTransactionInvoice,
-  getTransactionsByBuyer,
-  getTransactionsBySale,
-} from "../../features/transactionSlice";
-import { getSale } from "../../features/saleSlice";
-import transactionApi from "../../api/transactionApi";
+import { useDeleteTransactionMutation, useGetTransactionInvoiceMutation } from "../../services";
 import Dialogs from "../global/Dialog";
-import Button from "../global/Button";
 import ConfirmationModal from "../global/ConfirmationModal";
 
 interface Transaction {
@@ -26,7 +18,7 @@ interface Transaction {
 
 interface TransactionCardViewProps {
   transaction: Transaction;
-  id: number;
+  id?: number;
   type?: "sale" | "buyer";
 }
 
@@ -36,9 +28,12 @@ const TransactionCardView: React.FC<TransactionCardViewProps> = ({
   type = "sale",
 }) => {
   const { t } = useTranslation();
-  const navigator = useNavigation();
-  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const { showSuccessToast, showErrorToast } = useToast();
+
+  const [deleteTransaction] = useDeleteTransactionMutation();
+  const [getTransactionInvoice] = useGetTransactionInvoiceMutation();
+
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
@@ -46,25 +41,23 @@ const TransactionCardView: React.FC<TransactionCardViewProps> = ({
     setIsVisible(true);
   };
 
-  const onDeleteConfirmation = () => {
-    transactionApi
-      .deleteTransaction(transaction.id)
-      .then(() => {
-        showSuccessToast();
-        if (type === "sale") {
-          dispatch(getTransactionsBySale(id) as any);
-          dispatch(getSale(id) as any);
-        }
-        if (type === "buyer") {
-          dispatch(getTransactionsByBuyer(id) as any);
-        }
-      })
-      .catch(() => {
-        showErrorToast();
-      })
-      .finally(() => {
-        setIsVisible(false);
-      });
+  const handleExportInvoice = async () => {
+    try {
+      await getTransactionInvoice(transaction.id).unwrap();
+      showSuccessToast();
+    } catch (error) {
+      showErrorToast();
+    }
+  };
+
+  const onDeleteConfirmation = async () => {
+    try {
+      await deleteTransaction(transaction.id).unwrap();
+      showSuccessToast();
+      setIsVisible(false);
+    } catch (error) {
+      showErrorToast();
+    }
   };
 
   return (
@@ -94,9 +87,7 @@ const TransactionCardView: React.FC<TransactionCardViewProps> = ({
         <View className="flex-col gap-2 p-2">
           <TouchableOpacity
             className="bg-primary-700 rounded-2xl p-4 flex-row items-center justify-center gap-3 shadow-sm"
-            onPress={() => {
-              exportTransactionInvoice(transaction.id);
-            }}
+            onPress={handleExportInvoice}
           >
             <Share2 size={20} color="#ffffff" strokeWidth={2.5} />
             <Text className="text-white font-bold text-center text-base">

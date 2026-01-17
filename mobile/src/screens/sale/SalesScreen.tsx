@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   TextInput,
   Modal,
+  StyleSheet,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,23 +15,18 @@ import {
   Search,
   Plus,
   Calendar,
-  Filter,
   X,
   ArrowLeft,
   ChevronRight,
 } from "lucide-react-native";
 import SalesListCardView from "../../components/sale/SalesListCardView";
-import { getSales } from "../../features/saleSlice";
-import { fetchPaymentStatus } from "../../features/enumSlice";
-import { fetchCategories } from "../../features/categorySlice";
+import { useGetSalesQuery, useGetPaymentStatusQuery, useGetCategoriesQuery } from "../../services";
 import { Pagination } from "../../components/global/Pagination";
 import { formatDateToLocalDate } from "../../utils/Global";
-import type { RootState, AppDispatch } from "../../store/store";
 import "../../../global.css";
 
 export default function SalesScreen() {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<any>();
   const isRTL = t("dir") === "rtl";
 
@@ -43,15 +38,19 @@ export default function SalesScreen() {
   const [date, setDate] = useState(new Date());
   const [isQuantityModalVisible, setQuantityModalVisible] = useState(false);
   const [quantity, setQuantity] = useState("1");
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const { totalPages } = useSelector((state: RootState) => state.sales);
-  const { paymentStatus } = useSelector((state: RootState) => state.enums);
-  const { categories } = useSelector((state: RootState) => state.categories);
+  // RTK Query hooks
+  const { data: salesData } = useGetSalesQuery({
+    page: currentPage,
+    search: fullNameFilter,
+    status: paymentStatusFilter,
+    startDate: saleDate || undefined,
+  });
+  const { data: paymentStatus = [] } = useGetPaymentStatusQuery();
+  const { data: categories = [] } = useGetCategoriesQuery();
 
-  useEffect(() => {
-    if (categories.length < 1) dispatch(fetchCategories());
-    if (paymentStatus.length < 1) dispatch(fetchPaymentStatus());
-  }, [dispatch]);
+  const totalPages = salesData?.totalPages || 0;
 
   useFocusEffect(
     useCallback(() => {
@@ -75,7 +74,7 @@ export default function SalesScreen() {
   };
 
   const getNextPage = (page: number) => {
-    dispatch(getSales({ page }));
+    setCurrentPage(page);
   };
 
   const handleAddSale = () => {
@@ -92,7 +91,7 @@ export default function SalesScreen() {
   return (
     <View className="flex-1 bg-surface-50">
       {/* Header */}
-      <LinearGradient colors={["#334e68", "#243b53"]} className="pt-12 pb-6 px-5">
+      <LinearGradient colors={["#334e68", "#243b53"]} style={styles.header}>
         <View className="flex-row items-center justify-between mb-4">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -210,7 +209,7 @@ export default function SalesScreen() {
             <TouchableOpacity onPress={handleAddSale} activeOpacity={0.8}>
               <LinearGradient
                 colors={["#f59e0b", "#d97706"]}
-                className="rounded-xl py-4 flex-row items-center justify-center"
+                style={styles.modalButton}
               >
                 <Text className="text-white font-semibold text-lg">
                   {t("common.continue")}
@@ -224,3 +223,18 @@ export default function SalesScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+  },
+  modalButton: {
+    borderRadius: 12,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

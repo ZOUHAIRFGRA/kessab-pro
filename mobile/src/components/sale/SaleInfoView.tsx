@@ -1,13 +1,11 @@
 import "../../../global.css";
 import React, { useState } from "react";
 import { View, Text, ScrollView } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { User, Calendar, Handshake, Wallet, ShoppingCart } from "lucide-react-native";
-import { getSale } from "../../features/saleSlice";
+import { useGetSaleByIdQuery, useCloseSaleMutation, useGetSaleInvoiceMutation } from "../../services";
 import { getPickedUpRatio } from "../../helpers/AnimalHelpers";
 import { useToast } from "../../hooks/useToast";
-import saleApi from "../../api/saleApi";
 import { getValue } from "../../helpers/gloablHelpers";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
@@ -18,37 +16,34 @@ interface SaleInfoViewProps {
   id: number;
 }
 
-interface RootState {
-  sales: {
-    sale: any;
-    saleLoading: boolean;
-    error: any;
-  };
-}
-
 const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const [isCloseConfirmationModalOpen, setIsCloseConfirmationModalOpen] = useState(false);
   const { showSuccessToast, showErrorToast } = useToast();
-  
-  const onCloseConfirmation = () => {
-    saleApi
-      .closeSale(id)
-      .then(() => {
-        showSuccessToast();
-        dispatch(getSale(id));
-      })
-      .catch((e) => {
-        showErrorToast();
-      });
+
+  // RTK Query hooks
+  const { data: sale, isLoading: loading, error } = useGetSaleByIdQuery(id);
+  const [closeSale] = useCloseSaleMutation();
+  const [getSaleInvoice] = useGetSaleInvoiceMutation();
+
+  const onCloseConfirmation = async () => {
+    try {
+      await closeSale(id).unwrap();
+      showSuccessToast();
+      setIsCloseConfirmationModalOpen(false);
+    } catch (e) {
+      showErrorToast();
+    }
   };
-  
-  const {
-    sale,
-    saleLoading: loading,
-    error,
-  } = useSelector((states: RootState) => states.sales);
+
+  const handleExportInvoice = async () => {
+    try {
+      await getSaleInvoice(id).unwrap();
+      showSuccessToast();
+    } catch (error) {
+      showErrorToast();
+    }
+  };
 
   if (loading || !sale) return <Loading />;
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
@@ -72,7 +67,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
           bodyText={t("modal.close_sale_confirmation")}
         />
       )}
-      
+
       <View className="flex-1 gap-3 p-5">
         {/* Buyer Name Card */}
         <View className="bg-white rounded-2xl shadow-sm border border-surface-200 p-4">
@@ -85,7 +80,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
                 {t("common.buyer_name")}
               </Text>
               <Text className="text-base font-semibold text-primary-800">
-                {getValue(sale.buyer.fullName)}
+                {getValue((sale as any).buyer?.fullName || (sale as any).buyerName)}
               </Text>
             </View>
           </View>
@@ -119,7 +114,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
                 {t("common.agreed_amount")}
               </Text>
               <Text className="text-base font-bold text-amber-600">
-                {getValue(sale.agreedAmount)}
+                {getValue((sale as any).agreedAmount || sale.totalAmount)}
               </Text>
             </View>
           </View>
@@ -135,7 +130,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
               </Text>
             </View>
             <Text className="text-base font-bold text-green-600">
-              {getValue(sale.paymentDetail.paidAmount)}
+              {getValue((sale as any).paymentDetail?.paidAmount)}
             </Text>
           </View>
 
@@ -147,7 +142,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
               </Text>
             </View>
             <Text className="text-base font-bold text-red-600">
-              {getValue(sale.paymentDetail.remainingAmount)}
+              {getValue((sale as any).paymentDetail?.remainingAmount)}
             </Text>
           </View>
         </View>
@@ -163,7 +158,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
                 {t("common.payment_status")}
               </Text>
               <Text className="text-base font-semibold text-primary-800">
-                {t(`payment_type.${sale.paymentStatus}`)}
+                {t(`payment_type.${(sale as any).paymentStatus || sale.status}`)}
               </Text>
             </View>
           </View>
@@ -180,7 +175,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
                 {t("common.picked_up_ratio")}
               </Text>
               <Text className="text-base font-semibold text-primary-800">
-                {getPickedUpRatio(sale.animals)}
+                {getPickedUpRatio((sale as any).animals || [])}
               </Text>
             </View>
           </View>
@@ -208,7 +203,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
             color: "#ffffff",
           }}
           onPress={() => setIsCloseConfirmationModalOpen(true)}
-          disabled={sale?.paymentStatus === "FULLY_PAID"}
+          disabled={(sale as any)?.paymentStatus === "FULLY_PAID"}
         >
           {t("common.close_sale")}
         </Button>
@@ -230,7 +225,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
             name: "share-alt",
             color: "#ffffff",
           }}
-          onPress={() => {}}
+          onPress={handleExportInvoice}
         >
           {t("common.share_print")}
         </Button>

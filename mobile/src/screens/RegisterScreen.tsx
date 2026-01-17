@@ -9,10 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from "../api/axiosInstance";
-import { registerSuccess } from "../features/authSlice";
+import { useRegisterMutation } from "../services";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -26,7 +25,6 @@ import {
   UserPlus,
 } from "lucide-react-native";
 import type { NativeStackNavigationProp } from "@react-navigation/stack";
-import type { RootState, AppDispatch } from "../store/store";
 import "../../global.css";
 
 type RegisterScreenProps = {
@@ -39,23 +37,20 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
   const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const dispatch = useDispatch<AppDispatch>();
-  const { error } = useSelector((state: RootState) => state.auth);
+  const [register, { isLoading }] = useRegisterMutation();
   const { t } = useTranslation();
   const isRTL = t("dir") === "rtl";
 
   const handleRegister = async () => {
-    setIsLoading(true);
     try {
-      const response = await axiosInstance.post("/auth/register", {
+      const result = await register({
         username,
         email,
         password,
-      });
+      }).unwrap();
 
-      if (response.data.message === "User registered successfully") {
+      if ('message' in result && result.message === "User registered successfully") {
         Alert.alert(
           t("common.Success") || "Success",
           t("common.Registration successful") || "Registration successful! Please login.",
@@ -66,16 +61,12 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
             },
           ]
         );
-      } else {
-        dispatch(registerSuccess(response.data));
       }
     } catch (err: any) {
       Alert.alert(
         t("common.Registration Failed") || "Registration Failed",
-        err.response?.data?.message || "Try again"
+        err.data?.message || "Try again"
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -88,7 +79,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
         colors={["#334e68", "#243b53", "#102a43"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        className="h-[30%] rounded-b-[40px] items-center justify-center relative"
+        style={styles.header}
       >
         {/* Back Button */}
         <TouchableOpacity
@@ -272,7 +263,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
                   }
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
-                  className="rounded-2xl py-4 flex-row items-center justify-center"
+                  style={styles.button}
                 >
                   {isLoading ? (
                     <ActivityIndicator color="white" />
@@ -308,3 +299,21 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    height: '30%',
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  button: {
+    borderRadius: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

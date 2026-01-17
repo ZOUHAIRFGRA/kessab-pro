@@ -7,8 +7,8 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
 } from "react-native";
-import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,17 +21,18 @@ import {
   UserPlus,
   Check,
 } from "lucide-react-native";
-import { addBuyer } from "../../features/buyerSlice";
+import { useCreateBuyerMutation } from "../../services";
 import { useToast } from "../../hooks/useToast";
-import type { AppDispatch } from "../../store/store";
 import "../../../global.css";
 
 export default function AddBuyerScreen() {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<any>();
   const { showSuccessToast, showErrorToast } = useToast();
   const isRTL = t("dir") === "rtl";
+
+  // RTK Query mutation
+  const [createBuyer, { isLoading }] = useCreateBuyerMutation();
 
   const [buyerData, setBuyerData] = useState({
     fullName: "",
@@ -80,11 +81,19 @@ export default function AddBuyerScreen() {
     return !Object.values(formErrors).some((error) => error !== "");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      dispatch(addBuyer(buyerData));
-      showSuccessToast();
-      navigation.goBack();
+      try {
+        await createBuyer({
+          name: buyerData.fullName,
+          phone: buyerData.phone,
+          address: buyerData.address,
+        }).unwrap();
+        showSuccessToast();
+        navigation.goBack();
+      } catch (error) {
+        showErrorToast();
+      }
     }
   };
 
@@ -160,7 +169,7 @@ export default function AddBuyerScreen() {
       {/* Header */}
       <LinearGradient
         colors={["#334e68", "#243b53"]}
-        className="pt-12 pb-8 px-5 items-center"
+        style={styles.header}
       >
         <View className="flex-row items-center justify-between w-full mb-4">
           <TouchableOpacity
@@ -230,10 +239,11 @@ export default function AddBuyerScreen() {
                 onPress={handleSubmit}
                 activeOpacity={0.8}
                 className="mt-4"
+                disabled={isLoading}
               >
                 <LinearGradient
-                  colors={["#f59e0b", "#d97706"]}
-                  className="rounded-2xl py-4 flex-row items-center justify-center"
+                  colors={isLoading ? ["#a1a1aa", "#71717a"] : ["#f59e0b", "#d97706"]}
+                  style={styles.saveButton}
                 >
                   <Check size={20} color="white" />
                   <Text className="text-white font-semibold text-lg ml-2">
@@ -248,3 +258,19 @@ export default function AddBuyerScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 32,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  saveButton: {
+    borderRadius: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

@@ -4,6 +4,8 @@ import {
   Text,
   ActivityIndicator,
   TouchableOpacityProps,
+  StyleSheet,
+  View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { cn } from "../../utils/cn";
@@ -129,7 +131,13 @@ export function Button({
           colors={disabled ? ["#a1a1aa", "#71717a"] : gradientColors}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          className={baseButtonClass}
+          style={[
+            styles.gradientBase,
+            size === "sm" && styles.sizeSm,
+            size === "md" && styles.sizeMd,
+            size === "lg" && styles.sizeLg,
+            fullWidth && styles.fullWidth,
+          ]}
         >
           {buttonContent}
         </LinearGradient>
@@ -153,5 +161,29 @@ export function Button({
     </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  gradientBase: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+  },
+  sizeSm: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  sizeMd: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  sizeLg: {
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+  },
+  fullWidth: {
+    width: '100%',
+  },
+});
 
 export default Button;

@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
-import SaleService, {
+import type {
   Sale,
   SaleListResponse,
   SaleCreateRequest,
   SaleUpdateRequest,
   SaleQuery,
-} from "../api/saleApi";
+} from "../types/api";
 
 interface SaleState {
   sales: Sale[];
@@ -27,48 +27,42 @@ interface EditSaleParams {
 export const getSales = createAsyncThunk<SaleListResponse, SaleQuery | undefined>(
   "sales/fetchAll",
   async (params) => {
-    const response = await SaleService.fetchSales(params);
-    return response;
+    throw new Error("Deprecated: Use RTK Query salesApi.useFetchSalesQuery instead");
   }
 );
 
 export const getSalesByBuyerId = createAsyncThunk<Sale[], number>(
   "sales/fetchAllBybuyer",
   async (buyerId) => {
-    const response = await SaleService.fetchSalesByBuyerId(buyerId);
-    return response;
+    throw new Error("Deprecated: Use RTK Query salesApi.useFetchSalesByBuyerIdQuery instead");
   }
 );
 
 export const getSale = createAsyncThunk<Sale, number>(
   "sales/get",
   async (id) => {
-    const response = await SaleService.fetchSaleById(id);
-    return response;
+    throw new Error("Deprecated: Use RTK Query salesApi.useFetchSaleByIdQuery instead");
   }
 );
 
 export const addSale = createAsyncThunk<Sale, SaleCreateRequest>(
   "sales/add",
   async (sale) => {
-    const response = await SaleService.createSale(sale);
-    return response;
+    throw new Error("Deprecated: Use RTK Query salesApi.useCreateSaleMutation instead");
   }
 );
 
 export const editSale = createAsyncThunk<Sale, EditSaleParams>(
   "sales/update",
   async ({ id, updatedSale }) => {
-    const response = await SaleService.updateSale(id, updatedSale);
-    return response;
+    throw new Error("Deprecated: Use RTK Query salesApi.useUpdateSaleMutation instead");
   }
 );
 
 export const removeSale = createAsyncThunk<number, number>(
   "sales/delete",
   async (id) => {
-    await SaleService.deleteSale(id);
-    return id;
+    throw new Error("Deprecated: Use RTK Query salesApi.useDeleteSaleMutation instead");
   }
 );
 

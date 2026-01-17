@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   ScrollView,
   View,
@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  StyleSheet,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,51 +16,70 @@ import {
   TrendingUp,
   DollarSign,
   ShoppingCart,
-  Users,
   AlertCircle,
   Clock,
   ArrowRight,
   RefreshCw,
 } from "lucide-react-native";
-import { getAnimalsCount, getUnsoldAnimals } from "../features/animalSlice";
-import { getSales } from "../features/saleSlice";
-import { getTransactions } from "../features/transactionSlice";
-import { getAllAnimalActivitiesLogs } from "../features/animalActivitiesLogSlice";
-import type { RootState, AppDispatch } from "../store/store";
+import {
+  useGetAnimalsCountQuery,
+  useGetUnsoldAnimalsQuery,
+  useGetSalesQuery,
+  useGetTransactionsQuery,
+  useGetAllActivityLogsQuery,
+} from "../services";
 import "../../global.css";
 
 export default function DashboardScreen() {
   const { t } = useTranslation();
   const isRTL = t("dir") === "rtl";
-  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<any>();
 
-  const { activitiesLogs, loading: activitiesLoading } = useSelector(
-    (state: RootState) => state.animalActivitiesLogs
-  );
-  const { totalAnimals, totalUnsoldAnimals, loading: animalsLoading } =
-    useSelector((state: RootState) => state.animals);
-  const { sales, loading: salesLoading } = useSelector(
-    (state: RootState) => state.sales
-  );
-  const { transactions, loading: transactionsLoading } = useSelector(
-    (state: RootState) => state.transactions
-  );
+  // RTK Query hooks
+  const {
+    data: activitiesLogs = [],
+    isLoading: activitiesLoading,
+    refetch: refetchActivities,
+  } = useGetAllActivityLogsQuery();
+
+  const {
+    data: totalAnimals = 0,
+    isLoading: animalsCountLoading,
+    refetch: refetchAnimalsCount,
+  } = useGetAnimalsCountQuery();
+
+  const {
+    data: unsoldAnimals = [],
+    isLoading: unsoldAnimalsLoading,
+    refetch: refetchUnsoldAnimals,
+  } = useGetUnsoldAnimalsQuery();
+
+  const {
+    data: salesData,
+    isLoading: salesLoading,
+    refetch: refetchSales,
+  } = useGetSalesQuery({});
+
+  const {
+    data: transactionsData,
+    isLoading: transactionsLoading,
+    refetch: refetchTransactions,
+  } = useGetTransactionsQuery();
+
+  const sales = salesData?.content || [];
+  const transactions = transactionsData || [];
+  const totalUnsoldAnimals = unsoldAnimals.length;
 
   const fetchData = () => {
-    dispatch(getAnimalsCount());
-    dispatch(getUnsoldAnimals());
-    dispatch(getSales({}));
-    dispatch(getTransactions({}));
-    dispatch(getAllAnimalActivitiesLogs());
+    refetchAnimalsCount();
+    refetchUnsoldAnimals();
+    refetchSales();
+    refetchTransactions();
+    refetchActivities();
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [dispatch]);
-
   const isLoading =
-    animalsLoading || salesLoading || transactionsLoading || activitiesLoading;
+    animalsCountLoading || unsoldAnimalsLoading || salesLoading || transactionsLoading || activitiesLoading;
 
   // Calculate statistics
   const totalAnimalsCount = totalAnimals || 0;
@@ -68,9 +87,9 @@ export default function DashboardScreen() {
   const totalSoldCount = totalAnimalsCount - totalUnsoldCount;
   const totalSalesCount = sales?.length || 0;
 
-  const totalRevenue = (transactions as any)?.content
-    ? (transactions as any).content.reduce((sum: number, t: any) => {
-        const amountStr = t.amount?.replace("DH", "").trim() || "0";
+  const totalRevenue = transactions
+    ? transactions.reduce((sum: number, t: any) => {
+        const amountStr = t.amount?.toString().replace("DH", "").trim() || "0";
         return sum + parseFloat(amountStr);
       }, 0)
     : 0;
@@ -81,7 +100,7 @@ export default function DashboardScreen() {
   const totalRemainingAmount =
     sales?.reduce((sum: number, sale: any) => {
       const remainingStr =
-        sale.paymentDetail?.remainingAmount?.replace("DH", "").trim() || "0";
+        sale.paymentDetail?.remainingAmount?.toString().replace("DH", "").trim() || "0";
       return sum + parseFloat(remainingStr);
     }, 0) || 0;
 
@@ -110,7 +129,7 @@ export default function DashboardScreen() {
       {/* Header */}
       <LinearGradient
         colors={["#334e68", "#243b53"]}
-        className="pt-12 pb-8 px-5"
+        style={styles.header}
       >
         <View className="flex-row items-center justify-between">
           <View>
@@ -199,7 +218,7 @@ export default function DashboardScreen() {
             colors={["#f59e0b", "#d97706"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            className="rounded-2xl p-5"
+            style={styles.revenueCard}
           >
             <View className="flex-row items-center justify-between">
               <View>
@@ -319,3 +338,15 @@ export default function DashboardScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 32,
+    paddingHorizontal: 20,
+  },
+  revenueCard: {
+    borderRadius: 16,
+    padding: 20,
+  },
+});

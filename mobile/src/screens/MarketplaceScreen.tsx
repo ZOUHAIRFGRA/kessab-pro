@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,7 +16,7 @@ export default function MarketplaceScreen() {
       {/* Header */}
       <LinearGradient
         colors={["#334e68", "#243b53"]}
-        className="pt-12 pb-6 px-5"
+        style={styles.header}
       >
         <View className="flex-row items-center justify-between">
           <TouchableOpacity
@@ -108,7 +108,7 @@ export default function MarketplaceScreen() {
         <TouchableOpacity className="mt-8" activeOpacity={0.8}>
           <LinearGradient
             colors={["#f59e0b", "#d97706"]}
-            className="rounded-2xl py-4 px-8 flex-row items-center"
+            style={styles.notifyButton}
           >
             <Bell size={18} color="white" />
             <Text className="text-white font-semibold ml-2">
@@ -120,3 +120,18 @@ export default function MarketplaceScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 48,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+  },
+  notifyButton: {
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});

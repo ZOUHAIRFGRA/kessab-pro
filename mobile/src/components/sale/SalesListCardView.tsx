@@ -1,26 +1,12 @@
 import "../../../global.css";
-import React, { useState, useCallback } from "react";
+import React from "react";
 import { View, FlatList } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { useFocusEffect } from "@react-navigation/native";
 import SaleCardView from "./SaleCardView";
-import { getSales, getSalesByBuyerId } from "../../features/saleSlice";
+import { useGetSalesQuery, useGetSalesByBuyerIdQuery } from "../../services";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-
-interface Sale {
-  id: number;
-  [key: string]: any;
-}
-
-interface RootState {
-  sales: {
-    sales: Sale[];
-    loading: boolean;
-    error: any;
-  };
-}
+import type { Sale } from "../../types/api";
 
 interface SalesListCardViewProps {
   fullNameFilter?: string;
@@ -42,42 +28,38 @@ const SalesListCardView: React.FC<SalesListCardViewProps> = ({
   id,
 }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const [currentPage, setCurrentPage] = useState(0);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (type === "buyer" && id) {
-        dispatch(getSalesByBuyerId(id) as any);
-      }
-
-      if (!type) {
-        dispatch(
-          getSales({
-            paymentStatus: paymentStatusFilter,
-            categoryId: categoryIdFilter,
-            fullName: fullNameFilter,
-            saleDate,
-          }) as any
-        );
-      }
-
-      return () => {};
-    }, [
-      paymentStatusFilter,
-      categoryIdFilter,
-      fullNameFilter,
-      saleDate,
-      dispatch,
-      type,
-      id,
-    ])
+  // Conditional RTK Query hooks
+  const {
+    data: salesData,
+    isLoading: salesLoading,
+    error: salesError,
+  } = useGetSalesQuery(
+    {
+      status: paymentStatusFilter,
+      search: fullNameFilter,
+      startDate: saleDate || undefined,
+    },
+    { skip: type === "buyer", refetchOnFocus: true }
   );
 
-  const { sales, loading, error } = useSelector((states: RootState) => states.sales);
+  const {
+    data: buyerSalesData,
+    isLoading: buyerSalesLoading,
+    error: buyerSalesError,
+  } = useGetSalesByBuyerIdQuery(id!, {
+    skip: type !== "buyer" || !id,
+    refetchOnFocus: true,
+  });
 
-  if (loading) return <Loading />;
-  if (error || !sales) return <FallBack />;
+  const isLoading = type === "buyer" ? buyerSalesLoading : salesLoading;
+  const error = type === "buyer" ? buyerSalesError : salesError;
+  const sales: Sale[] = type === "buyer"
+    ? (buyerSalesData || [])
+    : (salesData?.content || []);
+
+  if (isLoading) return <Loading />;
+  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (
     <View className="flex-1 bg-surface-50">

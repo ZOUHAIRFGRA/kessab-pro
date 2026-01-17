@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { View, Image } from "react-native";
 import { useDispatch } from "react-redux";
 import { addCategory } from "../features/categorySlice";
-import { getBaseURL } from "../api/axiosInstance";
+import { getBaseURL } from "../services";
 import { Picker } from "@react-native-picker/picker";
 import { useToast } from "./useToast";
 import { AnyAction, Dispatch } from "@reduxjs/toolkit";
@@ -36,7 +36,7 @@ export const useCategorySelector = (
   setNewCategory: (category: string) => void,
   selectedIcon: Icon | null,
   setSelectedIcon: (icon: Icon | null) => void,
-  icons: Icon[],
+  iconsData: Icon[],
   handleSubmit: () => void,
   t: (key: string) => string
 ): UseCategorySelectorReturn => {
