@@ -78,7 +78,7 @@ export const transactionsApi = api.injectEndpoints({
       }),
       invalidatesTags: (result, error, payload) => [
         { type: 'Transactions', id: 'LIST' },
-        ...(payload.saleId ? [{ type: 'Transactions' as const, id: `sale-${payload.saleId}` }] : []),
+        ...(payload.sale_id ? [{ type: 'Transactions' as const, id: `sale-${payload.sale_id}` }] : []),
         ...(payload.buyerId ? [{ type: 'BuyerOverview' as const, id: payload.buyerId }] : []),
         'Sales',
       ],

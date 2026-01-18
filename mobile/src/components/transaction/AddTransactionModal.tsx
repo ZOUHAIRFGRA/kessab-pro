@@ -69,12 +69,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   const { data: paymentMethods = [], isLoading: loadingPaymentMethods } = useGetPaymentMethodsQuery();
   const [createTransaction] = useCreateTransactionMutation();
   const [consumeTransaction] = useConsumeTransactionMutation();
-  const refetchTransactions = useGetTransactionsQuery(
-    type === "sale"
-      ? { saleId: saleId || id || 0, page: 0 }
-      : { buyerId: buyerId || id || 0, page: 0 },
-    { skip: !visible }
-  ).refetch;
 
   const [formData, setFormData] = useState<FormData>({
     transactionDate: formatDate(new Date()),
@@ -169,7 +163,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
         handleClose();
         setFormError({ transactionDate: "", amount: "", method: "" });
         setFormData({ transactionDate: formatDate(new Date()), amount: "", method: "" });
-        refetchTransactions();
       } catch (error: any) {
         // Handle backend error messages
         const errorMessage = error?.data?.errors || error?.data?.message || t("common.transactionFailed");
