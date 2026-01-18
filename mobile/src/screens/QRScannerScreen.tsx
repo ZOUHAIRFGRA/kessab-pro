@@ -84,7 +84,7 @@ export default function QRScannerScreen() {
           {/* Instructions */}
           <View className="mt-8 px-10">
             <Text className="text-white text-center text-base">
-              {t("common.scan_qr_instruction") ||
+              {t("common.Scan Qr Instruction") ||
                 "Point your camera at a QR code to scan"}
             </Text>
           </View>

@@ -27,14 +27,14 @@ export const buyersApi = api.injectEndpoints({
     }),
 
     // Get single buyer by ID
-    getBuyerById: builder.query<Buyer, number>({
+    getBuyerById: builder.query<Buyer, string>({
       query: (id) => `/buyers/${id}`,
       providesTags: (result, error, id) => [{ type: 'Buyer', id }],
       keepUnusedDataFor: 300, // 5 minutes
     }),
 
     // Get buyer overview (aggregated data)
-    getBuyerOverview: builder.query<BuyerOverview, number>({
+    getBuyerOverview: builder.query<BuyerOverview, string>({
       query: (id) => `/buyers/${id}/overview`,
       providesTags: (result, error, id) => [{ type: 'BuyerOverview', id }],
       keepUnusedDataFor: 180, // 3 minutes
@@ -51,7 +51,7 @@ export const buyersApi = api.injectEndpoints({
     }),
 
     // Update buyer with optimistic update
-    updateBuyer: builder.mutation<Buyer, { id: number; data: BuyerUpdateRequest }>({
+    updateBuyer: builder.mutation<Buyer, { id: string; data: BuyerUpdateRequest }>({
       query: ({ id, data }) => ({
         url: `/buyers/${id}`,
         method: 'PUT',
@@ -78,7 +78,7 @@ export const buyersApi = api.injectEndpoints({
     }),
 
     // Delete buyer
-    deleteBuyer: builder.mutation<void, number>({
+    deleteBuyer: builder.mutation<void, string>({
       query: (id) => ({
         url: `/buyers/${id}`,
         method: 'DELETE',

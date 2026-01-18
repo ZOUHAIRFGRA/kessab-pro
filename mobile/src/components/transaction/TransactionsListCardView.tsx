@@ -1,37 +1,18 @@
 import "../../../global.css";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
-import { Plus } from "lucide-react-native";
+import { Plus, Receipt } from "lucide-react-native";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-import {
-  getTransactionsByBuyer,
-  getTransactionsBySale,
-} from "../../features/transactionSlice";
+import { useGetTransactionsBySaleQuery, useGetTransactionsByBuyerQuery } from "../../services";
 import TransactionCardView from "./TransactionCardView";
 import AddTransactionModal from "./AddTransactionModal";
-
-interface Transaction {
-  id: number;
-  transactionDate: string;
-  method: string;
-  amount: number;
-}
-
-interface TransactionState {
-  transactions: Transaction[];
-  loading: boolean;
-  error: string | null;
-}
-
-interface RootState {
-  transactions: TransactionState;
-}
+import type { Transaction } from "../../types/api";
 
 interface TransactionsListCardViewProps {
-  id: number;
+  id: string; // UUID
   type?: "sale" | "buyer";
 }
 
@@ -40,29 +21,60 @@ const TransactionsListCardView: React.FC<TransactionsListCardViewProps> = ({
   type = "sale",
 }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    if (type === "sale") {
-      dispatch(getTransactionsBySale(id) as any);
-    }
+  // Conditional RTK Query hooks
+  const {
+    data: saleTransactions,
+    isLoading: saleLoading,
+    error: saleError,
+  } = useGetTransactionsBySaleQuery(id, {
+    skip: type !== "sale",
+  });
 
-    if (type === "buyer") {
-      dispatch(getTransactionsByBuyer(id) as any);
-    }
-  }, [dispatch, id, type]);
+  const {
+    data: buyerTransactions,
+    isLoading: buyerLoading,
+    error: buyerError,
+  } = useGetTransactionsByBuyerQuery(id, {
+    skip: type !== "buyer",
+  });
 
-  const { transactions, loading, error } = useSelector(
-    (state: RootState) => state.transactions
-  );
+  const isLoading = type === "sale" ? saleLoading : buyerLoading;
+  const error = type === "sale" ? saleError : buyerError;
+  const transactions: Transaction[] = type === "sale" 
+    ? (saleTransactions || []) 
+    : (buyerTransactions || []);
 
-  if (loading || !transactions) return <Loading />;
+  if (isLoading) return <Loading />;
 
   if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-surface-50">
+      {/* Header */}
+      <LinearGradient
+        colors={["#334e68", "#243b53"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{ paddingHorizontal: 24, paddingTop: 48, paddingBottom: 24 }}
+      >
+        <View className="flex-row items-center gap-3">
+          <View className="bg-white/20 rounded-full p-3">
+            <Receipt size={24} color="#ffffff" strokeWidth={2} />
+          </View>
+          <View className="flex-1">
+            <Text className="text-white text-2xl font-bold">
+              {t("common.Transactions")}
+            </Text>
+            <Text className="text-white/80 text-sm mt-1">
+              {transactions.length} {t("common.payments")}
+            </Text>
+          </View>
+        </View>
+      </LinearGradient>
+
+      <View className="flex-1">
       {transactions.length === 0 ? (
         <FallBack
           type={FALLBACK_TYPE.NOT_FOUND}
@@ -76,6 +88,7 @@ const TransactionsListCardView: React.FC<TransactionsListCardViewProps> = ({
             <TransactionCardView transaction={item} type={type} id={id} />
           )}
           ItemSeparatorComponent={() => <View className="h-2.5" />}
+          contentContainerStyle={{ paddingTop: 16 }}
         />
       )}
 
@@ -97,6 +110,7 @@ const TransactionsListCardView: React.FC<TransactionsListCardViewProps> = ({
           {t("common.addTransaction")}
         </Text>
       </TouchableOpacity>
+      </View>
     </View>
   );
 };

@@ -15,7 +15,7 @@ interface SalesListCardViewProps {
   saleDate?: string;
   route?: any;
   type?: "buyer" | null;
-  id?: number;
+  id?: string; // UUID
 }
 
 const SalesListCardView: React.FC<SalesListCardViewProps> = ({

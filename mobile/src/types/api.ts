@@ -18,15 +18,18 @@ export interface PaginationParams {
 // Animal Types
 // =====================
 export interface Animal {
-  id: number;
+  id: string; // UUID string
   tag: string;
-  categoryId: number;
-  categoryName?: string;
-  gender?: string;
-  birthDate?: string;
-  weight?: number;
-  price?: number;
-  imageUrl?: string;
+  sex: string; // "Male" | "Female"
+  birthDate: string; // ISO date string
+  price: number;
+  weight: number;
+  imagePaths: string[];
+  saleId: string | null; // UUID string, nullable
+  category: string; // UUID string (category ID)
+  pickUpDate: string | null; // ISO date string, nullable
+  imagesToDelete?: string[] | null;
+  categoryName?: string; // Populated from join
   status?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -57,9 +60,9 @@ export type AnimalListResponse = PaginatedResponse<Animal>;
 // Buyer Types
 // =====================
 export interface Buyer {
-  id: number;
-  name: string;
-  email?: string;
+  id: string; // UUID
+  fullName: string;
+  CIN?: string;
   phone?: string;
   address?: string;
   city?: string;
@@ -100,18 +103,47 @@ export interface BuyerOverview {
 // =====================
 // Sale Types
 // =====================
+// Buyer info in Sale
+export interface SaleBuyer {
+  id: string; // UUID
+  fullName: string;
+  CIN: string;
+  phone: string;
+  address: string;
+}
+
+// Animal info in Sale (nested with category)
+export interface SaleAnimal {
+  id: string; // UUID
+  tag: string;
+  sex: string;
+  birthDate: string;
+  price: number;
+  weight: number;
+  gallery: string[];
+  category: {
+    type: string;
+    icon: {
+      iconPath: string;
+    };
+  };
+  pickUpDate: string | null;
+}
+
+// Payment details in Sale
+export interface SalePaymentDetail {
+  remainingAmount: string;
+  paidAmount: string;
+}
+
 export interface Sale {
-  id: number;
-  buyerId: number;
-  buyerName?: string;
-  animalIds: number[];
-  totalAmount: number;
-  saleDate: string;
-  status: string;
-  notes?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  [key: string]: any;
+  id: string; // UUID
+  buyer: SaleBuyer;
+  saleDate: string; // Format: "16-01-2026"
+  agreedAmount: string; // Format: "8166.55DH"
+  paymentStatus: string; // "NOT_PAID" | "PARTIALLY_PAID" | "FULLY_PAID"
+  animals: SaleAnimal[];
+  paymentDetail: SalePaymentDetail;
 }
 
 export interface SaleQuery extends PaginationParams {
@@ -119,12 +151,12 @@ export interface SaleQuery extends PaginationParams {
   status?: string;
   startDate?: string;
   endDate?: string;
-  buyerId?: number;
+  buyerId?: string; // UUID
 }
 
 export interface SaleCreateRequest {
-  buyerId: number;
-  animalIds: number[];
+  buyerId: string; // UUID
+  animalIds: string[]; // UUID array
   totalAmount: number;
   saleDate: string;
   notes?: string;
@@ -146,10 +178,10 @@ export interface SaleInvoice {
 // Transaction Types
 // =====================
 export interface Transaction {
-  id: number;
-  buyerId?: number;
+  id: string; // UUID
+  buyerId?: string; // UUID
   buyerName?: string;
-  saleId?: number;
+  saleId?: string; // UUID
   amount: number;
   transactionDate: string;
   paymentMethod: string;
@@ -161,8 +193,8 @@ export interface Transaction {
 }
 
 export interface TransactionCreateRequest {
-  buyerId?: number;
-  saleId?: number;
+  buyerId?: string; // UUID
+  saleId?: string; // UUID
   amount: number;
   transactionDate: string;
   paymentMethod: string;
@@ -242,17 +274,16 @@ export interface MedicalLogRequest {
 }
 
 export interface ActivityLog {
-  id: number;
-  animalId: number;
-  date: string;
-  activityType: string;
-  description: string;
+  id: string;
+  animalId: string;
+  logDate: string;
+  activity: string;
   createdAt?: string;
   updatedAt?: string;
 }
 
 export interface ActivityLogRequest {
-  animalId: number;
+  animalId: string;
   date: string;
   activityType: string;
   description: string;

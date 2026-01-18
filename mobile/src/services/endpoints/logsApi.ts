@@ -13,7 +13,7 @@ export const logsApi = api.injectEndpoints({
     // =====================
 
     // Get medical logs for an animal
-    getMedicalLogsByAnimal: builder.query<MedicalLog[], number>({
+    getMedicalLogsByAnimal: builder.query<MedicalLog[], string>({
       query: (animalId) => `/animal-medical-logs/animal/${animalId}`,
       providesTags: (result, error, animalId) => [
         { type: 'MedicalLogs', id: `animal-${animalId}` },
@@ -34,7 +34,7 @@ export const logsApi = api.injectEndpoints({
     }),
 
     // Update medical log
-    updateMedicalLog: builder.mutation<MedicalLog, { id: number; data: Partial<MedicalLogRequest> }>({
+    updateMedicalLog: builder.mutation<MedicalLog, { id: string; data: Partial<MedicalLogRequest> }>({
       query: ({ id, data }) => ({
         url: `/animal-medical-logs/${id}`,
         method: 'PUT',
@@ -62,7 +62,7 @@ export const logsApi = api.injectEndpoints({
     // =====================
 
     // Get activity logs for an animal
-    getActivityLogsByAnimal: builder.query<ActivityLog[], number>({
+    getActivityLogsByAnimal: builder.query<ActivityLog[], string>({
       query: (animalId) => `/animal-activities-logs/animal/${animalId}`,
       providesTags: (result, error, animalId) => [
         { type: 'ActivityLogs', id: `animal-${animalId}` },

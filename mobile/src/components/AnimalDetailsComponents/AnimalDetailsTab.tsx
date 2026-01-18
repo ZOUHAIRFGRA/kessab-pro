@@ -1,12 +1,6 @@
 import "../../../global.css";
 import { useEffect, useRef, useState } from "react";
 import { View, Dimensions, ScrollView } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getAnimalById,
-  editAnimal,
-  removeAnimal,
-} from "../../features/animalSlice";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../../hooks/useToast";
 import { ImageCarousel } from "./ImageCarousel";
@@ -17,30 +11,9 @@ import Loading from "../global/Loading";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import ConfirmationModal from "../global/ConfirmationModal";
 import Button from "../global/Button";
-
-// TypeScript Interfaces
-interface Animal {
-  id: string;
-  tag: string;
-  price: number;
-  weight: number;
-  sex: string;
-  birthDate: string;
-  pickUpDate?: string;
-  category?: string;
-  saleId?: string;
-  imagePaths: string[];
-}
-
-interface AnimalsState {
-  animals: Animal[];
-  loading: boolean;
-  error: string | null;
-}
-
-interface RootState {
-  animals: AnimalsState;
-}
+import { Check } from "lucide-react-native";
+import { useGetAnimalByIdQuery, useUpdateAnimalMutation, useDeleteAnimalMutation } from "../../services";
+import type { Animal } from "../../types/api";
 
 interface AnimalDetailsTabProps {
   animalId: string;
@@ -49,12 +22,14 @@ interface AnimalDetailsTabProps {
 export const AnimalDetailsTab = ({ animalId }: AnimalDetailsTabProps) => {
   const { t } = useTranslation();
   const { showSuccessToast, showErrorToast } = useToast();
-  const dispatch = useDispatch();
-  const animal = useSelector((state: RootState) =>
-    state.animals.animals.find((a) => a.id === animalId)
-  );
-  const loading = useSelector((state: RootState) => state.animals.loading);
-  const error = useSelector((state: RootState) => state.animals.error);
+  const navigation = useNavigation();
+  
+  // RTK Query hooks
+  const { data: animal, isLoading, isError, refetch } = useGetAnimalByIdQuery(animalId, {
+    skip: !animalId,
+  });
+  const [updateAnimal] = useUpdateAnimalMutation();
+  const [deleteAnimal] = useDeleteAnimalMutation();
 
   const [editing, setEditing] = useState(false);
   const [editedAnimal, setEditedAnimal] = useState<Partial<Animal>>({});
@@ -62,13 +37,6 @@ export const AnimalDetailsTab = ({ animalId }: AnimalDetailsTabProps) => {
   const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const flatListRef = useRef(null);
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    if (animalId) {
-      dispatch(getAnimalById(animalId) as any);
-    }
-  }, [dispatch, animalId]);
 
   useEffect(() => {
     if (animal) {
@@ -78,7 +46,7 @@ export const AnimalDetailsTab = ({ animalId }: AnimalDetailsTabProps) => {
     }
   }, [animal]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
       const formData = new FormData();
       formData.append("tag", editedAnimal.tag || "");
@@ -101,7 +69,7 @@ export const AnimalDetailsTab = ({ animalId }: AnimalDetailsTabProps) => {
         formData.append("imagePaths", imagePathsJson);
       }
 
-      newImages.forEach((uri, index) => {
+      newImages.forEach((uri) => {
         const uriParts = uri.split("/");
         const fileName = uriParts[uriParts.length - 1];
         formData.append("images", {
@@ -112,27 +80,19 @@ export const AnimalDetailsTab = ({ animalId }: AnimalDetailsTabProps) => {
       });
 
       if (imagesToDelete.length > 0) {
-        imagesToDelete.forEach((path, index) => {
+        imagesToDelete.forEach((path) => {
           formData.append("imagesToDelete", path);
         });
       }
 
-      dispatch(
-        editAnimal({ id: editedAnimal.id, updatedAnimal: formData }) as any
-      )
-        .then((response: any) => {
-          showSuccessToast(t("common.Animal updated successfully"));
-          setEditing(false);
-          setEditedAnimal(response.payload);
-          setNewImages([]);
-          setImagesToDelete([]);
-        })
-        .catch((err: any) => {
-          console.error("Save error:", err);
-          showErrorToast(t("common.Failed to update animal"));
-        });
+      await updateAnimal({ id: animalId, data: formData }).unwrap();
+      showSuccessToast(t("common.Animal updated successfully"));
+      setEditing(false);
+      setNewImages([]);
+      setImagesToDelete([]);
+      refetch();
     } catch (error) {
-      console.error("HandleSave error:", error);
+      console.error("Save error:", error);
       showErrorToast(t("common.Failed to update animal"));
     }
   };
@@ -147,16 +107,15 @@ export const AnimalDetailsTab = ({ animalId }: AnimalDetailsTabProps) => {
     setShowDeleteConfirmation(true);
   };
 
-  const confirmDeleteAnimal = () => {
-    dispatch(removeAnimal(animalId) as any)
-      .then(() => {
-        showSuccessToast(t("common.Animal deleted successfully"));
-        navigation.goBack();
-      })
-      .catch((err: any) => {
-        console.error("Delete error:", err);
-        showErrorToast(t("common.Failed to delete animal"));
-      });
+  const confirmDeleteAnimal = async () => {
+    try {
+      await deleteAnimal(animalId).unwrap();
+      showSuccessToast(t("common.Animal deleted successfully"));
+      navigation.goBack();
+    } catch (error) {
+      console.error("Delete error:", error);
+      showErrorToast(t("common.Failed to delete animal"));
+    }
   };
 
   const startEditing = () => {
@@ -164,8 +123,8 @@ export const AnimalDetailsTab = ({ animalId }: AnimalDetailsTabProps) => {
     setImagesToDelete([]);
   };
 
-  if (loading) return <Loading />;
-  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
+  if (isLoading) return <Loading />;
+  if (isError || !animal) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (
     <View className="flex-1 bg-slate-50">
@@ -218,7 +177,7 @@ export const AnimalDetailsTab = ({ animalId }: AnimalDetailsTabProps) => {
         closable={true}
         btnParams={{
           type: "danger",
-          icon: { name: "check" },
+          icon: { name: "check", IconComponent: Check },
           btnText: t("common.delete"),
         }}
         title={t("common.confirmDelete")}

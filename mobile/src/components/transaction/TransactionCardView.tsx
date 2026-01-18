@@ -10,7 +10,7 @@ import Dialogs from "../global/Dialog";
 import ConfirmationModal from "../global/ConfirmationModal";
 
 interface Transaction {
-  id: number;
+  id: string; // UUID
   transactionDate: string;
   method: string;
   amount: number;
@@ -18,7 +18,7 @@ interface Transaction {
 
 interface TransactionCardViewProps {
   transaction: Transaction;
-  id?: number;
+  id?: string; // UUID
   type?: "sale" | "buyer";
 }
 
@@ -67,22 +67,23 @@ const TransactionCardView: React.FC<TransactionCardViewProps> = ({
           visible={isConfirmationModalOpen}
           toggleVisible={setIsConfirmationModalOpen}
           action={onDeleteConfirmation}
-          title={"confirmation modal"}
+          title={t("common.confirmation modal")}
           closable
           btnParams={{
             type: "danger",
             icon: {
               name: "trash",
+              IconComponent: Trash2,
             },
-            btnText: "confirm",
+            btnText: t("common.confirm"),
           }}
-          bodyText={"are you sure you want to delete?"}
+          bodyText={t("common.are you sure you want to delete?")}
         />
       )}
       <Dialogs
-        title={"Transaction details"}
+        title={t("common.Transaction details")}
         visible={isVisible}
-        toggleDialog={setIsVisible}
+        toggleDialog={() => setIsVisible(false)}
       >
         <View className="flex-col gap-2 p-2">
           <TouchableOpacity
@@ -91,7 +92,7 @@ const TransactionCardView: React.FC<TransactionCardViewProps> = ({
           >
             <Share2 size={20} color="#ffffff" strokeWidth={2.5} />
             <Text className="text-white font-bold text-center text-base">
-              Share / Print
+              {t("common.Share / Print")}
             </Text>
           </TouchableOpacity>
 
@@ -104,7 +105,7 @@ const TransactionCardView: React.FC<TransactionCardViewProps> = ({
           >
             <Trash2 size={20} color="#ffffff" strokeWidth={2.5} />
             <Text className="text-white font-bold text-center text-base">
-              Delete
+              {t("common.Delete")}
             </Text>
           </TouchableOpacity>
         </View>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   ScrollView,
@@ -9,13 +9,6 @@ import {
   TextInput,
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  getAnimalMedicalLogs,
-  modifyAnimalMedicalLog,
-  createAnimalMedicalLog,
-  deleteAnimalMedicalLog,
-} from '../../features/animalMedicalLogSlice';
 import {
   Calendar,
   Activity,
@@ -31,36 +24,30 @@ import { useToast } from '../../hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import FallBack, { FALLBACK_TYPE } from '../global/Fallback';
 import Loading from '../global/Loading';
-
-interface MedicalLog {
-  id: string | number;
-  description: string;
-  vetName: string;
-  logDate: string;
-}
-
-interface MedicalLogsState {
-  medicalLogs: MedicalLog[];
-  loading: boolean;
-  error: string | null;
-}
-
-interface RootState {
-  animalMedicalLogs: MedicalLogsState;
-}
+import {
+  useGetMedicalLogsByAnimalQuery,
+  useCreateMedicalLogMutation,
+  useUpdateMedicalLogMutation,
+  useDeleteMedicalLogMutation,
+} from '../../services';
+import type { MedicalLog } from '../../types/api';
 
 interface MedicalLogsTabProps {
-  animalId: string | number;
+  animalId: string;
 }
 
 export const MedicalLogsTab: React.FC<MedicalLogsTabProps> = ({ animalId }) => {
   const { t } = useTranslation();
   const isRTL = t('dir') === 'rtl';
-  const { medicalLogs, loading, error } = useSelector(
-    (state: RootState) => state.animalMedicalLogs
-  );
-  const dispatch = useDispatch();
-  const [editing, setEditing] = useState<string | number | null>(null);
+  
+  // RTK Query hooks
+  const { data: medicalLogs = [], isLoading, isError } = useGetMedicalLogsByAnimalQuery(animalId, {
+    skip: !animalId,
+  });
+  const [createMedicalLog] = useCreateMedicalLogMutation();
+  const [updateMedicalLog] = useUpdateMedicalLogMutation();
+  const [deleteMedicalLog] = useDeleteMedicalLogMutation();
+  const [editing, setEditing] = useState<string | null>(null);
   const [editedLog, setEditedLog] = useState<Partial<MedicalLog>>({});
   const [newLogDescription, setNewLogDescription] = useState('');
   const [newVetName, setNewVetName] = useState('');
@@ -69,50 +56,53 @@ export const MedicalLogsTab: React.FC<MedicalLogsTabProps> = ({ animalId }) => {
   const [adding, setAdding] = useState(false);
   const { showSuccessToast, showErrorToast } = useToast();
 
-  useEffect(() => {
-    dispatch(getAnimalMedicalLogs(animalId) as any);
-  }, [dispatch, animalId]);
-
   const handleEdit = (log: MedicalLog) => {
     setEditing(log.id);
     setEditedLog({ ...log });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (editedLog.id) {
-      dispatch(
-        modifyAnimalMedicalLog({
-          logId: editedLog.id,
-          logData: editedLog,
-        }) as any
-      );
-      setEditing(null);
+      try {
+        await updateMedicalLog({
+          id: editedLog.id,
+          data: {
+            animalId,
+            description: editedLog.description || '',
+            vetName: editedLog.vetName || '',
+            date: editedLog.logDate || new Date().toISOString().split('T')[0],
+          },
+        }).unwrap();
+        showSuccessToast(t('common.Medical Log updated successfully!'));
+        setEditing(null);
+      } catch (error) {
+        console.error('Error updating medical log:', error);
+        showErrorToast(t('common.Error updating medical log!'));
+      }
     }
   };
 
-  const handleAddLog = () => {
-    try {
-      if (newLogDescription.trim() && newVetName.trim()) {
-        dispatch(
-          createAnimalMedicalLog({
-            animalId: animalId,
-            description: newLogDescription,
-            vetName: newVetName,
-            logDate: logDate,
-          }) as any
-        );
+  const handleAddLog = async () => {
+    if (newLogDescription.trim() && newVetName.trim()) {
+      try {
+        await createMedicalLog({
+          animalId,
+          description: newLogDescription,
+          vetName: newVetName,
+          date: logDate.toISOString().split('T')[0],
+        }).unwrap();
         setNewLogDescription('');
         setNewVetName('');
         setAdding(false);
         showSuccessToast(t('common.Medical Log added successfully!'));
+      } catch (error) {
+        console.error(`Error adding medical log for animal ${animalId}:`, error);
+        showErrorToast(t('common.Error adding medical log!'));
       }
-    } catch (error) {
-      console.error(`Error adding medical log for animal ${animalId}:`, error);
-      showErrorToast(t('common.Error adding medical log!'));
     }
   };
 
-  const handleDelete = (logId: string | number) => {
+  const handleDelete = (logId: string) => {
     Alert.alert(
       t('common.confirmDelete'),
       t('common.Are you sure you want to delete this medical log?'),
@@ -123,15 +113,12 @@ export const MedicalLogsTab: React.FC<MedicalLogsTabProps> = ({ animalId }) => {
         },
         {
           text: t('common.delete'),
-          onPress: () => {
+          onPress: async () => {
             try {
-              dispatch(deleteAnimalMedicalLog(logId) as any);
+              await deleteMedicalLog(logId).unwrap();
               showSuccessToast(t('common.Medical Log deleted successfully!'));
             } catch (error) {
-              console.error(
-                `Error deleting medical log with id ${logId}:`,
-                error
-              );
+              console.error(`Error deleting medical log with id ${logId}:`, error);
               showErrorToast(t('common.Error deleting medical log!'));
             }
           },
@@ -149,8 +136,8 @@ export const MedicalLogsTab: React.FC<MedicalLogsTabProps> = ({ animalId }) => {
     if (selectedDate) setLogDate(selectedDate);
   };
 
-  if (loading) return <Loading />;
-  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
+  if (isLoading) return <Loading />;
+  if (isError) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (
     <View className="flex-1 bg-slate-50">

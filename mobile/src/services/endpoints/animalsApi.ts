@@ -24,7 +24,7 @@ export const animalsApi = api.injectEndpoints({
     }),
 
     // Get single animal by ID
-    getAnimalById: builder.query<Animal, number>({
+    getAnimalById: builder.query<Animal, string>({
       query: (id) => `/animals/${id}`,
       providesTags: (result, error, id) => [{ type: 'Animal', id }],
       keepUnusedDataFor: 600, // 10 minutes
@@ -45,13 +45,13 @@ export const animalsApi = api.injectEndpoints({
     }),
 
     // Get animals by sale ID
-    getAnimalsBySale: builder.query<Animal[], number>({
+    getAnimalsBySale: builder.query<Animal[], string>({
       query: (saleId) => `/animals/by-sale/${saleId}`,
       providesTags: (result, error, saleId) => [{ type: 'Animals', id: `sale-${saleId}` }],
     }),
 
     // Get animals by buyer ID
-    getAnimalsByBuyer: builder.query<Animal[], number>({
+    getAnimalsByBuyer: builder.query<Animal[], string>({
       query: (buyerId) => `/animals/by-buyer/${buyerId}`,
       providesTags: (result, error, buyerId) => [{ type: 'Animals', id: `buyer-${buyerId}` }],
     }),
@@ -68,11 +68,11 @@ export const animalsApi = api.injectEndpoints({
     }),
 
     // Update animal (FormData for image upload)
-    updateAnimal: builder.mutation<Animal, { id: number; formData: FormData }>({
-      query: ({ id, formData }) => ({
+    updateAnimal: builder.mutation<Animal, { id: string; data: FormData }>({
+      query: ({ id, data }) => ({
         url: `/animals/${id}`,
         method: 'PUT',
-        body: formData,
+        body: data,
         formData: true,
       }),
       invalidatesTags: (result, error, { id }) => [
@@ -83,7 +83,7 @@ export const animalsApi = api.injectEndpoints({
     }),
 
     // Delete animal
-    deleteAnimal: builder.mutation<void, number>({
+    deleteAnimal: builder.mutation<void, string>({
       query: (id) => ({
         url: `/animals/${id}`,
         method: 'DELETE',

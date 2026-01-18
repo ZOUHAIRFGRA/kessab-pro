@@ -1,5 +1,5 @@
 import "../../../global.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Text,
   ScrollView,
@@ -7,49 +7,34 @@ import {
   View,
   Platform,
   Alert,
+  TextInput,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getAnimalActivitiesLogs,
-  modifyAnimalActivityLog,
-  createAnimalActivityLog,
-  deleteAnimalActivityLog,
-} from "../../features/animalActivitiesLogSlice";
 import { Calendar, Activity, Save, X, Edit, Trash2, Plus } from "lucide-react-native";
 import { useToast } from "../../hooks/useToast";
 import { useTranslation } from "react-i18next";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-import { TextInput } from "react-native";
-
-// TypeScript Interfaces
-interface ActivityLog {
-  id: string;
-  activity: string;
-  logDate: string;
-  animalId: string;
-}
-
-interface ActivityLogsState {
-  activitiesLogs: ActivityLog[];
-  error: string | null;
-  loading: boolean;
-}
-
-interface RootState {
-  animalActivitiesLogs: ActivityLogsState;
-}
+import {
+  useGetActivityLogsByAnimalQuery,
+  useCreateActivityLogMutation,
+  useUpdateActivityLogMutation,
+  useDeleteActivityLogMutation,
+} from "../../services";
+import type { ActivityLog } from "../../types/api";
 
 interface ActivityLogsTabProps {
   animalId: string;
 }
 
 export const ActivityLogsTab = ({ animalId }: ActivityLogsTabProps) => {
-  const { activitiesLogs, error, loading } = useSelector(
-    (state: RootState) => state.animalActivitiesLogs
-  );
-  const dispatch = useDispatch();
+  // RTK Query hooks
+  const { data: activitiesLogs = [], isLoading, isError } = useGetActivityLogsByAnimalQuery(animalId, {
+    skip: !animalId,
+  });
+  const [createActivityLog] = useCreateActivityLogMutation();
+  const [updateActivityLog] = useUpdateActivityLogMutation();
+  const [deleteActivityLog] = useDeleteActivityLogMutation();
   const { t } = useTranslation();
   const isRTL = t("dir") === "rtl";
   const [editing, setEditing] = useState<string | null>(null);
@@ -60,40 +45,46 @@ export const ActivityLogsTab = ({ animalId }: ActivityLogsTabProps) => {
   const [adding, setAdding] = useState(false);
   const { showSuccessToast, showErrorToast } = useToast();
 
-  useEffect(() => {
-    dispatch(getAnimalActivitiesLogs(animalId) as any);
-  }, [dispatch, animalId]);
-
   const handleEdit = (log: ActivityLog) => {
     setEditing(log.id);
     setEditedLog({ ...log });
   };
 
-  const handleSave = () => {
-    dispatch(
-      modifyAnimalActivityLog({ logId: editedLog.id, logData: editedLog }) as any
-    );
-    setEditing(null);
+  const handleSave = async () => {
+    if (editedLog.id) {
+      try {
+        await updateActivityLog({
+          id: editedLog.id,
+          data: {
+            animalId,
+            activityType: 'General',
+            description: editedLog.activity || '',
+            date: editedLog.logDate || new Date().toISOString().split('T')[0],
+          },
+        }).unwrap();
+        showSuccessToast(t("common.Activity Log updated successfully!"));
+        setEditing(null);
+      } catch (error) {
+        console.error('Error updating activity log:', error);
+        showErrorToast(t("common.Error updating activity log!"));
+      }
+    }
   };
 
-  const handleAddLog = () => {
+  const handleAddLog = async () => {
     if (newLog.trim()) {
       try {
-        dispatch(
-          createAnimalActivityLog({
-            animalId: animalId,
-            activity: newLog,
-            logDate: logDate,
-          }) as any
-        );
+        await createActivityLog({
+          animalId,
+          activityType: 'General',
+          description: newLog,
+          date: logDate.toISOString().split('T')[0],
+        }).unwrap();
         setNewLog("");
         setAdding(false);
         showSuccessToast(t("common.Activity Log added successfully!"));
       } catch (error) {
-        console.error(
-          `Error adding activity log for animal ${animalId}:`,
-          error
-        );
+        console.error(`Error adding activity log for animal ${animalId}:`, error);
         showErrorToast(t("common.Error adding activity log!"));
       }
     }
@@ -110,15 +101,12 @@ export const ActivityLogsTab = ({ animalId }: ActivityLogsTabProps) => {
         },
         {
           text: t("common.delete"),
-          onPress: () => {
+          onPress: async () => {
             try {
-              dispatch(deleteAnimalActivityLog(logId) as any);
+              await deleteActivityLog(logId).unwrap();
               showSuccessToast(t("common.Activity Log deleted successfully!"));
             } catch (error) {
-              console.error(
-                `Error deleting activity log with id ${logId}:`,
-                error
-              );
+              console.error(`Error deleting activity log with id ${logId}:`, error);
               showErrorToast(t("common.Error deleting activity log!"));
             }
           },
@@ -128,8 +116,8 @@ export const ActivityLogsTab = ({ animalId }: ActivityLogsTabProps) => {
     );
   };
 
-  if (loading) return <Loading />;
-  if (error) return <FallBack type={FALLBACK_TYPE.ERROR} />;
+  if (isLoading) return <Loading />;
+  if (isError) return <FallBack type={FALLBACK_TYPE.ERROR} />;
 
   return (
     <View className="flex-1 bg-slate-50">

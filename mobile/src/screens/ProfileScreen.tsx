@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   StyleSheet,
+  Modal,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { logout } from "../features/authSlice";
@@ -23,7 +24,7 @@ import {
   X,
   LogOut,
   ChevronRight,
-  Settings,
+  Languages,
   Bell,
   Shield,
 } from "lucide-react-native";
@@ -31,8 +32,19 @@ import { useGetUserProfileQuery, useUpdateUserProfileMutation } from "../service
 import type { AppDispatch } from "../store/store";
 import "../../global.css";
 
+interface LanguageOption {
+  code: string;
+  label: string;
+  flag: string;
+}
+
+const languages: LanguageOption[] = [
+  { code: "dr", label: "Darija", flag: "🇲🇦" },
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+];
+
 export default function ProfileScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const isRTL = t("dir") === "rtl";
 
@@ -41,6 +53,7 @@ export default function ProfileScreen() {
   const [updateUserProfile] = useUpdateUserProfileMutation();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [updatedUsername, setUpdatedUsername] = useState("");
   const [updatedEmail, setUpdatedEmail] = useState("");
   const [updatedPhone, setUpdatedPhone] = useState("");
@@ -82,6 +95,15 @@ export default function ProfileScreen() {
         },
       ]
     );
+  };
+
+  const handleLanguageChange = (langCode: string) => {
+    i18n.changeLanguage(langCode);
+    setShowLanguageModal(false);
+  };
+
+  const getCurrentLanguage = () => {
+    return languages.find((lang) => lang.code === i18n.language) || languages[0];
   };
 
   if (loading) {
@@ -146,15 +168,19 @@ export default function ProfileScreen() {
     label,
     onPress,
     danger,
+    rightText,
   }: {
     icon: any;
     label: string;
     onPress: () => void;
     danger?: boolean;
+    rightText?: string;
   }) => (
     <TouchableOpacity
       onPress={onPress}
-      className="bg-white rounded-2xl p-4 mb-3 shadow-sm flex-row items-center"
+      className={`bg-white rounded-2xl p-4 mb-3 shadow-sm flex-row items-center ${
+        isRTL ? "flex-row-reverse" : ""
+      }`}
     >
       <View
         className={`w-10 h-10 rounded-xl items-center justify-center ${
@@ -164,12 +190,15 @@ export default function ProfileScreen() {
         <Icon size={20} color={danger ? "#f43f5e" : "#627d98"} />
       </View>
       <Text
-        className={`flex-1 ml-3 text-base font-medium ${
+        className={`flex-1 ${isRTL ? "mr-3" : "ml-3"} text-base font-medium ${
           danger ? "text-danger-600" : "text-primary-700"
-        }`}
+        } ${isRTL ? "text-right" : "text-left"}`}
       >
         {label}
       </Text>
+      {rightText && (
+        <Text className="text-surface-500 text-sm mr-2">{rightText}</Text>
+      )}
       <ChevronRight size={20} color={danger ? "#f43f5e" : "#a1a1aa"} />
     </TouchableOpacity>
   );
@@ -187,27 +216,27 @@ export default function ProfileScreen() {
         </Text>
 
         {/* Avatar */}
-        <View className="mt-6 items-center">
-          <View className="w-24 h-24 bg-white/20 rounded-full items-center justify-center">
-            <User size={48} color="white" />
+        <View className="mt-4 items-center">
+          <View className="w-20 h-20 bg-white/20 rounded-full items-center justify-center">
+            <User size={40} color="white" />
           </View>
-          <Text className="text-white text-xl font-bold mt-3">
+          <Text className="text-white text-lg font-bold mt-2">
             {userProfile?.username || "User"}
           </Text>
-          <Text className="text-white/70 text-sm mt-1">
+          <Text className="text-white/70 text-xs mt-0.5">
             {userProfile?.email || ""}
           </Text>
         </View>
       </LinearGradient>
 
       <ScrollView
-        className="flex-1 -mt-6"
-        contentContainerStyle={{ paddingBottom: 24 }}
+        className="flex-1"
+        contentContainerStyle={{ paddingBottom: 24, paddingTop: 16 }}
       >
         <View className="px-5">
           {/* Edit/Save Buttons */}
           {isEditing ? (
-            <View className="flex-row mb-4 -mt-2">
+            <View className="flex-row mb-4">
               <TouchableOpacity
                 onPress={handleProfileUpdate}
                 className="flex-1 mr-2"
@@ -235,7 +264,7 @@ export default function ProfileScreen() {
           ) : (
             <TouchableOpacity
               onPress={() => setIsEditing(true)}
-              className="mb-4 -mt-2"
+              className="mb-4"
             >
               <LinearGradient
                 colors={["#f59e0b", "#d97706"]}
@@ -250,7 +279,7 @@ export default function ProfileScreen() {
           )}
 
           {/* Profile Fields */}
-          <Text className="text-primary-800 text-lg font-bold mb-3 mt-2">
+          <Text className="text-primary-800 text-lg font-bold mb-3">
             {t("common.Personal Info")}
           </Text>
 
@@ -287,26 +316,27 @@ export default function ProfileScreen() {
           />
 
           {/* Settings Section */}
-          <Text className="text-primary-800 text-lg font-bold mb-3 mt-6">
-            {t("common.Settings")}
+          <Text className={`text-primary-800 text-lg font-bold mb-3 mt-6 ${isRTL ? "text-right" : "text-left"}`}>
+            {t("common.Preferences")}
           </Text>
+
+          <MenuButton
+            icon={Languages}
+            label={t("common.Language")}
+            onPress={() => setShowLanguageModal(true)}
+            rightText={getCurrentLanguage().label}
+          />
 
           <MenuButton
             icon={Bell}
             label={t("common.Notifications")}
-            onPress={() => {}}
+            onPress={() => Alert.alert(t("common.Notifications"), "Coming soon...")}
           />
 
           <MenuButton
             icon={Shield}
             label={t("common.Privacy")}
-            onPress={() => {}}
-          />
-
-          <MenuButton
-            icon={Settings}
-            label={t("common.Preferences")}
-            onPress={() => {}}
+            onPress={() => Alert.alert(t("common.Privacy"), "Coming soon...")}
           />
 
           {/* Logout */}
@@ -320,6 +350,72 @@ export default function ProfileScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Language Selection Modal */}
+      <Modal
+        visible={showLanguageModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLanguageModal(false)}
+      >
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => setShowLanguageModal(false)}
+          className="flex-1 bg-black/50 items-center justify-center"
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation()}
+            className="bg-white rounded-3xl mx-6 p-6 w-80 max-w-full"
+          >
+            <View className={`flex-row items-center justify-between mb-6 ${isRTL ? "flex-row-reverse" : ""}`}>
+              <Text className={`text-primary-900 text-xl font-bold ${isRTL ? "text-right" : "text-left"}`}>
+                {t("common.Select_Language")}
+              </Text>
+              <TouchableOpacity
+                onPress={() => setShowLanguageModal(false)}
+                className="w-8 h-8 bg-surface-100 rounded-full items-center justify-center"
+              >
+                <X size={18} color="#52525b" />
+              </TouchableOpacity>
+            </View>
+
+            <View className="gap-3">
+              {languages.map((lang) => (
+                <TouchableOpacity
+                  key={lang.code}
+                  onPress={() => handleLanguageChange(lang.code)}
+                  className={`flex-row items-center gap-3 p-4 rounded-2xl border-2 ${
+                    isRTL ? "flex-row-reverse" : ""
+                  } ${
+                    i18n.language === lang.code
+                      ? "bg-amber-50 border-amber-500"
+                      : "bg-surface-50 border-surface-200"
+                  }`}
+                >
+                  <Text className="text-3xl">{lang.flag}</Text>
+                  <View className={`flex-1 ${isRTL ? "items-end" : ""}`}>
+                    <Text
+                      className={`text-base font-bold ${
+                        i18n.language === lang.code
+                          ? "text-amber-700"
+                          : "text-primary-800"
+                      } ${isRTL ? "text-right" : "text-left"}`}
+                    >
+                      {lang.label}
+                    </Text>
+                  </View>
+                  {i18n.language === lang.code && (
+                    <View className="w-6 h-6 bg-amber-500 rounded-full items-center justify-center">
+                      <Text className="text-white text-xs font-bold">✓</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 }
@@ -327,7 +423,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   header: {
     paddingTop: 48,
-    paddingBottom: 64,
+    paddingBottom: 40,
     paddingHorizontal: 20,
     alignItems: 'center',
   },

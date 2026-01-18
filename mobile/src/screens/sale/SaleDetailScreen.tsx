@@ -7,7 +7,6 @@ import SaleInfoView from "../../components/sale/SaleInfoView";
 import BuyerInfoView from "../../components/buyer/BuyerInfoView";
 import TransactionsListCardView from "../../components/transaction/TransactionsListCardView";
 import AnimalsListCardView from "../../components/Animal/AnimalsListCardView";
-import Container from "../../components/global/Container";
 import FallBack from "../../components/global/Fallback";
 import { useGetSaleByIdQuery } from "../../services";
 import "../../../global.css";
@@ -17,7 +16,7 @@ const Tab = createBottomTabNavigator();
 type SaleDetailScreenProps = {
   route: {
     params: {
-      saleId: number;
+      saleId: string; // UUID string
     };
   };
 };
@@ -64,7 +63,6 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
             fontWeight: "600",
             marginTop: 4,
           },
-          animation: "shift",
         }}
       >
         <Tab.Screen
@@ -84,7 +82,7 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
             tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
           }}
         >
-          {() => <BuyerInfoView id={sale.buyer?.id} />}
+          {() => sale.buyer?.id ? <BuyerInfoView id={sale.buyer.id} /> : <FallBack />}
         </Tab.Screen>
 
         <Tab.Screen
@@ -97,9 +95,9 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
           }}
         >
           {() => (
-            <Container sx={{ flex: 1, gap: 16 }}>
+            <View style={{ flex: 1, gap: 16 }}>
               <AnimalsListCardView id={sale.id} type="sale" />
-            </Container>
+            </View>
           )}
         </Tab.Screen>
 
@@ -112,11 +110,7 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
             ),
           }}
         >
-          {() => (
-            <Container sx={{ flex: 1, gap: 16, padding: 16 }}>
-              <TransactionsListCardView id={sale.id} type="sale" />
-            </Container>
-          )}
+          {() => <TransactionsListCardView id={sale.id} type="sale" />}
         </Tab.Screen>
       </Tab.Navigator>
     </View>

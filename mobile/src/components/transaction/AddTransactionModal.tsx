@@ -10,6 +10,7 @@ import {
   useGetPaymentMethodsQuery,
   useCreateTransactionMutation,
   useConsumeTransactionMutation,
+  useGetTransactionsQuery,
 } from "../../services";
 import { useToast } from "../../hooks/useToast";
 import Dialogs from "../global/Dialog";
@@ -55,6 +56,12 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   const { data: paymentMethods = [], isLoading: loadingPaymentMethods } = useGetPaymentMethodsQuery();
   const [createTransaction] = useCreateTransactionMutation();
   const [consumeTransaction] = useConsumeTransactionMutation();
+  const refetchTransactions = useGetTransactionsQuery(
+    type === "sale"
+      ? { saleId: saleId || id || 0, page: 0 }
+      : { buyerId: buyerId || id || 0, page: 0 },
+    { skip: !visible }
+  ).refetch;
 
   const [formData, setFormData] = useState<FormData>({
     transactionDate: formatDate(new Date()),
@@ -122,10 +129,10 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
 
         if (type === "sale" && (saleId || id)) {
           await createTransaction({
-            saleId: saleId || id,
+            sale_id: saleId || id,
             amount: parseFloat(formData.amount),
             transactionDate: formData.transactionDate,
-            paymentMethod: formData.method,
+            method: formData.method,
             paymentStatus: "COMPLETED",
           }).unwrap();
         } else if (type === "buyer" && (buyerId || id)) {
@@ -134,7 +141,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             data: {
               amount: parseFloat(formData.amount),
               transactionDate: formData.transactionDate,
-              paymentMethod: formData.method,
+              method: formData.method,
             },
           }).unwrap();
         }
@@ -142,6 +149,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
         showSuccessToast(t("common.transactionAdded"));
         handleClose();
         setFormError({ transactionDate: "", amount: "", method: "" });
+        refetchTransactions();
       } catch (error) {
         showErrorToast();
       }

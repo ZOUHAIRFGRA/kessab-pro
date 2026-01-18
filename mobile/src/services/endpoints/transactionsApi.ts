@@ -5,17 +5,18 @@ import {
   TransactionUpdateRequest,
   ConsumeTransactionRequest,
   TransactionInvoice,
+  PaginatedResponse,
 } from '../../types/api';
 
 export const transactionsApi = api.injectEndpoints({
   endpoints: (builder) => ({
     // Get all transactions
-    getTransactions: builder.query<Transaction[], void>({
+    getTransactions: builder.query<PaginatedResponse<Transaction>, void>({
       query: () => '/transactions',
       providesTags: (result) =>
-        result
+        result?.content
           ? [
-              ...result.map(({ id }) => ({ type: 'Transaction' as const, id })),
+              ...result.content.map(({ id }) => ({ type: 'Transaction' as const, id })),
               { type: 'Transactions', id: 'LIST' },
             ]
           : [{ type: 'Transactions', id: 'LIST' }],
@@ -23,13 +24,13 @@ export const transactionsApi = api.injectEndpoints({
     }),
 
     // Get single transaction by ID
-    getTransactionById: builder.query<Transaction, number>({
+    getTransactionById: builder.query<Transaction, string>({
       query: (id) => `/transactions/${id}`,
       providesTags: (result, error, id) => [{ type: 'Transaction', id }],
     }),
 
     // Get transactions by sale ID
-    getTransactionsBySale: builder.query<Transaction[], number>({
+    getTransactionsBySale: builder.query<Transaction[], string>({
       query: (saleId) => `/transactions/sale/${saleId}`,
       providesTags: (result, error, saleId) => [
         { type: 'Transactions', id: `sale-${saleId}` },
@@ -38,7 +39,7 @@ export const transactionsApi = api.injectEndpoints({
     }),
 
     // Get transactions by buyer ID
-    getTransactionsByBuyer: builder.query<Transaction[], number>({
+    getTransactionsByBuyer: builder.query<Transaction[], string>({
       query: (buyerId) => `/transactions/buyer/${buyerId}`,
       providesTags: (result, error, buyerId) => [
         { type: 'Transactions', id: `buyer-${buyerId}` },
@@ -46,7 +47,7 @@ export const transactionsApi = api.injectEndpoints({
     }),
 
     // Get transaction invoice PDF
-    getTransactionInvoice: builder.mutation<TransactionInvoice, number>({
+    getTransactionInvoice: builder.mutation<TransactionInvoice, string>({
       query: (id) => ({
         url: `/pdf/transaction/${id}`,
         method: 'POST',
@@ -54,7 +55,7 @@ export const transactionsApi = api.injectEndpoints({
     }),
 
     // Consume transaction (for buyer)
-    consumeTransaction: builder.mutation<Transaction, { buyerId: number; data: ConsumeTransactionRequest }>({
+    consumeTransaction: builder.mutation<Transaction, { buyerId: string; data: ConsumeTransactionRequest }>({
       query: ({ buyerId, data }) => ({
         url: `/transactions/buyer/${buyerId}`,
         method: 'POST',
@@ -84,7 +85,7 @@ export const transactionsApi = api.injectEndpoints({
     }),
 
     // Update transaction
-    updateTransaction: builder.mutation<Transaction, { id: number; data: TransactionUpdateRequest }>({
+    updateTransaction: builder.mutation<Transaction, { id: string; data: TransactionUpdateRequest }>({
       query: ({ id, data }) => ({
         url: `/transactions/${id}`,
         method: 'PUT',
@@ -99,7 +100,7 @@ export const transactionsApi = api.injectEndpoints({
     }),
 
     // Delete transaction
-    deleteTransaction: builder.mutation<void, number>({
+    deleteTransaction: builder.mutation<void, string>({
       query: (id) => ({
         url: `/transactions/${id}`,
         method: 'DELETE',

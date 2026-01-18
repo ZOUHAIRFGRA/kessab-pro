@@ -1,19 +1,19 @@
 import "../../../global.css";
 import React, { useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
-import { User, Calendar, Handshake, Wallet, ShoppingCart } from "lucide-react-native";
+import { User, Calendar, Handshake, Wallet, ShoppingCart, Trash2, Share2, Info } from "lucide-react-native";
 import { useGetSaleByIdQuery, useCloseSaleMutation, useGetSaleInvoiceMutation } from "../../services";
 import { getPickedUpRatio } from "../../helpers/AnimalHelpers";
 import { useToast } from "../../hooks/useToast";
 import { getValue } from "../../helpers/gloablHelpers";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
-import Button from "../global/Button";
 import ConfirmationModal from "../global/ConfirmationModal";
 
 interface SaleInfoViewProps {
-  id: number;
+  id: string; // UUID
 }
 
 const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
@@ -49,7 +49,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
   if (error) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
 
   return (
-    <ScrollView className="flex-1 bg-surface-50">
+    <View className="flex-1 bg-surface-50">
       {isCloseConfirmationModalOpen && (
         <ConfirmationModal
           visible={isCloseConfirmationModalOpen}
@@ -61,6 +61,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
             type: "secondary",
             icon: {
               name: "trash",
+              IconComponent: Trash2,
             },
             btnText: t("common.confirm"),
           }}
@@ -68,7 +69,30 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
         />
       )}
 
-      <View className="flex-1 gap-3 p-5">
+      {/* Header */}
+      <LinearGradient
+        colors={["#334e68", "#243b53"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{ paddingHorizontal: 24, paddingTop: 48, paddingBottom: 24 }}
+      >
+        <View className="flex-row items-center gap-3">
+          <View className="bg-white/20 rounded-full p-3">
+            <Info size={24} color="#ffffff" strokeWidth={2} />
+          </View>
+          <View className="flex-1">
+            <Text className="text-white text-2xl font-bold">
+              {t("common.Info")}
+            </Text>
+            <Text className="text-white/80 text-sm mt-1">
+              {t("common.sale_details")}
+            </Text>
+          </View>
+        </View>
+      </LinearGradient>
+
+      <ScrollView className="flex-1">
+        <View className="flex-1 gap-3 p-5">
         {/* Buyer Name Card */}
         <View className="bg-white rounded-2xl shadow-sm border border-surface-200 p-4">
           <View className="flex-row items-center gap-3">
@@ -114,7 +138,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
                 {t("common.agreed_amount")}
               </Text>
               <Text className="text-base font-bold text-amber-600">
-                {getValue((sale as any).agreedAmount || sale.totalAmount)}
+                {getValue((sale as any).agreedAmount || "0")}
               </Text>
             </View>
           </View>
@@ -142,7 +166,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
               </Text>
             </View>
             <Text className="text-base font-bold text-red-600">
-              {getValue((sale as any).paymentDetail?.remainingAmount)}
+              {getValue((sale as any).paymentDetail?.remainingAmount || "0")}
             </Text>
           </View>
         </View>
@@ -158,7 +182,7 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
                 {t("common.payment_status")}
               </Text>
               <Text className="text-base font-semibold text-primary-800">
-                {t(`payment_type.${(sale as any).paymentStatus || sale.status}`)}
+                {t(`payment_type.${(sale as any).paymentStatus || "PENDING"}`)}
               </Text>
             </View>
           </View>
@@ -184,53 +208,34 @@ const SaleInfoView: React.FC<SaleInfoViewProps> = ({ id }) => {
 
       {/* Action Buttons */}
       <View className="p-4 gap-3">
-        <Button
-          type="primary"
-          style={{
-            padding: 12,
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-          textStyle={{
-            color: "white",
-            fontWeight: "bold",
-            textAlign: "center",
-            fontSize: 16,
-          }}
-          icon={{
-            name: "handshake-o",
-            color: "#ffffff",
-          }}
+        <TouchableOpacity
+          className="bg-amber-500 rounded-xl p-4 flex-row items-center justify-center gap-2"
           onPress={() => setIsCloseConfirmationModalOpen(true)}
           disabled={(sale as any)?.paymentStatus === "FULLY_PAID"}
-        >
-          {t("common.close_sale")}
-        </Button>
-        <Button
-          type="secondary"
+          activeOpacity={0.8}
           style={{
-            padding: 12,
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
+            opacity: (sale as any)?.paymentStatus === "FULLY_PAID" ? 0.5 : 1,
           }}
-          textStyle={{
-            color: "white",
-            fontWeight: "bold",
-            textAlign: "center",
-            fontSize: 16,
-          }}
-          icon={{
-            name: "share-alt",
-            color: "#ffffff",
-          }}
-          onPress={handleExportInvoice}
         >
-          {t("common.share_print")}
-        </Button>
+          <Handshake size={20} color="#ffffff" strokeWidth={2} />
+          <Text className="text-white font-bold text-center text-base">
+            {t("common.close_sale")}
+          </Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          className="bg-slate-700 rounded-xl p-4 flex-row items-center justify-center gap-2"
+          onPress={handleExportInvoice}
+          activeOpacity={0.8}
+        >
+          <Share2 size={20} color="#ffffff" strokeWidth={2} />
+          <Text className="text-white font-bold text-center text-base">
+            {t("common.share_print")}
+          </Text>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 

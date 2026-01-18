@@ -8,19 +8,19 @@ import { getBaseURL } from "../../services";
 import { getValue } from "../../helpers/gloablHelpers";
 
 interface Animal {
-  id: number;
+  id: string; // UUID
   gallery: string[];
   [key: string]: any;
 }
 
 interface Buyer {
-  id: number;
+  id: string; // UUID
   fullName: string;
   [key: string]: any;
 }
 
 interface Sale {
-  id: number;
+  id: string; // UUID
   animals: Animal[];
   buyer: Buyer;
   saleDate: string;

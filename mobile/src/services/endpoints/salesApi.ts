@@ -27,14 +27,14 @@ export const salesApi = api.injectEndpoints({
     }),
 
     // Get single sale by ID
-    getSaleById: builder.query<Sale, number>({
+    getSaleById: builder.query<Sale, string>({
       query: (id) => `/sales/${id}`,
       providesTags: (result, error, id) => [{ type: 'Sale', id }],
       keepUnusedDataFor: 180, // 3 minutes
     }),
 
     // Get sales by buyer ID
-    getSalesByBuyerId: builder.query<Sale[], number>({
+    getSalesByBuyerId: builder.query<Sale[], string>({
       query: (buyerId) => `/sales/buyer/${buyerId}`,
       providesTags: (result, error, buyerId) => [
         { type: 'Sales', id: `buyer-${buyerId}` },
@@ -42,7 +42,7 @@ export const salesApi = api.injectEndpoints({
     }),
 
     // Get sale invoice PDF
-    getSaleInvoice: builder.mutation<SaleInvoice, number>({
+    getSaleInvoice: builder.mutation<SaleInvoice, string>({
       query: (id) => ({
         url: `/pdf/sale/${id}`,
         method: 'POST',
@@ -50,7 +50,7 @@ export const salesApi = api.injectEndpoints({
     }),
 
     // Close sale
-    closeSale: builder.mutation<Sale, number>({
+    closeSale: builder.mutation<Sale, string>({
       query: (id) => ({
         url: `/sales/${id}/close`,
         method: 'POST',
@@ -78,7 +78,7 @@ export const salesApi = api.injectEndpoints({
     }),
 
     // Update sale
-    updateSale: builder.mutation<Sale, { id: number; data: SaleUpdateRequest }>({
+    updateSale: builder.mutation<Sale, { id: string; data: SaleUpdateRequest }>({
       query: ({ id, data }) => ({
         url: `/sales/${id}`,
         method: 'PUT',
@@ -93,7 +93,7 @@ export const salesApi = api.injectEndpoints({
     }),
 
     // Delete sale
-    deleteSale: builder.mutation<void, number>({
+    deleteSale: builder.mutation<void, string>({
       query: (id) => ({
         url: `/sales/${id}`,
         method: 'DELETE',

@@ -1,11 +1,10 @@
 import "../../../global.css";
 import React from "react";
-import { View } from "react-native";
-import Button from "./Button";
+import { View, TouchableOpacity, Text as RNText } from "react-native";
 import Dialog from "./Dialog";
 import Text from "./Text";
 import { useTranslation } from "react-i18next";
-import { LucideIcon } from "lucide-react-native";
+import { LucideIcon, X } from "lucide-react-native";
 
 interface ButtonParams {
   type: string;
@@ -37,6 +36,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const isRTL = t("dir") === "rtl";
+  const IconComponent = btnParams.icon.IconComponent;
 
   return (
     <Dialog title={title} toggleDialog={() => toggleVisible(!visible)} visible={visible}>
@@ -53,69 +53,36 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           {bodyText}
         </Text>
         <View
-          className="flex-row justify-center"
+          className="flex-row justify-center gap-3"
           style={{ flexDirection: isRTL ? "row-reverse" : "row" }}
         >
-          <Button
-            type={btnParams.type}
-            style={{
-              padding: 12,
-              marginRight: 12,
-              marginLeft: 12,
-              marginBottom: 8,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#F59E0B", // Warm Amber
-              borderRadius: 8,
-            }}
-            textStyle={{
-              color: "white",
-              fontWeight: "bold",
-              textAlign: "center",
-              fontSize: 16,
-            }}
-            icon={{
-              name: btnParams.icon.name,
-              color: "white",
-            }}
+          <TouchableOpacity
+            className="bg-amber-500 rounded-xl px-6 py-3 flex-row items-center gap-2"
             onPress={() => {
               action();
               toggleVisible(!visible);
             }}
+            activeOpacity={0.8}
           >
-            {btnParams.btnText}
-          </Button>
+            {IconComponent && <IconComponent size={20} color="#ffffff" />}
+            <RNText className="text-white font-bold text-base">
+              {btnParams.btnText}
+            </RNText>
+          </TouchableOpacity>
+          
           {closable && (
-            <Button
-              type={"primary"}
-              style={{
-                padding: 12,
-                marginRight: 12,
-                marginLeft: 12,
-                marginBottom: 8,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#334155", // Deep Slate Blue
-                borderRadius: 8,
-              }}
-              textStyle={{
-                color: "white",
-                fontWeight: "bold",
-                textAlign: "center",
-                fontSize: 16,
-              }}
-              icon={{
-                name: "close",
-                color: "white",
-              }}
+            <TouchableOpacity
+              className="bg-slate-700 rounded-xl px-6 py-3 flex-row items-center gap-2"
               onPress={() => {
                 toggleVisible(!visible);
               }}
+              activeOpacity={0.8}
             >
-              {t("common.close")}
-            </Button>
+              <X size={20} color="#ffffff" />
+              <RNText className="text-white font-bold text-base">
+                {t("common.close")}
+              </RNText>
+            </TouchableOpacity>
           )}
         </View>
       </View>

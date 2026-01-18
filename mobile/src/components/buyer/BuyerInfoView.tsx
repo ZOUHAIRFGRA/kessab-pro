@@ -1,6 +1,7 @@
 import "../../../global.css";
 import React from "react";
 import { Linking, Pressable, ScrollView, View, Text } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import FallBack, { FALLBACK_TYPE } from "../global/Fallback";
 import Loading from "../global/Loading";
 import { useGetBuyerByIdQuery } from "../../services";
@@ -10,7 +11,7 @@ import { getValue } from "../../helpers/gloablHelpers";
 import { User, CreditCard, MapPin, Phone, ArrowRight } from "lucide-react-native";
 
 interface BuyerInfoViewProps {
-  id: number;
+  id: string; // UUID
   hideLinkButton?: boolean;
 }
 
@@ -32,8 +33,31 @@ const BuyerInfoView: React.FC<BuyerInfoViewProps> = ({ id, hideLinkButton = fals
   if (isError) return <FallBack type={FALLBACK_TYPE.NOT_FOUND} />;
 
   return (
-    <ScrollView className="flex-1 bg-surface-50">
-      <View className="flex-1 gap-3 p-4">
+    <View className="flex-1 bg-surface-50">
+      {/* Header */}
+      <LinearGradient
+        colors={["#334e68", "#243b53"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{ paddingHorizontal: 24, paddingTop: 48, paddingBottom: 24 }}
+      >
+        <View className="flex-row items-center gap-3">
+          <View className="bg-white/20 rounded-full p-3">
+            <User size={24} color="#ffffff" strokeWidth={2} />
+          </View>
+          <View className="flex-1">
+            <Text className="text-white text-2xl font-bold">
+              {t("common.Buyer")}
+            </Text>
+            <Text className="text-white/80 text-sm mt-1">
+              {t("common.buyer_information")}
+            </Text>
+          </View>
+        </View>
+      </LinearGradient>
+
+      <ScrollView className="flex-1">
+        <View className="flex-1 gap-3 p-4">
         <View className="bg-white rounded-2xl shadow-sm border border-surface-200 p-6 gap-6">
           <View className="flex-row justify-center">
             <View className="bg-primary-700 rounded-full p-4">
@@ -101,7 +125,8 @@ const BuyerInfoView: React.FC<BuyerInfoViewProps> = ({ id, hideLinkButton = fals
           </Pressable>
         )}
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 

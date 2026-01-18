@@ -39,36 +39,46 @@ export default function DashboardScreen() {
   const {
     data: activitiesLogs = [],
     isLoading: activitiesLoading,
+    isError: activitiesError,
+    error: activitiesErrorDetails,
     refetch: refetchActivities,
-  } = useGetAllActivityLogsQuery();
+  } = useGetAllActivityLogsQuery(undefined, { skip: false });
 
   const {
     data: totalAnimals = 0,
     isLoading: animalsCountLoading,
+    isError: animalsCountError,
+    error: animalsCountErrorDetails,
     refetch: refetchAnimalsCount,
-  } = useGetAnimalsCountQuery();
+  } = useGetAnimalsCountQuery(undefined, { skip: false });
 
   const {
     data: unsoldAnimals = [],
     isLoading: unsoldAnimalsLoading,
+    isError: unsoldAnimalsError,
+    error: unsoldAnimalsErrorDetails,
     refetch: refetchUnsoldAnimals,
-  } = useGetUnsoldAnimalsQuery();
+  } = useGetUnsoldAnimalsQuery(undefined, { skip: false });
 
   const {
     data: salesData,
     isLoading: salesLoading,
+    isError: salesError,
+    error: salesErrorDetails,
     refetch: refetchSales,
-  } = useGetSalesQuery({});
+  } = useGetSalesQuery({}, { skip: false });
 
   const {
     data: transactionsData,
     isLoading: transactionsLoading,
+    isError: transactionsError,
+    error: transactionsErrorDetails,
     refetch: refetchTransactions,
-  } = useGetTransactionsQuery();
+  } = useGetTransactionsQuery(undefined, { skip: false });
 
   const sales = salesData?.content || [];
-  const transactions = transactionsData || [];
-  const totalUnsoldAnimals = unsoldAnimals.length;
+  const transactions = transactionsData?.content || [];
+  const totalUnsoldAnimals = unsoldAnimals?.length || 0;
 
   const fetchData = () => {
     refetchAnimalsCount();
@@ -80,6 +90,20 @@ export default function DashboardScreen() {
 
   const isLoading =
     animalsCountLoading || unsoldAnimalsLoading || salesLoading || transactionsLoading || activitiesLoading;
+
+  const hasError =
+    animalsCountError || unsoldAnimalsError || salesError || transactionsError || activitiesError;
+
+  // Debug errors
+  if (hasError) {
+    console.log('Dashboard Errors:', {
+      animalsCount: animalsCountError ? animalsCountErrorDetails : null,
+      unsoldAnimals: unsoldAnimalsError ? unsoldAnimalsErrorDetails : null,
+      sales: salesError ? salesErrorDetails : null,
+      transactions: transactionsError ? transactionsErrorDetails : null,
+      activities: activitiesError ? activitiesErrorDetails : null,
+    });
+  }
 
   // Calculate statistics
   const totalAnimalsCount = totalAnimals || 0;
@@ -137,7 +161,7 @@ export default function DashboardScreen() {
               {t("common.Overview")}
             </Text>
             <Text className="text-white text-2xl font-bold">
-              {t("common.dashboard")}
+              {t("common.Dashboard")}
             </Text>
           </View>
           <TouchableOpacity

@@ -277,19 +277,7 @@ export default function AddSaleScreen({ route }: AddSaleScreenProps) {
 
   return (
     <View className="flex-1 bg-surface-50">
-      {/* Header */}
-      <LinearGradient colors={["#334e68", "#243b53"]} style={styles.header}>
-        <View className="flex-row items-center justify-between">
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            className="w-10 h-10 bg-white/10 rounded-full items-center justify-center"
-          >
-            <ArrowLeft size={22} color="white" />
-          </TouchableOpacity>
-          <Text className="text-white text-xl font-bold">{t("common.AddSale")}</Text>
-          <View className="w-10" />
-        </View>
-      </LinearGradient>
+     
 
       <ScrollView className="flex-1 px-5 pt-4" contentContainerStyle={{ paddingBottom: 100 }}>
         {/* Error Message */}
