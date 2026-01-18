@@ -14,11 +14,15 @@ import type { Transaction } from "../../types/api";
 interface TransactionsListCardViewProps {
   id: string; // UUID
   type?: "sale" | "buyer";
+  agreedAmount?: string; // For sales: format "8166.55DH"
+  paidAmount?: string; // For sales: format "500.0DH"
 }
 
 const TransactionsListCardView: React.FC<TransactionsListCardViewProps> = ({
   id,
   type = "sale",
+  agreedAmount,
+  paidAmount,
 }) => {
   const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
@@ -98,6 +102,8 @@ const TransactionsListCardView: React.FC<TransactionsListCardViewProps> = ({
           type={type}
           visible={isVisible}
           toggleDialog={setIsVisible}
+          agreedAmount={agreedAmount}
+          paidAmount={paidAmount}
         />
       )}
 

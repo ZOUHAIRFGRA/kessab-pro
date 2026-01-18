@@ -29,14 +29,15 @@ interface FormError {
 }
 
 interface AddTransactionModalProps {
-  id?: number;
-  buyerId?: number;
-  saleId?: number;
+  id?: string; // UUID
+  buyerId?: string; // UUID
+  saleId?: string; // UUID
   type?: "sale" | "buyer";
   visible: boolean;
   toggleDialog?: (value: boolean) => void;
   onClose?: () => void;
-  totalAmount?: number | null;
+  agreedAmount?: string; // Format: "8166.55DH"
+  paidAmount?: string; // Format: "500.0DH"
 }
 
 const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
@@ -47,10 +48,22 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   visible,
   toggleDialog,
   onClose,
-  totalAmount = null,
+  agreedAmount,
+  paidAmount,
 }) => {
   const { t } = useTranslation();
   const { showSuccessToast, showErrorToast } = useToast();
+
+  // Helper function to parse amount strings like "8166.55DH" -> 8166.55
+  const parseAmount = (amountStr?: string): number => {
+    if (!amountStr) return 0;
+    return parseFloat(amountStr.replace(/[^0-9.]/g, ''));
+  };
+
+  // Calculate remaining amount for sales
+  const agreedAmountNum = parseAmount(agreedAmount);
+  const paidAmountNum = parseAmount(paidAmount);
+  const remainingAmount = agreedAmountNum - paidAmountNum;
 
   // RTK Query hooks
   const { data: paymentMethods = [], isLoading: loadingPaymentMethods } = useGetPaymentMethodsQuery();
@@ -107,9 +120,15 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     if (isEmpty(formData.amount)) {
       newErrors.amount = t("common.amountRequired");
       isValid = false;
-    } else if (totalAmount !== null && Number(formData.amount) > totalAmount) {
-      newErrors.amount = t("common.amountExceedsTotal");
-      isValid = false;
+    } else if (type === "sale" && agreedAmount) {
+      const enteredAmount = parseFloat(formData.amount);
+      if (isNaN(enteredAmount) || enteredAmount <= 0) {
+        newErrors.amount = t("common.invalidAmount");
+        isValid = false;
+      } else if (enteredAmount > remainingAmount) {
+        newErrors.amount = `${t("common.amountExceedsRemaining")} ${remainingAmount.toFixed(2)} DH`;
+        isValid = false;
+      }
     }
 
     const methodKeys = paymentMethods.map((pm: any) => pm.key || pm);
@@ -149,9 +168,17 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
         showSuccessToast(t("common.transactionAdded"));
         handleClose();
         setFormError({ transactionDate: "", amount: "", method: "" });
+        setFormData({ transactionDate: formatDate(new Date()), amount: "", method: "" });
         refetchTransactions();
-      } catch (error) {
-        showErrorToast();
+      } catch (error: any) {
+        // Handle backend error messages
+        const errorMessage = error?.data?.errors || error?.data?.message || t("common.transactionFailed");
+        showErrorToast(errorMessage);
+        
+        // If it's an amount validation error, show it in the form
+        if (errorMessage.toLowerCase().includes('amount')) {
+          setFormError(prev => ({ ...prev, amount: errorMessage }));
+        }
       }
     }
   };
@@ -208,6 +235,19 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                 {formError.amount}
               </Text>
             ) : null}
+            {type === "sale" && agreedAmount && (
+              <View className="bg-amber-50 border border-amber-200 rounded-lg p-2 mb-2">
+                <Text className="text-amber-800 text-xs font-medium">
+                  {t("common.agreedAmount")}: {agreedAmount}
+                </Text>
+                <Text className="text-amber-800 text-xs font-medium">
+                  {t("common.paidSoFar")}: {paidAmount || "0.0 DH"}
+                </Text>
+                <Text className="text-amber-900 text-xs font-bold mt-1">
+                  {t("common.remainingAmount")}: {remainingAmount.toFixed(2)} DH
+                </Text>
+              </View>
+            )}
             <TextInput
               onChangeText={(value) =>
                 setFormData({
@@ -215,7 +255,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
                   amount: value,
                 })
               }
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               placeholder={t(`common.paidAmount`)}
               value={formData.amount}
               className="bg-white rounded-xl p-3 border border-surface-300 text-base text-primary-800"

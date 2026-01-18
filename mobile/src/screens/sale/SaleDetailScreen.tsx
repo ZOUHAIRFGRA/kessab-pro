@@ -110,7 +110,14 @@ export default function SaleDetailScreen({ route }: SaleDetailScreenProps) {
             ),
           }}
         >
-          {() => <TransactionsListCardView id={sale.id} type="sale" />}
+          {() => (
+            <TransactionsListCardView 
+              id={sale.id} 
+              type="sale"
+              agreedAmount={sale.agreedAmount}
+              paidAmount={sale.paymentDetail?.paidAmount}
+            />
+          )}
         </Tab.Screen>
       </Tab.Navigator>
     </View>
