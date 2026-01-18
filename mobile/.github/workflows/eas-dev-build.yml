@@ -1,23 +1,25 @@
-name: EAS Dev Build
+name: Build & Release Android APK
 
 on:
-  workflow_dispatch:   
+  workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to build'
+      version:
+        description: 'Version tag (e.g., v1.0.0)'
         required: true
-        default: 'main'
+        default: 'v1.0.0'
+  push:
+    tags:
+      - 'v*.*.*'
 
+permissions:
+  contents: write
 
 jobs:
-  test:
-    uses: ./.github/workflows/test.yml
-
-  build:
-    needs: test
+  build-and-release:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: 🏗 Setup repo
+      - name: 🏗 Checkout code
         uses: actions/checkout@v3
 
       - name: 🏗 Setup Node
@@ -26,24 +28,96 @@ jobs:
           node-version: 20.x
           cache: npm
 
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
+      - name: 🏗 Setup Java
+        uses: actions/setup-java@v3
         with:
-          eas-version: 5.9.3
-          token: ${{ secrets.EXPO_TOKEN }}
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🏗 Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: 📦 Install dependencies
+        working-directory: ./apps/mobile
         run: |
-          # Clear npm cache and install dependencies
           npm cache clean --force
           npm install --legacy-peer-deps
 
-      - name: 🚀 Build Android APK
+      - name: 🏗 Prebuild Android project
+        working-directory: ./apps/mobile
         run: |
-          # Set environment variables to avoid ES module issues
-          export npm_config_package_manager=npm
-          export NODE_OPTIONS="--max-old-space-size=4096"
-          export EAS_BUILD_NON_INTERACTIVE=true
-          
-          # Try to build with explicit package manager
-          eas build --platform android --profile preview --non-interactive --clear-cache
+          npx expo prebuild --platform android --clean
+        env:
+          EXPO_PUBLIC_IS_PROD: "true"
+
+      - name: 🔑 Generate debug keystore
+        working-directory: ./apps/mobile/android
+        run: |
+          # Generate a debug keystore for signing
+          keytool -genkeypair -v -storetype PKCS12 -keystore debug.keystore \
+            -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=Android Debug,O=Android,C=US"
+
+      - name: 🚀 Build Production APK
+        working-directory: ./apps/mobile/android
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleRelease
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+          EXPO_PUBLIC_IS_PROD: "true"
+
+      - name: 📦 Copy APK to output
+        working-directory: ./apps/mobile
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk gestion-absence-fsr.apk
+          ls -lh gestion-absence-fsr.apk
+
+      - name: 📤 Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: apps/mobile/gestion-absence-fsr.apk
+          retention-days: 30
+
+      - name: 🏷 Get version tag
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 📦 Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            ## 📱 FSR Absence Management - Android Release
+            
+            ### Installation
+            1. Download the APK file below
+            2. Enable "Install from Unknown Sources" on your Android device
+            3. Install the APK
+            
+            ### What's New
+            - Check the [CHANGELOG](CHANGELOG.md) for details
+            
+            ### System Requirements
+            - Android 6.0 (API 23) or higher
+            - GPS/Location services enabled
+            - Camera permission for QR scanning
+          files: |
+            apps/mobile/gestion-absence-fsr.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🎉 Build Complete
+        run: |
+          echo "✅ APK has been built and released successfully!"
+          echo "📦 Release: ${{ steps.get_version.outputs.VERSION }}"
